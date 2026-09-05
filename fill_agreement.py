@@ -245,11 +245,17 @@ span.a { color: #1b3a7a; }
 p.policy { font-size: 9.5px; font-style: italic; color: #444444; margin: 6px 0; }
 """
 
+# USC Student Life / Residential Education logo, stamped at the top of every
+# page to match the official template.
+LOGO = "/workspace/usc_logo.png"
+LOGO_RECT = pymupdf.Rect(67.5, 40.0, 197.25, 82.75)
+
 story = pymupdf.Story(html=HTML, user_css=CSS)
 writer = pymupdf.DocumentWriter(OUT)
 
 MEDIABOX = pymupdf.paper_rect("letter")
-WHERE = MEDIABOX + (54, 54, -54, -54)
+# Leave room at the top for the logo.
+WHERE = MEDIABOX + (54, 100, -54, -54)
 
 more = 1
 page_no = 0
@@ -261,4 +267,12 @@ while more:
     writer.end_page()
 
 writer.close()
+
+# Stamp the logo onto every page.
+doc = pymupdf.open(OUT)
+for page in doc:
+    page.insert_image(LOGO_RECT, filename=LOGO, keep_proportion=True)
+doc.saveIncr()
+doc.close()
+
 print(f"Saved {OUT} ({page_no} pages)")
