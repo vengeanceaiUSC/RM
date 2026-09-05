@@ -242,8 +242,7 @@ p.field { font-size: 11px; margin: 2px 0; }
 p.qa { margin: 5px 0; }
 span.q { font-weight: bold; color: #111111; }
 span.a { color: #1b3a7a; }
-p.policy { font-size: 9.5px; font-style: italic; color: #444444;
-           background-color: #f2f2f2; padding: 5px; margin: 6px 0; }
+p.policy { font-size: 9.5px; font-style: italic; color: #444444; margin: 6px 0; }
 """
 
 story = pymupdf.Story(html=HTML, user_css=CSS)
