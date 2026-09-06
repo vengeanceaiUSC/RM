@@ -84,7 +84,7 @@ def w_row(key, label, value, color, fmt=PCT, bold=False, top=False, doc_key=None
     r[0] += 1
 
 write(wacc, 'A2', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)
-w_row('rf', "Risk-free rate (10-yr UST)", 0.043, S.RED, doc_key='wacc_rf')
+w_row('rf', "Risk-free rate (10-yr UST)", 0.048, S.RED, doc_key='wacc_rf')
 w_row('erp', "Equity risk premium", 0.060, S.RED, doc_key='wacc_erp')
 w_row('beta', "Levered beta", 0.95, S.RED, fmt='0.00', doc_key='wacc_beta')
 w_row('coe', "Cost of equity = rf + \u03b2 \u00d7 ERP", f"=E{WR['rf']}+E{WR['beta']}*E{WR['erp']}", None, bold=True, top=True)
@@ -92,7 +92,7 @@ r[0] += 1
 write(wacc, f'A{r[0]}', "Cost of debt", S.ACCENT, bold=True, size=10)
 r[0] += 1
 w_row('kd', "Pre-tax cost of debt", 0.050, S.RED, doc_key='wacc_kd')
-w_row('tax', "Tax rate", 0.270, S.RED, doc_key='wacc_tax')
+w_row('tax', "Tax rate", 0.300, S.RED, doc_key='wacc_tax')
 w_row('kdat', "After-tax cost of debt", f"=E{WR['kd']}*(1-E{WR['tax']})", None, top=True)
 r[0] += 1
 write(wacc, f'A{r[0]}', "Capital structure (market values)", S.ACCENT, bold=True, size=10)
@@ -139,12 +139,12 @@ s_assum('g1', "FY2026E revenue growth", -0.090, -0.061, -0.040, doc_key='sc_g1')
 s_assum('gterm', "FY2027\u2013FY2030E revenue growth (avg)", -0.010, 0.028, 0.060, doc_key='sc_gterm')
 s_assum('m1', "FY2026E EBIT margin", 0.125, 0.139, 0.150, doc_key='sc_m1')
 s_assum('mterm', "Terminal (FY2030E) EBIT margin", 0.120, 0.155, 0.190, doc_key='sc_mterm')
-s_assum('wacc', "WACC", 0.110, 0.100, 0.090, doc_key='sc_wacc',
+s_assum('wacc', "WACC", 0.115, 0.105, 0.095, doc_key='sc_wacc',
         internal_location=f"'WACC'!E{WR['wacc']}")
 s_assum('g', "Terminal growth", 0.015, 0.0225, 0.030, doc_key='sc_g')
-s_assum('tax', "Cash tax rate", 0.300, 0.270, 0.250, doc_key='sc_tax')
+s_assum('tax', "Cash tax rate", 0.320, 0.300, 0.280, doc_key='sc_tax')
 s_assum('da_pct', "D&A % of revenue", 0.045, 0.045, 0.045, doc_key='sc_da_pct')
-s_assum('capex_pct', "Capex % of revenue", 0.055, 0.050, 0.045, doc_key='sc_capex_pct')
+s_assum('capex_pct', "Capex % of revenue", 0.070, 0.055, 0.045, doc_key='sc_capex_pct')
 s_assum('nwc_pct', "NWC build % of \u0394revenue", 0.080, 0.075, 0.070, doc_key='sc_nwc_pct')
 
 rr[0] += 1
@@ -471,7 +471,7 @@ for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
     dcf[f'{c}{r[0]}'].fill = S.fill(S.DARK)
 r[0] += 1
 sens_top = r[0]
-waccs = [0.090, 0.095, 0.100, 0.105, 0.110]
+waccs = [0.095, 0.100, 0.105, 0.110, 0.115]
 gs = [0.015, 0.020, 0.0225, 0.025, 0.030]
 write(dcf, f'A{sens_top}', "WACC \\ g", S.DARK, bold=True, size=9, align=S.center, fillc=S.LIGHT)
 gcols = FCOLS
@@ -494,7 +494,7 @@ for i, wv in enumerate(waccs):
         f = (f"=(NPV({wv},{fcf_rng})"
              f"+({lastfcf}*(1+{g})/({wv}-{g}))/(1+{wv})^5"
              f"+E{VR['cash']}+E{VR['debt']})/E{VR['sh']}")
-        col = S.GREEN if (abs(wv-0.10) < 1e-9 and abs(g-0.0225) < 1e-9) else S.BLACK
+        col = S.GREEN if (abs(wv-0.105) < 1e-9 and abs(g-0.0225) < 1e-9) else S.BLACK
         write(dcf, f'{gcols[j]}{rr}', f, col, size=9, numfmt=MONEY, align=S.center)
 r[0] = sens_top + 1 + len(waccs)
 write_assumption_docs(dcf, r[0], DJ, DS, DC, 'sens_axes', D.JUST, D.ASSUMPTION_SRC,
@@ -576,11 +576,11 @@ rr[0] += 1
 peer_rows = [
     ("lululemon (LULU) \u2014 current", f"=(E{CM['px']}*E{CM['sh']}-E{CM['cash']})/E{CM['ebitda']}", True,
      "Distressed trough multiple on FY2025A EBITDA", D.filing_url("FY2025"), "LULU FY2025 10-K"),
-    ("Nike (NKE)", 18.0, False, "comps_nke"),
-    ("Deckers (DECK)", 15.0, False, "comps_deck"),
-    ("On Holding (ONON)", 25.0, False, "comps_onon"),
-    ("adidas (ADS)", 12.0, False, "comps_ads"),
-    ("V.F. Corp (VFC)", 10.0, False, "comps_vfc"),
+    ("Nike (NKE)", 12.0, False, "comps_nke"),
+    ("Deckers (DECK)", 8.0, False, "comps_deck"),
+    ("On Holding (ONON)", 14.0, False, "comps_onon"),
+    ("adidas (ADS)", 9.3, False, "comps_ads"),
+    ("V.F. Corp (VFC)", 10.7, False, "comps_vfc"),
 ]
 EM = {}
 for row in peer_rows:

@@ -363,7 +363,7 @@ thesis_slide(
     [
         "At ~$100 the stock trades at ~3.5x EV/EBITDA and ~10.4x FY2026E EPS \u2014 versus a 5-year history of ~20\u201330x earnings",
         "The balance sheet holds $1.8B of cash and no funded debt, so nearly the entire enterprise value is covered by the operating business at a very low multiple",
-        "Our base-case DCF (WACC 10%, terminal growth 2.25%, terminal EBIT margin 15.5%) yields ~$144 \u2014 and even the bear case is ~$91, roughly the current price",
+        "Our base-case DCF (WACC 10.5% from FRED 4.77% rf, terminal growth 2.25%, terminal EBIT margin 15.5%) is in the model \u2014 bear case still brackets the current price",
         "To justify $100 you must assume revenue and margins fall in perpetuity; that is inconsistent with international growth and the FY2026 tariff-refund tailwind",
     ],
     "VALUATION SNAPSHOT",
@@ -548,7 +548,7 @@ add_para(tf, "Free cash flow stays around $1B+ even in the FY2026 reset year, co
 # =====================================================================
 # 17. CAPITAL STRUCTURE & WACC
 # =====================================================================
-s = slide_base("Capital Structure & WACC", "A ~100% equity, net-cash structure drives a ~10% discount rate", page=pg())
+s = slide_base("Capital Structure & WACC", "A ~100% equity, net-cash structure drives a ~10.5% discount rate", page=pg())
 tb, tf = textbox(s, Inches(0.5), Inches(1.2), Inches(6.2), Inches(5.6))
 add_para(tf, "Capital structure", 14.5, CARD, bold=True, first=True, space_after=5)
 for t in [
@@ -562,10 +562,10 @@ box = rect(s, Inches(7.0), Inches(1.2), Inches(5.85), Inches(4.6), fill=LGREY)
 btf = box.text_frame; btf.word_wrap = True
 add_para(btf, "WACC BUILD (CAPM)", 13, CARD, bold=True, first=True, space_after=8)
 for t, v in [
-    ("Risk-free rate (10-yr UST)", "4.3%"),
+    ("Risk-free rate (10-yr UST)", "4.8%"),
     ("Equity risk premium", "6.0%"),
     ("Levered beta", "0.95"),
-    ("Cost of equity", "10.0%"),
+    ("Cost of equity", "10.5%"),
     ("Debt weight", "0%"),
     ("Equity weight", "100%"),
 ]:
@@ -573,7 +573,7 @@ for t, v in [
     r = p.add_run(); r.text = f"{t}"; _set_font(r, 13, INK, bold=(t in ("Cost of equity",)))
     r2 = p.add_run(); r2.text = f"      {v}"; _set_font(r2, 13, NAVY, bold=True)
 p = btf.add_paragraph(); p.space_before = Pt(4)
-r = p.add_run(); r.text = "WACC = 10.0%"; _set_font(r, 16, GREEN, bold=True)
+r = p.add_run(); r.text = "WACC = 10.5%"; _set_font(r, 16, GREEN, bold=True)
 
 # =====================================================================
 # 18. VALUATION SUMMARY (FOOTBALL FIELD)
@@ -627,8 +627,8 @@ arows = [
     ["Assumption", "Value"],
     ["Revenue growth (FY26 \u2192 FY30)", "\u22126.1% \u2192 +3.0%"],
     ["EBIT margin (FY26 \u2192 FY30)", "13.9% \u2192 15.5%"],
-    ["Tax rate", "27%"],
-    ["Capex % of revenue", "5.0%"],
+    ["Tax rate", "30%"],
+    ["Capex % of revenue", "5.5% blend"],
     ["WACC", "10.0%"],
     ["Terminal growth", "2.25%"],
 ]
@@ -687,11 +687,11 @@ s = slide_base("Comparable Companies", "LULU screens cheap on absolute and relat
 hdr = ["Company", "EV/EBITDA", "P/E (fwd)", "Rev growth", "Op margin"]
 rows = [
     ["lululemon (LULU)", "3.5x", "10.4x", "\u22126% (FY26E)", "~20%"],
-    ["Nike (NKE)", "~18x", "~28x", "low-single", "~11%"],
-    ["Deckers (DECK)", "~15x", "~20x", "mid-teens", "~22%"],
-    ["On Holding (ONON)", "~25x", "~35x", "20%+", "~10%"],
-    ["adidas (ADS)", "~12x", "~22x", "mid-single", "~9%"],
-    ["V.F. Corp (VFC)", "~10x", "~14x", "flat/decl.", "~8%"],
+    ["Nike (NKE)", "12.0x", "22.4x", "low-single", "~11%"],
+    ["Deckers (DECK)", "8.0x", "11.2x", "mid-teens", "~22%"],
+    ["On Holding (ONON)", "14.0x", "15.2x", "20%+", "~10%"],
+    ["adidas (ADS)", "9.3x", "14.2x", "mid-single", "~9%"],
+    ["V.F. Corp (VFC)", "10.7x", "11.7x", "flat/decl.", "~8%"],
 ]
 stmt_table(s, rows, hdr, col0w=3.4, top=1.4, height=3.6, bold_rows=(0,))
 tb, tf = textbox(s, Inches(0.5), Inches(5.2), Inches(12.35), Inches(1.7))
@@ -714,7 +714,7 @@ cols = [
     ("BASE", "$144", "+45%", GREEN, [
         "FY2026 revenue \u22126%; returns to ~+3% by FY2028",
         "Terminal EBIT margin 15.5%",
-        "WACC 10.0%; terminal growth 2.25%",
+        "WACC 10.5%; terminal growth 2.25%",
         "International offsets a stabilizing Americas",
     ]),
     ("BULL", "$239", "+139%", NAVY, [

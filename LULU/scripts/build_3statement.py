@@ -125,16 +125,16 @@ a_row('sga_pct', "SG&A % of revenue", [D.IS['sga'][y]/rev[y] for y in HIST],
 a_row('other_opex', "Amortization / other opex ($)", [D.IS['other_opex'][y] for y in HIST], [7000]*5, fmt=NUM,
       justify_key="3s_other_opex")
 a_row('other_inc', "Other income, net ($)", [D.IS['other_income'][y] for y in HIST],
-      [130000, 60000, 75000, 95000, 115000], fmt=NUM, justify_key="3s_other_inc")
+      [45000, 40000, 35000, 30000, 25000], fmt=NUM, justify_key="3s_other_inc")
 a_row('tax_rate', "Effective tax rate %", [D.IS['tax'][y]/D.IS['pretax_income'][y] for y in HIST], [0.300]*5,
       justify_key="3s_tax_rate")
 
 a_section("CAPITAL & NON-CASH ITEMS")
 a_row('da_pct', "D&A % of revenue", [D.CF['d_and_a'][y]/rev[y] for y in HIST], [0.046, 0.046, 0.045, 0.045, 0.045],
       justify_key="3s_da_pct")
-a_row('capex_pct', "Capex % of revenue", [D.CF['capex'][y]/rev[y] for y in HIST], [0.055, 0.050, 0.050, 0.050, 0.050],
+a_row('capex_pct', "Capex % of revenue", [D.CF['capex'][y]/rev[y] for y in HIST], [0.070, 0.060, 0.055, 0.050, 0.050],
       justify_key="3s_capex_pct")
-a_row('sbc', "Stock-based compensation ($)", [D.CF['sbc'][y] for y in HIST], [70000]*5, fmt=NUM,
+a_row('sbc', "Stock-based compensation ($)", [D.CF['sbc'][y] for y in HIST], [62000]*5, fmt=NUM,
       justify_key="3s_sbc")
 
 a_section("WORKING CAPITAL & BALANCE SHEET DRIVERS")
@@ -166,7 +166,7 @@ a_row('oncl_pct', "Other non-current liab % of revenue", [oncl[y]/rev[y] for y i
 a_section("CAPITAL RETURN")
 a_row('buyback', "Share repurchases ($)", [D.CF['buybacks'][y] for y in HIST], [500000]*5, fmt=NUM,
       justify_key="3s_buyback")
-a_row('rep_price', "Avg repurchase price ($/sh)", [None]*4, [105, 112, 120, 128, 135], fmt=MONEY,
+a_row('rep_price', "Avg repurchase price ($/sh)", [None]*4, [100, 108, 115, 122, 130], fmt=MONEY,
       justify_key="3s_rep_price")
 
 write(asum, f'A{r[0]+1}', "Historical columns = derived ratios (black); projection columns = analyst inputs (red).",

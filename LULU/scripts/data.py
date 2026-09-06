@@ -144,20 +144,20 @@ FILING_10K = {
 }
 
 def filing_url(fy):
-    """SEC EDGAR interactive viewer for the Form 10-K (reliable in browser/Excel)."""
-    acc, _ = FILING_10K[fy]
-    return f"https://www.sec.gov/cgi-bin/viewer?action=view&cik=1397187&accession_number={acc}&xbrl_type=v"
+    """Direct Form 10-K HTML (Ctrl+F works on this page; not the EDGAR viewer TOC)."""
+    acc, filename = FILING_10K[fy]
+    return f"https://www.sec.gov/Archives/edgar/data/1397187/{acc.replace('-', '')}/{filename}"
 
 # ---------------------------------------------------------------------------
 # Red-assumption justifications (~20 words each) for DCF / 3-statement models
 # ---------------------------------------------------------------------------
 JUST = {
     # WACC tab
-    "wacc_rf": "4.3% risk-free anchored to FRED 10Y Treasury (DGS10); rounded early-Sep-2026 level for DCF stability.",
-    "wacc_erp": "6.0% additive ERP; conservative vs Damodaran implied ~4.2% (Jan-26); within long-run historical US range.",
-    "wacc_beta": "0.95 levered beta vs ~0.86 market; modest uplift for near-term earnings volatility and post-guidance de-rating.",
-    "wacc_kd": "5.0% illustrative pre-tax debt cost; LULU has no funded term debt, only an undrawn revolving credit facility.",
-    "wacc_tax": "27% DCF cash tax is a model assumption (below FY25 effective 29.5% and FY26 guide ~30%); 3-statement uses 30%.",
+    "wacc_rf": "4.8% risk-free = FRED DGS10 on 2026-09-03 (4.77%) rounded; replaces the stale 4.3% input.",
+    "wacc_erp": "6.0% ERP is a conservative overlay vs Damodaran Jan-2026 implied 4.23%; used to keep CoE above the risk-free 4.8%.",
+    "wacc_beta": "0.95 levered beta vs StockAnalysis Beta (5Y) 0.86; modest uplift for post-guidance volatility.",
+    "wacc_kd": "5.0% illustrative pre-tax debt cost; 10-K: no borrowings outstanding on the revolver.",
+    "wacc_tax": "30% cash tax matches FY2026 guidance (“approximately 30%”); FY25 effective was 29.5%.",
     "wacc_we": "100% equity weight; net-cash balance sheet with no material funded debt at market values per FY2025 10-K.",
     "wacc_wd": "0% debt weight; no outstanding term loans or bonds, so WACC effectively equals levered cost of equity here.",
     # Scenarios tab
@@ -165,20 +165,20 @@ JUST = {
     "sc_gterm": "2.8% avg FY27–30 growth assumes gradual recovery; well below historical double-digit LULU revenue expansion.",
     "sc_m1": "FY26 13.9% is derived: Q2 OM 18.8% minus 560bps tariff refunds = 13.2% clean; we set base slightly above that run-rate.",
     "sc_mterm": "FY30 15.5% is a recovery assumption vs FY25 10-K OM 19.9% (2,210,615 / 11,102,600); still well below FY24 peak ~23.7%.",
-    "sc_wacc": "10.0% base WACC ties to CAPM build on WACC tab; drives scenario DCFs and base-case valuation.",
-    "sc_g": "2.25% terminal growth approximates long-run GDP plus inflation; conservative perpetuity rate for mature apparel.",
-    "sc_tax": "27% DCF cash tax is a model assumption; FY25 effective is 29.5% and FY26 guidance is ~30% (used in the 3-statement).",
-    "sc_da_pct": "4.5% D&A to revenue near FY22–25 average; reflects store fleet, distribution, and technology amortization load.",
-    "sc_capex_pct": "5.0% capex to revenue aligned with recent investment intensity and continued global store expansion plans.",
+    "sc_wacc": "10.5% base WACC = rf 4.8% + 0.95×6.0% ERP on the WACC tab (FRED 4.77% rounded).",
+    "sc_g": "2.25% terminal g sits next to FRED GDPC1 Q2/Q2 real GDP ≈ 2.1% (24,269.613 / 23,770.976 − 1).",
+    "sc_tax": "30% cash tax from FY2026 outlook; FY25 10-K effective is 29.5% (659,784 / 2,238,967).",
+    "sc_da_pct": "4.5% D&A / sales = FY25 496,228 / 11,102,600 on the 10-K cash-flow statement.",
+    "sc_capex_pct": "5.5% is a 5-year blend: 2026 10-K guide $725–745M (~7.0% of FY26 sales) fading toward 5.0%.",
     "sc_nwc_pct": "7.5% of revenue change for ΔNWC; ties working-capital swings to sales trajectory per historical sensitivity.",
     # DCF valuation
     "dcf_exitm": "8.0x FY2030E exit EV/EBITDA; mid-point of terminal football field (6.5–9.5x); ~1 turn above Gordon-implied ~7x.",
     # Comps — peer multiples
-    "comps_nke": "Nike ~18x forward EV/EBITDA illustrative; mature global athletic benchmark with slower growth than LULU peak.",
-    "comps_deck": "Deckers ~15x reference; premium footwear peer with HOKA/UGG momentum and strong brand heat.",
-    "comps_onon": "On Holding ~25x; high-growth athletic peer setting upper bound for premium positioning and white space.",
-    "comps_ads": "adidas ~12x; global incumbent in restructuring with moderate growth and complex brand portfolio.",
-    "comps_vfc": "VFC ~10x; challenged multi-brand apparel operator representing lower bound for scaled apparel peers.",
+    "comps_nke": "Nike EV/EBITDA 12.0x equals StockAnalysis 11.97x, rounded; mature athletic benchmark.",
+    "comps_deck": "Deckers EV/EBITDA 8.0x equals StockAnalysis 7.95x, rounded; closest premium-footwear peer.",
+    "comps_onon": "On Holding EV/EBITDA 14.0x equals StockAnalysis 14.03x, rounded; high-growth athletic peer.",
+    "comps_ads": "adidas (ADDYY) EV/EBITDA 9.3x equals StockAnalysis 9.31x; global incumbent.",
+    "comps_vfc": "VFC EV/EBITDA 10.7x equals StockAnalysis 10.71x; challenged multi-brand apparel peer.",
     "comps_ff_ev_lo": "6.5x on FY2030E terminal EBITDA; bear exit below Gordon-implied ~7x; brackets DCF downside.",
     "comps_ff_ev_hi": "9.5x on FY2030E terminal EBITDA; bull exit above 8.0x DCF base; still below peer median ~15x.",
     "comps_ff_pe_lo": "10x P/E low on FY2026E EPS; trough earnings multiple after guidance reset and sentiment de-rating.",
@@ -192,11 +192,11 @@ JUST = {
     "3s_gm": "Gross margin recovers gradually from promo pressure; 56.5% to 58.0% still below peak ~58–59% historical.",
     "3s_sga_pct": "FY26 SG&A 42.5% matches YTD 42.3% (earnings), vs FY25 36.7% 10-K; then fades to 39.5% as volume stabilizes.",
     "3s_other_opex": "$7M annual amortization run-rate; stable intangible amortization per recent 10-K disclosure levels.",
-    "3s_other_inc": "FY26 $130M other income is a model assumption (FY25 10-K is $28.4M; YTD FY26 $22.8M); steps down as cash is used.",
+    "3s_other_inc": "FY26 $45M other income annualizes YTD $22,829; then steps down as cash is deployed (FY25 was only $28,352).",
     "3s_tax_rate": "30% effective tax rate on projections; conservative vs recent ~29% effective, allows for jurisdictional mix.",
     "3s_da_pct": "D&A 4.5–4.6% of revenue; tracks recent depreciation intensity on PPE and lease-related amortization.",
-    "3s_capex_pct": "Model 5.5%→5.0% is below FY25 6.1% and below 2026 10-K guide $725–745M; assumes capex discipline after the reset.",
-    "3s_sbc": "$70M annual SBC is a model assumption, modestly above FY25 $62.2M (not a decline); near-term run-rate as growth slows.",
+    "3s_capex_pct": "FY26 capex 7.0% matches 10-K guide midpoint ~$735M on $10.425B sales; fades 6.0%→5.0% after the build year.",
+    "3s_sbc": "$62M SBC holds the FY25 10-K run-rate (Stock-based compensation expense 62,203).",
     "3s_inv_pct": "Inventory 33–34% of COGS; slight normalization from FY25 build as Americas demand softens and clears.",
     "3s_ap_pct": "AP 6.8% of COGS; holds near FY25 level reflecting vendor terms and production payment cadence.",
     "3s_accr_pct": "Accrued liabilities 5.8% of revenue; stable comp, marketing, and operating accrual ratio.",
@@ -208,7 +208,7 @@ JUST = {
     "3s_ocl_pct": "OCL 5.5% = FY25 current liabilities minus AP, accrued, and current leases (residual ~594k); not the 45,954 'other' line alone.",
     "3s_oncl_pct": "Other non-current liabilities 0.5% of revenue; minor long-term accruals and provisions.",
     "3s_buyback": "$500M annual repurchases; continued capital return at moderated pace vs FY24–25 peak buyback levels.",
-    "3s_rep_price": "Repurchase price rises with recovery thesis; $105 to $135 reflects assumed gradual share-price normalization.",
+    "3s_rep_price": "FY26 repurchase price $100 matches the current quote; path $100→$130 is a recovery assumption (FY25 10-K paid $168–$199).",
 }
 
 # Clickable source links for red assumptions (label, URL)
@@ -218,7 +218,7 @@ ASSUMPTION_SRC = {
     "wacc_erp": ("Damodaran: Historical Implied ERP", SOURCES["damodaran_erp"]),
     "wacc_beta": ("StockAnalysis: LULU Beta (5Y)", SOURCES["lulu_stats"]),
     "wacc_kd": ("LULU FY2025 10-K (no funded debt)", filing_url("FY2025")),
-    "wacc_tax": ("Damodaran: US tax rate dataset", SOURCES["damodaran_tax"]),
+    "wacc_tax": ("Q2 FY2026 outlook: tax rate ≈ 30%", SOURCES["earnings_sep2026"]),
     "wacc_we": ("LULU FY2025 10-K balance sheet", filing_url("FY2025")),
     "wacc_wd": ("LULU FY2025 10-K balance sheet", filing_url("FY2025")),
     # Scenarios
@@ -228,7 +228,7 @@ ASSUMPTION_SRC = {
     "sc_mterm": ("FY2025 10-K: Income from operations / revenue", filing_url("FY2025")),
     "sc_wacc": ("WACC tab: CAPM build", None),  # internal link set in build_dcf.py
     "sc_g": ("FRED: Real GDP (GDPC1)", SOURCES["fred_gdpc1"]),
-    "sc_tax": ("LULU effective tax history (10-K)", filing_url("FY2025")),
+    "sc_tax": ("Q2 FY2026 outlook: tax rate ≈ 30%", SOURCES["earnings_sep2026"]),
     "sc_da_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
     "sc_capex_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
     "sc_nwc_pct": ("LULU BS/IS historical (10-K)", filing_url("FY2025")),
@@ -251,7 +251,7 @@ ASSUMPTION_SRC = {
     "3s_gm": ("LULU historical gross margin (10-K)", filing_url("FY2025")),
     "3s_sga_pct": ("LULU Q2 FY2026 earnings release (YTD SG&A %)", SOURCES["earnings_sep2026"]),
     "3s_other_opex": ("LULU FY2025 10-K", filing_url("FY2025")),
-    "3s_other_inc": ("LULU FY2025 10-K", filing_url("FY2025")),
+    "3s_other_inc": ("Q2 FY2026 YTD other income (earnings)", SOURCES["earnings_sep2026"]),
     "3s_tax_rate": ("LULU Q2 FY2026 outlook (≈30% tax)", SOURCES["earnings_sep2026"]),
     "3s_da_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
     "3s_capex_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
@@ -267,18 +267,18 @@ ASSUMPTION_SRC = {
     "3s_ocl_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
     "3s_oncl_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
     "3s_buyback": ("LULU CF: share repurchases (10-K)", filing_url("FY2025")),
-    "3s_rep_price": ("LULU avg repurchase price (10-K/est.)", filing_url("FY2025")),
+    "3s_rep_price": ("NASDAQ LULU last sale (current price)", SOURCES["nasdaq_quote"]),
 }
 
 # Exact Ctrl+F strings — every quoted phrase appears verbatim in the linked source.
 # Format: Ctrl+F "phrase" → what to read; model value noted where it is an assumption.
 SOURCE_HINT = {
     # WACC
-    "wacc_rf": 'Ctrl+F "DGS10" → FRED series table; Sep 2026 ≈ 4.28%; model 4.3%',
-    "wacc_erp": 'Ctrl+F "Implied ERP (FCFE)" → Jan-2026 row shows 4.23%; model uses 6.0%',
-    "wacc_beta": 'Ctrl+F "Beta (5Y)" → page shows 0.86; model uses 0.95',
-    "wacc_kd": 'Ctrl+F "no borrowings were outstanding under this facility" → FY2025 10-K Note 12',
-    "wacc_tax": 'Ctrl+F "Apparel" → Damodaran Tax Rates by Sector (US), Jan-2026; model 27%',
+    "wacc_rf": 'Ctrl+F "2026-09-03" → observation 4.77. Model uses 4.8%. Also Ctrl+F "DGS10" for the series title.',
+    "wacc_erp": 'Ctrl+F "4.23%" on the 2025 row (last data row). Header is "Implied ERP (FCFE)". Model uses 6.0%.',
+    "wacc_beta": 'Ctrl+F "Beta (5Y)" → 0.86. Model uses 0.95.',
+    "wacc_kd": 'Ctrl+F "no borrowings were outstanding under this facility" on this 10-K HTML page (search the document, do not use the EDGAR viewer TOC).',
+    "wacc_tax": 'Ctrl+F "a tax rate of approximately 30%" on the FY2026 outlook paragraph.',
     "wacc_we": 'Ctrl+F "Cash and cash equivalents" → 1,807,202 ($000) | no funded term debt',
     "wacc_wd": 'Ctrl+F "no borrowings were outstanding under this facility" → debt weight 0%',
     # Scenarios
@@ -286,36 +286,36 @@ SOURCE_HINT = {
     "sc_gterm": 'Ctrl+F "Net revenue" → FY2025 11,102,600 ($000); FY27–30 growth = model assumption',
     "sc_m1": '1) Ctrl+F "18.8%" = Q2 operating margin. 2) Ctrl+F "560 basis points" = tariff add. 3) Clean Q2 = 18.8% − 5.6% = 13.2%. Model FY26 base 13.9% sits just above that. Do not use "decreased 13%" — that is the YoY $ decline in income from operations.',
     "sc_mterm": 'Ctrl+F "Income from operations" → 2,210,615 and "Net revenue" → 11,102,600. FY25 OM = 19.9%. Model FY30 15.5% is a partial-recovery assumption, not a reported figure.',
-    "sc_wacc": 'WACC tab → Ctrl+F "WACC" → cell E = 10.0%',
-    "sc_g": 'Ctrl+F "GDPC1" → FRED Real GDP series; long-run growth ~2%; model terminal g 2.25%',
-    "sc_tax": 'Ctrl+F "Income tax expense" → 659,784 ÷ "Income before income tax expense" 2,238,967 = 29.5% FY25; DCF model uses 27%',
-    "sc_da_pct": 'Ctrl+F "Depreciation and amortization" → 496,228; ÷ "Net revenue" 11,102,600 = 4.5%',
-    "sc_capex_pct": 'Ctrl+F "680,802" → FY25 capex ($000) = 6.1% of revenue. Model 5.0% is an assumption (below FY25 and below 2026 guide $725–745M)',
+    "sc_wacc": 'WACC tab → cell E (green) = rf 4.8% + β 0.95 × ERP 6.0% = 10.5%',
+    "sc_g": 'Ctrl+F "Q2 2026" → 24,269.613 and "Q2 2025" → 23,770.976. YoY = 2.1%. Model terminal g 2.25%.',
+    "sc_tax": 'Ctrl+F "a tax rate of approximately 30%" on the earnings outlook. FY25 10-K: "Income tax expense" 659,784 ÷ "Income before income tax expense" 2,238,967 = 29.5%.',
+    "sc_da_pct": 'Ctrl+F "Depreciation and amortization" → 496,228 on this 10-K HTML (not the SEC viewer). ÷ "Net revenue" 11,102,600 = 4.5%.',
+    "sc_capex_pct": 'Ctrl+F "725.0 million" → 2026 capex guide $725–745M (~7.0% of FY26 sales). Ctrl+F "680,802" → FY25 capex. Model 5-yr blend 5.5%.',
     "sc_nwc_pct": 'Ctrl+F "Inventories" → 1,700,753 | "Accounts payable" → 331,421 | "Accrued liabilities and other" → 662,982',
     # DCF / comps
     "dcf_exitm": 'Ctrl+F "EV / EBITDA" → LULU ~4.99x on page; model terminal exit 8.0x (assumption)',
-    "comps_nke": 'Ctrl+F "EV / EBITDA" → read NKE multiple on page; model peer input 18.0x',
-    "comps_deck": 'Ctrl+F "EV / EBITDA" → read DECK multiple on page; model peer input 15.0x',
-    "comps_onon": 'Ctrl+F "EV / EBITDA" → read ONON multiple on page; model peer input 25.0x',
-    "comps_ads": 'Ctrl+F "EV / EBITDA" → read ADDYY multiple on page; model peer input 12.0x',
-    "comps_vfc": 'Ctrl+F "EV / EBITDA" → read VFC multiple on page; model peer input 10.0x',
+    "comps_nke": 'Ctrl+F "EV / EBITDA" → 11.97. Model uses 12.0x.',
+    "comps_deck": 'Ctrl+F "EV / EBITDA" → 7.95. Model uses 8.0x.',
+    "comps_onon": 'Ctrl+F "EV / EBITDA" → 14.03. Model uses 14.0x.',
+    "comps_ads": 'Ctrl+F "EV / EBITDA" → 9.31. Model uses 9.3x.',
+    "comps_vfc": 'Ctrl+F "EV / EBITDA" → 10.71. Model uses 10.7x.',
     "comps_ff_ev_lo": 'Ctrl+F "EV / EBITDA" → LULU trough ~5x; bear terminal exit assumption 6.5x',
     "comps_ff_ev_hi": 'Ctrl+F "EV / EBITDA" → bull terminal exit assumption 9.5x on FY2030E EBITDA',
     "comps_ff_pe_lo": 'Ctrl+F "Forward PE" → LULU ~12.3x; low-case multiple assumption 10.0x',
     "comps_ff_pe_hi": 'Ctrl+F "Forward PE" → NKE peer benchmark; high-case assumption 18.0x',
     "sens_axes": 'Scenarios tab → Ctrl+F "WACC" and "Terminal growth" rows (base-case inputs)',
-    "sens_wacc": 'Ctrl+F "Implied ERP (FCFE)" → anchors WACC sensitivity range 9.0%–11.0%',
+    "sens_wacc": 'Ctrl+F "4.23%" (2025 implied ERP). Sensitivity WACC axis brackets the 10.5% base.',
     "sens_g": 'Ctrl+F "GDPC1" → bounds terminal-g sensitivity grid 1.5%–3.0%',
     # 3-statement
     "3s_rev_growth": 'Ctrl+F "decline of 5% to 7%" → FY2026 guide; FY27–30 = model projection',
     "3s_gm": 'Ctrl+F "Gross profit" → 6,284,132 ÷ "Net revenue" 11,102,600 = 56.6% FY25 anchor',
     "3s_sga_pct": 'Ctrl+F "41.7%" (Q2 SG&A % of net revenue) and "42.3%" (first two quarters). FY25 10-K is 36.7%. Model FY26 42.5%',
     "3s_other_opex": 'Ctrl+F "Amortization of intangible assets" → 6,961 ($000); model $7,000/yr',
-    "3s_other_inc": 'Ctrl+F "Other income (expense), net" → FY25 28,352 ($000). Model FY26 $130,000 is an assumption, not a reported figure',
+    "3s_other_inc": 'Ctrl+F "22,829" → YTD other income ($000) on the earnings P&L. FY26 model $45,000 annualizes that run-rate.',
     "3s_tax_rate": 'Ctrl+F "a tax rate of approximately 30%" on the earnings outlook; FY25 10-K 29.5%. 3-statement model 30%',
     "3s_da_pct": 'Ctrl+F "Depreciation and amortization" → 496,228 ÷ "Net revenue" 11,102,600 = 4.5%',
-    "3s_capex_pct": 'Ctrl+F "680,802" → FY25 capex ($000) = 6.1% of revenue. Also Ctrl+F "725.0 million" (2026 guide $725–745M). Model 5.5%→5.0% is below both',
-    "3s_sbc": 'Ctrl+F "Stock-based compensation expense" → 62,203 ($000) FY25. Model $70,000 is above FY25, not a decline',
+    "3s_capex_pct": 'Ctrl+F "725.0 million" and "745.0 million" on this 10-K HTML. Midpoint $735M / FY26 sales $10.425B ≈ 7.0% (FY26 model).',
+    "3s_sbc": 'Ctrl+F "Stock-based compensation expense" → 62,203 on this 10-K HTML. Model $62,000.',
     "3s_inv_pct": 'Ctrl+F "Inventories" → 1,700,753 ÷ "Cost of goods sold" 4,818,468 = 35.3%',
     "3s_ap_pct": 'Ctrl+F "Accounts payable" → 331,421 ÷ "Cost of goods sold" 4,818,468 = 6.9%',
     "3s_accr_pct": 'Ctrl+F "Accrued liabilities and other" → 662,982 ÷ "Net revenue" 11,102,600 = 6.0%',
@@ -327,12 +327,12 @@ SOURCE_HINT = {
     "3s_ocl_pct": 'Ctrl+F "Total current liabilities" 1,887,548 − "Accounts payable" 331,421 − "Accrued liabilities and other" 662,982 − "Current lease liabilities" 298,724 ≈ 594,421 (5.4%)',
     "3s_oncl_pct": 'Ctrl+F "Other non-current liabilities" → 55,360 ÷ "Net revenue" 11,102,600 = 0.5%',
     "3s_buyback": 'Ctrl+F "Repurchase of common stock" → ( 1,178,349 ) ($000) FY25; model (500,000)/yr',
-    "3s_rep_price": 'Ctrl+F "Average Price Paid per Share" → repurchase table in Note 15 / equity',
+    "3s_rep_price": 'Ctrl+F "LULU" → Last Sale / Previous Close (~$100). FY26 model repurchase price starts at $100.',
 }
 
 COVER_HINTS = {
     "edgar_xbrl": 'Ctrl+F "10-K" → FY2025 accession 0001397187-26-000020',
-    "filing_fy2025": 'Ctrl+F "CONSOLIDATED STATEMENTS OF OPERATIONS" or "CONSOLIDATED BALANCE SHEETS"',
+    "filing_fy2025": 'Ctrl+F "Net revenue" → 11,102,600 or "Depreciation and amortization" → 496,228 on this 10-K HTML file',
     "earnings_sep2026": 'Ctrl+F "decline of 5% to 7%" | "$10.350 billion to $10.500 billion" | "$9.48 to $9.73"',
     "nasdaq_quote": 'Ctrl+F "LULU" → Last Sale or Previous Close price',
 }
