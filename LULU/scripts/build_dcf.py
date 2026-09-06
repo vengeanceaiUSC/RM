@@ -11,7 +11,7 @@ Units: US$ thousands unless noted.
 import os
 from openpyxl import Workbook
 import styles as S
-from styles import write, write_link, write_reported, NUM, PCT, MONEY, MULT, EPSFMT
+from styles import write, write_link, write_reported, write_assumption_docs, NUM, PCT, MONEY, MULT, EPSFMT
 import data as D
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "LULU_DCF_Valuation_Model.xlsx")
@@ -36,7 +36,7 @@ write(cov, 'B7', "Recommendation:  LONG / OVERWEIGHT", S.GREEN, bold=True, size=
 write(cov, 'B9', "FONT / COLOR CONVENTION", S.DARK, bold=True, size=12)
 write(cov, 'B10', "Blue font  =  figures reported by the company (click value or source link)", S.BLUE, bold=True, size=11)
 write(cov, 'B11', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
-write(cov, 'B12', "Red font  =  analyst assumptions / inputs", S.RED, bold=True, size=11)
+write(cov, 'B12', "Red font  =  analyst assumptions / inputs (justification + clickable source link)", S.RED, bold=True, size=11)
 write(cov, 'B14', "TABS", S.DARK, bold=True, size=12)
 write(cov, 'B15', "WACC  \u2022  DCF (base case + sensitivity)  \u2022  Scenarios  \u2022  Comps / Football Field", S.BLACK, size=10)
 write(cov, 'B17', "SOURCES", S.DARK, bold=True, size=12)
@@ -49,14 +49,14 @@ write(cov, 'B23', "Built from scratch for the GIS IR selection assignment.", S.B
 # ------------------------------------------------------------------ WACC
 wacc = wb.create_sheet("WACC")
 wacc.sheet_view.showGridLines = False
-S.set_col_widths(wacc, {'A': 44, 'B': 2, 'C': 16, 'D': 52})
+S.set_col_widths(wacc, {'A': 44, 'B': 2, 'C': 16, 'D': 48, 'E': 30})
 write(wacc, 'A1', "WEIGHTED AVERAGE COST OF CAPITAL", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D']:
     wacc[f'{c}1'].fill = S.fill(S.DARK)
 wacc.row_dimensions[1].height = 16
 WR = {}
 r = [3]
-def w_row(key, label, value, color, fmt=PCT, note="", bold=False, top=False):
+def w_row(key, label, value, color, fmt=PCT, bold=False, top=False, doc_key=None):
     WR[key] = r[0]
     bdr = S.top_border if top else None
     write(wacc, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
@@ -64,26 +64,26 @@ def w_row(key, label, value, color, fmt=PCT, note="", bold=False, top=False):
         write(wacc, f'C{r[0]}', value, S.BLACK, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
     else:
         write(wacc, f'C{r[0]}', value, color, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
-    if note:
-        write(wacc, f'D{r[0]}', note, S.BLACK, italic=True, size=8, align=S.left_indent)
+    if doc_key:
+        write_assumption_docs(wacc, r[0], 'D', 'E', doc_key, D.JUST, D.ASSUMPTION_SRC)
     r[0] += 1
 
 write(wacc, 'A2', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)
-w_row('rf', "Risk-free rate (10-yr UST)", 0.043, S.RED, note=D.JUST["wacc_rf"])
-w_row('erp', "Equity risk premium", 0.060, S.RED, note=D.JUST["wacc_erp"])
-w_row('beta', "Levered beta", 0.95, S.RED, fmt='0.00', note=D.JUST["wacc_beta"])
+w_row('rf', "Risk-free rate (10-yr UST)", 0.043, S.RED, doc_key='wacc_rf')
+w_row('erp', "Equity risk premium", 0.060, S.RED, doc_key='wacc_erp')
+w_row('beta', "Levered beta", 0.95, S.RED, fmt='0.00', doc_key='wacc_beta')
 w_row('coe', "Cost of equity = rf + \u03b2 \u00d7 ERP", f"=C{WR['rf']}+C{WR['beta']}*C{WR['erp']}", None, bold=True, top=True)
 r[0] += 1
 write(wacc, f'A{r[0]}', "Cost of debt", S.ACCENT, bold=True, size=10)
 r[0] += 1
-w_row('kd', "Pre-tax cost of debt", 0.050, S.RED, note=D.JUST["wacc_kd"])
-w_row('tax', "Tax rate", 0.270, S.RED, note=D.JUST["wacc_tax"])
+w_row('kd', "Pre-tax cost of debt", 0.050, S.RED, doc_key='wacc_kd')
+w_row('tax', "Tax rate", 0.270, S.RED, doc_key='wacc_tax')
 w_row('kdat', "After-tax cost of debt", f"=C{WR['kd']}*(1-C{WR['tax']})", None, top=True)
 r[0] += 1
 write(wacc, f'A{r[0]}', "Capital structure (market values)", S.ACCENT, bold=True, size=10)
 r[0] += 1
-w_row('we', "Equity weight", 1.00, S.RED, note=D.JUST["wacc_we"])
-w_row('wd', "Debt weight", 0.00, S.RED, note=D.JUST["wacc_wd"])
+w_row('we', "Equity weight", 1.00, S.RED, doc_key='wacc_we')
+w_row('wd', "Debt weight", 0.00, S.RED, doc_key='wacc_wd')
 w_row('wacc', "WACC", f"=C{WR['we']}*C{WR['coe']}+C{WR['wd']}*C{WR['kdat']}", None, bold=True, top=True)
 wacc[f"C{WR['wacc']}"].font = S.font(color=S.GREEN, bold=True, size=12)
 wacc[f"C{WR['wacc']}"].fill = S.fill(S.GREY)
@@ -94,7 +94,7 @@ def wref(key):
 # ------------------------------------------------------------------ SCENARIOS (built before DCF so base-case drivers can link here)
 scn = wb.create_sheet("Scenarios")
 scn.sheet_view.showGridLines = False
-S.set_col_widths(scn, {'A': 40, 'B': 2, 'C': 15, 'D': 15, 'E': 15, 'F': 52})
+S.set_col_widths(scn, {'A': 40, 'B': 2, 'C': 15, 'D': 15, 'E': 15, 'F': 44, 'G': 28})
 write(scn, 'A1', "SCENARIO ANALYSIS", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D', 'E']:
     scn[f'{c}1'].fill = S.fill(S.DARK)
@@ -105,27 +105,28 @@ write(scn, 'E2', "Bull", S.WHITE, bold=True, size=11, align=S.center, fillc=S.DA
 
 SC = {}
 rr = [4]
-def s_assum(key, label, bear, base, bull, fmt=PCT, justify=""):
+def s_assum(key, label, bear, base, bull, fmt=PCT, doc_key=None):
     SC[key] = rr[0]
     write(scn, f'A{rr[0]}', label, S.BLACK, size=10, align=S.left_indent)
     for col, v in zip(['C', 'D', 'E'], [bear, base, bull]):
         write(scn, f'{col}{rr[0]}', v, S.RED, size=10, numfmt=fmt, align=S.right)
-    if justify:
-        write(scn, f'F{rr[0]}', justify, S.BLACK, italic=True, size=8, align=S.left_indent)
+    if doc_key:
+        write_assumption_docs(scn, rr[0], 'F', 'G', doc_key, D.JUST, D.ASSUMPTION_SRC)
     rr[0] += 1
 
 write(scn, 'A3', "Key assumptions (5-yr forecast)", S.ACCENT, bold=True, size=10)
-write(scn, 'F3', "Justification (base case, ~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
-s_assum('g1', "FY2026E revenue growth", -0.090, -0.061, -0.040, justify=D.JUST["sc_g1"])
-s_assum('gterm', "FY2027\u2013FY2030E revenue growth (avg)", -0.010, 0.028, 0.060, justify=D.JUST["sc_gterm"])
-s_assum('m1', "FY2026E EBIT margin", 0.125, 0.139, 0.150, justify=D.JUST["sc_m1"])
-s_assum('mterm', "Terminal (FY2030E) EBIT margin", 0.120, 0.155, 0.190, justify=D.JUST["sc_mterm"])
-s_assum('wacc', "WACC", 0.110, 0.100, 0.090, justify=D.JUST["sc_wacc"])
-s_assum('g', "Terminal growth", 0.015, 0.0225, 0.030, justify=D.JUST["sc_g"])
-s_assum('tax', "Cash tax rate", 0.300, 0.270, 0.250, justify=D.JUST["sc_tax"])
-s_assum('da_pct', "D&A % of revenue", 0.045, 0.045, 0.045, justify=D.JUST["sc_da_pct"])
-s_assum('capex_pct', "Capex % of revenue", 0.055, 0.050, 0.045, justify=D.JUST["sc_capex_pct"])
-s_assum('nwc_pct', "NWC build % of \u0394revenue", 0.080, 0.075, 0.070, justify=D.JUST["sc_nwc_pct"])
+write(scn, 'F3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(scn, 'G3', "Source", S.ACCENT, bold=True, size=9, align=S.left_indent)
+s_assum('g1', "FY2026E revenue growth", -0.090, -0.061, -0.040, doc_key='sc_g1')
+s_assum('gterm', "FY2027\u2013FY2030E revenue growth (avg)", -0.010, 0.028, 0.060, doc_key='sc_gterm')
+s_assum('m1', "FY2026E EBIT margin", 0.125, 0.139, 0.150, doc_key='sc_m1')
+s_assum('mterm', "Terminal (FY2030E) EBIT margin", 0.120, 0.155, 0.190, doc_key='sc_mterm')
+s_assum('wacc', "WACC", 0.110, 0.100, 0.090, doc_key='sc_wacc')
+s_assum('g', "Terminal growth", 0.015, 0.0225, 0.030, doc_key='sc_g')
+s_assum('tax', "Cash tax rate", 0.300, 0.270, 0.250, doc_key='sc_tax')
+s_assum('da_pct', "D&A % of revenue", 0.045, 0.045, 0.045, doc_key='sc_da_pct')
+s_assum('capex_pct', "Capex % of revenue", 0.055, 0.050, 0.045, doc_key='sc_capex_pct')
+s_assum('nwc_pct', "NWC build % of \u0394revenue", 0.080, 0.075, 0.070, doc_key='sc_nwc_pct')
 
 rr[0] += 1
 write(scn, f'A{rr[0]}', "5-year forecast paths (by scenario)", S.ACCENT, bold=True, size=10)
@@ -230,7 +231,7 @@ YEAR_MAP = {"D": 1, "E": 2, "F": 3, "G": 4, "H": 5}
 # ------------------------------------------------------------------ DCF (base — linked to Scenarios → Base column D)
 dcf = wb.create_sheet("DCF")
 dcf.sheet_view.showGridLines = False
-S.set_col_widths(dcf, {'A': 42, 'B': 2, 'C': 13, 'D': 14, 'E': 13, 'F': 13, 'G': 13, 'H': 13, 'I': 11, 'J': 48})
+S.set_col_widths(dcf, {'A': 42, 'B': 2, 'C': 13, 'D': 14, 'E': 13, 'F': 13, 'G': 13, 'H': 13, 'I': 11, 'J': 40, 'K': 26})
 write(dcf, 'A1', "DISCOUNTED CASH FLOW \u2014 BASE CASE  (US$ thousands)", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
     dcf[f'{c}1'].fill = S.fill(S.DARK)
@@ -241,6 +242,7 @@ for y in FY:
 write(dcf, 'A3', "Forecast drivers linked to Scenarios tab \u2192 Base case (column D)", S.GREY, italic=True, size=9, align=S.left_indent)
 write(dcf, 'I2', "\u0394 vs Scenarios", S.ACCENT, bold=True, size=8, align=S.center)
 write(dcf, 'J2', "Justification (~20 words)", S.ACCENT, bold=True, size=8, align=S.left_indent)
+write(dcf, 'K2', "Source", S.ACCENT, bold=True, size=8, align=S.left_indent)
 write(dcf, 'I3', "(should be 0)", S.GREY, italic=True, size=7, align=S.center)
 dcf.row_dimensions[1].height = 16
 
@@ -253,7 +255,7 @@ def _sc_status(row_num, sc_rows, fmt=NUM):
     return f'=IF(MAX({",".join(parts)})<{tol},"OK","CHECK")'
 
 def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, bold=False,
-          top=False, dbl=False, red=False, sc_rows=None, sc_sign=1, justify=""):
+          top=False, dbl=False, red=False, sc_rows=None, sc_sign=1, justify_key=""):
     DR[key] = r[0]
     row_num = r[0]
     bdr = S.top_double if dbl else (S.top_border if top else None)
@@ -272,11 +274,8 @@ def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, b
         else:
             status = _sc_status(row_num, sc_rows, fmt)
         write(dcf, f'I{row_num}', status, S.BLACK, bold=bold, size=8, align=S.center)
-    if justify:
-        c = dcf[f'J{row_num}']
-        c.value = justify
-        c.font = S.font(color=S.BLACK, italic=True, size=8)
-        c.alignment = S.Alignment(horizontal='left', vertical='center', wrap_text=True)
+    if justify_key:
+        write_assumption_docs(dcf, row_num, 'J', 'K', justify_key, D.JUST, D.ASSUMPTION_SRC)
     r[0] += 1
 
 PREVF = {"D": "C", "E": "D", "F": "E", "G": "F", "H": "G"}
@@ -296,15 +295,15 @@ d_row('taxes', "Less: cash taxes on EBIT", None,
 d_row('nopat', "NOPAT", None,
       lambda c: f"=Scenarios!D{nopat_rows[YEAR_MAP[c]]}", bold=True, top=True, sc_rows=nopat_rows)
 d_row('da_pct', "  D&A % of revenue", None, lambda c: f"={bref('da_pct')}", fmt=PCT, red=True,
-      justify=D.JUST["sc_da_pct"])
+      justify_key="sc_da_pct")
 d_row('da', "Plus: depreciation & amortization", None,
       lambda c: f"=Scenarios!D{da_rows[YEAR_MAP[c]]}", sc_rows=da_rows)
 d_row('capex_pct', "  Capex % of revenue", None, lambda c: f"={bref('capex_pct')}", fmt=PCT, red=True,
-      justify=D.JUST["sc_capex_pct"])
+      justify_key="sc_capex_pct")
 d_row('capex', "Less: capital expenditures", None,
       lambda c: f"=-Scenarios!D{capex_rows[YEAR_MAP[c]]}", sc_rows=capex_rows, sc_sign=-1)
 d_row('nwc_pct', "  NWC build % of \u0394revenue", None, lambda c: f"={bref('nwc_pct')}", fmt=PCT, red=True,
-      justify=D.JUST["sc_nwc_pct"])
+      justify_key="sc_nwc_pct")
 d_row('dnwc', "(Increase)/decrease in net working capital", None,
       lambda c: f"=-Scenarios!D{dnwc_rows[YEAR_MAP[c]]}", sc_rows=dnwc_rows, sc_sign=-1)
 write(dcf, f'A{r[0]}',
@@ -383,7 +382,7 @@ r[0] += 1
 write(dcf, f'A{r[0]}', "Exit multiple selection (see Comps tab for peer build)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 r[0] += 1
 v_row('exitm', "Selected exit EV/EBITDA multiple (FY2030E)", 8.0, fmt=MULT, red=True)
-write(dcf, f'D{VR["exitm"]}', D.JUST["dcf_exitm"], S.BLACK, italic=True, size=8, align=S.left_indent)
+write_assumption_docs(dcf, VR['exitm'], 'D', 'E', 'dcf_exitm', D.JUST, D.ASSUMPTION_SRC)
 v_row('tv2', "Terminal value = Terminal EBITDA \u00d7 exit multiple", f"=C{VR['ebitda']}*C{VR['exitm']}")
 v_row('pvtv2', "PV of terminal value", f"=C{VR['tv2']}/(1+{bref('wacc')})^H{DR['period']}")
 v_row('ev2', "Enterprise value (exit method)", f"=C{VR['sumpv']}+C{VR['pvtv2']}", bold=True, top=True)
@@ -452,13 +451,13 @@ for i, wv in enumerate(waccs):
         col = S.GREEN if (abs(wv-0.10) < 1e-9 and abs(g-0.0225) < 1e-9) else S.BLACK
         write(dcf, f'{gcols[j]}{rr}', f, col, size=9, numfmt=MONEY, align=S.center)
 r[0] = sens_top + 1 + len(waccs)
-write(dcf, f'A{r[0]}', D.JUST["sens_axes"], S.BLACK, italic=True, size=8, align=S.left_indent)
+write_assumption_docs(dcf, r[0], 'J', 'K', 'sens_axes', D.JUST, D.ASSUMPTION_SRC)
 r[0] += 1
 
 # ------------------------------------------------------------------ COMPS / FOOTBALL FIELD
 comps = wb.create_sheet("Comps")
 comps.sheet_view.showGridLines = False
-S.set_col_widths(comps, {'A': 34, 'B': 2, 'C': 14, 'D': 14, 'E': 14, 'F': 14, 'G': 40})
+S.set_col_widths(comps, {'A': 34, 'B': 2, 'C': 14, 'D': 22, 'E': 22, 'F': 14, 'G': 14, 'H': 22, 'I': 22, 'J': 22})
 write(comps, 'A1', "RELATIVE VALUATION \u2014 IMPLIED PRICE RANGES (FOOTBALL FIELD)", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D', 'E', 'F']:
     comps[f'{c}1'].fill = S.fill(S.DARK)
@@ -508,26 +507,36 @@ write(comps, f'A{rr[0]}', "Peer / reference EV/EBITDA (forward / illustrative)",
 rr[0] += 1
 write(comps, f'A{rr[0]}', "Company", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
 write(comps, f'C{rr[0]}', "EV/EBITDA", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
-write(comps, f'D{rr[0]}', "Notes", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'D{rr[0]}', "Justification", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'E{rr[0]}', "Source", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
 rr[0] += 1
 peer_rows = [
-    ("lululemon (LULU) \u2014 current", f"=(C{CM['px']}*C{CM['sh']}-C{CM['cash']})/C{CM['ebitda']}",
-     "Distressed trough; FY2025A EBITDA", None),
-    ("Nike (NKE)", 18.0, D.JUST["comps_nke"], "comps_nke"),
-    ("Deckers (DECK)", 15.0, D.JUST["comps_deck"], "comps_deck"),
-    ("On Holding (ONON)", 25.0, D.JUST["comps_onon"], "comps_onon"),
-    ("adidas (ADS)", 12.0, D.JUST["comps_ads"], "comps_ads"),
-    ("V.F. Corp (VFC)", 10.0, D.JUST["comps_vfc"], "comps_vfc"),
+    ("lululemon (LULU) \u2014 current", f"=(C{CM['px']}*C{CM['sh']}-C{CM['cash']})/C{CM['ebitda']}", True,
+     "Distressed trough multiple on FY2025A EBITDA", D.filing_url("FY2025"), "LULU FY2025 10-K"),
+    ("Nike (NKE)", 18.0, False, "comps_nke"),
+    ("Deckers (DECK)", 15.0, False, "comps_deck"),
+    ("On Holding (ONON)", 25.0, False, "comps_onon"),
+    ("adidas (ADS)", 12.0, False, "comps_ads"),
+    ("V.F. Corp (VFC)", 10.0, False, "comps_vfc"),
 ]
 EM = {}
-for name, mult, note, _key in peer_rows:
+for row in peer_rows:
+    if len(row) == 6:
+        name, mult, is_formula, just_text, src_url, src_label = row
+        src_key = None
+    else:
+        name, mult, is_formula, src_key = row
+        just_text = src_url = src_label = None
     EM[name] = rr[0]
     write(comps, f'A{rr[0]}', name, S.BLACK, size=10, align=S.left_indent)
-    if isinstance(mult, str):
+    if is_formula:
         write(comps, f'C{rr[0]}', mult, S.BLACK, size=10, numfmt=MULT, align=S.center)
+        write(comps, f'D{rr[0]}', just_text, S.BLACK, italic=True, size=8, align=S.left_indent)
+        if src_url:
+            write_link(comps, f'E{rr[0]}', src_label, src_url, color=S.BLUE, size=8, italic=True)
     else:
         write(comps, f'C{rr[0]}', mult, S.RED, size=10, numfmt=MULT, align=S.center)
-    write(comps, f'D{rr[0]}', note, S.BLACK, italic=True, size=8, align=S.left_indent)
+        write_assumption_docs(comps, rr[0], 'D', 'E', src_key, D.JUST, D.ASSUMPTION_SRC)
     rr[0] += 1
 rr[0] += 1
 write(comps, f'A{rr[0]}', "Terminal multiple selection (DCF exit method)", S.ACCENT, bold=True, size=10)
@@ -572,8 +581,15 @@ def ff_ev_ebitda(label, lo, hi):
     for outcol, mcol in [('E', 'C'), ('F', 'D')]:
         f = f"=(C{CM['ebitda']}*{mcol}{rr[0]}+C{CM['cash']})/C{CM['sh']}"
         write(comps, f'{outcol}{rr[0]}', f, S.BLACK, size=10, numfmt=MONEY, align=S.center)
-    write(comps, f'G{rr[0]}', f"Lo: {D.JUST['comps_ff_ev_lo']} Hi: {D.JUST['comps_ff_ev_hi']}",
-          S.BLACK, italic=True, size=7, align=S.left_indent)
+    write_assumption_docs(comps, rr[0], 'G', 'I', 'comps_ff_ev_lo', D.JUST, D.ASSUMPTION_SRC)
+    write(comps, f'H{rr[0]}', D.JUST['comps_ff_ev_hi'], S.BLACK, italic=True, size=7, align=S.left_indent)
+    src_hi = D.ASSUMPTION_SRC.get('comps_ff_ev_hi')
+    if src_hi:
+        label_hi, url = src_hi
+        if url:
+            write_link(comps, f'J{rr[0]}', label_hi, url, color=S.BLUE, size=7, italic=True)
+        else:
+            write(comps, f'J{rr[0]}', label_hi, S.BLACK, italic=True, size=7, align=S.left_indent)
     rr[0] += 1
 
 def ff_pe(label, lo, hi):
@@ -583,8 +599,15 @@ def ff_pe(label, lo, hi):
     for outcol, mcol in [('E', 'C'), ('F', 'D')]:
         f = f"=C{CM['eps26']}*{mcol}{rr[0]}"
         write(comps, f'{outcol}{rr[0]}', f, S.BLACK, size=10, numfmt=MONEY, align=S.center)
-    write(comps, f'G{rr[0]}', f"Lo: {D.JUST['comps_ff_pe_lo']} Hi: {D.JUST['comps_ff_pe_hi']}",
-          S.BLACK, italic=True, size=7, align=S.left_indent)
+    write_assumption_docs(comps, rr[0], 'G', 'I', 'comps_ff_pe_lo', D.JUST, D.ASSUMPTION_SRC)
+    write(comps, f'H{rr[0]}', D.JUST['comps_ff_pe_hi'], S.BLACK, italic=True, size=7, align=S.left_indent)
+    src_hi = D.ASSUMPTION_SRC.get('comps_ff_pe_hi')
+    if src_hi:
+        label_hi, url = src_hi
+        if url:
+            write_link(comps, f'J{rr[0]}', label_hi, url, color=S.BLUE, size=7, italic=True)
+        else:
+            write(comps, f'J{rr[0]}', label_hi, S.BLACK, italic=True, size=7, align=S.left_indent)
     rr[0] += 1
 
 ff_ev_ebitda("EV / EBITDA (FY2025A)", 4.5, 7.5)

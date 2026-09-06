@@ -145,8 +145,8 @@ def filing_url(fy):
 # ---------------------------------------------------------------------------
 JUST = {
     # WACC tab
-    "wacc_rf": "10-year UST ~4.3% as of Sep 2026; standard risk-free anchor for US equity DCF discount-rate build.",
-    "wacc_erp": "6.0% long-run US equity risk premium; conventional CAPM input for mature, liquid large-cap consumer brands.",
+    "wacc_rf": "4.3% risk-free anchored to FRED 10Y Treasury (DGS10); rounded early-Sep-2026 level for DCF stability.",
+    "wacc_erp": "6.0% additive ERP; conservative vs Damodaran implied ~4.2% (Jan-26); within long-run historical US range.",
     "wacc_beta": "0.95 levered beta vs ~0.86 market; modest uplift for near-term earnings volatility and post-guidance de-rating.",
     "wacc_kd": "5.0% illustrative pre-tax debt cost; LULU has no funded term debt, only an undrawn revolving credit facility.",
     "wacc_tax": "27% normalized marginal cash tax rate; mid-point between recent effective rates and US federal-plus-state blend.",
@@ -199,4 +199,61 @@ JUST = {
     "3s_oncl_pct": "Other non-current liabilities 0.5% of revenue; minor long-term accruals and provisions.",
     "3s_buyback": "$500M annual repurchases; continued capital return at moderated pace vs FY24–25 peak buyback levels.",
     "3s_rep_price": "Repurchase price rises with recovery thesis; $105 to $135 reflects assumed gradual share-price normalization.",
+}
+
+# Clickable source links for red assumptions (label, URL)
+ASSUMPTION_SRC = {
+    # WACC
+    "wacc_rf": ("FRED: 10Y Treasury (DGS10)", "https://fred.stlouisfed.org/series/DGS10"),
+    "wacc_erp": ("Damodaran: Historical Implied ERP", "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histimpl.html"),
+    "wacc_beta": ("Yahoo Finance: LULU Beta", "https://finance.yahoo.com/quote/LULU/key-statistics/"),
+    "wacc_kd": ("LULU FY2025 10-K (no funded debt)", "https://www.sec.gov/Archives/edgar/data/1397187/000139718726000020/lulu-20260201.htm"),
+    "wacc_tax": ("Damodaran: US tax rate dataset", "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/taxrate.html"),
+    "wacc_we": ("LULU FY2025 10-K balance sheet", filing_url("FY2025")),
+    "wacc_wd": ("LULU FY2025 10-K balance sheet", filing_url("FY2025")),
+    # Scenarios
+    "sc_g1": ("LULU Q2 FY2026 earnings release", SOURCES["earnings_sep2026"]),
+    "sc_gterm": ("LULU historical revenue (10-K)", filing_url("FY2025")),
+    "sc_m1": ("LULU Q2 FY2026 guidance / 10-K margins", SOURCES["earnings_sep2026"]),
+    "sc_mterm": ("LULU historical EBIT margins (10-K)", filing_url("FY2025")),
+    "sc_wacc": ("WACC tab CAPM build (this model)", None),  # internal
+    "sc_g": ("BEA: Real GDP (FRED GDPC1)", "https://fred.stlouisfed.org/series/GDPC1"),
+    "sc_tax": ("Damodaran: US tax rate dataset", "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/taxrate.html"),
+    "sc_da_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
+    "sc_capex_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
+    "sc_nwc_pct": ("LULU BS/IS historical (10-K)", filing_url("FY2025")),
+    # DCF / comps
+    "dcf_exitm": ("DCF Comps tab: Exit Multiple Build", None),
+    "comps_nke": ("Yahoo Finance: NKE statistics", "https://finance.yahoo.com/quote/NKE/key-statistics/"),
+    "comps_deck": ("Yahoo Finance: DECK statistics", "https://finance.yahoo.com/quote/DECK/key-statistics/"),
+    "comps_onon": ("Yahoo Finance: ONON statistics", "https://finance.yahoo.com/quote/ONON/key-statistics/"),
+    "comps_ads": ("Yahoo Finance: ADS.DE statistics", "https://finance.yahoo.com/quote/ADS.DE/key-statistics/"),
+    "comps_vfc": ("Yahoo Finance: VFC statistics", "https://finance.yahoo.com/quote/VFC/key-statistics/"),
+    "comps_ff_ev_lo": ("LULU current EV/EBITDA (model)", None),
+    "comps_ff_ev_hi": ("Peer comp set (Comps tab)", None),
+    "comps_ff_pe_lo": ("LULU current P/E vs FY26E EPS", None),
+    "comps_ff_pe_hi": ("Peer P/E ranges (illustrative)", None),
+    "sens_axes": ("Base WACC/g from Scenarios tab", None),
+    # 3-statement
+    "3s_rev_growth": ("LULU Q2 FY2026 guidance", SOURCES["earnings_sep2026"]),
+    "3s_gm": ("LULU historical gross margin (10-K)", filing_url("FY2025")),
+    "3s_sga_pct": ("LULU historical SG&A (10-K)", filing_url("FY2025")),
+    "3s_other_opex": ("LULU FY2025 10-K", filing_url("FY2025")),
+    "3s_other_inc": ("LULU FY2025 10-K", filing_url("FY2025")),
+    "3s_tax_rate": ("LULU effective tax history (10-K)", filing_url("FY2025")),
+    "3s_da_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
+    "3s_capex_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
+    "3s_sbc": ("LULU CF statement (10-K)", filing_url("FY2025")),
+    "3s_inv_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
+    "3s_ap_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
+    "3s_accr_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
+    "3s_oca_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
+    "3s_rou_pct": ("LULU lease disclosures (10-K)", filing_url("FY2025")),
+    "3s_onca_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
+    "3s_olc_pct": ("LULU lease disclosures (10-K)", filing_url("FY2025")),
+    "3s_olnc_pct": ("LULU lease disclosures (10-K)", filing_url("FY2025")),
+    "3s_ocl_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
+    "3s_oncl_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
+    "3s_buyback": ("LULU CF: share repurchases (10-K)", filing_url("FY2025")),
+    "3s_rep_price": ("LULU avg repurchase price (10-K/est.)", filing_url("FY2025")),
 }

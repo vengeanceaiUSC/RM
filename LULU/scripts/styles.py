@@ -95,3 +95,20 @@ def write_reported(ws, cell, value, source_url=None, bold=False, size=10, numfmt
         c.hyperlink = source_url
         c.font = font(color=BLUE, bold=bold, size=size, underline="single")
     return c
+
+
+def write_assumption_docs(ws, row, justify_col, source_col, key, justify_dict, src_dict):
+    """Write ~20-word justification and optional clickable source link for red assumptions."""
+    if key in justify_dict:
+        c = ws[f"{justify_col}{row}"]
+        c.value = justify_dict[key]
+        c.font = font(color=BLACK, italic=True, size=8)
+        c.alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
+    src = src_dict.get(key)
+    if not src:
+        return
+    label, url = src
+    if url:
+        write_link(ws, f"{source_col}{row}", label, url, color=BLUE, size=8, italic=True)
+    else:
+        write(ws, f"{source_col}{row}", label, BLACK, italic=True, size=8, align=left)
