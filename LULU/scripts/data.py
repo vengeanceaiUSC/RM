@@ -176,7 +176,8 @@ JUST = {
     "sc_da_pct": "4.5% D&A / sales = FY25 496,228 / 11,102,600 on the 10-K cash-flow statement.",
     "sc_capex_pct": "FY26 7.0% is $735M on $10.4B sales, not FY25 $11.1B. Since 7.0% steps toward FY25 6.1%, we assume a fade: DCF 5.5% = (7.0+6.0+5.5+5.0+4.0)/5.",
     "sc_capex_sales": "FY26 sales are $10.35–$10.50B (earnings). Use that $10.4B year as the 7% denominator, not FY25 $11.1B.",
-    "sc_nwc_pct": "7.5% of Δsales is operating NWC: AR + inventory + other CA − AP − accrued. AR is on the 10-K ($190,657); not omitted.",
+    "sc_ar": "AR 1.7% of sales = FY25 Accounts receivable, net 190,657 / 11,102,600. Own DCF NWC line; wholesale / marketplace mix.",
+    "sc_nwc_pct": "5.8% of Δsales is other NWC (Inv + OCA − AP − accrued). AR is the 1.7% line above, not inside this residual. 1.7+5.8=7.5%.",
     # DCF valuation
     "dcf_exitm": "8.0x FY2030E exit EV/EBITDA; mid-point of terminal football field (6.5–9.5x); ~1 turn above Gordon-implied ~7x.",
     # Comps — peer multiples
@@ -241,6 +242,7 @@ ASSUMPTION_SRC = {
     "sc_da_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
     "sc_capex_pct": ("LULU 10-K: 2026 capex guide $725–745M", filing_url("FY2025")),
     "sc_capex_sales": ("Q2 FY2026 outlook: $10.350B–$10.500B sales", SOURCES["earnings_sep2026"]),
+    "sc_ar": ("LULU FY2025 10-K: Accounts receivable, net", filing_url("FY2025")),
     "sc_nwc_pct": ("LULU BS/IS historical (10-K)", filing_url("FY2025")),
     # DCF / comps
     "dcf_exitm": ("StockAnalysis: LULU EV/EBITDA", SOURCES["lulu_stats"]),
@@ -305,7 +307,8 @@ SOURCE_HINT = {
     "sc_da_pct": 'Ctrl+F "Depreciation and amortization" → 496,228 on this 10-K HTML (not the SEC viewer). ÷ "Net revenue" 11,102,600 = 4.5%.',
     "sc_capex_pct": 'Ctrl+F "680,802" → FY25 capex $680.8M. Ctrl+F "11,102,600" → FY25 sales $11.1B. Ctrl+F "$725.0 million and $745.0 million" → FY26 capex mid $735M.',
     "sc_capex_sales": 'Ctrl+F "$10.350 billion to $10.500 billion" → FY26 net revenue guide (one hit). Mid $10.425B.',
-    "sc_nwc_pct": 'Ctrl+F "Accounts receivable, net" → 190,657. Ctrl+F "Inventories" → 1,700,753. Ctrl+F "Accounts payable" → 331,421. Ctrl+F "Accrued liabilities and other" → 662,982. NWC = AR + Inv + other CA − AP − accrued; 7.5% of Δsales.',
+    "sc_ar": 'Ctrl+F "Accounts receivable, net" (one hit on the BS) → 190,657. 190,657 / 11,102,600 = 1.7% of sales. This is the DCF AR / NWC line.',
+    "sc_nwc_pct": 'Other NWC ex-AR. Ctrl+F "Inventories" → 1,700,753 | "Accounts payable" → 331,421 | "Accrued liabilities and other" → 662,982. 5.8% of Δsales; AR is the 1.7% line, not in this residual.',
     # DCF / comps
     "dcf_exitm": 'Ctrl+F "EV / EBITDA" → LULU ~4.99x on page; model terminal exit 8.0x (assumption)',
     "comps_nke": 'Ctrl+F "EV / EBITDA" → 11.97. Model uses 12.0x.',

@@ -55,7 +55,7 @@ calendar year it mostly covers):
 
 - Revenue: −6.1% in FY2026E (guidance midpoint), then +2.3% FY27–30 (StockAnalysis 3Y forecast 2.26%)
 - EBIT margin: 13.2% clean/run-rate (Q2 18.8% minus 560bps of tariff refunds), interpolating to 15.5% by FY2030E. FY26 then adds the already-recognized $134.5M IEEPA refund once (~+1.3 ppt on full-year sales, so reported FY26 OM ≈ 14.5%). Do not add the Q2-only +560 bps to the full year.
-- Tax rate 30% (FY2026 guidance); capex 5.5% blend (FY26 guided 7.0% is *up* vs FY25 6.1%, then fade); NWC 7.5% of Δrevenue
+- Tax rate 30% (FY2026 guidance); capex 5.5% blend (FY26 guided 7.0% is *up* vs FY25 6.1%, then fade); NWC = ΔAR (AR 1.7% of sales) + other NWC 5.8% of Δrevenue (1.7+5.8=7.5)
 - WACC 10.5% (CAPM: rf 4.8% from FRED DGS10 4.77% on 2026-09-03, ERP 6.0%, β 0.95, ~100% equity / net cash)
 - Terminal growth 2.25%
 

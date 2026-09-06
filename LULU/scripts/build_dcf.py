@@ -154,7 +154,8 @@ s_assum('tax', "Cash tax rate", 0.320, 0.300, 0.280, doc_key='sc_tax')
 s_assum('da_pct', "D&A % of revenue", 0.045, 0.045, 0.045, doc_key='sc_da_pct')
 s_assum('capex_pct', "Capex % of revenue", 0.070, 0.055, 0.045, doc_key='sc_capex_pct',
         extra_doc_key='sc_capex_sales')
-s_assum('nwc_pct', "NWC build % of \u0394revenue", 0.080, 0.075, 0.070, doc_key='sc_nwc_pct')
+s_assum('ar_pct', "AR % of revenue (NWC)", 0.015, 0.017, 0.020, doc_key='sc_ar')
+s_assum('nwc_pct', "Other NWC (ex-AR) % of \u0394revenue", 0.065, 0.058, 0.050, doc_key='sc_nwc_pct')
 
 rr[0] += 1
 write(scn, f'A{rr[0]}', "5-year forecast paths (by scenario)", S.ACCENT, bold=True, size=10)
@@ -164,7 +165,9 @@ def put(row, lab):
     write(scn, f'A{row}', lab, S.BLACK, size=9, align=S.left_indent)
 
 cur = rr[0]
-rev_rows, mar_rows, ebit_rows, nopat_rows, da_rows, capex_rows, dnwc_rows, fcf_rows = {}, {}, {}, {}, {}, {}, {}, {}
+BASE_AR = D.BS['ar']['FY2025']
+rev_rows, mar_rows, ebit_rows, nopat_rows, da_rows, capex_rows = {}, {}, {}, {}, {}, {}
+ar_rows, dar_rows, other_nwc_rows, dnwc_rows, fcf_rows = {}, {}, {}, {}, {}
 for t in range(1, 6):
     rev_rows[t] = cur
     put(cur, f"  Revenue \u2013 year {t}")
@@ -214,12 +217,35 @@ for t in range(1, 6):
         write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
     cur += 1
 for t in range(1, 6):
+    ar_rows[t] = cur
+    put(cur, f"  Accounts receivable \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{rev_rows[t]}*{col}{SC['ar_pct']}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    dar_rows[t] = cur
+    put(cur, f"  \u0394AR \u2013 year {t}")
+    for col in SCEN_COLS:
+        prev_ar = f"{col}{ar_rows[t-1]}" if t > 1 else str(BASE_AR)
+        write(scn, f'{col}{cur}', f"={col}{ar_rows[t]}-{prev_ar}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    other_nwc_rows[t] = cur
+    put(cur, f"  Other \u0394NWC (ex-AR) \u2013 year {t}")
+    for col in SCEN_COLS:
+        prev_rev = f"{col}{rev_rows[t-1]}" if t > 1 else str(BASE_REV)
+        write(scn, f'{col}{cur}',
+              f"={col}{SC['nwc_pct']}*({col}{rev_rows[t]}-{prev_rev})",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
     dnwc_rows[t] = cur
     put(cur, f"  \u0394NWC \u2013 year {t}")
     for col in SCEN_COLS:
-        prev_rev = f"{col}{rev_rows[t-1]}" if t > 1 else str(BASE_REV)
-        f = f"={col}{SC['nwc_pct']}*({col}{rev_rows[t]}-{prev_rev})"
-        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+        write(scn, f'{col}{cur}', f"={col}{dar_rows[t]}+{col}{other_nwc_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
     cur += 1
 for t in range(1, 6):
     fcf_rows[t] = cur
@@ -357,12 +383,22 @@ d_row('capex_pct', "  Capex % of revenue", None, lambda c: f"={bref('capex_pct')
       justify_key="sc_capex_pct", extra_doc_key="sc_capex_sales")
 d_row('capex', "Less: capital expenditures", None,
       lambda c: f"=-Scenarios!{SCEN_BASE}{capex_rows[YEAR_MAP[c]]}", sc_rows=capex_rows, sc_sign=-1)
-d_row('nwc_pct', "  NWC build % of \u0394revenue", None, lambda c: f"={bref('nwc_pct')}", fmt=PCT, red=True,
+d_row('ar_pct', "  AR % of revenue", None, lambda c: f"={bref('ar_pct')}", fmt=PCT, red=True,
+      justify_key="sc_ar")
+d_row('ar', "Accounts receivable, net", BASE_AR,
+      lambda c: f"=Scenarios!{SCEN_BASE}{ar_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=ar_rows,
+      justify_key="sc_ar")
+d_row('dar', "  \u0394AR (increase)/decrease \u2014 part of NWC", None,
+      lambda c: f"=-Scenarios!{SCEN_BASE}{dar_rows[YEAR_MAP[c]]}", sc_rows=dar_rows, sc_sign=-1)
+d_row('nwc_pct', "  Other NWC (ex-AR) % of \u0394revenue", None, lambda c: f"={bref('nwc_pct')}", fmt=PCT, red=True,
       justify_key="sc_nwc_pct")
-d_row('dnwc', "(Increase)/decrease in net working capital", None,
+d_row('other_nwc', "  Other \u0394NWC (ex-AR) (increase)/decrease", None,
+      lambda c: f"=-Scenarios!{SCEN_BASE}{other_nwc_rows[YEAR_MAP[c]]}",
+      sc_rows=other_nwc_rows, sc_sign=-1)
+d_row('dnwc', "Total (increase)/decrease in net working capital", None,
       lambda c: f"=-Scenarios!{SCEN_BASE}{dnwc_rows[YEAR_MAP[c]]}", sc_rows=dnwc_rows, sc_sign=-1)
 write(dcf, f'A{r[0]}',
-      "  memo: FY26 revenue falls −6.1%; negative \u0394NWC releases ~$51M cash (adds to FCF, not a use).",
+      "  memo: \u0394NWC = \u0394AR + other \u0394NWC. AR is 1.7% of sales (own line); other is 5.8% of \u0394sales.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 r[0] += 1
 d_row('ufcf', "Unlevered free cash flow", None,
