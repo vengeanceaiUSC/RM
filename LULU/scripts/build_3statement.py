@@ -408,5 +408,6 @@ for y in PROJ:
     c = COL[y]
     write(bs, f'{c}{BR["cash"]}', f"='{CFN}'!{c}{endcash_row}", S.BLACK, size=10, numfmt=NUM, align=S.right)
 
+wb.calculation.fullCalcOnLoad = True
 wb.save(OUT)
 print("Saved", os.path.abspath(OUT))

@@ -423,5 +423,6 @@ rr[0] += 1
 write(comps, f'A{rr[0]}', "Note: peer set includes NKE, DECK, ONON, adidas, VFC; multiples are analyst ranges (red).",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 
+wb.calculation.fullCalcOnLoad = True
 wb.save(OUT)
 print("Saved", os.path.abspath(OUT))
