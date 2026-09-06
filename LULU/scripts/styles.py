@@ -126,7 +126,7 @@ def write_internal_link(ws, cell, text, location, color=BLUE, size=8, italic=Tru
 def _hint_row_height(ws, row, hint):
     if hint:
         lines = hint.count('\n') + 2
-        ws.row_dimensions[row].height = max(ws.row_dimensions[row].height or 15, min(72, 18 * lines))
+        ws.row_dimensions[row].height = max(ws.row_dimensions[row].height or 15, min(150, 14 * lines))
 
 
 def write_ctrl_f(ws, cell, hint):

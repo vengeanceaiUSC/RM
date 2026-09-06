@@ -54,6 +54,8 @@ def write_row_docs(ws, row, justify_key, extra_key=None):
         if extra_key:
             append_assumption_docs(ws, row, DJ, DS, DC, extra_key, D.JUST, D.ASSUMPTION_SRC,
                                    hints=D.SOURCE_HINT)
+        if justify_key in ("sc_capex_pct", "3s_capex_pct") or extra_key == "sc_capex_sales":
+            write_ctrl_f(ws, f'{DC}{row}', D.CAPEX_CTRL_F)
 
 
 # ---------------------------------------------------------------- COVER

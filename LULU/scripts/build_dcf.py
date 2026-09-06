@@ -132,6 +132,8 @@ def s_assum(key, label, bear, base, bull, fmt=PCT, doc_key=None, extra_doc_key=N
         if extra_doc_key:
             append_assumption_docs(scn, rr[0], DJ, DS, DC, extra_doc_key, D.JUST, D.ASSUMPTION_SRC,
                                    hints=D.SOURCE_HINT, prefix="Also")
+        if doc_key in ("sc_capex_pct", "3s_capex_pct") or extra_doc_key == "sc_capex_sales":
+            write_ctrl_f(scn, f'{DC}{rr[0]}', D.CAPEX_CTRL_F)
     rr[0] += 1
 
 write(scn, 'A3', "Key assumptions (5-yr forecast)", S.ACCENT, bold=True, size=10)
@@ -314,6 +316,8 @@ def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, b
         if extra_doc_key:
             append_assumption_docs(dcf, row_num, DJ, DS, DC, extra_doc_key, D.JUST, D.ASSUMPTION_SRC,
                                    hints=D.SOURCE_HINT, prefix="Also")
+        if justify_key in ("sc_capex_pct", "3s_capex_pct") or extra_doc_key == "sc_capex_sales":
+            write_ctrl_f(dcf, f'{DC}{row_num}', D.CAPEX_CTRL_F)
     elif extra_doc_key:
         src = D.ASSUMPTION_SRC.get(extra_doc_key)
         if src and src[1]:

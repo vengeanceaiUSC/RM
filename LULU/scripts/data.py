@@ -300,8 +300,8 @@ SOURCE_HINT = {
     "sc_g": 'Ctrl+F "Q2 2026" → 24,269.613 and "Q2 2025" → 23,770.976. YoY = 2.1%. Model terminal g 2.25%.',
     "sc_tax": 'Ctrl+F "a tax rate of approximately 30%" on the earnings outlook. FY25 10-K: "Income tax expense" 659,784 ÷ "Income before income tax expense" 2,238,967 = 29.5%.',
     "sc_da_pct": 'Ctrl+F "Depreciation and amortization" → 496,228 on this 10-K HTML (not the SEC viewer). ÷ "Net revenue" 11,102,600 = 4.5%.',
-    "sc_capex_pct": 'Ctrl+F "680,802" → FY25 capex $680.8M. Ctrl+F "11,102,600" → FY25 sales $11.1B. 680.8 / 11,102.6 = 6.1%. Ctrl+F "$725.0 million and $745.0 million" → FY26 capex mid $735M.',
-    "sc_capex_sales": 'Ctrl+F "$10.350 billion to $10.500 billion" → FY26 net revenue guide (one hit). Mid $10.425B. That is the $10B year vs FY25 $11.1B. 7.0% capex uses this $10.4B denominator. FY26 is a $10B sales year: $735M / $10.425B = 7.0%. Then fade 6.0 / 5.5 / 5.0 / 4.0. DCF 5.5% = (7.0+6.0+5.5+5.0+4.0)/5.',
+    "sc_capex_pct": 'Ctrl+F "680,802" → FY25 capex $680.8M. Ctrl+F "11,102,600" → FY25 sales $11.1B. Ctrl+F "$725.0 million and $745.0 million" → FY26 capex mid $735M.',
+    "sc_capex_sales": 'Ctrl+F "$10.350 billion to $10.500 billion" → FY26 net revenue guide (one hit). Mid $10.425B.',
     "sc_nwc_pct": 'Ctrl+F "Inventories" → 1,700,753 | "Accounts payable" → 331,421 | "Accrued liabilities and other" → 662,982',
     # DCF / comps
     "dcf_exitm": 'Ctrl+F "EV / EBITDA" → LULU ~4.99x on page; model terminal exit 8.0x (assumption)',
@@ -326,7 +326,7 @@ SOURCE_HINT = {
     "3s_other_inc": 'Ctrl+F "22,829" → YTD other income ($000) on the earnings P&L. FY26 model $45,000 annualizes that run-rate.',
     "3s_tax_rate": 'Ctrl+F "a tax rate of approximately 30%" on the earnings outlook; FY25 10-K 29.5%. 3-statement model 30%',
     "3s_da_pct": 'Ctrl+F "Depreciation and amortization" → 496,228 ÷ "Net revenue" 11,102,600 = 4.5%',
-    "3s_capex_pct": 'Ctrl+F "680,802" → FY25 capex $680.8M. Ctrl+F "11,102,600" → FY25 sales $11.1B. 680.8 / 11,102.6 = 6.1%. Ctrl+F "$725.0 million and $745.0 million" → FY26 capex mid $735M.',
+    "3s_capex_pct": 'Ctrl+F "680,802" → FY25 capex $680.8M. Ctrl+F "11,102,600" → FY25 sales $11.1B. Ctrl+F "$725.0 million and $745.0 million" → FY26 capex mid $735M.',
     "3s_sbc": 'Ctrl+F "Stock-based compensation expense" → 62,203 on this 10-K HTML. Model $62,000.',
     "3s_inv_pct": 'Ctrl+F "Inventories" → 1,700,753 ÷ "Cost of goods sold" 4,818,468 = 35.3%',
     "3s_ap_pct": 'Ctrl+F "Accounts payable" → 331,421 ÷ "Cost of goods sold" 4,818,468 = 6.9%',
@@ -341,6 +341,25 @@ SOURCE_HINT = {
     "3s_buyback": 'Ctrl+F "Repurchase of common stock" → ( 1,178,349 ) ($000) FY25; model (500,000)/yr',
     "3s_rep_price": 'Ctrl+F "LULU" → Last Sale / Previous Close (~$100). FY26 model repurchase price starts at $100.',
 }
+
+# Organized Ctrl+F block for the capex assumption cell (column D)
+CAPEX_CTRL_F = (
+    "FY25 actual (10-K)\n"
+    '  Ctrl+F "680,802"  →  capex $680.8M\n'
+    '  Ctrl+F "11,102,600"  →  sales $11.1B\n'
+    "  680.8 / 11,102.6 = 6.1%\n"
+    "\n"
+    "FY26 capex (10-K)\n"
+    '  Ctrl+F "$725.0 million and $745.0 million"  →  mid $735M\n'
+    "\n"
+    "FY26 sales (earnings)\n"
+    '  Ctrl+F "$10.350 billion to $10.500 billion"  →  $10.35–$10.50B (mid $10.425B)\n'
+    "  7.0% = $735M / $10.425B    ($10B year, not FY25 $11.1B)\n"
+    "\n"
+    "DCF blend\n"
+    "  Fade  7.0 / 6.0 / 5.5 / 5.0 / 4.0\n"
+    "  5.5% = (7.0+6.0+5.5+5.0+4.0)/5"
+)
 
 COVER_HINTS = {
     "edgar_xbrl": 'Ctrl+F "10-K" → FY2025 accession 0001397187-26-000020',
