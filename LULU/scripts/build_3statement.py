@@ -9,7 +9,7 @@ Units: US$ thousands unless noted.
 import os
 from openpyxl import Workbook
 import styles as S
-from styles import write, write_link, write_reported, write_assumption_docs, NUM, PCT, MONEY, EPSFMT
+from styles import write, write_link, write_reported, write_assumption_docs, write_ctrl_f, NUM, PCT, MONEY, EPSFMT
 import data as D
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "LULU_3_Statement_Model.xlsx")
@@ -25,7 +25,7 @@ YEAR_OF = {c: y for y, c in COL.items()}
 PREV = {c: COLS[i-1] for i, c in enumerate(COLS) if i > 0}
 
 A, ISN, BSN, CFN = "Assumptions", "Income Statement", "Balance Sheet", "Cash Flow"
-WIDTHS = {'A': 38, 'C': 11, 'D': 11, 'E': 11, 'F': 11, 'G': 11, 'H': 11, 'I': 11, 'J': 11, 'K': 11, 'L': 38, 'M': 44}
+WIDTHS = {'A': 38, 'C': 11, 'D': 11, 'E': 11, 'F': 11, 'G': 11, 'H': 11, 'I': 11, 'J': 11, 'K': 11, 'L': 34, 'M': 22, 'N': 44}
 
 wb = Workbook()
 
@@ -58,7 +58,7 @@ write(cov, 'B8', "Fiscal year ends late January / early February; FY2025 ended F
 write(cov, 'B10', "FONT / COLOR CONVENTION", S.DARK, bold=True, size=12)
 write(cov, 'B11', "Blue font  =  figures reported by the company (click value or 10-K link for source)", S.BLUE, bold=True, size=11)
 write(cov, 'B12', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
-write(cov, 'B13', "Red font  =  analyst assumptions — justification in col L, source & Ctrl+F lines in col M", S.RED, bold=True, size=11)
+write(cov, 'B13', "Red font  =  analyst assumptions — Justification (L) | Source (M) | Ctrl+F (N)", S.RED, bold=True, size=11)
 write(cov, 'B15', "SOURCES", S.DARK, bold=True, size=12)
 write_link(cov, 'B16', "SEC EDGAR filings, CIK 0001397187 (Forms 10-K)", D.SOURCES["edgar_xbrl"],
            color=S.BLUE, size=10, hint=D.COVER_HINTS["edgar_xbrl"])
@@ -96,14 +96,15 @@ def a_row(key, label, hist_vals, proj_vals, fmt=PCT, justify_key=""):
     for i, y in enumerate(PROJ):
         write(asum, f'{COL[y]}{r[0]}', proj_vals[i], S.RED, size=10, numfmt=fmt, align=S.right)
     if justify_key:
-        write_assumption_docs(asum, r[0], 'L', 'M', justify_key, D.JUST, D.ASSUMPTION_SRC,
+        write_assumption_docs(asum, r[0], 'L', 'M', 'N', justify_key, D.JUST, D.ASSUMPTION_SRC,
                               hints=D.SOURCE_HINT)
     r[0] += 1
 
 rev, cogs = D.IS['revenue'], D.IS['cogs']
 a_section("GROWTH & MARGINS")
 write(asum, 'L3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
-write(asum, 'M3', "Source & Ctrl+F lines", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(asum, 'M3', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(asum, 'N3', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 a_row('rev_growth', "Revenue growth %",
       [None, rev['FY2023']/rev['FY2022']-1, rev['FY2024']/rev['FY2023']-1, rev['FY2025']/rev['FY2024']-1],
       [-0.061, 0.010, 0.030, 0.040, 0.040], justify_key="3s_rev_growth")

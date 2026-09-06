@@ -129,10 +129,25 @@ def _hint_row_height(ws, row, hint):
         ws.row_dimensions[row].height = max(ws.row_dimensions[row].height or 15, min(72, 18 * lines))
 
 
-def write_assumption_docs(ws, row, justify_col, source_col, key, justify_dict, src_dict,
-                          internal_location=None, extra_source_col=None, extra_label=None,
-                          extra_url=None, extra_hint=None, hints=None):
-    """Write justification then clickable source (with optional find-hint) in the next column."""
+def write_ctrl_f(ws, cell, hint):
+    """Dedicated Ctrl+F column — exact strings to locate the number in the source."""
+    if not hint:
+        return
+    c = write(ws, cell, hint, BLACK, italic=True, size=8, align=left)
+    c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+    _hint_row_height(ws, c.row, hint)
+
+
+def write_source_with_ctrl_f(ws, source_cell, ctrl_f_cell, label, url, hint=None, size=8):
+    """Reported-figure source link + dedicated Ctrl+F column."""
+    write_link(ws, source_cell, label, url, color=BLUE, size=size, italic=True)
+    write_ctrl_f(ws, ctrl_f_cell, hint)
+
+
+def write_assumption_docs(ws, row, justify_col, source_col, ctrl_f_col, key, justify_dict, src_dict,
+                          internal_location=None, extra_source_col=None, extra_ctrl_f_col=None,
+                          extra_label=None, extra_url=None, extra_hint=None, hints=None):
+    """Write justification, clickable source, and Ctrl+F proof column."""
     if key in justify_dict:
         c = ws[f"{justify_col}{row}"]
         c.value = justify_dict[key]
@@ -142,20 +157,17 @@ def write_assumption_docs(ws, row, justify_col, source_col, key, justify_dict, s
     src = src_dict.get(key)
     if internal_location:
         label = src[0] if src else "Model cross-reference"
-        write_internal_link(ws, f"{source_col}{row}", label, internal_location,
-                            size=9, hint=hint)
+        write_internal_link(ws, f"{source_col}{row}", label, internal_location, size=9)
     elif src:
         label, url = src
         if url:
             write_link(ws, f"{source_col}{row}", label, url, color=BLUE, size=9,
-                       italic=True, underline="single", hint=hint)
+                       italic=True, underline="single")
         else:
-            text = format_source_text(label, hint)
-            write(ws, f"{source_col}{row}", text, BLACK, italic=True, size=8, align=left)
-            if hint:
-                ws[f"{source_col}{row}"].alignment = Alignment(
-                    horizontal='left', vertical='top', wrap_text=True)
-                _hint_row_height(ws, row, hint)
+            write(ws, f"{source_col}{row}", label, BLACK, italic=True, size=8, align=left)
+    write_ctrl_f(ws, f"{ctrl_f_col}{row}", hint)
     if extra_source_col and extra_label and extra_url:
         write_link(ws, f"{extra_source_col}{row}", extra_label, extra_url,
-                   color=BLUE, size=8, italic=True, underline="single", hint=extra_hint)
+                   color=BLUE, size=8, italic=True, underline="single")
+        if extra_ctrl_f_col and extra_hint:
+            write_ctrl_f(ws, f"{extra_ctrl_f_col}{row}", extra_hint)
