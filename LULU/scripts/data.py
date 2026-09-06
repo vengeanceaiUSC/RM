@@ -269,3 +269,81 @@ ASSUMPTION_SRC = {
     "3s_buyback": ("LULU CF: share repurchases (10-K)", filing_url("FY2025")),
     "3s_rep_price": ("LULU avg repurchase price (10-K/est.)", filing_url("FY2025")),
 }
+
+# Where to find the supporting figure within each source (shown under the link)
+SOURCE_HINT = {
+    # WACC
+    "wacc_rf": "Latest DGS10 value in the chart/table (early Sep 2026 ≈ 4.3%); series title is "
+               "'Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity'.",
+    "wacc_erp": "Scroll to 'Implied ERP' column; Jan-2026 row ≈ 4.2% — model uses 6.0% as conservative overlay.",
+    "wacc_beta": "Statistics tab → 'Beta (5Y Monthly)'; Yahoo ≈ 0.86; model uses 0.95 with modest uplift.",
+    "wacc_kd": "Ctrl+F 'revolving credit' or 'no outstanding borrowings' — confirms no funded term debt.",
+    "wacc_tax": "Search 'Effective tax rate' for US firms; Damodaran blended rate supports ~27% normalized assumption.",
+    "wacc_we": "Balance Sheet → cash & equity; no funded debt → 100% equity weight at market values.",
+    "wacc_wd": "Balance Sheet → confirm no long-term debt outstanding; debt weight set to 0%.",
+    # Scenarios
+    "sc_g1": "Search release for 'full year 2026' net revenue outlook (−5% to −7%); model uses −6.1% midpoint.",
+    "sc_gterm": "Income Statement → 'Net revenue' FY2022–FY2025; compute YoY growth vs historical double-digit run.",
+    "sc_m1": "Search release for FY2026 operating margin / EBIT commentary supporting ~13.9% base case.",
+    "sc_mterm": "Income Statement → operating income ÷ net revenue; compare peak ~20–24% vs 15.5% terminal assumption.",
+    "sc_wacc": "Opens WACC tab → green WACC cell (10.0% base); built from CAPM inputs above it.",
+    "sc_g": "GDPC1 chart → long-run real GDP growth trend (~2%); terminal g set at 2.25% (GDP + inflation cushion).",
+    "sc_tax": "Same Damodaran effective tax table; cross-check vs LULU ~29% recent effective rate in 10-K.",
+    "sc_da_pct": "Cash Flow Statement → 'Depreciation and amortization' ÷ net revenue (FY22–25 avg ≈ 4.5%).",
+    "sc_capex_pct": "Cash Flow Statement → 'Capital expenditures' ÷ net revenue (recent ~5% of sales).",
+    "sc_nwc_pct": "Balance Sheet working capital vs Income Statement revenue changes (AR, inventory, AP, accrued).",
+    # DCF / comps
+    "dcf_exitm": "Valuation section → 'EV/EBITDA' (forward or TTM); 8.0x = football-field midpoint on FY2030E EBITDA.",
+    "comps_nke": "Statistics → 'Enterprise Value/EBITDA' or forward EV/EBITDA; illustrative ~18x mature peer.",
+    "comps_deck": "Statistics → EV/EBITDA; Deckers trades ~15x on HOKA/UGG momentum.",
+    "comps_onon": "Statistics → EV/EBITDA; On ~25x as high-growth premium athletic benchmark.",
+    "comps_ads": "Statistics → EV/EBITDA for ADDYY ADR; adidas ~12x restructuring incumbent.",
+    "comps_vfc": "Statistics → EV/EBITDA; VFC ~10x as lower-bound scaled apparel peer.",
+    "comps_ff_ev_lo": "Same EV/EBITDA field; 6.5x = bear terminal exit below Gordon-implied ~7x.",
+    "comps_ff_ev_hi": "Same EV/EBITDA field; 9.5x = bull terminal exit above 8.0x DCF base.",
+    "comps_ff_pe_lo": "Statistics → 'Trailing P/E' or forward P/E on depressed FY26E EPS (~10x trough).",
+    "comps_ff_pe_hi": "NKE forward P/E as mature-peer ceiling; 18x on LULU FY26E recovery case.",
+    "sens_axes": "Opens Scenarios tab → WACC row and Terminal g row (base case inputs for sensitivity grid).",
+    "sens_wacc": "Damodaran implied ERP table anchors discount-rate range; ±100bps around 10.0% WACC base.",
+    "sens_g": "GDPC1 long-run growth bounds terminal-g sensitivity (1.5%–3.0% vs 2.25% base).",
+    # 3-statement
+    "3s_rev_growth": "Release → FY2026 revenue guidance (−5% to −7%); FY27–30 recovery path is analyst projection.",
+    "3s_gm": "Income Statement → gross profit ÷ net revenue; FY22–25 history vs 56.5–58.0% forecast recovery.",
+    "3s_sga_pct": "Income Statement → SG&A ÷ net revenue; ratio declines toward 39.5% on cost discipline.",
+    "3s_other_opex": "Income Statement / footnotes → amortization of intangibles (~$7M run-rate).",
+    "3s_other_inc": "Income Statement → 'Other income (expense), net' / interest income on cash balances.",
+    "3s_tax_rate": "Income Statement → provision for income taxes ÷ pretax income (effective rate history).",
+    "3s_da_pct": "Cash Flow Statement → depreciation & amortization as % of revenue.",
+    "3s_capex_pct": "Cash Flow Statement → capital expenditures as % of revenue.",
+    "3s_sbc": "Cash Flow Statement → 'Stock-based compensation' (operating add-back).",
+    "3s_inv_pct": "Balance Sheet → 'Inventories' ÷ COGS (or revenue) for turnover / build assumptions.",
+    "3s_ap_pct": "Balance Sheet → 'Accounts payable' ÷ COGS.",
+    "3s_accr_pct": "Balance Sheet → 'Accrued liabilities' ÷ net revenue.",
+    "3s_oca_pct": "Balance Sheet → prepaid expenses & other current assets ÷ revenue.",
+    "3s_rou_pct": "Balance Sheet / Note → 'Operating lease right-of-use assets' ÷ revenue.",
+    "3s_onca_pct": "Balance Sheet → other non-current assets ÷ revenue.",
+    "3s_olc_pct": "Balance Sheet → current portion of operating lease liabilities ÷ revenue.",
+    "3s_olnc_pct": "Balance Sheet → non-current operating lease liabilities ÷ revenue.",
+    "3s_ocl_pct": "Balance Sheet → other current liabilities (gift cards, deferred revenue) ÷ revenue.",
+    "3s_oncl_pct": "Balance Sheet → other non-current liabilities ÷ revenue.",
+    "3s_buyback": "Cash Flow Statement → 'Repurchase of common stock' (FY24–25 peak vs $500M forecast).",
+    "3s_rep_price": "Cash Flow / equity footnote → average price paid per share in buyback programs.",
+}
+
+# Cover-tab and reported-figure find cues
+COVER_HINTS = {
+    "edgar_xbrl": "Filter by Form 10-K; open FY2025 filing (accession 0001397187-26-000020).",
+    "filing_fy2025": "Interactive 10-K viewer → table of contents or Ctrl+F for financial statements.",
+    "earnings_sep2026": "Search 'outlook', 'guidance', or 'full year 2026' for revenue and diluted EPS ranges.",
+    "nasdaq_quote": "Quote header → Last Sale / previous close for NASDAQ: LULU.",
+}
+
+REPORTED_HINTS = {
+    "10k": "Ctrl+F the line-item name in FY2025 consolidated financial statements.",
+    "10k_is": "Consolidated Statements of Operations → search 'Net revenue', 'Operating income', etc.",
+    "10k_bs": "Consolidated Balance Sheets → search 'Cash', 'Inventories', 'Total assets', etc.",
+    "10k_cf": "Consolidated Statements of Cash Flows → search 'Depreciation', 'Capital expenditures'.",
+    "10k_shares": "Income Statement/EPS footnote → 'Diluted weighted-average shares outstanding'.",
+    "earnings": "Search 'diluted earnings per share' and 'net revenue' for Q2/FY2026 guidance ranges.",
+    "nasdaq": "NASDAQ quote page → Last Sale or closing price for LULU.",
+}

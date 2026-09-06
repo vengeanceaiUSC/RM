@@ -25,7 +25,7 @@ YEAR_OF = {c: y for y, c in COL.items()}
 PREV = {c: COLS[i-1] for i, c in enumerate(COLS) if i > 0}
 
 A, ISN, BSN, CFN = "Assumptions", "Income Statement", "Balance Sheet", "Cash Flow"
-WIDTHS = {'A': 38, 'C': 11, 'D': 11, 'E': 11, 'F': 11, 'G': 11, 'H': 11, 'I': 11, 'J': 11, 'K': 11, 'L': 38, 'M': 26}
+WIDTHS = {'A': 38, 'C': 11, 'D': 11, 'E': 11, 'F': 11, 'G': 11, 'H': 11, 'I': 11, 'J': 11, 'K': 11, 'L': 38, 'M': 44}
 
 wb = Workbook()
 
@@ -36,9 +36,10 @@ def year_header(ws, title):
         write(ws, f'{COL[y]}1', y, S.WHITE, bold=True, size=10, align=S.center,
               fillc=(S.ACCENT if y in PROJ else S.DARK))
     ws.row_dimensions[1].height = 16
-    write(ws, 'A2', "Source", S.BLACK, italic=True, size=8, align=S.left_indent)
+    write(ws, 'A2', "Source & find", S.BLACK, italic=True, size=8, align=S.left_indent)
     for y in HIST:
-        write_link(ws, f'{COL[y]}2', "10-K", D.filing_url(y), color=S.BLUE, size=8, align=S.center)
+        write_link(ws, f'{COL[y]}2', "10-K", D.filing_url(y), color=S.BLUE, size=8, align=S.center,
+                   hint=D.COVER_HINTS["filing_fy2025"])
     write(ws, 'G2', "Projected", S.ACCENT, italic=True, size=8, align=S.center)
 
 
@@ -57,11 +58,14 @@ write(cov, 'B8', "Fiscal year ends late January / early February; FY2025 ended F
 write(cov, 'B10', "FONT / COLOR CONVENTION", S.DARK, bold=True, size=12)
 write(cov, 'B11', "Blue font  =  figures reported by the company (click value or 10-K link for source)", S.BLUE, bold=True, size=11)
 write(cov, 'B12', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
-write(cov, 'B13', "Red font  =  analyst assumptions — source link in col L, justification in col M", S.RED, bold=True, size=11)
+write(cov, 'B13', "Red font  =  analyst assumptions — justification in col L, source & where to find in col M", S.RED, bold=True, size=11)
 write(cov, 'B15', "SOURCES", S.DARK, bold=True, size=12)
-write_link(cov, 'B16', "SEC EDGAR XBRL company facts, CIK 0001397187 (Forms 10-K)", D.SOURCES["edgar_xbrl"], color=S.BLUE, size=10)
-write_link(cov, 'B17', "FY2025 Form 10-K (ended Feb 1, 2026)", D.filing_url("FY2025"), color=S.BLUE, size=10)
-write_link(cov, 'B18', "Q2 FY2026 results & FY2026 guidance (Sep 3, 2026 earnings release)", D.SOURCES["earnings_sep2026"], color=S.BLUE, size=10)
+write_link(cov, 'B16', "SEC EDGAR filings, CIK 0001397187 (Forms 10-K)", D.SOURCES["edgar_xbrl"],
+           color=S.BLUE, size=10, hint=D.COVER_HINTS["edgar_xbrl"])
+write_link(cov, 'B17', "FY2025 Form 10-K (ended Feb 1, 2026)", D.filing_url("FY2025"),
+           color=S.BLUE, size=10, hint=D.COVER_HINTS["filing_fy2025"])
+write_link(cov, 'B18', "Q2 FY2026 results & FY2026 guidance (Sep 3, 2026 earnings release)", D.SOURCES["earnings_sep2026"],
+           color=S.BLUE, size=10, hint=D.COVER_HINTS["earnings_sep2026"])
 write(cov, 'B19', "TABS", S.DARK, bold=True, size=12)
 write(cov, 'B20', "Assumptions  \u2022  Income Statement  \u2022  Balance Sheet  \u2022  Cash Flow", S.BLACK, size=10)
 write(cov, 'B22', "Built from scratch for the GIS IR selection assignment. Units: US$ thousands unless noted.", S.BLACK, italic=True, size=9)
@@ -92,13 +96,14 @@ def a_row(key, label, hist_vals, proj_vals, fmt=PCT, justify_key=""):
     for i, y in enumerate(PROJ):
         write(asum, f'{COL[y]}{r[0]}', proj_vals[i], S.RED, size=10, numfmt=fmt, align=S.right)
     if justify_key:
-        write_assumption_docs(asum, r[0], 'L', 'M', justify_key, D.JUST, D.ASSUMPTION_SRC)
+        write_assumption_docs(asum, r[0], 'L', 'M', justify_key, D.JUST, D.ASSUMPTION_SRC,
+                              hints=D.SOURCE_HINT)
     r[0] += 1
 
 rev, cogs = D.IS['revenue'], D.IS['cogs']
 a_section("GROWTH & MARGINS")
 write(asum, 'L3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
-write(asum, 'M3', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(asum, 'M3', "Source & where to find", S.ACCENT, bold=True, size=9, align=S.left_indent)
 a_row('rev_growth', "Revenue growth %",
       [None, rev['FY2023']/rev['FY2022']-1, rev['FY2024']/rev['FY2023']-1, rev['FY2025']/rev['FY2024']-1],
       [-0.061, 0.010, 0.030, 0.040, 0.040], justify_key="3s_rev_growth")

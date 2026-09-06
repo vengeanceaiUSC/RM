@@ -78,12 +78,23 @@ def write(ws, cell, value, color=BLACK, bold=False, size=10, numfmt=None,
     return c
 
 
+def format_source_text(label, hint=None):
+    """Combine clickable label with a one-line 'where to find' cue for the reader."""
+    if hint:
+        return f"{label}\nFind: {hint}"
+    return label
+
+
 def write_link(ws, cell, text, url, color=BLUE, bold=False, size=10, numfmt=None,
-               align=None, fillc=None, bdr=None, italic=False, underline="single"):
-    c = write(ws, cell, text, color=color, bold=bold, size=size, numfmt=numfmt,
-              align=align, fillc=fillc, bdr=bdr, italic=italic)
+               align=None, fillc=None, bdr=None, italic=False, underline="single", hint=None):
+    display = format_source_text(text, hint)
+    c = write(ws, cell, display, color=color, bold=bold, size=size, numfmt=numfmt,
+              align=align or left, fillc=fillc, bdr=bdr, italic=italic)
     c.hyperlink = url
     c.font = font(color=color, bold=bold, size=size, italic=italic, underline=underline)
+    if hint:
+        c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+        ws.row_dimensions[c.row].height = max(ws.row_dimensions[c.row].height or 15, 42)
     return c
 
 
@@ -98,35 +109,45 @@ def write_reported(ws, cell, value, source_url=None, bold=False, size=10, numfmt
     return c
 
 
-def write_internal_link(ws, cell, text, location, color=BLUE, size=8, italic=True):
+def write_internal_link(ws, cell, text, location, color=BLUE, size=8, italic=True, hint=None):
     """Clickable link to another cell/tab in this workbook (location e.g. 'WACC!C12')."""
-    c = write(ws, cell, text, color, italic=italic, size=size, align=left)
+    display = format_source_text(text, hint)
+    c = write(ws, cell, display, color, italic=italic, size=size, align=left)
     c.hyperlink = Hyperlink(ref=c.coordinate, location=location)
     c.font = font(color=color, italic=italic, size=size, underline="single")
+    if hint:
+        c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+        ws.row_dimensions[c.row].height = max(ws.row_dimensions[c.row].height or 15, 42)
     return c
 
 
 def write_assumption_docs(ws, row, justify_col, source_col, key, justify_dict, src_dict,
-                          internal_location=None, extra_source_col=None, extra_label=None, extra_url=None):
-    """Write justification then clickable source in the next column to the right."""
+                          internal_location=None, extra_source_col=None, extra_label=None,
+                          extra_url=None, extra_hint=None, hints=None):
+    """Write justification then clickable source (with optional find-hint) in the next column."""
     if key in justify_dict:
         c = ws[f"{justify_col}{row}"]
         c.value = justify_dict[key]
         c.font = font(color=BLACK, italic=True, size=8)
         c.alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
+    hint = (hints or {}).get(key)
     src = src_dict.get(key)
     if internal_location:
         label = src[0] if src else "Model cross-reference"
-        write_internal_link(ws, f"{source_col}{row}", label, internal_location, size=9)
+        write_internal_link(ws, f"{source_col}{row}", label, internal_location,
+                            size=9, hint=hint)
     elif src:
         label, url = src
         if url:
             write_link(ws, f"{source_col}{row}", label, url, color=BLUE, size=9,
-                       italic=True, underline="single", align=left)
-            ws[f"{source_col}{row}"].alignment = Alignment(
-                horizontal='left', vertical='center', wrap_text=True)
+                       italic=True, underline="single", hint=hint)
         else:
-            write(ws, f"{source_col}{row}", label, BLACK, italic=True, size=8, align=left)
+            text = format_source_text(label, hint)
+            write(ws, f"{source_col}{row}", text, BLACK, italic=True, size=8, align=left)
+            if hint:
+                ws[f"{source_col}{row}"].alignment = Alignment(
+                    horizontal='left', vertical='top', wrap_text=True)
+                ws.row_dimensions[row].height = max(ws.row_dimensions[row].height or 15, 42)
     if extra_source_col and extra_label and extra_url:
         write_link(ws, f"{extra_source_col}{row}", extra_label, extra_url,
-                   color=BLUE, size=8, italic=True, underline="single", align=left)
+                   color=BLUE, size=8, italic=True, underline="single", hint=extra_hint)
