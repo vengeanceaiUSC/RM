@@ -160,6 +160,8 @@ v_row('sumpv', "Sum of PV of explicit FCF (FY26\u2013FY30)", f"=SUM(D{DR['pv']}:
 v_row('g', "Terminal growth rate (g)", 0.0225, fmt=PCT, red=True)
 v_row('tv', "Terminal value = FCF\u2085\u00d7(1+g)/(WACC\u2212g)",
       f"=H{DR['ufcf']}*(1+C{VR['g']})/({wref('wacc')}-C{VR['g']})")
+v_row('implied_exit', "  Implied terminal EV/EBITDA (sanity check)",
+      f"=C{VR['tv']}/(H{DR['ebit']}+H{DR['da']})", fmt=MULT)
 v_row('pvtv', "PV of terminal value", f"=C{VR['tv']}/(1+{wref('wacc')})^H{DR['period']}", bold=True)
 v_row('ev', "Enterprise value", f"=C{VR['sumpv']}+C{VR['pvtv']}", bold=True, top=True)
 v_row('cash', "Plus: cash & equivalents (FY2025)", D.MKT['cash'], color=S.BLUE)
