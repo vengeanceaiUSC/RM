@@ -108,7 +108,7 @@ def write_internal_link(ws, cell, text, location, color=BLUE, size=8, italic=Tru
 
 def write_assumption_docs(ws, row, justify_col, source_col, key, justify_dict, src_dict,
                           internal_location=None, extra_source_col=None, extra_label=None, extra_url=None):
-    """Write ~20-word justification and clickable source link(s) for red assumptions."""
+    """Write clickable source (source_col) immediately LEFT of justification (justify_col)."""
     if key in justify_dict:
         c = ws[f"{justify_col}{row}"]
         c.value = justify_dict[key]

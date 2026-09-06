@@ -25,7 +25,7 @@ YEAR_OF = {c: y for y, c in COL.items()}
 PREV = {c: COLS[i-1] for i, c in enumerate(COLS) if i > 0}
 
 A, ISN, BSN, CFN = "Assumptions", "Income Statement", "Balance Sheet", "Cash Flow"
-WIDTHS = {'A': 46, 'B': 2, 'C': 12, 'D': 12, 'E': 12, 'F': 12, 'G': 12, 'H': 12, 'I': 12, 'J': 12, 'K': 12, 'L': 44, 'M': 28}
+WIDTHS = {'A': 40, 'C': 11, 'D': 11, 'E': 11, 'F': 11, 'G': 11, 'H': 11, 'I': 11, 'J': 11, 'K': 11, 'L': 24, 'M': 40}
 
 wb = Workbook()
 
@@ -57,7 +57,7 @@ write(cov, 'B8', "Fiscal year ends late January / early February; FY2025 ended F
 write(cov, 'B10', "FONT / COLOR CONVENTION", S.DARK, bold=True, size=12)
 write(cov, 'B11', "Blue font  =  figures reported by the company (click value or 10-K link for source)", S.BLUE, bold=True, size=11)
 write(cov, 'B12', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
-write(cov, 'B13', "Red font  =  analyst assumptions / inputs (justification + clickable source link)", S.RED, bold=True, size=11)
+write(cov, 'B13', "Red font  =  analyst assumptions — source link in col L, justification in col M", S.RED, bold=True, size=11)
 write(cov, 'B15', "SOURCES", S.DARK, bold=True, size=12)
 write_link(cov, 'B16', "SEC EDGAR XBRL company facts, CIK 0001397187 (Forms 10-K)", D.SOURCES["edgar_xbrl"], color=S.BLUE, size=10)
 write_link(cov, 'B17', "FY2025 Form 10-K (ended Feb 1, 2026)", D.filing_url("FY2025"), color=S.BLUE, size=10)
@@ -92,13 +92,13 @@ def a_row(key, label, hist_vals, proj_vals, fmt=PCT, justify_key=""):
     for i, y in enumerate(PROJ):
         write(asum, f'{COL[y]}{r[0]}', proj_vals[i], S.RED, size=10, numfmt=fmt, align=S.right)
     if justify_key:
-        write_assumption_docs(asum, r[0], 'L', 'M', justify_key, D.JUST, D.ASSUMPTION_SRC)
+        write_assumption_docs(asum, r[0], 'M', 'L', justify_key, D.JUST, D.ASSUMPTION_SRC)
     r[0] += 1
 
 rev, cogs = D.IS['revenue'], D.IS['cogs']
 a_section("GROWTH & MARGINS")
-write(asum, 'L3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
-write(asum, 'M3', "Source", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(asum, 'L3', "Source (click link)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(asum, 'M3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 a_row('rev_growth', "Revenue growth %",
       [None, rev['FY2023']/rev['FY2022']-1, rev['FY2024']/rev['FY2023']-1, rev['FY2025']/rev['FY2024']-1],
       [-0.061, 0.010, 0.030, 0.040, 0.040], justify_key="3s_rev_growth")
