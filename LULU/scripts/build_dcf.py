@@ -109,7 +109,7 @@ def wref(key):
 # ------------------------------------------------------------------ SCENARIOS (built before DCF so base-case drivers can link here)
 scn = wb.create_sheet("Scenarios")
 scn.sheet_view.showGridLines = False
-S.set_col_widths(scn, {'A': 28, 'B': 26, 'C': 16, 'D': 38, 'F': 11, 'G': 11, 'H': 11})
+S.set_col_widths(scn, {'A': 38, 'B': 26, 'C': 16, 'D': 38, 'F': 11, 'G': 11, 'H': 11})
 write(scn, 'A1', "SCENARIO ANALYSIS", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
     scn[f'{c}1'].fill = S.fill(S.DARK)
@@ -288,7 +288,7 @@ YEAR_MAP = {"F": 1, "G": 2, "H": 3, "I": 4, "J": 5}
 # ------------------------------------------------------------------ DCF (base — linked to Scenarios → Base column G)
 dcf = wb.create_sheet("DCF")
 dcf.sheet_view.showGridLines = False
-S.set_col_widths(dcf, {'A': 30, 'B': 26, 'C': 16, 'D': 36, 'E': 12, 'F': 11, 'G': 11, 'H': 11, 'I': 11, 'J': 11, 'K': 8, 'L': 16, 'M': 36})
+S.set_col_widths(dcf, {'A': 48, 'B': 26, 'C': 16, 'D': 36, 'E': 12, 'F': 11, 'G': 11, 'H': 11, 'I': 11, 'J': 11, 'K': 8, 'L': 16, 'M': 36})
 write(dcf, 'A1', "DISCOUNTED CASH FLOW \u2014 BASE CASE  (US$ thousands)", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
     dcf[f'{c}1'].fill = S.fill(S.DARK)
