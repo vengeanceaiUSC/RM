@@ -164,15 +164,15 @@ JUST = {
     "sc_capex_pct": "5.0% capex to revenue aligned with recent investment intensity and continued global store expansion plans.",
     "sc_nwc_pct": "7.5% of revenue change for ΔNWC; ties working-capital swings to sales trajectory per historical sensitivity.",
     # DCF valuation
-    "dcf_exitm": "8.0x FY2030E exit EV/EBITDA; above trough, below premium peers, roughly one turn above Gordon-implied multiple.",
+    "dcf_exitm": "8.0x FY2030E exit EV/EBITDA; mid-point of terminal football field (6.5–9.5x); ~1 turn above Gordon-implied ~7x.",
     # Comps — peer multiples
     "comps_nke": "Nike ~18x forward EV/EBITDA illustrative; mature global athletic benchmark with slower growth than LULU peak.",
     "comps_deck": "Deckers ~15x reference; premium footwear peer with HOKA/UGG momentum and strong brand heat.",
     "comps_onon": "On Holding ~25x; high-growth athletic peer setting upper bound for premium positioning and white space.",
     "comps_ads": "adidas ~12x; global incumbent in restructuring with moderate growth and complex brand portfolio.",
     "comps_vfc": "VFC ~10x; challenged multi-brand apparel operator representing lower bound for scaled apparel peers.",
-    "comps_ff_ev_lo": "4.5x EV/EBITDA low case on FY2025A; distressed trough pricing near current market de-rating.",
-    "comps_ff_ev_hi": "7.5x EV/EBITDA high case on FY2025A; partial recovery before terminal year, below historical peaks.",
+    "comps_ff_ev_lo": "6.5x on FY2030E terminal EBITDA; bear exit below Gordon-implied ~7x; brackets DCF downside.",
+    "comps_ff_ev_hi": "9.5x on FY2030E terminal EBITDA; bull exit above 8.0x DCF base; still below peer median ~15x.",
     "comps_ff_pe_lo": "10x P/E low on FY2026E EPS; trough earnings multiple after guidance reset and sentiment de-rating.",
     "comps_ff_pe_hi": "18x P/E high on FY2026E EPS; modest recovery case still below historical premium LULU multiples.",
     # Sensitivity axes (summary)

@@ -36,7 +36,7 @@ write(cov, 'B7', "Recommendation:  LONG / OVERWEIGHT", S.GREEN, bold=True, size=
 write(cov, 'B9', "FONT / COLOR CONVENTION", S.DARK, bold=True, size=12)
 write(cov, 'B10', "Blue font  =  figures reported by the company (click value or source link)", S.BLUE, bold=True, size=11)
 write(cov, 'B11', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
-write(cov, 'B12', "Red font  =  analyst assumptions / inputs (justification + clickable source link)", S.RED, bold=True, size=11)
+write(cov, 'B12', "Red font  =  analyst assumptions / inputs (justification + clickable source in col B on WACC)", S.RED, bold=True, size=11)
 write(cov, 'B14', "TABS", S.DARK, bold=True, size=12)
 write(cov, 'B15', "WACC  \u2022  DCF (base case + sensitivity)  \u2022  Scenarios  \u2022  Comps / Football Field", S.BLACK, size=10)
 write(cov, 'B17', "SOURCES", S.DARK, bold=True, size=12)
@@ -49,11 +49,13 @@ write(cov, 'B23', "Built from scratch for the GIS IR selection assignment.", S.B
 # ------------------------------------------------------------------ WACC
 wacc = wb.create_sheet("WACC")
 wacc.sheet_view.showGridLines = False
-S.set_col_widths(wacc, {'A': 44, 'B': 2, 'C': 16, 'D': 48, 'E': 30})
+S.set_col_widths(wacc, {'A': 36, 'B': 26, 'C': 14, 'D': 44})
 write(wacc, 'A1', "WEIGHTED AVERAGE COST OF CAPITAL", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D']:
     wacc[f'{c}1'].fill = S.fill(S.DARK)
 wacc.row_dimensions[1].height = 16
+write(wacc, 'B2', "Source (click link)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(wacc, 'D2', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 WR = {}
 r = [3]
 def w_row(key, label, value, color, fmt=PCT, bold=False, top=False, doc_key=None):
@@ -65,7 +67,7 @@ def w_row(key, label, value, color, fmt=PCT, bold=False, top=False, doc_key=None
     else:
         write(wacc, f'C{r[0]}', value, color, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
     if doc_key:
-        write_assumption_docs(wacc, r[0], 'D', 'E', doc_key, D.JUST, D.ASSUMPTION_SRC)
+        write_assumption_docs(wacc, r[0], 'D', 'B', doc_key, D.JUST, D.ASSUMPTION_SRC)
     r[0] += 1
 
 write(wacc, 'A2', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)
@@ -117,7 +119,7 @@ def s_assum(key, label, bear, base, bull, fmt=PCT, doc_key=None, internal_locati
 
 write(scn, 'A3', "Key assumptions (5-yr forecast)", S.ACCENT, bold=True, size=10)
 write(scn, 'F3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
-write(scn, 'G3', "Source", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(scn, 'G3', "Source (click link)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 s_assum('g1', "FY2026E revenue growth", -0.090, -0.061, -0.040, doc_key='sc_g1')
 s_assum('gterm', "FY2027\u2013FY2030E revenue growth (avg)", -0.010, 0.028, 0.060, doc_key='sc_gterm')
 s_assum('m1', "FY2026E EBIT margin", 0.125, 0.139, 0.150, doc_key='sc_m1')
@@ -506,6 +508,11 @@ c_row('ebitda', "FY2025A EBITDA (EBIT + D&A)",
       D.IS['operating_income']['FY2025'] + D.CF['d_and_a']['FY2025'])
 comps[f"C{CM['ebitda']}"].value = f"={D.IS['operating_income']['FY2025']}+{D.CF['d_and_a']['FY2025']}"
 comps[f"C{CM['ebitda']}"].font = S.font(color=S.BLACK)
+CM['ebitda30'] = rr[0]
+write(comps, f'A{rr[0]}', "FY2030E terminal EBITDA (DCF EBIT + D&A)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'C{rr[0]}', f"=DCF!C{VR['ebitda']}", S.BLACK, size=10, numfmt=NUM, align=S.right)
+write_internal_link(comps, f'D{rr[0]}', "↳ DCF base case", f"'DCF'!C{VR['ebitda']}")
+rr[0] += 1
 c_row('eps26', "FY2026E diluted EPS (guidance midpoint)", 9.61, color=S.BLUE, fmt=EPSFMT,
       source_url=D.SOURCES["earnings_sep2026"], source_label="Release")
 c_row('cash', "Cash & equivalents", D.MKT['cash'],
@@ -578,36 +585,41 @@ rr[0] += 1
 write(comps, f'A{rr[0]}', "Rationale for 8.0x", S.BLACK, bold=True, size=10, align=S.left_indent)
 rr[0] += 1
 for bullet in [
-    "\u2022  Above current LULU (~3.5x) \u2014 assumes partial recovery from trough, not full re-rating",
-    "\u2022  Above comps football-field high (7.5x on FY2025A) \u2014 terminal year has higher EBITDA & normalized margins",
-    "\u2022  Below premium-growth peers (ONON ~25x, DECK ~15x) \u2014 reflects Americas maturity",
-    "\u2022  ~1 turn above Gordon-implied exit multiple \u2014 conservative buffer vs perpetuity math",
-    "\u2022  Well below historical LULU peak multiples (20\u201330x) \u2014 avoids heroic assumptions",
+    "\u2022  Mid-point of terminal football field (6.5\u20139.5x on FY2030E EBITDA) \u2014 8.0x sits between bear and bull exit",
+    "\u2022  Above Gordon-implied exit (~7x) \u2014 ~1 turn buffer vs perpetuity math on terminal FCF",
+    "\u2022  Below premium-growth peers (ONON ~25x, DECK ~15x) \u2014 reflects Americas maturity at terminal",
+    "\u2022  Above current LULU (~3.5x on FY2025A) \u2014 assumes partial recovery, not full re-rating to historical peaks",
+    "\u2022  Peer simple avg ~16x not used \u2014 terminal multiple discounted for lower terminal growth vs ONON/NKE",
 ]:
     write(comps, f'A{rr[0]}', bullet, S.BLACK, size=9, align=S.left_indent)
     rr[0] += 1
 rr[0] += 1
 
-write(comps, f'A{rr[0]}', "Methodology / multiple ranges (FY2025A \u2014 football field)", S.ACCENT, bold=True, size=10)
+write(comps, f'A{rr[0]}', "Methodology / multiple ranges (FY2030E terminal EBITDA \u2014 football field)", S.ACCENT, bold=True, size=10)
 rr[0] += 1
 write(comps, f'A{rr[0]}', "Method", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
 write(comps, f'C{rr[0]}', "Low mult.", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
 write(comps, f'D{rr[0]}', "High mult.", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
 write(comps, f'E{rr[0]}', "Implied px (low)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
 write(comps, f'F{rr[0]}', "Implied px (high)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
+write(comps, f'G{rr[0]}', "Lo justification", S.WHITE, bold=True, size=9, fillc=S.DARK, align=S.left_indent)
+write(comps, f'H{rr[0]}', "Hi justification", S.WHITE, bold=True, size=9, fillc=S.DARK, align=S.left_indent)
+write(comps, f'I{rr[0]}', "Lo source", S.WHITE, bold=True, size=9, fillc=S.DARK, align=S.left_indent)
+write(comps, f'J{rr[0]}', "Hi source", S.WHITE, bold=True, size=9, fillc=S.DARK, align=S.left_indent)
 rr[0] += 1
 
-def ff_ev_ebitda(label, lo, hi):
+def ff_ev_ebitda(label, lo, hi, ebitda_key='ebitda30'):
     write(comps, f'A{rr[0]}', label, S.BLACK, size=10, align=S.left_indent)
     write(comps, f'C{rr[0]}', lo, S.RED, size=10, numfmt=MULT, align=S.center)
     write(comps, f'D{rr[0]}', hi, S.RED, size=10, numfmt=MULT, align=S.center)
     for outcol, mcol in [('E', 'C'), ('F', 'D')]:
-        f = f"=(C{CM['ebitda']}*{mcol}{rr[0]}+C{CM['cash']})/C{CM['sh']}"
+        f = f"=(C{CM[ebitda_key]}*{mcol}{rr[0]}+C{CM['cash']})/C{CM['sh']}"
         write(comps, f'{outcol}{rr[0]}', f, S.BLACK, size=10, numfmt=MONEY, align=S.center)
     write_assumption_docs(comps, rr[0], 'G', 'I', 'comps_ff_ev_lo', D.JUST, D.ASSUMPTION_SRC)
     write(comps, f'H{rr[0]}', D.JUST['comps_ff_ev_hi'], S.BLACK, italic=True, size=7, align=S.left_indent)
     src_hi = D.ASSUMPTION_SRC['comps_ff_ev_hi']
-    write_link(comps, f'J{rr[0]}', src_hi[0], src_hi[1], color=S.BLUE, size=7, italic=True)
+    write(comps, f'J{rr[0]}', f'=HYPERLINK("{src_hi[1]}","↳ {src_hi[0]}")', S.BLACK, italic=True, size=7)
+    comps[f'J{rr[0]}'].font = S.font(color=S.BLUE, italic=True, size=7, underline="single")
     rr[0] += 1
 
 def ff_pe(label, lo, hi):
@@ -623,7 +635,14 @@ def ff_pe(label, lo, hi):
     write_link(comps, f'J{rr[0]}', src_hi[0], src_hi[1], color=S.BLUE, size=7, italic=True)
     rr[0] += 1
 
-ff_ev_ebitda("EV / EBITDA (FY2025A)", 4.5, 7.5)
+ff_ev_ebitda("EV / EBITDA (FY2030E terminal)", 6.5, 9.5)
+# DCF exit-method row (8.0x on same terminal EBITDA base)
+exit_ff_row = rr[0]
+write(comps, f'A{exit_ff_row}', "DCF exit method (8.0x on FY2030E EBITDA)", S.BLACK, bold=True, size=10, align=S.left_indent)
+write(comps, f'C{exit_ff_row}', f"=DCF!C{VR['exitm']}", S.BLACK, bold=True, size=10, numfmt=MULT, align=S.center)
+write(comps, f'E{exit_ff_row}', f"=(C{CM['ebitda30']}*C{exit_ff_row}+C{CM['cash']})/C{CM['sh']}", S.BLACK, bold=True, size=10, numfmt=MONEY, align=S.center)
+write_internal_link(comps, f'I{exit_ff_row}', "↳ DCF exit multiple", f"'DCF'!C{VR['exitm']}")
+rr[0] += 1
 ff_pe("P / E (FY2026E EPS)", 10.0, 18.0)
 # DCF range row references DCF sheet outputs
 write(comps, f'A{rr[0]}', "DCF (bear \u2013 bull)", S.BLACK, size=10, align=S.left_indent)
