@@ -142,17 +142,19 @@ a_row('sbc', "Stock-based compensation ($)", [D.CF['sbc'][y] for y in HIST], [62
       justify_key="3s_sbc")
 
 a_section("WORKING CAPITAL & BALANCE SHEET DRIVERS")
-oca = {y: D.BS['current_assets'][y]-D.BS['cash'][y]-D.BS['inventories'][y] for y in HIST}
+oca = {y: D.BS['current_assets'][y]-D.BS['cash'][y]-D.BS['ar'][y]-D.BS['inventories'][y] for y in HIST}
 onca = {y: D.BS['total_assets'][y]-D.BS['current_assets'][y]-D.BS['ppe_net'][y]-D.BS['rou_asset'][y]-D.BS['goodwill_intang'][y] for y in HIST}
 ocl = {y: D.BS['current_liab'][y]-D.BS['accounts_payable'][y]-D.BS['accrued_liab'][y]-D.BS['op_lease_cur'][y] for y in HIST}
 oncl = {y: D.BS['total_liab'][y]-D.BS['current_liab'][y]-D.BS['op_lease_noncur'][y]-D.BS['deferred_tax'][y] for y in HIST}
 a_row('inv_pct', "Inventories % of COGS", [D.BS['inventories'][y]/cogs[y] for y in HIST], [0.340, 0.335, 0.330, 0.330, 0.330],
       justify_key="3s_inv_pct")
+a_row('ar_pct', "Accounts receivable % of revenue", [D.BS['ar'][y]/rev[y] for y in HIST], [0.017]*5,
+      justify_key="3s_ar")
 a_row('ap_pct', "Accounts payable % of COGS", [D.BS['accounts_payable'][y]/cogs[y] for y in HIST], [0.068]*5,
       justify_key="3s_ap_pct")
 a_row('accr_pct', "Accrued liabilities % of revenue", [D.BS['accrued_liab'][y]/rev[y] for y in HIST], [0.058]*5,
       justify_key="3s_accr_pct")
-a_row('oca_pct', "Other current assets % of revenue", [oca[y]/rev[y] for y in HIST], [0.068]*5,
+a_row('oca_pct', "Other current assets % of revenue", [oca[y]/rev[y] for y in HIST], [0.051]*5,
       justify_key="3s_oca_pct")
 a_row('rou_pct', "Operating lease ROU asset % of revenue", [D.BS['rou_asset'][y]/rev[y] for y in HIST], [0.147]*5,
       justify_key="3s_rou_pct")
@@ -329,10 +331,12 @@ write(bs, f'A{r[0]}', "Cash & cash equivalents", S.BLACK, size=10, align=S.left_
 for y in HIST:
     write_reported(bs, f'{COL[y]}{r[0]}', D.BS['cash'][y], D.filing_url(y), size=10, numfmt=NUM)
 r[0] += 1  # projected cash filled after CF is built
+bs_rep('ar', "Accounts receivable, net", D.BS['ar'], lambda c: f"={isr('rev', c)}*{ar('ar_pct', c)}",
+       justify_key="3s_ar")
 bs_rep('inv', "Inventories", D.BS['inventories'], lambda c: f"={isr('cogs', c)}*{ar('inv_pct', c)}", justify_key="3s_inv_pct")
 bs_plug('oca', "Other current assets", oca, lambda c: f"={isr('rev', c)}*{ar('oca_pct', c)}", justify_key="3s_oca_pct")
 bs_rep('tca', "Total current assets", D.BS['current_assets'],
-       lambda c: f"={c}{BR['cash']}+{c}{BR['inv']}+{c}{BR['oca']}", bold=True, top=True)
+       lambda c: f"={c}{BR['cash']}+{c}{BR['ar']}+{c}{BR['inv']}+{c}{BR['oca']}", bold=True, top=True)
 bs_sub("Non-current assets:")
 bs_rep('ppe', "Property & equipment, net", D.BS['ppe_net'],
        lambda c: f"={PREV[c]}{BR['ppe']}+{isr('rev', c)}*{ar('capex_pct', c)}-{isr('rev', c)}*{ar('da_pct', c)}",
@@ -416,6 +420,7 @@ cf_row('ni', "Net income", D.CF['net_income'], lambda c: f"={isr2('ni', c)}")
 cf_row('da', "Depreciation & amortization", D.CF['d_and_a'], lambda c: f"={isr2('rev', c)}*{ar('da_pct', c)}", justify_key="3s_da_pct")
 cf_row('sbc', "Stock-based compensation", D.CF['sbc'], lambda c: f"={ar('sbc', c)}", justify_key="3s_sbc")
 wc_start = r[0]
+cf_row('d_ar', "  (Incr.)/decr. in accounts receivable", None, lambda c: f"=-{delta('ar', c)}", justify_key="3s_ar")
 cf_row('d_inv', "  (Incr.)/decr. in inventories", None, lambda c: f"=-{delta('inv', c)}", justify_key="3s_inv_pct")
 cf_row('d_oca', "  (Incr.)/decr. in other current assets", None, lambda c: f"=-{delta('oca', c)}", justify_key="3s_oca_pct")
 cf_row('d_rou', "  (Incr.)/decr. in ROU assets", None, lambda c: f"=-{delta('rou', c)}", justify_key="3s_rou_pct")

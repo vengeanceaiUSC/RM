@@ -50,6 +50,7 @@ IS = {
 # ---------------------------------------------------------------------------
 BS = {
     "cash":            {"FY2022": 1154867, "FY2023": 2243971, "FY2024": 1984336, "FY2025": 1807202},
+    "ar":              {"FY2022": 132906,  "FY2023": 124769,  "FY2024": 120173,  "FY2025": 190657},
     "inventories":     {"FY2022": 1447367, "FY2023": 1323602, "FY2024": 1442081, "FY2025": 1700753},
     "current_assets":  {"FY2022": 3159453, "FY2023": 4060577, "FY2024": 3980302, "FY2025": 4262701},
     "ppe_net":         {"FY2022": 1269614, "FY2023": 1545811, "FY2024": 1780617, "FY2025": 2033720},
@@ -175,7 +176,7 @@ JUST = {
     "sc_da_pct": "4.5% D&A / sales = FY25 496,228 / 11,102,600 on the 10-K cash-flow statement.",
     "sc_capex_pct": "FY26 7.0% is $735M on $10.4B sales, not FY25 $11.1B. Since 7.0% steps toward FY25 6.1%, we assume a fade: DCF 5.5% = (7.0+6.0+5.5+5.0+4.0)/5.",
     "sc_capex_sales": "FY26 sales are $10.35–$10.50B (earnings). Use that $10.4B year as the 7% denominator, not FY25 $11.1B.",
-    "sc_nwc_pct": "7.5% of revenue change for ΔNWC; ties working-capital swings to sales trajectory per historical sensitivity.",
+    "sc_nwc_pct": "7.5% of Δsales is operating NWC: AR + inventory + other CA − AP − accrued. AR is on the 10-K ($190,657); not omitted.",
     # DCF valuation
     "dcf_exitm": "8.0x FY2030E exit EV/EBITDA; mid-point of terminal football field (6.5–9.5x); ~1 turn above Gordon-implied ~7x.",
     # Comps — peer multiples
@@ -206,7 +207,8 @@ JUST = {
     "3s_inv_pct": "Inventory 33–34% of COGS; slight normalization from FY25 build as Americas demand softens and clears.",
     "3s_ap_pct": "AP 6.8% of COGS; holds near FY25 level reflecting vendor terms and production payment cadence.",
     "3s_accr_pct": "Accrued liabilities 5.8% of revenue; stable comp, marketing, and operating accrual ratio.",
-    "3s_oca_pct": "OCA 6.8% = FY25 current assets 4,262,701 − cash 1,807,202 − inventories 1,700,753, as % of revenue (not the prepaid line alone).",
+    "3s_ar": "AR 1.7% of sales = FY25 Accounts receivable, net 190,657 / 11,102,600. Wholesale and marketplace receivables; hold the FY25 mix.",
+    "3s_oca_pct": "OCA 5.1% is current assets minus cash, AR, and inventory (prepaids / tax receivables). AR is its own line, not inside OCA.",
     "3s_rou_pct": "ROU assets 14.7% of revenue; lease-intensive store model, stable vs FY25 operating lease footprint.",
     "3s_onca_pct": "ONCA 3.0% = FY25 total assets − CA − PPE − ROU − GW (338,947); matches earnings 'deferred taxes and other NC assets'.",
     "3s_olc_pct": "Current lease liabilities 2.7% of revenue; short-term portion of operating lease obligations.",
@@ -268,6 +270,7 @@ ASSUMPTION_SRC = {
     "3s_inv_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
     "3s_ap_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
     "3s_accr_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
+    "3s_ar": ("LULU FY2025 10-K: Accounts receivable, net", filing_url("FY2025")),
     "3s_oca_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
     "3s_rou_pct": ("LULU lease disclosures (10-K)", filing_url("FY2025")),
     "3s_onca_pct": ("LULU balance sheet (10-K)", filing_url("FY2025")),
@@ -302,7 +305,7 @@ SOURCE_HINT = {
     "sc_da_pct": 'Ctrl+F "Depreciation and amortization" → 496,228 on this 10-K HTML (not the SEC viewer). ÷ "Net revenue" 11,102,600 = 4.5%.',
     "sc_capex_pct": 'Ctrl+F "680,802" → FY25 capex $680.8M. Ctrl+F "11,102,600" → FY25 sales $11.1B. Ctrl+F "$725.0 million and $745.0 million" → FY26 capex mid $735M.',
     "sc_capex_sales": 'Ctrl+F "$10.350 billion to $10.500 billion" → FY26 net revenue guide (one hit). Mid $10.425B.',
-    "sc_nwc_pct": 'Ctrl+F "Inventories" → 1,700,753 | "Accounts payable" → 331,421 | "Accrued liabilities and other" → 662,982',
+    "sc_nwc_pct": 'Ctrl+F "Accounts receivable, net" → 190,657. Ctrl+F "Inventories" → 1,700,753. Ctrl+F "Accounts payable" → 331,421. Ctrl+F "Accrued liabilities and other" → 662,982. NWC = AR + Inv + other CA − AP − accrued; 7.5% of Δsales.',
     # DCF / comps
     "dcf_exitm": 'Ctrl+F "EV / EBITDA" → LULU ~4.99x on page; model terminal exit 8.0x (assumption)',
     "comps_nke": 'Ctrl+F "EV / EBITDA" → 11.97. Model uses 12.0x.',
@@ -331,7 +334,8 @@ SOURCE_HINT = {
     "3s_inv_pct": 'Ctrl+F "Inventories" → 1,700,753 ÷ "Cost of goods sold" 4,818,468 = 35.3%',
     "3s_ap_pct": 'Ctrl+F "Accounts payable" → 331,421 ÷ "Cost of goods sold" 4,818,468 = 6.9%',
     "3s_accr_pct": 'Ctrl+F "Accrued liabilities and other" → 662,982 ÷ "Net revenue" 11,102,600 = 6.0%',
-    "3s_oca_pct": 'Ctrl+F "Total current assets" → 4,262,701 minus "Cash and cash equivalents" 1,807,202 minus "Inventories" 1,700,753 = 754,746 (6.8% of revenue)',
+    "3s_ar": 'Ctrl+F "Accounts receivable, net" (one hit on the BS) → 190,657 ($000). 190,657 / 11,102,600 = 1.7% of sales. Model holds 1.7%.',
+    "3s_oca_pct": 'OCA = "Total current assets" 4,262,701 − cash 1,807,202 − "Accounts receivable, net" 190,657 − "Inventories" 1,700,753 = 564,089 (5.1% of sales). AR is not inside this residual.',
     "3s_rou_pct": 'Ctrl+F "Right-of-use lease assets" → 1,630,181 ÷ "Net revenue" 11,102,600 = 14.7%',
     "3s_onca_pct": 'Ctrl+F "Total assets" 8,456,743 − current assets − "Property and equipment, net" − "Right-of-use lease assets" − goodwill/intangibles = 338,947 (3.0%)',
     "3s_olc_pct": 'Ctrl+F "Current lease liabilities" → 298,724 ÷ "Net revenue" 11,102,600 = 2.7%',
