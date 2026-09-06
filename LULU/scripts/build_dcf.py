@@ -119,6 +119,10 @@ s_assum('m1', "FY2026E EBIT margin", 0.125, 0.139, 0.150)
 s_assum('mterm', "Terminal (FY2030E) EBIT margin", 0.120, 0.155, 0.190)
 s_assum('wacc', "WACC", 0.110, 0.100, 0.090)
 s_assum('g', "Terminal growth", 0.015, 0.0225, 0.030)
+s_assum('tax', "Cash tax rate", 0.300, 0.270, 0.250)
+s_assum('da_pct', "D&A % of revenue", 0.045, 0.045, 0.045)
+s_assum('capex_pct', "Capex % of revenue", 0.055, 0.050, 0.045)
+s_assum('nwc_pct', "NWC build % of \u0394revenue", 0.080, 0.075, 0.070)
 
 rr[0] += 1
 write(scn, f'A{rr[0]}', "5-year forecast paths (by scenario)", S.ACCENT, bold=True, size=10)
@@ -128,7 +132,7 @@ def put(row, lab):
     write(scn, f'A{row}', lab, S.BLACK, size=9, align=S.left_indent)
 
 cur = rr[0]
-rev_rows, mar_rows, fcf_rows = {}, {}, {}
+rev_rows, mar_rows, ebit_rows, nopat_rows, da_rows, capex_rows, dnwc_rows, fcf_rows = {}, {}, {}, {}, {}, {}, {}, {}
 for t in range(1, 6):
     rev_rows[t] = cur
     put(cur, f"  Revenue \u2013 year {t}")
@@ -147,16 +151,48 @@ for t in range(1, 6):
         write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=PCT, align=S.right)
     cur += 1
 for t in range(1, 6):
+    ebit_rows[t] = cur
+    put(cur, f"  EBIT \u2013 year {t}")
+    for col in ['C', 'D', 'E']:
+        f = f"={col}{rev_rows[t]}*{col}{mar_rows[t]}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    nopat_rows[t] = cur
+    put(cur, f"  NOPAT \u2013 year {t}")
+    for col in ['C', 'D', 'E']:
+        f = f"={col}{ebit_rows[t]}*(1-{col}{SC['tax']})"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    da_rows[t] = cur
+    put(cur, f"  D&A \u2013 year {t}")
+    for col in ['C', 'D', 'E']:
+        f = f"={col}{rev_rows[t]}*{col}{SC['da_pct']}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    capex_rows[t] = cur
+    put(cur, f"  Capex \u2013 year {t}")
+    for col in ['C', 'D', 'E']:
+        f = f"={col}{rev_rows[t]}*{col}{SC['capex_pct']}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    dnwc_rows[t] = cur
+    put(cur, f"  \u0394NWC \u2013 year {t}")
+    for col in ['C', 'D', 'E']:
+        prev_rev = f"{col}{rev_rows[t-1]}" if t > 1 else str(BASE_REV)
+        f = f"={col}{SC['nwc_pct']}*({col}{rev_rows[t]}-{prev_rev})"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
     fcf_rows[t] = cur
     put(cur, f"  Unlevered FCF \u2013 year {t}")
     for col in ['C', 'D', 'E']:
-        prev_rev = f"{col}{rev_rows[t-1]}" if t > 1 else str(BASE_REV)
-        ebit = f"{col}{rev_rows[t]}*{col}{mar_rows[t]}"
-        nopat = f"({ebit})*(1-0.27)"
-        da = f"{col}{rev_rows[t]}*0.045"
-        capex = f"{col}{rev_rows[t]}*0.05"
-        dnwc = f"0.075*({col}{rev_rows[t]}-{prev_rev})"
-        write(scn, f'{col}{cur}', f"={nopat}+{da}-{capex}-{dnwc}", S.BLACK, size=9, numfmt=NUM, align=S.right)
+        f = (f"={col}{nopat_rows[t]}+{col}{da_rows[t]}"
+             f"-{col}{capex_rows[t]}-{col}{dnwc_rows[t]}")
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
     cur += 1
 
 cur += 1
@@ -186,12 +222,15 @@ write(scn, f'A{cur}', "Current price $%.2f; cash $%s k; net debt $0 (net-cash ba
 def bref(key):
     return f"Scenarios!$D${SC[key]}"
 
+def sbase(row):
+    return f"Scenarios!$D${row}"
+
 YEAR_MAP = {"D": 1, "E": 2, "F": 3, "G": 4, "H": 5}
 
 # ------------------------------------------------------------------ DCF (base — linked to Scenarios → Base column D)
 dcf = wb.create_sheet("DCF")
 dcf.sheet_view.showGridLines = False
-S.set_col_widths(dcf, {'A': 42, 'B': 2, 'C': 13, 'D': 14, 'E': 13, 'F': 13, 'G': 13, 'H': 13})
+S.set_col_widths(dcf, {'A': 42, 'B': 2, 'C': 13, 'D': 14, 'E': 13, 'F': 13, 'G': 13, 'H': 13, 'I': 11})
 write(dcf, 'A1', "DISCOUNTED CASH FLOW \u2014 BASE CASE  (US$ thousands)", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
     dcf[f'{c}1'].fill = S.fill(S.DARK)
@@ -200,48 +239,77 @@ write_link(dcf, 'C3', "10-K source", D.filing_url("FY2025"), color=S.BLUE, size=
 for y in FY:
     write(dcf, f'{FCOL[y]}2', y, S.WHITE, bold=True, size=10, align=S.center, fillc=S.ACCENT)
 write(dcf, 'A3', "Forecast drivers linked to Scenarios tab \u2192 Base case (column D)", S.GREY, italic=True, size=9, align=S.left_indent)
+write(dcf, 'I2', "\u0394 vs Scenarios", S.ACCENT, bold=True, size=8, align=S.center)
+write(dcf, 'I3', "(should be 0)", S.GREY, italic=True, size=7, align=S.center)
 dcf.row_dimensions[1].height = 16
 
 DR = {}
 r = [5]
-def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, bold=False, top=False, dbl=False, red=False):
+
+def _sc_status(row_num, sc_rows, fmt=NUM):
+    tol = "0.0001" if fmt == PCT else "0.5"
+    parts = [f"ABS({c}{row_num}-Scenarios!$D${sc_rows[YEAR_MAP[c]]})" for c in FCOLS]
+    return f'=IF(MAX({",".join(parts)})<{tol},"OK","CHECK")'
+
+def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, bold=False,
+          top=False, dbl=False, red=False, sc_rows=None, sc_sign=1):
     DR[key] = r[0]
+    row_num = r[0]
     bdr = S.top_double if dbl else (S.top_border if top else None)
-    write(dcf, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
+    write(dcf, f'A{row_num}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
     if cval is not None:
-        write_reported(dcf, f'C{r[0]}', cval, D.filing_url("FY2025"), bold=bold, size=10, numfmt=fmt, bdr=bdr)
+        write_reported(dcf, f'C{row_num}', cval, D.filing_url("FY2025"), bold=bold, size=10, numfmt=fmt, bdr=bdr)
     for y in FY:
         c = FCOL[y]
         col = S.RED if red else color_p
-        write(dcf, f'{c}{r[0]}', proj_fn(c), col, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+        write(dcf, f'{c}{row_num}', proj_fn(c), col, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+    if sc_rows:
+        if sc_sign == -1:
+            tol = "0.5"
+            parts = [f"ABS({c}{row_num}+Scenarios!$D${sc_rows[YEAR_MAP[c]]})" for c in FCOLS]
+            status = f'=IF(MAX({",".join(parts)})<{tol},"OK","CHECK")'
+        else:
+            status = _sc_status(row_num, sc_rows, fmt)
+        write(dcf, f'I{row_num}', status, S.BLACK, bold=bold, size=8, align=S.center)
     r[0] += 1
 
 PREVF = {"D": "C", "E": "D", "F": "E", "G": "F", "H": "G"}
 
-# Forecast rows — revenue & margin pulled from Scenarios Base path; growth is derived
+# Forecast rows — each line links to Scenarios base (column D); col I = reconciliation check
 d_row('rev', "Net revenue", BASE_REV,
-      lambda c: f"=Scenarios!D{rev_rows[YEAR_MAP[c]]}", color_c=S.BLUE)
+      lambda c: f"=Scenarios!D{rev_rows[YEAR_MAP[c]]}", sc_rows=rev_rows)
 d_row('growth', "Revenue growth %", None,
       lambda c: f"={c}{DR['rev']}/{PREVF[c]}{DR['rev']}-1", fmt=PCT)
 d_row('margin', "EBIT (operating) margin %", None,
-      lambda c: f"=Scenarios!D{mar_rows[YEAR_MAP[c]]}", fmt=PCT)
-d_row('ebit', "EBIT", f"={D.IS['operating_income']['FY2025']}" if False else D.IS['operating_income']['FY2025'],
-      lambda c: f"={c}{DR['rev']}*{c}{DR['margin']}", color_c=S.BLUE, bold=True, top=True)
-d_row('taxes', "Less: cash taxes on EBIT", None, lambda c: f"=-{c}{DR['ebit']}*{wref('tax')}")
-d_row('nopat', "NOPAT", None, lambda c: f"={c}{DR['ebit']}+{c}{DR['taxes']}", bold=True, top=True)
-d_row('da_pct', "  D&A % of revenue", None, lambda c: 0.045, fmt=PCT, red=True)
-d_row('da', "Plus: depreciation & amortization", None, lambda c: f"={c}{DR['rev']}*{c}{DR['da_pct']}")
-d_row('capex_pct', "  Capex % of revenue", None, lambda c: 0.050, fmt=PCT, red=True)
-d_row('capex', "Less: capital expenditures", None, lambda c: f"=-{c}{DR['rev']}*{c}{DR['capex_pct']}")
-d_row('nwc_pct', "  NWC % of revenue", None, lambda c: 0.075, fmt=PCT, red=True)
+      lambda c: f"=Scenarios!D{mar_rows[YEAR_MAP[c]]}", fmt=PCT, sc_rows=mar_rows)
+d_row('ebit', "EBIT", D.IS['operating_income']['FY2025'],
+      lambda c: f"=Scenarios!D{ebit_rows[YEAR_MAP[c]]}", color_c=S.BLUE, bold=True, top=True,
+      sc_rows=ebit_rows)
+d_row('taxes', "Less: cash taxes on EBIT", None,
+      lambda c: f"=-Scenarios!D{ebit_rows[YEAR_MAP[c]]}*{bref('tax')}")
+d_row('nopat', "NOPAT", None,
+      lambda c: f"=Scenarios!D{nopat_rows[YEAR_MAP[c]]}", bold=True, top=True, sc_rows=nopat_rows)
+d_row('da_pct', "  D&A % of revenue", None, lambda c: f"={bref('da_pct')}", fmt=PCT, red=True)
+d_row('da', "Plus: depreciation & amortization", None,
+      lambda c: f"=Scenarios!D{da_rows[YEAR_MAP[c]]}", sc_rows=da_rows)
+d_row('capex_pct', "  Capex % of revenue", None, lambda c: f"={bref('capex_pct')}", fmt=PCT, red=True)
+d_row('capex', "Less: capital expenditures", None,
+      lambda c: f"=-Scenarios!D{capex_rows[YEAR_MAP[c]]}", sc_rows=capex_rows, sc_sign=-1)
+d_row('nwc_pct', "  NWC build % of \u0394revenue", None, lambda c: f"={bref('nwc_pct')}", fmt=PCT, red=True)
 d_row('dnwc', "Less: increase in net working capital", None,
-      lambda c: f"=-{c}{DR['nwc_pct']}*({c}{DR['rev']}-{PREVF[c]}{DR['rev']})")
+      lambda c: f"=-Scenarios!D{dnwc_rows[YEAR_MAP[c]]}", sc_rows=dnwc_rows, sc_sign=-1)
 d_row('ufcf', "Unlevered free cash flow", None,
-      lambda c: f"={c}{DR['nopat']}+{c}{DR['da']}+{c}{DR['capex']}+{c}{DR['dnwc']}", bold=True, top=True, dbl=True)
+      lambda c: f"=Scenarios!D{fcf_rows[YEAR_MAP[c]]}", bold=True, top=True, dbl=True, sc_rows=fcf_rows)
 d_row('period', "Discount period (years)", None, lambda c: {"D": 1, "E": 2, "F": 3, "G": 4, "H": 5}[c], fmt='0')
 d_row('df', "Discount factor @ WACC", None, lambda c: f"=1/(1+{bref('wacc')})^{c}{DR['period']}", fmt='0.000')
 d_row('pv', "PV of unlevered FCF", None, lambda c: f"={c}{DR['ufcf']}*{c}{DR['df']}", bold=True, top=True)
 
+r[0] += 1
+write(dcf, f'A{r[0]}', "Scenarios linkage summary (column I should all read OK)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+chk_start, chk_end = DR['rev'], DR['ufcf']
+write(dcf, f'I{r[0]}',
+      f'=IF(COUNTIF(I{chk_start}:I{chk_end},"CHECK")=0,"ALL OK","REVIEW")',
+      S.GREEN, bold=True, size=9, align=S.center)
 r[0] += 1
 # Valuation block
 VR = {}
@@ -286,6 +354,8 @@ v_row('sh', "Diluted shares outstanding (000)", D.MKT['shares_out'], color=S.BLU
 v_row('pt', "Implied value per share", f"=C{VR['eqv']}/C{VR['sh']}", fmt=MONEY, bold=True, top=True, dbl=True)
 dcf[f"C{VR['pt']}"].font = S.font(color=S.GREEN, bold=True, size=13)
 dcf[f"C{VR['pt']}"].fill = S.fill(S.GREY)
+write(dcf, f'I{VR["pt"]}', f'=IF(ABS(C{VR["pt"]}-Scenarios!$D${pt_row})<0.05,"OK","CHECK")',
+      S.BLACK, bold=True, size=8, align=S.center)
 v_row('px', "Current share price", D.MKT['price'], fmt=MONEY, color=S.BLUE,
       source_url=D.SOURCES["nasdaq_quote"], source_label="NASDAQ")
 v_row('upside', "Implied upside / (downside)", f"=C{VR['pt']}/C{VR['px']}-1", fmt=PCT, bold=True)
