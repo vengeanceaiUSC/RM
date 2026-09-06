@@ -100,7 +100,7 @@ def a_section(title):
         asum[f'{c}{r[0]}'].fill = S.fill(S.GREY)
     r[0] += 1
 
-def a_row(key, label, hist_vals, proj_vals, fmt=PCT, justify_key=""):
+def a_row(key, label, hist_vals, proj_vals, fmt=PCT, justify_key="", extra_key=""):
     AR[key] = r[0]
     write(asum, f'A{r[0]}', label, S.BLACK, size=10, align=S.left_indent)
     for i, y in enumerate(HIST):
@@ -109,7 +109,7 @@ def a_row(key, label, hist_vals, proj_vals, fmt=PCT, justify_key=""):
     for i, y in enumerate(PROJ):
         write(asum, f'{COL[y]}{r[0]}', proj_vals[i], S.RED, size=10, numfmt=fmt, align=S.right)
     if justify_key:
-        write_row_docs(asum, r[0], justify_key)
+        write_row_docs(asum, r[0], justify_key, extra_key or None)
     r[0] += 1
 
 rev, cogs = D.IS['revenue'], D.IS['cogs']
@@ -135,7 +135,7 @@ a_section("CAPITAL & NON-CASH ITEMS")
 a_row('da_pct', "D&A % of revenue", [D.CF['d_and_a'][y]/rev[y] for y in HIST], [0.046, 0.046, 0.045, 0.045, 0.045],
       justify_key="3s_da_pct")
 a_row('capex_pct', "Capex % of revenue", [D.CF['capex'][y]/rev[y] for y in HIST], [0.070, 0.060, 0.055, 0.050, 0.050],
-      justify_key="3s_capex_pct")
+      justify_key="3s_capex_pct", extra_key="sc_capex_sales")
 a_row('sbc', "Stock-based compensation ($)", [D.CF['sbc'][y] for y in HIST], [62000]*5, fmt=NUM,
       justify_key="3s_sbc")
 

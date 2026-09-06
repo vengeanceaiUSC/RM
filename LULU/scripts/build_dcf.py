@@ -121,7 +121,7 @@ scn.freeze_panes = 'F3'
 
 SC = {}
 rr = [4]
-def s_assum(key, label, bear, base, bull, fmt=PCT, doc_key=None, internal_location=None):
+def s_assum(key, label, bear, base, bull, fmt=PCT, doc_key=None, extra_doc_key=None, internal_location=None):
     SC[key] = rr[0]
     write(scn, f'A{rr[0]}', label, S.BLACK, size=10, align=S.left_indent)
     for col, v in zip(SCEN_COLS, [bear, base, bull]):
@@ -129,6 +129,9 @@ def s_assum(key, label, bear, base, bull, fmt=PCT, doc_key=None, internal_locati
     if doc_key:
         write_assumption_docs(scn, rr[0], DJ, DS, DC, doc_key, D.JUST, D.ASSUMPTION_SRC,
                               internal_location=internal_location, hints=D.SOURCE_HINT)
+        if extra_doc_key:
+            append_assumption_docs(scn, rr[0], DJ, DS, DC, extra_doc_key, D.JUST, D.ASSUMPTION_SRC,
+                                   hints=D.SOURCE_HINT, prefix="Also")
     rr[0] += 1
 
 write(scn, 'A3', "Key assumptions (5-yr forecast)", S.ACCENT, bold=True, size=10)
@@ -147,7 +150,8 @@ s_assum('wacc', "WACC", 0.115, 0.105, 0.095, doc_key='sc_wacc',
 s_assum('g', "Terminal growth", 0.015, 0.0225, 0.030, doc_key='sc_g')
 s_assum('tax', "Cash tax rate", 0.320, 0.300, 0.280, doc_key='sc_tax')
 s_assum('da_pct', "D&A % of revenue", 0.045, 0.045, 0.045, doc_key='sc_da_pct')
-s_assum('capex_pct', "Capex % of revenue", 0.070, 0.055, 0.045, doc_key='sc_capex_pct')
+s_assum('capex_pct', "Capex % of revenue", 0.070, 0.055, 0.045, doc_key='sc_capex_pct',
+        extra_doc_key='sc_capex_sales')
 s_assum('nwc_pct', "NWC build % of \u0394revenue", 0.080, 0.075, 0.070, doc_key='sc_nwc_pct')
 
 rr[0] += 1
@@ -346,7 +350,7 @@ d_row('da_pct', "  D&A % of revenue", None, lambda c: f"={bref('da_pct')}", fmt=
 d_row('da', "Plus: depreciation & amortization", None,
       lambda c: f"=Scenarios!{SCEN_BASE}{da_rows[YEAR_MAP[c]]}", sc_rows=da_rows)
 d_row('capex_pct', "  Capex % of revenue", None, lambda c: f"={bref('capex_pct')}", fmt=PCT, red=True,
-      justify_key="sc_capex_pct")
+      justify_key="sc_capex_pct", extra_doc_key="sc_capex_sales")
 d_row('capex', "Less: capital expenditures", None,
       lambda c: f"=-Scenarios!{SCEN_BASE}{capex_rows[YEAR_MAP[c]]}", sc_rows=capex_rows, sc_sign=-1)
 d_row('nwc_pct', "  NWC build % of \u0394revenue", None, lambda c: f"={bref('nwc_pct')}", fmt=PCT, red=True,
