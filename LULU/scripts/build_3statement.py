@@ -25,7 +25,7 @@ YEAR_OF = {c: y for y, c in COL.items()}
 PREV = {c: COLS[i-1] for i, c in enumerate(COLS) if i > 0}
 
 A, ISN, BSN, CFN = "Assumptions", "Income Statement", "Balance Sheet", "Cash Flow"
-WIDTHS = {'A': 40, 'C': 11, 'D': 11, 'E': 11, 'F': 11, 'G': 11, 'H': 11, 'I': 11, 'J': 11, 'K': 11, 'L': 24, 'M': 40}
+WIDTHS = {'A': 38, 'C': 11, 'D': 11, 'E': 11, 'F': 11, 'G': 11, 'H': 11, 'I': 11, 'J': 11, 'K': 11, 'L': 38, 'M': 26}
 
 wb = Workbook()
 
@@ -92,13 +92,13 @@ def a_row(key, label, hist_vals, proj_vals, fmt=PCT, justify_key=""):
     for i, y in enumerate(PROJ):
         write(asum, f'{COL[y]}{r[0]}', proj_vals[i], S.RED, size=10, numfmt=fmt, align=S.right)
     if justify_key:
-        write_assumption_docs(asum, r[0], 'M', 'L', justify_key, D.JUST, D.ASSUMPTION_SRC)
+        write_assumption_docs(asum, r[0], 'L', 'M', justify_key, D.JUST, D.ASSUMPTION_SRC)
     r[0] += 1
 
 rev, cogs = D.IS['revenue'], D.IS['cogs']
 a_section("GROWTH & MARGINS")
-write(asum, 'L3', "Source (click link)", S.ACCENT, bold=True, size=9, align=S.left_indent)
-write(asum, 'M3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(asum, 'L3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(asum, 'M3', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 a_row('rev_growth', "Revenue growth %",
       [None, rev['FY2023']/rev['FY2022']-1, rev['FY2024']/rev['FY2023']-1, rev['FY2025']/rev['FY2024']-1],
       [-0.061, 0.010, 0.030, 0.040, 0.040], justify_key="3s_rev_growth")

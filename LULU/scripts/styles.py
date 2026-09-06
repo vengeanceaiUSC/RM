@@ -108,7 +108,7 @@ def write_internal_link(ws, cell, text, location, color=BLUE, size=8, italic=Tru
 
 def write_assumption_docs(ws, row, justify_col, source_col, key, justify_dict, src_dict,
                           internal_location=None, extra_source_col=None, extra_label=None, extra_url=None):
-    """Write clickable source (source_col) immediately LEFT of justification (justify_col)."""
+    """Write justification then clickable source in the next column to the right."""
     if key in justify_dict:
         c = ws[f"{justify_col}{row}"]
         c.value = justify_dict[key]
@@ -117,21 +117,16 @@ def write_assumption_docs(ws, row, justify_col, source_col, key, justify_dict, s
     src = src_dict.get(key)
     if internal_location:
         label = src[0] if src else "Model cross-reference"
-        write_internal_link(ws, f"{source_col}{row}", f"↳ {label}", internal_location)
+        write_internal_link(ws, f"{source_col}{row}", label, internal_location, size=9)
     elif src:
         label, url = src
         if url:
-            # HYPERLINK formula renders reliably as blue underlined text in Excel
-            c = ws[f"{source_col}{row}"]
-            c.value = f'=HYPERLINK("{url}","↳ {label}")'
-            c.font = font(color=BLUE, italic=True, size=8, underline="single")
-            c.alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
+            write_link(ws, f"{source_col}{row}", label, url, color=BLUE, size=9,
+                       italic=True, underline="single", align=left)
+            ws[f"{source_col}{row}"].alignment = Alignment(
+                horizontal='left', vertical='center', wrap_text=True)
         else:
-            write(ws, f"{source_col}{row}", f"↳ {label}", BLACK, italic=True, size=8, align=left)
-    if extra_source_col and extra_label:
-        if extra_url:
-            c = ws[f"{extra_source_col}{row}"]
-            c.value = f'=HYPERLINK("{extra_url}","↳ {extra_label}")'
-            c.font = font(color=BLUE, italic=True, size=8, underline="single")
-        elif extra_label:
-            write(ws, f"{extra_source_col}{row}", extra_label, BLACK, italic=True, size=8, align=left)
+            write(ws, f"{source_col}{row}", label, BLACK, italic=True, size=8, align=left)
+    if extra_source_col and extra_label and extra_url:
+        write_link(ws, f"{extra_source_col}{row}", extra_label, extra_url,
+                   color=BLUE, size=8, italic=True, underline="single", align=left)
