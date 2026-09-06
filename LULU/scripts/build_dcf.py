@@ -89,7 +89,104 @@ wacc[f"C{WR['wacc']}"].fill = S.fill(S.GREY)
 def wref(key):
     return f"WACC!C{WR[key]}"
 
-# ------------------------------------------------------------------ DCF (base)
+# ------------------------------------------------------------------ SCENARIOS (built before DCF so base-case drivers can link here)
+scn = wb.create_sheet("Scenarios")
+scn.sheet_view.showGridLines = False
+S.set_col_widths(scn, {'A': 40, 'B': 2, 'C': 15, 'D': 15, 'E': 15})
+write(scn, 'A1', "SCENARIO ANALYSIS", S.WHITE, bold=True, size=12, fillc=S.DARK)
+for c in ['B', 'C', 'D', 'E']:
+    scn[f'{c}1'].fill = S.fill(S.DARK)
+scn.row_dimensions[1].height = 16
+write(scn, 'C2', "Bear", S.WHITE, bold=True, size=11, align=S.center, fillc=S.ACCENT)
+write(scn, 'D2', "Base", S.WHITE, bold=True, size=11, align=S.center, fillc=S.GREEN)
+write(scn, 'E2', "Bull", S.WHITE, bold=True, size=11, align=S.center, fillc=S.DARK)
+
+SC = {}
+rr = [4]
+def s_assum(key, label, bear, base, bull, fmt=PCT):
+    SC[key] = rr[0]
+    write(scn, f'A{rr[0]}', label, S.BLACK, size=10, align=S.left_indent)
+    for col, v in zip(['C', 'D', 'E'], [bear, base, bull]):
+        write(scn, f'{col}{rr[0]}', v, S.RED, size=10, numfmt=fmt, align=S.right)
+    rr[0] += 1
+
+write(scn, 'A3', "Key assumptions (5-yr forecast)", S.ACCENT, bold=True, size=10)
+s_assum('g1', "FY2026E revenue growth", -0.090, -0.061, -0.040)
+s_assum('gterm', "FY2027\u2013FY2030E revenue growth (avg)", -0.010, 0.028, 0.060)
+s_assum('m1', "FY2026E EBIT margin", 0.125, 0.139, 0.150)
+s_assum('mterm', "Terminal (FY2030E) EBIT margin", 0.120, 0.155, 0.190)
+s_assum('wacc', "WACC", 0.110, 0.100, 0.090)
+s_assum('g', "Terminal growth", 0.015, 0.0225, 0.030)
+
+rr[0] += 1
+write(scn, f'A{rr[0]}', "5-year forecast paths (by scenario)", S.ACCENT, bold=True, size=10)
+rr[0] += 1
+
+def put(row, lab):
+    write(scn, f'A{row}', lab, S.BLACK, size=9, align=S.left_indent)
+
+cur = rr[0]
+rev_rows, mar_rows, fcf_rows = {}, {}, {}
+for t in range(1, 6):
+    rev_rows[t] = cur
+    put(cur, f"  Revenue \u2013 year {t}")
+    for col in ['C', 'D', 'E']:
+        if t == 1:
+            f = f"={BASE_REV}*(1+{col}{SC['g1']})"
+        else:
+            f = f"={col}{rev_rows[t-1]}*(1+{col}{SC['gterm']})"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    mar_rows[t] = cur
+    put(cur, f"  EBIT margin \u2013 year {t}")
+    for col in ['C', 'D', 'E']:
+        f = f"={col}{SC['m1']}+({col}{SC['mterm']}-{col}{SC['m1']})*{(t-1)}/4"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=PCT, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    fcf_rows[t] = cur
+    put(cur, f"  Unlevered FCF \u2013 year {t}")
+    for col in ['C', 'D', 'E']:
+        prev_rev = f"{col}{rev_rows[t-1]}" if t > 1 else str(BASE_REV)
+        ebit = f"{col}{rev_rows[t]}*{col}{mar_rows[t]}"
+        nopat = f"({ebit})*(1-0.27)"
+        da = f"{col}{rev_rows[t]}*0.045"
+        capex = f"{col}{rev_rows[t]}*0.05"
+        dnwc = f"0.075*({col}{rev_rows[t]}-{prev_rev})"
+        write(scn, f'{col}{cur}', f"={nopat}+{da}-{capex}-{dnwc}", S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+
+cur += 1
+write(scn, f'A{cur}', "Enterprise value (DCF)", S.DARK, bold=True, size=10, align=S.left_indent)
+ev_row = cur
+for col in ['C', 'D', 'E']:
+    fcf_cells = ",".join(f"{col}{fcf_rows[t]}" for t in range(1, 6))
+    lastf = f"{col}{fcf_rows[5]}"
+    f = (f"=NPV({col}{SC['wacc']},{fcf_cells})"
+         f"+({lastf}*(1+{col}{SC['g']})/({col}{SC['wacc']}-{col}{SC['g']}))/(1+{col}{SC['wacc']})^5")
+    write(scn, f'{col}{cur}', f, S.BLACK, bold=True, size=10, numfmt=NUM, align=S.right, bdr=S.top_border)
+cur += 1
+write(scn, f'A{cur}', "Implied share price", S.DARK, bold=True, size=11, align=S.left_indent)
+pt_row = cur
+for col in ['C', 'D', 'E']:
+    f = f"=({col}{ev_row}+{D.MKT['cash']}-{D.MKT['debt']})/{D.MKT['shares_out']}"
+    color = S.GREEN if col == 'D' else S.BLACK
+    write(scn, f'{col}{cur}', f, color, bold=True, size=12, numfmt=MONEY, align=S.right, bdr=S.top_double, fillc=S.GREY)
+cur += 1
+write(scn, f'A{cur}', "Upside / (downside) vs current", S.DARK, bold=True, size=10, align=S.left_indent)
+for col in ['C', 'D', 'E']:
+    write(scn, f'{col}{cur}', f"={col}{pt_row}/{D.MKT['price']}-1", S.BLACK, bold=True, size=10, numfmt=PCT, align=S.right)
+cur += 2
+write(scn, f'A{cur}', "Current price $%.2f; cash $%s k; net debt $0 (net-cash balance sheet)." % (D.MKT['price'], f"{D.MKT['cash']:,}"),
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+
+def bref(key):
+    return f"Scenarios!$D${SC[key]}"
+
+YEAR_MAP = {"D": 1, "E": 2, "F": 3, "G": 4, "H": 5}
+
+# ------------------------------------------------------------------ DCF (base — linked to Scenarios → Base column D)
 dcf = wb.create_sheet("DCF")
 dcf.sheet_view.showGridLines = False
 S.set_col_widths(dcf, {'A': 42, 'B': 2, 'C': 13, 'D': 13, 'E': 13, 'F': 13, 'G': 13, 'H': 13})
@@ -99,10 +196,11 @@ for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
 write(dcf, 'C2', "FY2025A", S.BLUE, bold=True, size=10, align=S.center)
 for y in FY:
     write(dcf, f'{FCOL[y]}2', y, S.WHITE, bold=True, size=10, align=S.center, fillc=S.ACCENT)
+write(dcf, 'A3', "Forecast drivers linked to Scenarios tab \u2192 Base case (column D)", S.GREY, italic=True, size=9, align=S.left_indent)
 dcf.row_dimensions[1].height = 16
 
 DR = {}
-r = [4]
+r = [5]
 def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, bold=False, top=False, dbl=False, red=False):
     DR[key] = r[0]
     bdr = S.top_double if dbl else (S.top_border if top else None)
@@ -117,10 +215,13 @@ def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, b
 
 PREVF = {"D": "C", "E": "D", "F": "E", "G": "F", "H": "G"}
 
-# Assumption rows (red)
-d_row('growth', "Revenue growth %", None, lambda c: {"D": -0.061, "E": 0.010, "F": 0.025, "G": 0.030, "H": 0.030}[c], fmt=PCT, red=True)
-d_row('rev', "Net revenue", BASE_REV, lambda c: f"={PREVF[c]}{DR['rev']}*(1+{c}{DR['growth']})", color_c=S.BLUE)
-d_row('margin', "EBIT (operating) margin %", None, lambda c: {"D": 0.139, "E": 0.150, "F": 0.155, "G": 0.155, "H": 0.155}[c], fmt=PCT, red=True)
+# Forecast rows — revenue & margin pulled from Scenarios Base path; growth is derived
+d_row('rev', "Net revenue", BASE_REV,
+      lambda c: f"=Scenarios!D{rev_rows[YEAR_MAP[c]]}", color_c=S.BLUE)
+d_row('growth', "Revenue growth %", None,
+      lambda c: f"={c}{DR['rev']}/{PREVF[c]}{DR['rev']}-1", fmt=PCT)
+d_row('margin', "EBIT (operating) margin %", None,
+      lambda c: f"=Scenarios!D{mar_rows[YEAR_MAP[c]]}", fmt=PCT)
 d_row('ebit', "EBIT", f"={D.IS['operating_income']['FY2025']}" if False else D.IS['operating_income']['FY2025'],
       lambda c: f"={c}{DR['rev']}*{c}{DR['margin']}", color_c=S.BLUE, bold=True, top=True)
 d_row('taxes', "Less: cash taxes on EBIT", None, lambda c: f"=-{c}{DR['ebit']}*{wref('tax')}")
@@ -135,7 +236,7 @@ d_row('dnwc', "Less: increase in net working capital", None,
 d_row('ufcf', "Unlevered free cash flow", None,
       lambda c: f"={c}{DR['nopat']}+{c}{DR['da']}+{c}{DR['capex']}+{c}{DR['dnwc']}", bold=True, top=True, dbl=True)
 d_row('period', "Discount period (years)", None, lambda c: {"D": 1, "E": 2, "F": 3, "G": 4, "H": 5}[c], fmt='0')
-d_row('df', "Discount factor @ WACC", None, lambda c: f"=1/(1+{wref('wacc')})^{c}{DR['period']}", fmt='0.000')
+d_row('df', "Discount factor @ WACC", None, lambda c: f"=1/(1+{bref('wacc')})^{c}{DR['period']}", fmt='0.000')
 d_row('pv', "PV of unlevered FCF", None, lambda c: f"={c}{DR['ufcf']}*{c}{DR['df']}", bold=True, top=True)
 
 r[0] += 1
@@ -157,12 +258,12 @@ for c in ['B', 'C']:
     dcf[f'{c}{r[0]}'].fill = S.fill(S.DARK)
 r[0] += 1
 v_row('sumpv', "Sum of PV of explicit FCF (FY26\u2013FY30)", f"=SUM(D{DR['pv']}:H{DR['pv']})", bold=True)
-v_row('g', "Terminal growth rate (g)", 0.0225, fmt=PCT, red=True)
+v_row('g', "Terminal growth rate (g)", f"={bref('g')}", fmt=PCT)
 v_row('tv', "Terminal value = FCF\u2085\u00d7(1+g)/(WACC\u2212g)",
-      f"=H{DR['ufcf']}*(1+C{VR['g']})/({wref('wacc')}-C{VR['g']})")
+      f"=H{DR['ufcf']}*(1+{bref('g')})/({bref('wacc')}-{bref('g')})")
 v_row('implied_exit', "  Implied terminal EV/EBITDA (sanity check)",
       f"=C{VR['tv']}/(H{DR['ebit']}+H{DR['da']})", fmt=MULT)
-v_row('pvtv', "PV of terminal value", f"=C{VR['tv']}/(1+{wref('wacc')})^H{DR['period']}", bold=True)
+v_row('pvtv', "PV of terminal value", f"=C{VR['tv']}/(1+{bref('wacc')})^H{DR['period']}", bold=True)
 v_row('ev', "Enterprise value", f"=C{VR['sumpv']}+C{VR['pvtv']}", bold=True, top=True)
 v_row('cash', "Plus: cash & equivalents (FY2025)", D.MKT['cash'], color=S.BLUE)
 v_row('debt', "Less: total debt", -D.MKT['debt'], color=S.BLUE)
@@ -184,7 +285,7 @@ r[0] += 1
 v_row('ebitda', "Terminal EBITDA (FY2030E EBIT + D&A)", f"=H{DR['ebit']}+H{DR['da']}", bold=True)
 v_row('exitm', "Exit EV/EBITDA multiple", 8.0, fmt=MULT, red=True)
 v_row('tv2', "Terminal value (exit multiple)", f"=C{VR['ebitda']}*C{VR['exitm']}")
-v_row('pvtv2', "PV of terminal value", f"=C{VR['tv2']}/(1+{wref('wacc')})^H{DR['period']}")
+v_row('pvtv2', "PV of terminal value", f"=C{VR['tv2']}/(1+{bref('wacc')})^H{DR['period']}")
 v_row('ev2', "Enterprise value (exit method)", f"=C{VR['sumpv']}+C{VR['pvtv2']}", bold=True, top=True)
 v_row('pt2', "Implied value per share (exit method)",
       f"=(C{VR['ev2']}+C{VR['cash']}+C{VR['debt']})/C{VR['sh']}", fmt=MONEY, bold=True)
@@ -215,139 +316,6 @@ for i, wv in enumerate(waccs):
              f"+C{VR['cash']}+C{VR['debt']})/C{VR['sh']}")
         col = S.GREEN if (abs(wv-0.10) < 1e-9 and abs(g-0.0225) < 1e-9) else S.BLACK
         write(dcf, f'{gcols[j]}{rr}', f, col, size=9, numfmt=MONEY, align=S.center)
-
-# ------------------------------------------------------------------ SCENARIOS
-scn = wb.create_sheet("Scenarios")
-scn.sheet_view.showGridLines = False
-S.set_col_widths(scn, {'A': 40, 'B': 2, 'C': 15, 'D': 15, 'E': 15})
-write(scn, 'A1', "SCENARIO ANALYSIS", S.WHITE, bold=True, size=12, fillc=S.DARK)
-for c in ['B', 'C', 'D', 'E']:
-    scn[f'{c}1'].fill = S.fill(S.DARK)
-scn.row_dimensions[1].height = 16
-write(scn, 'C2', "Bear", S.WHITE, bold=True, size=11, align=S.center, fillc=S.ACCENT)
-write(scn, 'D2', "Base", S.WHITE, bold=True, size=11, align=S.center, fillc=S.GREEN)
-write(scn, 'E2', "Bull", S.WHITE, bold=True, size=11, align=S.center, fillc=S.DARK)
-
-SC = {}
-rr = [4]
-def s_assum(key, label, bear, base, bull, fmt=PCT):
-    SC[key] = rr[0]
-    write(scn, f'A{rr[0]}', label, S.BLACK, size=10, align=S.left_indent)
-    for col, v in zip(['C', 'D', 'E'], [bear, base, bull]):
-        write(scn, f'{col}{rr[0]}', v, S.RED, size=10, numfmt=fmt, align=S.right)
-    rr[0] += 1
-
-write(scn, 'A3', "Key assumptions (5-yr forecast)", S.ACCENT, bold=True, size=10)
-s_assum('g1', "FY2026E revenue growth", -0.090, -0.061, -0.040)
-s_assum('gterm', "FY2028\u2013FY2030E revenue growth (avg)", -0.010, 0.028, 0.060)
-s_assum('m1', "FY2026E EBIT margin", 0.125, 0.139, 0.150)
-s_assum('mterm', "Terminal (FY2030E) EBIT margin", 0.120, 0.155, 0.190)
-s_assum('wacc', "WACC", 0.110, 0.100, 0.090)
-s_assum('g', "Terminal growth", 0.015, 0.0225, 0.030)
-
-# Compact 5-year FCF per scenario (approximation using linear margin & growth paths)
-rr[0] += 1
-write(scn, f'A{rr[0]}', "Illustrative unlevered FCF & valuation", S.ACCENT, bold=True, size=10)
-rr[0] += 1
-
-def scen_block(col):
-    """Write a compact 5-yr UFCF + valuation in the given scenario column using
-    that column's assumptions. Revenue path: yr1 growth = g1; yrs2-5 linearly
-    interpolate to gterm. Margin path: yr1=m1 linearly to mterm by yr5."""
-    base = BASE_REV
-    # We build helper rows in columns C/D/E starting at a fixed area to the right (cols G+).
-    pass
-
-# Simpler: compute scenario outputs with explicit per-year formulas in hidden helper columns.
-# Build a mini FCF table per scenario stacked below.
-rr[0] += 0
-mini_top = rr[0]
-labels = ["Revenue growth (path)", "Net revenue", "EBIT margin (path)", "EBIT", "NOPAT (@27% tax)",
-          "+ D&A (4.5%)", "\u2212 Capex (5.0%)", "\u2212 \u0394NWC (7.5%)", "Unlevered FCF"]
-# For each scenario column we lay years FY26..FY30 vertically? That is messy in 3 columns.
-# Instead: present, per scenario, the resulting DCF outputs computed with closed-form using
-# an average-growth / average-margin simplification, transparent as formulas.
-for i, lab in enumerate([]):
-    pass
-
-# Outputs (transparent closed-form approximation):
-# Revenue_t built off base with yr1=g1 then gterm for yrs2-5.
-def rev_formula(col, t):
-    if t == 1:
-        return f"={BASE_REV}*(1+{col}{SC['g1']})"
-    return f"={col}{mini_rev_row(t-1)}*(1+{col}{SC['gterm']})"
-
-# Lay a per-scenario vertical block is complex; use a clean approach: 5 FCF rows computed
-# with margin linearly from m1 (yr1) to mterm (yr5).
-mrev = {}
-mmar = {}
-mebit = {}
-mfcf = {}
-def put(row, lab):
-    write(scn, f'A{row}', lab, S.BLACK, size=9, align=S.left_indent)
-
-# We'll create rows: for t in 1..5 -> revenue, ebit-margin, ufcf; then valuation.
-cur = mini_top
-rev_rows = {}
-for t in range(1, 6):
-    rev_rows[t] = cur
-    put(cur, f"  Revenue \u2013 year {t}")
-    for col in ['C', 'D', 'E']:
-        if t == 1:
-            f = f"={BASE_REV}*(1+{col}{SC['g1']})"
-        else:
-            f = f"={col}{rev_rows[t-1]}*(1+{col}{SC['gterm']})"
-        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
-    cur += 1
-mar_rows = {}
-for t in range(1, 6):
-    mar_rows[t] = cur
-    put(cur, f"  EBIT margin \u2013 year {t}")
-    for col in ['C', 'D', 'E']:
-        # linear from m1 (t=1) to mterm (t=5)
-        f = f"={col}{SC['m1']}+({col}{SC['mterm']}-{col}{SC['m1']})*{(t-1)}/4"
-        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=PCT, align=S.right)
-    cur += 1
-fcf_rows = {}
-for t in range(1, 6):
-    fcf_rows[t] = cur
-    put(cur, f"  Unlevered FCF \u2013 year {t}")
-    for col in ['C', 'D', 'E']:
-        prev_rev = f"{col}{rev_rows[t-1]}" if t > 1 else str(BASE_REV)
-        ebit = f"{col}{rev_rows[t]}*{col}{mar_rows[t]}"
-        nopat = f"({ebit})*(1-0.27)"
-        da = f"{col}{rev_rows[t]}*0.045"
-        capex = f"{col}{rev_rows[t]}*0.05"
-        dnwc = f"0.075*({col}{rev_rows[t]}-{prev_rev})"
-        f = f"={nopat}+{da}-{capex}-{dnwc}"
-        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
-    cur += 1
-
-cur += 1
-write(scn, f'A{cur}', "Enterprise value (DCF)", S.DARK, bold=True, size=10, align=S.left_indent)
-ev_row = cur
-for col in ['C', 'D', 'E']:
-    rng = f"{col}{fcf_rows[1]}"
-    fcf_cells = ",".join(f"{col}{fcf_rows[t]}" for t in range(1, 6))
-    lastf = f"{col}{fcf_rows[5]}"
-    f = (f"=NPV({col}{SC['wacc']},{fcf_cells})"
-         f"+({lastf}*(1+{col}{SC['g']})/({col}{SC['wacc']}-{col}{SC['g']}))/(1+{col}{SC['wacc']})^5")
-    write(scn, f'{col}{cur}', f, S.BLACK, bold=True, size=10, numfmt=NUM, align=S.right, bdr=S.top_border)
-cur += 1
-write(scn, f'A{cur}', "Implied share price", S.DARK, bold=True, size=11, align=S.left_indent)
-pt_row = cur
-for col in ['C', 'D', 'E']:
-    f = f"=({col}{ev_row}+{D.MKT['cash']}-{D.MKT['debt']})/{D.MKT['shares_out']}"
-    color = S.GREEN if col == 'D' else S.BLACK
-    write(scn, f'{col}{cur}', f, color, bold=True, size=12, numfmt=MONEY, align=S.right, bdr=S.top_double, fillc=S.GREY)
-cur += 1
-write(scn, f'A{cur}', "Upside / (downside) vs current", S.DARK, bold=True, size=10, align=S.left_indent)
-for col in ['C', 'D', 'E']:
-    f = f"={col}{pt_row}/{D.MKT['price']}-1"
-    write(scn, f'{col}{cur}', f, S.BLACK, bold=True, size=10, numfmt=PCT, align=S.right)
-cur += 2
-write(scn, f'A{cur}', "Current price $%.2f; cash $%s k; net debt $0 (net-cash balance sheet)." % (D.MKT['price'], f"{D.MKT['cash']:,}"),
-      S.BLACK, italic=True, size=8, align=S.left_indent)
 
 # ------------------------------------------------------------------ COMPS / FOOTBALL FIELD
 comps = wb.create_sheet("Comps")
