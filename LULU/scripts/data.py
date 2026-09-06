@@ -163,8 +163,8 @@ JUST = {
     # Scenarios tab
     "sc_g1": "−6.1% FY2026 revenue growth matches company guidance midpoint of −5% to −7% after Q2 FY2026 print.",
     "sc_gterm": "2.8% avg FY27–30 growth assumes gradual recovery; well below historical double-digit LULU revenue expansion.",
-    "sc_m1": "13.9% is a FY2026E model assumption — not the 13% YoY drop in Q2 operating income. Q2 OM was 18.8% (incl. 560bps tariffs); ex-tariff ~13.2%.",
-    "sc_mterm": "15.5% FY2030 EBIT margin assumes partial recovery; still materially below ~20–24% peak operating margins.",
+    "sc_m1": "FY26 13.9% is derived: Q2 OM 18.8% minus 560bps tariff refunds = 13.2% clean; we set base slightly above that run-rate.",
+    "sc_mterm": "FY30 15.5% is a recovery assumption vs FY25 10-K OM 19.9% (2,210,615 / 11,102,600); still well below FY24 peak ~23.7%.",
     "sc_wacc": "10.0% base WACC ties to CAPM build on WACC tab; drives scenario DCFs and base-case valuation.",
     "sc_g": "2.25% terminal growth approximates long-run GDP plus inflation; conservative perpetuity rate for mature apparel.",
     "sc_tax": "27% DCF cash tax is a model assumption; FY25 effective is 29.5% and FY26 guidance is ~30% (used in the 3-statement).",
@@ -224,8 +224,8 @@ ASSUMPTION_SRC = {
     # Scenarios
     "sc_g1": ("LULU Q2 FY2026 earnings release", SOURCES["earnings_sep2026"]),
     "sc_gterm": ("LULU historical revenue (10-K)", filing_url("FY2025")),
-    "sc_m1": ("LULU Q2 FY2026 earnings release", SOURCES["earnings_sep2026"]),
-    "sc_mterm": ("LULU historical EBIT margins (10-K)", filing_url("FY2025")),
+    "sc_m1": ("Q2 FY2026 release: OM 18.8% less 560bps tariffs", SOURCES["earnings_sep2026"]),
+    "sc_mterm": ("FY2025 10-K: Income from operations / revenue", filing_url("FY2025")),
     "sc_wacc": ("WACC tab: CAPM build", None),  # internal link set in build_dcf.py
     "sc_g": ("FRED: Real GDP (GDPC1)", SOURCES["fred_gdpc1"]),
     "sc_tax": ("LULU effective tax history (10-K)", filing_url("FY2025")),
@@ -284,8 +284,8 @@ SOURCE_HINT = {
     # Scenarios
     "sc_g1": 'Ctrl+F "decline of 5% to 7%" → FY2026 revenue guide; model −6.1% midpoint',
     "sc_gterm": 'Ctrl+F "Net revenue" → FY2025 11,102,600 ($000); FY27–30 growth = model assumption',
-    "sc_m1": 'Ctrl+F "decreased 190 basis points to 18.8%" — that is Q2 operating margin. "decreased 13%" is YoY $ decline in income from operations, NOT the margin. Model FY26 EBIT margin 13.9% (assumption; Q2 ex-tariff OM ≈ 18.8% − 560bps = 13.2%)',
-    "sc_mterm": 'Ctrl+F "Income from operations" → 2,210,615 ÷ "Net revenue" 11,102,600 = 19.9% FY25',
+    "sc_m1": '1) Ctrl+F "18.8%" = Q2 operating margin. 2) Ctrl+F "560 basis points" = tariff add. 3) Clean Q2 = 18.8% − 5.6% = 13.2%. Model FY26 base 13.9% sits just above that. Do not use "decreased 13%" — that is the YoY $ decline in income from operations.',
+    "sc_mterm": 'Ctrl+F "Income from operations" → 2,210,615 and "Net revenue" → 11,102,600. FY25 OM = 19.9%. Model FY30 15.5% is a partial-recovery assumption, not a reported figure.',
     "sc_wacc": 'WACC tab → Ctrl+F "WACC" → cell E = 10.0%',
     "sc_g": 'Ctrl+F "GDPC1" → FRED Real GDP series; long-run growth ~2%; model terminal g 2.25%',
     "sc_tax": 'Ctrl+F "Income tax expense" → 659,784 ÷ "Income before income tax expense" 2,238,967 = 29.5% FY25; DCF model uses 27%',
