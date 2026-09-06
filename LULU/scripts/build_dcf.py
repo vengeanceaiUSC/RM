@@ -259,10 +259,11 @@ for c in ['B', 'C']:
 r[0] += 1
 v_row('sumpv', "Sum of PV of explicit FCF (FY26\u2013FY30)", f"=SUM(D{DR['pv']}:H{DR['pv']})", bold=True)
 v_row('g', "Terminal growth rate (g)", f"={bref('g')}", fmt=PCT)
+v_row('ebitda', "Terminal EBITDA (FY2030E EBIT + D&A)", f"=H{DR['ebit']}+H{DR['da']}", bold=True, top=True)
 v_row('tv', "Terminal value = FCF\u2085\u00d7(1+g)/(WACC\u2212g)",
       f"=H{DR['ufcf']}*(1+{bref('g')})/({bref('wacc')}-{bref('g')})")
-v_row('implied_exit', "  Implied terminal EV/EBITDA (sanity check)",
-      f"=C{VR['tv']}/(H{DR['ebit']}+H{DR['da']})", fmt=MULT)
+v_row('implied_exit', "  Implied exit EV/EBITDA (Gordon Growth)",
+      f"=C{VR['tv']}/C{VR['ebitda']}", fmt=MULT)
 v_row('pvtv', "PV of terminal value", f"=C{VR['tv']}/(1+{bref('wacc')})^H{DR['period']}", bold=True)
 v_row('ev', "Enterprise value", f"=C{VR['sumpv']}+C{VR['pvtv']}", bold=True, top=True)
 v_row('cash', "Plus: cash & equivalents (FY2025)", D.MKT['cash'], color=S.BLUE)
@@ -282,14 +283,51 @@ write(dcf, f'A{r[0]}', "CROSS-CHECK \u2014 EXIT MULTIPLE METHOD", S.WHITE, bold=
 for c in ['B', 'C']:
     dcf[f'{c}{r[0]}'].fill = S.fill(S.DARK)
 r[0] += 1
-v_row('ebitda', "Terminal EBITDA (FY2030E EBIT + D&A)", f"=H{DR['ebit']}+H{DR['da']}", bold=True)
-v_row('exitm', "Exit EV/EBITDA multiple", 8.0, fmt=MULT, red=True)
-v_row('tv2', "Terminal value (exit multiple)", f"=C{VR['ebitda']}*C{VR['exitm']}")
+write(dcf, f'A{r[0]}', "Exit multiple selection (see Comps tab for peer build)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+r[0] += 1
+v_row('exitm', "Selected exit EV/EBITDA multiple (FY2030E)", 8.0, fmt=MULT, red=True)
+write(dcf, f'D{VR["exitm"]}', "Base-case terminal multiple; see Comps \u2192 Exit Multiple Build", S.BLACK, italic=True, size=8, align=S.left_indent)
+v_row('tv2', "Terminal value = Terminal EBITDA \u00d7 exit multiple", f"=C{VR['ebitda']}*C{VR['exitm']}")
 v_row('pvtv2', "PV of terminal value", f"=C{VR['tv2']}/(1+{bref('wacc')})^H{DR['period']}")
 v_row('ev2', "Enterprise value (exit method)", f"=C{VR['sumpv']}+C{VR['pvtv2']}", bold=True, top=True)
 v_row('pt2', "Implied value per share (exit method)",
       f"=(C{VR['ev2']}+C{VR['cash']}+C{VR['debt']})/C{VR['sh']}", fmt=MONEY, bold=True)
 dcf[f"C{VR['pt2']}"].font = S.font(color=S.GREEN, bold=True, size=11)
+
+r[0] += 1
+write(dcf, f'A{r[0]}', "TERMINAL VALUE RECONCILIATION (GORDON vs EXIT MULTIPLE)", S.WHITE, bold=True, size=10, fillc=S.DARK)
+for c in ['B', 'C', 'D']:
+    dcf[f'{c}{r[0]}'].fill = S.fill(S.DARK)
+r[0] += 1
+write(dcf, f'A{r[0]}', "", S.BLACK, size=9)
+write(dcf, f'B{r[0]}', "Gordon Growth", S.WHITE, bold=True, size=9, align=S.center, fillc=S.NAVY)
+write(dcf, f'C{r[0]}', "Exit Multiple", S.WHITE, bold=True, size=9, align=S.center, fillc=S.NAVY)
+write(dcf, f'D{r[0]}', "Variance", S.WHITE, bold=True, size=9, align=S.center, fillc=S.NAVY)
+r[0] += 1
+
+def recon_row(label, gordon, exit_, variance, fmt=NUM, bold=False):
+    write(dcf, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
+    write(dcf, f'B{r[0]}', gordon, S.BLACK, bold=bold, size=10, numfmt=fmt, align=S.right)
+    write(dcf, f'C{r[0]}', exit_, S.BLACK, bold=bold, size=10, numfmt=fmt, align=S.right)
+    write(dcf, f'D{r[0]}', variance, S.BLACK, bold=bold, size=10, numfmt=fmt, align=S.right)
+    r[0] += 1
+
+recon_row("Terminal value ($)",
+          f"=C{VR['tv']}", f"=C{VR['tv2']}", f"=B{r[0]}-C{r[0]}", bold=True)
+tv_var_row = r[0] - 1
+recon_row("Exit EV/EBITDA (implied vs selected)",
+          f"=C{VR['implied_exit']}", f"=C{VR['exitm']}", f"=B{r[0]}-C{r[0]}", fmt=MULT, bold=True)
+mult_var_row = r[0] - 1
+recon_row("Terminal value variance (%)",
+          "", "", f"=(B{tv_var_row}-C{tv_var_row})/B{tv_var_row}", fmt=PCT)
+recon_row("Implied share price",
+          f"=C{VR['pt']}", f"=C{VR['pt2']}", f"=B{r[0]}-C{r[0]}", fmt=MONEY, bold=True)
+# sanity check flag: multiples within 1.5 turns
+write(dcf, f'A{r[0]}', "Sanity check: multiples within \u00b11.5 turns?", S.BLACK, bold=True, size=10, align=S.left_indent)
+write(dcf, f'B{r[0]}', f'=IF(ABS(D{mult_var_row})<=1.5,"PASS","REVIEW")', S.GREEN, bold=True, size=11, align=S.center)
+write(dcf, f'C{r[0]}', f'=TEXT(D{mult_var_row},"0.0")&"x spread vs 8.0x exit multiple"', S.BLACK, italic=True, size=9, align=S.left_indent)
+write(dcf, f'D{r[0]}', "Gordon implied should bracket exit assumption", S.BLACK, italic=True, size=8, align=S.left_indent)
+r[0] += 1
 
 # ------------------------------------------------------------------ SENSITIVITY (WACC x g)
 r[0] += 2
@@ -351,7 +389,62 @@ rr[0] += 1
 write(comps, f'A{rr[0]}', "  memo: current P / E (FY2026E)", S.BLACK, italic=True, size=9, align=S.left_indent)
 write(comps, f'C{rr[0]}', f"=C{CM['px']}/C{CM['eps26']}", S.BLACK, italic=True, size=9, numfmt=MULT, align=S.right)
 rr[0] += 2
-write(comps, f'A{rr[0]}', "Methodology / multiple ranges", S.ACCENT, bold=True, size=10)
+
+# ---- Exit multiple build (supports DCF 8.0x terminal assumption) ----
+write(comps, f'A{rr[0]}', "EXIT MULTIPLE BUILD \u2014 FY2030E TERMINAL YEAR", S.ACCENT, bold=True, size=10)
+rr[0] += 1
+write(comps, f'A{rr[0]}', "Peer / reference EV/EBITDA (forward / illustrative)", S.BLACK, italic=True, size=9, align=S.left_indent)
+rr[0] += 1
+write(comps, f'A{rr[0]}', "Company", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'C{rr[0]}', "EV/EBITDA", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
+write(comps, f'D{rr[0]}', "Notes", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+rr[0] += 1
+peer_rows = [
+    ("lululemon (LULU) \u2014 current", f"=(C{CM['px']}*C{CM['sh']}-C{CM['cash']})/C{CM['ebitda']}", "Distressed trough; FY2025A EBITDA"),
+    ("Nike (NKE)", 18.0, "Mature global brand; lower growth"),
+    ("Deckers (DECK)", 15.0, "Premium footwear peer; HOKA/UGG"),
+    ("On Holding (ONON)", 25.0, "High-growth athletic peer"),
+    ("adidas (ADS)", 12.0, "Global incumbent; restructuring"),
+    ("V.F. Corp (VFC)", 10.0, "Multi-brand apparel; challenged"),
+]
+EM = {}
+for name, mult, note in peer_rows:
+    EM[name] = rr[0]
+    write(comps, f'A{rr[0]}', name, S.BLACK, size=10, align=S.left_indent)
+    if isinstance(mult, str):
+        write(comps, f'C{rr[0]}', mult, S.BLACK, size=10, numfmt=MULT, align=S.center)
+    else:
+        write(comps, f'C{rr[0]}', mult, S.RED, size=10, numfmt=MULT, align=S.center)
+    write(comps, f'D{rr[0]}', note, S.BLACK, italic=True, size=8, align=S.left_indent)
+    rr[0] += 1
+rr[0] += 1
+write(comps, f'A{rr[0]}', "Terminal multiple selection (DCF exit method)", S.ACCENT, bold=True, size=10)
+rr[0] += 1
+EM['gordon'] = rr[0]
+write(comps, f'A{rr[0]}', "Gordon Growth implied exit EV/EBITDA", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'C{rr[0]}', f"=DCF!C{VR['implied_exit']}", S.BLACK, size=10, numfmt=MULT, align=S.right)
+rr[0] += 1
+EM['selected'] = rr[0]
+write(comps, f'A{rr[0]}', "Selected exit multiple (base case)", S.BLACK, bold=True, size=10, align=S.left_indent)
+write(comps, f'C{rr[0]}', f"=DCF!C{VR['exitm']}", S.BLACK, bold=True, size=10, numfmt=MULT, align=S.right)
+rr[0] += 1
+write(comps, f'A{rr[0]}', "Spread (selected \u2212 Gordon implied)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'C{rr[0]}', f"=C{EM['selected']}-C{EM['gordon']}", S.BLACK, size=10, numfmt=MULT, align=S.right)
+rr[0] += 1
+write(comps, f'A{rr[0]}', "Rationale for 8.0x", S.BLACK, bold=True, size=10, align=S.left_indent)
+rr[0] += 1
+for bullet in [
+    "\u2022  Above current LULU (~3.5x) \u2014 assumes partial recovery from trough, not full re-rating",
+    "\u2022  Above comps football-field high (7.5x on FY2025A) \u2014 terminal year has higher EBITDA & normalized margins",
+    "\u2022  Below premium-growth peers (ONON ~25x, DECK ~15x) \u2014 reflects Americas maturity",
+    "\u2022  ~1 turn above Gordon-implied exit multiple \u2014 conservative buffer vs perpetuity math",
+    "\u2022  Well below historical LULU peak multiples (20\u201330x) \u2014 avoids heroic assumptions",
+]:
+    write(comps, f'A{rr[0]}', bullet, S.BLACK, size=9, align=S.left_indent)
+    rr[0] += 1
+rr[0] += 1
+
+write(comps, f'A{rr[0]}', "Methodology / multiple ranges (FY2025A \u2014 football field)", S.ACCENT, bold=True, size=10)
 rr[0] += 1
 write(comps, f'A{rr[0]}', "Method", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
 write(comps, f'C{rr[0]}', "Low mult.", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
