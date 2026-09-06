@@ -683,8 +683,8 @@ for ri, row in enumerate(sens):
 # =====================================================================
 # 20. COMPS
 # =====================================================================
-s = slide_base("Comparable Companies", "LULU screens cheap on absolute and relative multiples", page=pg(),
-               sources="Source: GIS estimates; peer multiples are analyst approximations for illustration")
+s = slide_base("Comparable Companies", "LULU screens cheap vs public peers; Gymshark is a private growth print, not the TV", page=pg(),
+               sources="Source: StockAnalysis public prints; Gymshark 23.5x = Guardian £1.25bn / SGB FY25 EBITDA £53.3m")
 hdr = ["Company", "EV/EBITDA", "P/E (fwd)", "Rev growth", "Op margin"]
 rows = [
     ["lululemon (LULU)", "3.5x", "10.4x", "\u22126% (FY26E)", "~20%"],
@@ -693,12 +693,14 @@ rows = [
     ["On Holding (ONON)", "14.0x", "15.2x", "20%+", "~10%"],
     ["adidas (ADS)", "9.3x", "14.2x", "mid-single", "~9%"],
     ["V.F. Corp (VFC)", "10.7x", "11.7x", "flat/decl.", "~8%"],
+    ["Gymshark (private)", "23.5x", "n.m.", "low-single", "~8% EBITDA"],
 ]
-stmt_table(s, rows, hdr, col0w=3.4, top=1.4, height=3.6, bold_rows=(0,))
-tb, tf = textbox(s, Inches(0.5), Inches(5.2), Inches(12.35), Inches(1.7))
-add_para(tf, "Read-through", 13.5, CARD, bold=True, first=True, space_after=4)
-add_para(tf, "LULU trades at a fraction of peer multiples despite sector-leading margins and a net-cash balance sheet \u2014 the discount reflects near-term growth fears, not structural inferiority", 13, INK, bullet=True, space_after=4)
-add_para(tf, "Even a partial re-rating toward the low end of the peer group (e.g., 6\u20137x EV/EBITDA) implies a materially higher share price", 13, INK, bullet=True, space_after=0)
+stmt_table(s, rows, hdr, col0w=3.4, top=1.25, height=3.85, bold_rows=(0,))
+tb, tf = textbox(s, Inches(0.5), Inches(5.2), Inches(12.35), Inches(1.75))
+add_para(tf, "Read-through \u2014 we do not average these for terminal value", 13.5, CARD, bold=True, first=True, space_after=3)
+add_para(tf, "Public 5-name mean is 10.8x; with Gymshark 12.9x. Both overstate a 2.25% g / 15.5% OM FY2030 exit", 12.5, INK, bullet=True, space_after=3)
+add_para(tf, "Selected TV is 8.0x = Deckers, ~1 turn above Gordon ~7x and a haircut from the mature public mean (DECK / ADS / VFC) of 9.3x", 12.5, INK, bullet=True, space_after=3)
+add_para(tf, "Gymshark 23.5x = £1,250m / £53.3m is a 2020 GA print on FY25 EBITDA \u2014 a growth-stage private reference, not a mature public exit", 12.5, INK, bullet=True, space_after=0)
 
 # =====================================================================
 # 21. APPENDIX: SCENARIOS
@@ -750,6 +752,7 @@ for t in [
     "Q2 FY2026 results and FY2026 guidance: company earnings release dated September 3, 2026",
     "Market data (price, shares, beta): public market sources as of early September 2026",
     "Projections, DCF and comparable-company analysis: GIS Investment Research models, built from scratch for this assignment",
+    "Gymshark private print: Guardian (2020 GA £1.25bn valuation) and SGB (FY25 EBITDA £53.3m) \u2014 23.5x is a reference, not the FY30 exit",
 ]:
     add_para(tf, t, 12.5, INK, bullet=True, space_after=5)
 add_para(tf, "Disclaimer", 14, CARD, bold=True, space_after=5)

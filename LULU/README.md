@@ -58,6 +58,7 @@ calendar year it mostly covers):
 - Tax rate 30% (FY2026 guidance); capex 5.5% blend (FY26 guided 7.0% is *up* vs FY25 6.1%, then fade); one NWC line at 7.5% of Δrevenue (AR + inv + OCA − AP − accrued; AR 1.7% of sales sits inside it)
 - WACC 10.5% (CAPM: rf 4.8% from FRED DGS10 4.77% on 2026-09-03, ERP 6.0%, β 0.95 = Damodaran unlevered Retail (Special Lines) beta because LULU has no debt; company 5Y is 0.86, ~100% equity / net cash)
 - Terminal growth 2.25%
+- FY2030E exit EV/EBITDA **8.0x** (equals Deckers; ~1 turn above Gordon-implied ~7x). Public 5-name mean is 10.8x; mature public mean (DECK/ADS/VFC) is 9.3x; Gymshark 23.5x = 2020 GA £1.25bn / FY25 EBITDA £53.3m. We do **not** average these for terminal value — Gymshark is a private growth print, not an FY30 exit.
 
 ## Reproducing the outputs
 

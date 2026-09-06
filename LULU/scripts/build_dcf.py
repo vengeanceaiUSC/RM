@@ -555,7 +555,7 @@ r[0] += 1
 # ------------------------------------------------------------------ COMPS / FOOTBALL FIELD
 comps = wb.create_sheet("Comps")
 comps.sheet_view.showGridLines = False
-S.set_col_widths(comps, {'A': 34, 'B': 26, 'C': 16, 'D': 40, 'E': 14, 'F': 14, 'G': 12, 'H': 12})
+S.set_col_widths(comps, {'A': 48, 'B': 28, 'C': 18, 'D': 44, 'E': 14, 'F': 14, 'G': 12, 'H': 12})
 write(comps, 'A1', "RELATIVE VALUATION \u2014 IMPLIED PRICE RANGES (FOOTBALL FIELD)", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
     comps[f'{c}1'].fill = S.fill(S.DARK)
@@ -628,6 +628,7 @@ peer_rows = [
     ("On Holding (ONON)", 14.0, False, "comps_onon"),
     ("adidas (ADS)", 9.3, False, "comps_ads"),
     ("V.F. Corp (VFC)", 10.7, False, "comps_vfc"),
+    ("Gymshark (private)", "=1250/53.3", False, "comps_gymshark"),
 ]
 EM = {}
 for row in peer_rows:
@@ -649,8 +650,59 @@ for row in peer_rows:
         write(comps, f'E{rr[0]}', mult, S.RED, size=10, numfmt=MULT, align=S.center)
         write_assumption_docs(comps, rr[0], DJ, DS, DC, src_key, D.JUST, D.ASSUMPTION_SRC,
                               hints=D.SOURCE_HINT)
+        if src_key == "comps_gymshark":
+            append_assumption_docs(comps, rr[0], DJ, DS, DC, "comps_gymshark_ebitda",
+                                   D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
+            write_ctrl_f(comps, f'{DC}{rr[0]}', D.GYMSHARK_CTRL_F)
     rr[0] += 1
+
+nke_r = EM["Nike (NKE)"]
+deck_r = EM["Deckers (DECK)"]
+onon_r = EM["On Holding (ONON)"]
+ads_r = EM["adidas (ADS)"]
+vfc_r = EM["V.F. Corp (VFC)"]
+gym_r = EM["Gymshark (private)"]
+
 rr[0] += 1
+write(comps, f'A{rr[0]}', "Averages (live Excel AVERAGE \u2014 shown so TV is not a blended print)", S.ACCENT, bold=True, size=10)
+rr[0] += 1
+EM['pub_mean'] = rr[0]
+write(comps, f'A{rr[0]}', "Public 5-name mean (NKE / DECK / ONON / ADS / VFC)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', f"=AVERAGE(E{nke_r},E{deck_r},E{onon_r},E{ads_r},E{vfc_r})",
+      S.BLACK, size=10, numfmt=MULT, align=S.center)
+write(comps, f'{DJ}{rr[0]}',
+      "10.8x simple mean. Too high for a 2.25% g / 15.5% OM terminal year \u2014 not the TV.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of the five public prints", S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DC}{rr[0]}', "Math: (12.0+8.0+14.0+9.3+10.7)/5 = 10.8x. Do not use as FY30 exit.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+rr[0] += 1
+EM['mature_mean'] = rr[0]
+write(comps, f'A{rr[0]}', "Mature public mean (DECK / ADS / VFC)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', f"=AVERAGE(E{deck_r},E{ads_r},E{vfc_r})",
+      S.BLACK, size=10, numfmt=MULT, align=S.center)
+write(comps, f'{DJ}{rr[0]}',
+      "~9.3x closest mature set. Still haircut ~1 turn to 8.0x for 2.25% terminal g.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of Deckers, adidas, VFC", S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DC}{rr[0]}', "Math: (8.0+9.3+10.7)/3 = 9.3x. Haircut to selected 8.0x.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+rr[0] += 1
+EM['incl_gym'] = rr[0]
+write(comps, f'A{rr[0]}', "Mean incl. Gymshark (do not use for TV)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', f"=AVERAGE(E{nke_r},E{deck_r},E{onon_r},E{ads_r},E{vfc_r},E{gym_r})",
+      S.BLACK, size=10, numfmt=MULT, align=S.center)
+write(comps, f'{DJ}{rr[0]}',
+      "~12.9x. Gymshark 23.5x is a 2020 growth print; averaging it overstates FY30 exit.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of five publics + Gymshark", S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DC}{rr[0]}', "Math: (12.0+8.0+14.0+9.3+10.7+1,250/53.3)/6 \u2248 12.9x. Not the TV.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+rr[0] += 1
+write(comps, f'A{rr[0]}',
+      "We do not average EV/EBITDA for terminal value. A 2.25% g year is not a growth-comp tape.",
+      S.BLACK, italic=True, size=9, align=S.left_indent)
+rr[0] += 2
 write(comps, f'A{rr[0]}', "Terminal multiple selection (DCF exit method)", S.ACCENT, bold=True, size=10)
 rr[0] += 1
 EM['gordon'] = rr[0]
@@ -664,14 +716,15 @@ rr[0] += 1
 write(comps, f'A{rr[0]}', "Spread (selected \u2212 Gordon implied)", S.BLACK, size=10, align=S.left_indent)
 write(comps, f'E{rr[0]}', f"=E{EM['selected']}-E{EM['gordon']}", S.BLACK, size=10, numfmt=MULT, align=S.right)
 rr[0] += 1
-write(comps, f'A{rr[0]}', "Rationale for 8.0x", S.BLACK, bold=True, size=10, align=S.left_indent)
+write(comps, f'A{rr[0]}', "Rationale for 8.0x (not the average)", S.BLACK, bold=True, size=10, align=S.left_indent)
 rr[0] += 1
 for bullet in [
-    "\u2022  Mid-point of terminal football field (6.5\u20139.5x on FY2030E EBITDA) \u2014 8.0x sits between bear and bull exit",
-    "\u2022  Above Gordon-implied exit (~7x) \u2014 ~1 turn buffer vs perpetuity math on terminal FCF",
-    "\u2022  Below premium-growth peers (ONON ~25x, DECK ~15x) \u2014 reflects Americas maturity at terminal",
-    "\u2022  Above current LULU (~3.5x on FY2025A) \u2014 assumes partial recovery, not full re-rating to historical peaks",
-    "\u2022  Peer simple avg ~16x not used \u2014 terminal multiple discounted for lower terminal growth vs ONON/NKE",
+    "\u2022  8.0x equals Deckers (7.95x rounded) \u2014 closest mature premium analog on the tape",
+    "\u2022  ~1 turn above Gordon-implied ~7x \u2014 buffer vs perpetuity math on 2.25% terminal g",
+    "\u2022  Mid-point of the 6.5\u20139.5x football field \u2014 not the 10.8x public 5-name mean",
+    "\u2022  Mature public mean (DECK / ADS / VFC) is ~9.3x; we haircut ~1 turn for 2.25% terminal g",
+    "\u2022  Gymshark 23.5x = 1,250 / 53.3 is a 2020 private growth print; averaging it (~12.9x) is not an FY30 exit",
+    "\u2022  Current LULU ~3.5x on FY2025A is a trough \u2014 8.0x assumes partial recovery, not a re-rate to ONON 14x",
 ]:
     write(comps, f'A{rr[0]}', bullet, S.BLACK, size=9, align=S.left_indent)
     rr[0] += 1
@@ -733,7 +786,8 @@ write_reported(comps, f'E{rr[0]}', D.MKT['price'], D.SOURCES["nasdaq_quote"], bo
 write_source_with_ctrl_f(comps, f'{DS}{rr[0]}', f'{DC}{rr[0]}', "NASDAQ", D.SOURCES["nasdaq_quote"],
                          D.REPORTED_HINTS["nasdaq"])
 rr[0] += 1
-write(comps, f'A{rr[0]}', "Note: peer set includes NKE, DECK, ONON, adidas, VFC; multiples are analyst ranges (red).",
+write(comps, f'A{rr[0]}',
+      "Note: public set is NKE, DECK, ONON, adidas, VFC (red). Gymshark is a private reference (23.5x = 1,250/53.3). Selected TV is 8.0x, not the average.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 
 # Link DCF exit multiple to Comps peer build + peer table

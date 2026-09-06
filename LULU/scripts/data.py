@@ -138,6 +138,8 @@ SOURCES = {
     "damodaran_betas": "https://www.stern.nyu.edu/~adamodar/New_Home_Page/datafile/Betas.html",
     "lulu_stats": "https://stockanalysis.com/stocks/lulu/statistics/",
     "lulu_forecast": "https://stockanalysis.com/stocks/lulu/forecast/",
+    "gymshark_guardian": "https://www.theguardian.com/business/2026/jul/03/gymshark-founder-ben-francis-stake-us-private-equity-firm",
+    "gymshark_sgb": "https://sgbonline.com/gymshark-delivers-6-4-percent-growth-in-fy25-profits-retreat/",
 }
 
 # FY label -> (accession, primary 10-K document)
@@ -182,15 +184,17 @@ JUST = {
     "sc_ar": "AR sits inside NWC: 190,657 / 11,102,600 = 1.7% of sales. Same NWC block as inv, OCA, AP, accrued.",
     "sc_nwc_pct": "One NWC line: 7.5% of Δsales = AR + inv + OCA − AP − accrued. AR is not a separate FCF item.",
     # DCF valuation
-    "dcf_exitm": "8.0x FY2030E exit EV/EBITDA; mid-point of terminal football field (6.5–9.5x); ~1 turn above Gordon-implied ~7x.",
+    "dcf_exitm": "8.0x equals Deckers; ~1 turn above Gordon ~7x. Public mean 10.8x and Gymshark 23.5x are growth prints, not FY30 exit.",
     # Comps — peer multiples
     "comps_nke": "Nike EV/EBITDA 12.0x equals StockAnalysis 11.97x, rounded; mature athletic benchmark.",
     "comps_deck": "Deckers EV/EBITDA 8.0x equals StockAnalysis 7.95x, rounded; closest premium-footwear peer.",
     "comps_onon": "On Holding EV/EBITDA 14.0x equals StockAnalysis 14.03x, rounded; high-growth athletic peer.",
     "comps_ads": "adidas (ADDYY) EV/EBITDA 9.3x equals StockAnalysis 9.31x; global incumbent.",
     "comps_vfc": "VFC EV/EBITDA 10.7x equals StockAnalysis 10.71x; challenged multi-brand apparel peer.",
+    "comps_gymshark": "23.5x = 1,250 / 53.3. 2020 GA EV on FY25 EBITDA; private growth print, not an FY30 exit.",
+    "comps_gymshark_ebitda": "FY25 EBITDA £53.3m (SGB). 62.3% is gross margin, not EBITDA. Margin ≈ 53.3 / 646 = 8.3%.",
     "comps_ff_ev_lo": "6.5x on FY2030E terminal EBITDA; bear exit below Gordon-implied ~7x; brackets DCF downside.",
-    "comps_ff_ev_hi": "9.5x on FY2030E terminal EBITDA; bull exit above 8.0x DCF base; still below peer median ~15x.",
+    "comps_ff_ev_hi": "9.5x on FY2030E terminal EBITDA; bull exit above 8.0x DCF base; still below public mean ~10.8x.",
     "comps_ff_pe_lo": "10x P/E low on FY2026E EPS; trough earnings multiple after guidance reset and sentiment de-rating.",
     "comps_ff_pe_hi": "18x P/E high on FY2026E EPS; modest recovery case still below historical premium LULU multiples.",
     # Sensitivity axes (summary)
@@ -256,6 +260,8 @@ ASSUMPTION_SRC = {
     "comps_onon": ("StockAnalysis: ONON EV/EBITDA", "https://stockanalysis.com/stocks/onon/statistics/"),
     "comps_ads": ("StockAnalysis: adidas (ADR)", "https://stockanalysis.com/quote/otc/ADDYY/statistics/"),
     "comps_vfc": ("StockAnalysis: VFC EV/EBITDA", "https://stockanalysis.com/stocks/vfc/statistics/"),
+    "comps_gymshark": ("Guardian: Gymshark 2020 GA £1.25bn", SOURCES["gymshark_guardian"]),
+    "comps_gymshark_ebitda": ("SGB: Gymshark FY25 EBITDA £53.3m", SOURCES["gymshark_sgb"]),
     "comps_ff_ev_lo": ("StockAnalysis: LULU EV/EBITDA", SOURCES["lulu_stats"]),
     "comps_ff_ev_hi": ("StockAnalysis: LULU valuation", SOURCES["lulu_stats"]),
     "comps_ff_pe_lo": ("StockAnalysis: LULU Forward P/E", SOURCES["lulu_stats"]),
@@ -317,12 +323,14 @@ SOURCE_HINT = {
     "sc_ar": 'Ctrl+F "Accounts receivable, net" (one hit on the BS) → 190,657. 190,657 / 11,102,600 = 1.7% of sales. Lives inside the NWC line below.',
     "sc_nwc_pct": 'One NWC. Ctrl+F "Accounts receivable, net" → 190,657 | "Inventories" → 1,700,753 | "Accounts payable" → 331,421 | "Accrued liabilities and other" → 662,982.',
     # DCF / comps
-    "dcf_exitm": 'Ctrl+F "EV / EBITDA" → LULU ~4.99x on page; model terminal exit 8.0x (assumption)',
+    "dcf_exitm": 'Ctrl+F "EV / EBITDA" → LULU ~4.99x on page; model terminal exit 8.0x equals Deckers, not the public mean',
     "comps_nke": 'Ctrl+F "EV / EBITDA" → 11.97. Model uses 12.0x.',
     "comps_deck": 'Ctrl+F "EV / EBITDA" → 7.95. Model uses 8.0x.',
     "comps_onon": 'Ctrl+F "EV / EBITDA" → 14.03. Model uses 14.0x.',
     "comps_ads": 'Ctrl+F "EV / EBITDA" → 9.31. Model uses 9.3x.',
     "comps_vfc": 'Ctrl+F "EV / EBITDA" → 10.71. Model uses 10.7x.',
+    "comps_gymshark": 'Ctrl+F "£1.25bn valuation" and "sold a 21% stake" → 2020 GA EV. 23.5x = 1,250 / 53.3.',
+    "comps_gymshark_ebitda": 'Ctrl+F "our EBITDA, which reached £53.3 million". Do not take "62.3 percent" — that is gross margin.',
     "comps_ff_ev_lo": 'Ctrl+F "EV / EBITDA" → LULU trough ~5x; bear terminal exit assumption 6.5x',
     "comps_ff_ev_hi": 'Ctrl+F "EV / EBITDA" → bull terminal exit assumption 9.5x on FY2030E EBITDA',
     "comps_ff_pe_lo": 'Ctrl+F "Forward PE" → LULU ~12.3x; low-case multiple assumption 10.0x',
@@ -387,6 +395,20 @@ CAPEX_CTRL_F = (
     "DCF blend\n"
     "  Fade  7.0 / 6.0 / 5.5 / 5.0 / 4.0\n"
     "  5.5% = (7.0+6.0+5.5+5.0+4.0)/5"
+)
+
+GYMSHARK_CTRL_F = (
+    "Private print — do not use as FY30 exit\n"
+    "  23.5x = 1,250 / 53.3\n"
+    "\n"
+    "2020 GA EV (Guardian)\n"
+    '  Ctrl+F "£1.25bn valuation"\n'
+    '  Ctrl+F "sold a 21% stake"\n'
+    "\n"
+    "FY25 EBITDA (SGB)\n"
+    '  Ctrl+F "our EBITDA, which reached £53.3 million"\n'
+    '  Do not take "62.3 percent" — that is gross margin\n'
+    "  EBITDA margin ≈ 53.3 / 646 = 8.3%"
 )
 
 COVER_HINTS = {
