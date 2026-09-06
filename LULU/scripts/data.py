@@ -285,7 +285,7 @@ SOURCE_HINT = {
     "sc_gterm": '"Net revenue" → FY22 $8,110,518 | FY23 $9,619,278 | FY24 $10,588,126 | FY25 $11,102,600',
     "sc_m1": '"full year 2026" → margin commentary; base EBIT margin 13.9% (model assumption)',
     "sc_mterm": '"Income from operations" ÷ "Net revenue" → FY25 $2,210,615 / $11,102,600 = 19.9%',
-    "sc_wacc": 'WACC tab → cell C (green) = 10.0%',
+    "sc_wacc": 'WACC tab → cell E (green) = 10.0%',
     "sc_g": '"GDPC1" → FRED Units: Percent Change from Year Ago; long-run ≈ 2%; model 2.25%',
     "sc_tax": '"Provision for income taxes" ÷ "Income before income taxes" → FY25 $659,784 / $2,238,967 = 29.5%',
     "sc_da_pct": '"Depreciation and amortization" → FY25 $496,228; ÷ "Net revenue" $11,102,600 = 4.5%',

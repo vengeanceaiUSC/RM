@@ -171,3 +171,47 @@ def write_assumption_docs(ws, row, justify_col, source_col, ctrl_f_col, key, jus
                    color=BLUE, size=8, italic=True, underline="single")
         if extra_ctrl_f_col and extra_hint:
             write_ctrl_f(ws, f"{extra_ctrl_f_col}{row}", extra_hint)
+
+
+def append_assumption_docs(ws, row, justify_col, source_col, ctrl_f_col, key, justify_dict, src_dict,
+                           hints=None, prefix="Also"):
+    """Add a second assumption block (e.g. repurchase price) below the first in B/C/D."""
+    if key in justify_dict:
+        c = ws[f"{justify_col}{row}"]
+        extra = f"{prefix}: {justify_dict[key]}"
+        c.value = f"{c.value}\n{extra}" if c.value else extra
+        c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+    hint = (hints or {}).get(key)
+    if hint:
+        c = ws[f"{ctrl_f_col}{row}"]
+        extra = f"{prefix}: {hint}"
+        c.value = f"{c.value}\n{extra}" if c.value else extra
+        c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+        _hint_row_height(ws, row, c.value)
+    src = src_dict.get(key)
+    if src:
+        label, url = src
+        c = ws[f"{source_col}{row}"]
+        extra = f"{prefix}: {label}"
+        c.value = f"{c.value}\n{extra}" if c.value else extra
+        c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+
+
+def write_ff_dual_docs(ws, row, lo_key, hi_key, justify_col, source_col, ctrl_f_col,
+                       justify_dict, src_dict, hints=None):
+    """Football-field row: lo + hi assumption docs combined in visible B/C/D columns."""
+    lo_j = justify_dict.get(lo_key, "")
+    hi_j = justify_dict.get(hi_key, "")
+    write(ws, f"{justify_col}{row}", f"Lo: {lo_j}\nHi: {hi_j}", BLACK, italic=True, size=8, align=left)
+    ws[f"{justify_col}{row}"].alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+    lo_src = src_dict.get(lo_key)
+    hi_src = src_dict.get(hi_key)
+    if lo_src and lo_src[1]:
+        write_link(ws, f"{source_col}{row}", f"Lo: {lo_src[0]}", lo_src[1], color=BLUE, size=8, italic=True)
+        if hi_src:
+            c = ws[f"{source_col}{row}"]
+            c.value = f"{c.value}\nHi: {hi_src[0]}"
+            c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+    lo_hint = (hints or {}).get(lo_key, "")
+    hi_hint = (hints or {}).get(hi_key, "")
+    write_ctrl_f(ws, f"{ctrl_f_col}{row}", f"Lo: {lo_hint}\nHi: {hi_hint}" if hi_hint else lo_hint)

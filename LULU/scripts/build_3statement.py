@@ -9,7 +9,7 @@ Units: US$ thousands unless noted.
 import os
 from openpyxl import Workbook
 import styles as S
-from styles import write, write_link, write_reported, write_assumption_docs, write_ctrl_f, NUM, PCT, MONEY, EPSFMT
+from styles import write, write_link, write_reported, write_assumption_docs, write_ctrl_f, append_assumption_docs, NUM, PCT, MONEY, EPSFMT
 import data as D
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "LULU_3_Statement_Model.xlsx")
@@ -17,15 +17,17 @@ OUT = os.path.join(os.path.dirname(__file__), "..", "LULU_3_Statement_Model.xlsx
 HIST = D.HIST_YEARS
 PROJ = D.PROJ_YEARS
 YEARS = HIST + PROJ
-HCOLS = ['C', 'D', 'E', 'F']
-PCOLS = ['G', 'H', 'I', 'J', 'K']
+DJ, DS, DC = "B", "C", "D"
+HCOLS = ['E', 'F', 'G', 'H']
+PCOLS = ['I', 'J', 'K', 'L', 'M']
 COLS = HCOLS + PCOLS
 COL = dict(zip(YEARS, COLS))
 YEAR_OF = {c: y for y, c in COL.items()}
 PREV = {c: COLS[i-1] for i, c in enumerate(COLS) if i > 0}
 
 A, ISN, BSN, CFN = "Assumptions", "Income Statement", "Balance Sheet", "Cash Flow"
-WIDTHS = {'A': 38, 'C': 11, 'D': 11, 'E': 11, 'F': 11, 'G': 11, 'H': 11, 'I': 11, 'J': 11, 'K': 11, 'L': 34, 'M': 22, 'N': 44}
+WIDTHS = {'A': 32, 'B': 24, 'C': 16, 'D': 36, 'E': 10, 'F': 10, 'G': 10, 'H': 10,
+          'I': 10, 'J': 10, 'K': 10, 'L': 10, 'M': 10}
 
 wb = Workbook()
 
@@ -36,11 +38,22 @@ def year_header(ws, title):
         write(ws, f'{COL[y]}1', y, S.WHITE, bold=True, size=10, align=S.center,
               fillc=(S.ACCENT if y in PROJ else S.DARK))
     ws.row_dimensions[1].height = 16
-    write(ws, 'A2', "Ctrl+F lines", S.BLACK, italic=True, size=8, align=S.left_indent)
+    write(ws, f'{DJ}2', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+    write(ws, f'{DS}2', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+    write(ws, f'{DC}2', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9, align=S.left_indent)
     for y in HIST:
-        write_link(ws, f'{COL[y]}2', "10-K", D.filing_url(y), color=S.BLUE, size=8, align=S.center,
-                   hint=D.COVER_HINTS["filing_fy2025"])
-    write(ws, 'G2', "Projected", S.ACCENT, italic=True, size=8, align=S.center)
+        write_link(ws, f'{COL[y]}2', "10-K", D.filing_url(y), color=S.BLUE, size=8, align=S.center)
+    write(ws, f'{PCOLS[0]}2', "Projected", S.ACCENT, italic=True, size=8, align=S.center)
+    ws.freeze_panes = 'E3'
+
+
+def write_row_docs(ws, row, justify_key, extra_key=None):
+    if justify_key:
+        write_assumption_docs(ws, row, DJ, DS, DC, justify_key, D.JUST, D.ASSUMPTION_SRC,
+                              hints=D.SOURCE_HINT)
+        if extra_key:
+            append_assumption_docs(ws, row, DJ, DS, DC, extra_key, D.JUST, D.ASSUMPTION_SRC,
+                                   hints=D.SOURCE_HINT)
 
 
 # ---------------------------------------------------------------- COVER
@@ -58,7 +71,7 @@ write(cov, 'B8', "Fiscal year ends late January / early February; FY2025 ended F
 write(cov, 'B10', "FONT / COLOR CONVENTION", S.DARK, bold=True, size=12)
 write(cov, 'B11', "Blue font  =  figures reported by the company (click value or 10-K link for source)", S.BLUE, bold=True, size=11)
 write(cov, 'B12', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
-write(cov, 'B13', "Red font  =  analyst assumptions — Justification (L) | Source (M) | Ctrl+F (N)", S.RED, bold=True, size=11)
+write(cov, 'B13', "Red font  =  analyst assumptions — cols B/C/D on every tab: Justification | Source | Ctrl+F", S.RED, bold=True, size=11)
 write(cov, 'B15', "SOURCES", S.DARK, bold=True, size=12)
 write_link(cov, 'B16', "SEC EDGAR filings, CIK 0001397187 (Forms 10-K)", D.SOURCES["edgar_xbrl"],
            color=S.BLUE, size=10, hint=D.COVER_HINTS["edgar_xbrl"])
@@ -96,15 +109,12 @@ def a_row(key, label, hist_vals, proj_vals, fmt=PCT, justify_key=""):
     for i, y in enumerate(PROJ):
         write(asum, f'{COL[y]}{r[0]}', proj_vals[i], S.RED, size=10, numfmt=fmt, align=S.right)
     if justify_key:
-        write_assumption_docs(asum, r[0], 'L', 'M', 'N', justify_key, D.JUST, D.ASSUMPTION_SRC,
-                              hints=D.SOURCE_HINT)
+        write_row_docs(asum, r[0], justify_key)
     r[0] += 1
 
 rev, cogs = D.IS['revenue'], D.IS['cogs']
+asum.freeze_panes = 'E4'
 a_section("GROWTH & MARGINS")
-write(asum, 'L3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
-write(asum, 'M3', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
-write(asum, 'N3', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 a_row('rev_growth', "Revenue growth %",
       [None, rev['FY2023']/rev['FY2022']-1, rev['FY2024']/rev['FY2023']-1, rev['FY2025']/rev['FY2024']-1],
       [-0.061, 0.010, 0.030, 0.040, 0.040], justify_key="3s_rev_growth")
@@ -175,16 +185,18 @@ IR = {}
 def isref(key, col):
     return f"'{ISN}'!{col}{IR[key]}"
 
-def is_reported(key, label, hist_dict, proj_fn, bold=False, top=False, dbl=False, fmt=NUM):
+def is_reported(key, label, hist_dict, proj_fn, bold=False, top=False, dbl=False, fmt=NUM, justify_key="", extra_justify_key=""):
     IR[key] = r[0]
     bdr = S.top_double if dbl else (S.top_border if top else None)
     write(is_, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
+    write_row_docs(is_, r[0], justify_key, extra_justify_key)
     for y in HIST:
         write_reported(is_, f'{COL[y]}{r[0]}', hist_dict[y], D.filing_url(y),
                        bold=bold, size=10, numfmt=fmt, bdr=bdr)
     for y in PROJ:
         c = COL[y]
-        write(is_, f'{c}{r[0]}', proj_fn(c), S.BLACK, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+        write(is_, f'{c}{r[0]}', proj_fn(c), S.RED if justify_key else S.BLACK,
+              bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
     r[0] += 1
 
 def is_calc(key, label, fn, bold=False, top=False, dbl=False, fmt=NUM):
@@ -197,19 +209,26 @@ def is_calc(key, label, fn, bold=False, top=False, dbl=False, fmt=NUM):
     r[0] += 1
 
 r = [4]
-is_reported('rev', "Net revenue", D.IS['revenue'], lambda c: f"={PREV[c]}{IR['rev']}*(1+{ar('rev_growth', c)})")
-is_reported('cogs', "Cost of goods sold", D.IS['cogs'], lambda c: f"={c}{IR['rev']}*(1-{ar('gm', c)})")
+is_reported('rev', "Net revenue", D.IS['revenue'], lambda c: f"={PREV[c]}{IR['rev']}*(1+{ar('rev_growth', c)})",
+            justify_key="3s_rev_growth")
+is_reported('cogs', "Cost of goods sold", D.IS['cogs'], lambda c: f"={c}{IR['rev']}*(1-{ar('gm', c)})",
+            justify_key="3s_gm")
 is_calc('gp', "Gross profit", lambda c: f"={c}{IR['rev']}-{c}{IR['cogs']}", bold=True, top=True)
-is_reported('sga', "Selling, general & administrative", D.IS['sga'], lambda c: f"={c}{IR['rev']}*{ar('sga_pct', c)}")
-is_reported('oopex', "Amortization of intangibles / other", D.IS['other_opex'], lambda c: f"={ar('other_opex', c)}")
+is_reported('sga', "Selling, general & administrative", D.IS['sga'], lambda c: f"={c}{IR['rev']}*{ar('sga_pct', c)}",
+            justify_key="3s_sga_pct")
+is_reported('oopex', "Amortization of intangibles / other", D.IS['other_opex'], lambda c: f"={ar('other_opex', c)}",
+            fmt=NUM, justify_key="3s_other_opex")
 is_calc('ebit', "Operating income (EBIT)", lambda c: f"={c}{IR['gp']}-{c}{IR['sga']}-{c}{IR['oopex']}", bold=True, top=True)
-is_reported('oinc', "Other income, net", D.IS['other_income'], lambda c: f"={ar('other_inc', c)}")
+is_reported('oinc', "Other income, net", D.IS['other_income'], lambda c: f"={ar('other_inc', c)}",
+            fmt=NUM, justify_key="3s_other_inc")
 is_calc('pretax', "Pre-tax income", lambda c: f"={c}{IR['ebit']}+{c}{IR['oinc']}", bold=True, top=True)
-is_reported('tax', "Income tax expense", D.IS['tax'], lambda c: f"={c}{IR['pretax']}*{ar('tax_rate', c)}")
+is_reported('tax', "Income tax expense", D.IS['tax'], lambda c: f"={c}{IR['pretax']}*{ar('tax_rate', c)}",
+            justify_key="3s_tax_rate")
 is_calc('ni', "Net income", lambda c: f"={c}{IR['pretax']}-{c}{IR['tax']}", bold=True, top=True, dbl=True)
 r[0] += 1
 is_reported('sh', "Diluted weighted-avg shares (000)", D.IS['diluted_shares'],
-            lambda c: f"={PREV[c]}{IR['sh']}-{ar('buyback', c)}/{ar('rep_price', c)}")
+            lambda c: f"={PREV[c]}{IR['sh']}-{ar('buyback', c)}/{ar('rep_price', c)}",
+            justify_key="3s_buyback", extra_justify_key="3s_rep_price")
 IR['eps'] = r[0]
 write(is_, f'A{r[0]}', "Diluted EPS ($)", S.DARK, bold=True, size=10, align=S.left_indent)
 for y in HIST:
@@ -254,27 +273,31 @@ def bs_sub(text):
     write(bs, f'A{r[0]}', text, S.BLACK, bold=True, italic=True, size=10, align=S.left_indent)
     r[0] += 1
 
-def bs_rep(key, label, hist_dict, proj_fn, bold=False, top=False, dbl=False):
+def bs_rep(key, label, hist_dict, proj_fn, bold=False, top=False, dbl=False, justify_key=""):
     BR[key] = r[0]
     bdr = S.top_double if dbl else (S.top_border if top else None)
     write(bs, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
+    write_row_docs(bs, r[0], justify_key)
     for y in HIST:
         write_reported(bs, f'{COL[y]}{r[0]}', hist_dict[y], D.filing_url(y),
                        bold=bold, size=10, numfmt=NUM, bdr=bdr)
     for y in PROJ:
         c = COL[y]
-        write(bs, f'{c}{r[0]}', proj_fn(c), S.BLACK, bold=bold, size=10, numfmt=NUM, align=S.right, bdr=bdr)
+        col = S.RED if justify_key else S.BLACK
+        write(bs, f'{c}{r[0]}', proj_fn(c), col, bold=bold, size=10, numfmt=NUM, align=S.right, bdr=bdr)
     r[0] += 1
 
-def bs_plug(key, label, hist_valdict, proj_fn):
-    """hist = black computed VALUE; proj = black formula."""
+def bs_plug(key, label, hist_valdict, proj_fn, justify_key=""):
+    """hist = black computed VALUE; proj = black/red formula."""
     BR[key] = r[0]
     write(bs, f'A{r[0]}', label, S.BLACK, size=10, align=S.left_indent)
+    write_row_docs(bs, r[0], justify_key)
     for y in HIST:
         write(bs, f'{COL[y]}{r[0]}', hist_valdict[y], S.BLACK, size=10, numfmt=NUM, align=S.right)
     for y in PROJ:
         c = COL[y]
-        write(bs, f'{c}{r[0]}', proj_fn(c), S.BLACK, size=10, numfmt=NUM, align=S.right)
+        col = S.RED if justify_key else S.BLACK
+        write(bs, f'{c}{r[0]}', proj_fn(c), col, size=10, numfmt=NUM, align=S.right)
     r[0] += 1
 
 def bs_totcalc(key, label, fn, bold=True, top=True, dbl=False):
@@ -297,37 +320,40 @@ write(bs, f'A{r[0]}', "Cash & cash equivalents", S.BLACK, size=10, align=S.left_
 for y in HIST:
     write_reported(bs, f'{COL[y]}{r[0]}', D.BS['cash'][y], D.filing_url(y), size=10, numfmt=NUM)
 r[0] += 1  # projected cash filled after CF is built
-bs_rep('inv', "Inventories", D.BS['inventories'], lambda c: f"={isr('cogs', c)}*{ar('inv_pct', c)}")
-bs_plug('oca', "Other current assets", oca, lambda c: f"={isr('rev', c)}*{ar('oca_pct', c)}")
+bs_rep('inv', "Inventories", D.BS['inventories'], lambda c: f"={isr('cogs', c)}*{ar('inv_pct', c)}", justify_key="3s_inv_pct")
+bs_plug('oca', "Other current assets", oca, lambda c: f"={isr('rev', c)}*{ar('oca_pct', c)}", justify_key="3s_oca_pct")
 bs_rep('tca', "Total current assets", D.BS['current_assets'],
        lambda c: f"={c}{BR['cash']}+{c}{BR['inv']}+{c}{BR['oca']}", bold=True, top=True)
 bs_sub("Non-current assets:")
 bs_rep('ppe', "Property & equipment, net", D.BS['ppe_net'],
-       lambda c: f"={PREV[c]}{BR['ppe']}+{isr('rev', c)}*{ar('capex_pct', c)}-{isr('rev', c)}*{ar('da_pct', c)}")
-bs_rep('rou', "Operating lease right-of-use assets", D.BS['rou_asset'], lambda c: f"={isr('rev', c)}*{ar('rou_pct', c)}")
+       lambda c: f"={PREV[c]}{BR['ppe']}+{isr('rev', c)}*{ar('capex_pct', c)}-{isr('rev', c)}*{ar('da_pct', c)}",
+       justify_key="3s_capex_pct")
+bs_rep('rou', "Operating lease right-of-use assets", D.BS['rou_asset'], lambda c: f"={isr('rev', c)}*{ar('rou_pct', c)}", justify_key="3s_rou_pct")
 bs_rep('gwi', "Goodwill & intangible assets", D.BS['goodwill_intang'], lambda c: f"={PREV[c]}{BR['gwi']}")
-bs_plug('onca', "Other non-current assets", onca, lambda c: f"={isr('rev', c)}*{ar('onca_pct', c)}")
+bs_plug('onca', "Other non-current assets", onca, lambda c: f"={isr('rev', c)}*{ar('onca_pct', c)}", justify_key="3s_onca_pct")
 bs_rep('ta', "TOTAL ASSETS", D.BS['total_assets'],
        lambda c: f"={c}{BR['tca']}+{c}{BR['ppe']}+{c}{BR['rou']}+{c}{BR['gwi']}+{c}{BR['onca']}", bold=True, top=True, dbl=True)
 r[0] += 1
 bs_band("LIABILITIES & EQUITY")
 bs_sub("Current liabilities:")
-bs_rep('ap', "Accounts payable", D.BS['accounts_payable'], lambda c: f"={isr('cogs', c)}*{ar('ap_pct', c)}")
-bs_rep('accr', "Accrued liabilities", D.BS['accrued_liab'], lambda c: f"={isr('rev', c)}*{ar('accr_pct', c)}")
-bs_rep('olc', "Operating lease liabilities (current)", D.BS['op_lease_cur'], lambda c: f"={isr('rev', c)}*{ar('olc_pct', c)}")
-bs_plug('ocl', "Other current liabilities", ocl, lambda c: f"={isr('rev', c)}*{ar('ocl_pct', c)}")
+bs_rep('ap', "Accounts payable", D.BS['accounts_payable'], lambda c: f"={isr('cogs', c)}*{ar('ap_pct', c)}", justify_key="3s_ap_pct")
+bs_rep('accr', "Accrued liabilities", D.BS['accrued_liab'], lambda c: f"={isr('rev', c)}*{ar('accr_pct', c)}", justify_key="3s_accr_pct")
+bs_rep('olc', "Operating lease liabilities (current)", D.BS['op_lease_cur'], lambda c: f"={isr('rev', c)}*{ar('olc_pct', c)}", justify_key="3s_olc_pct")
+bs_plug('ocl', "Other current liabilities", ocl, lambda c: f"={isr('rev', c)}*{ar('ocl_pct', c)}", justify_key="3s_ocl_pct")
 bs_rep('tcl', "Total current liabilities", D.BS['current_liab'],
        lambda c: f"={c}{BR['ap']}+{c}{BR['accr']}+{c}{BR['olc']}+{c}{BR['ocl']}", bold=True, top=True)
 bs_sub("Non-current liabilities:")
-bs_rep('olnc', "Operating lease liabilities (non-current)", D.BS['op_lease_noncur'], lambda c: f"={isr('rev', c)}*{ar('olnc_pct', c)}")
+bs_rep('olnc', "Operating lease liabilities (non-current)", D.BS['op_lease_noncur'], lambda c: f"={isr('rev', c)}*{ar('olnc_pct', c)}", justify_key="3s_olnc_pct")
 bs_rep('dtl', "Deferred income taxes", D.BS['deferred_tax'], lambda c: f"={PREV[c]}{BR['dtl']}")
-bs_plug('oncl', "Other non-current liabilities", oncl, lambda c: f"={isr('rev', c)}*{ar('oncl_pct', c)}")
+bs_plug('oncl', "Other non-current liabilities", oncl, lambda c: f"={isr('rev', c)}*{ar('oncl_pct', c)}", justify_key="3s_oncl_pct")
 bs_rep('tl', "TOTAL LIABILITIES", D.BS['total_liab'],
        lambda c: f"={c}{BR['tcl']}+{c}{BR['olnc']}+{c}{BR['dtl']}+{c}{BR['oncl']}", bold=True, top=True)
 r[0] += 1
 bs_sub("Shareholders' equity:")
-bs_rep('capic', "Common stock & additional paid-in capital", D.BS['common_apic'], lambda c: f"={PREV[c]}{BR['capic']}+{ar('sbc', c)}")
-bs_rep('re', "Retained earnings", D.BS['retained_earn'], lambda c: f"={PREV[c]}{BR['re']}+{isr('ni', c)}-{ar('buyback', c)}")
+bs_rep('capic', "Common stock & additional paid-in capital", D.BS['common_apic'],
+       lambda c: f"={PREV[c]}{BR['capic']}+{ar('sbc', c)}", justify_key="3s_sbc")
+bs_rep('re', "Retained earnings", D.BS['retained_earn'],
+       lambda c: f"={PREV[c]}{BR['re']}+{isr('ni', c)}-{ar('buyback', c)}", justify_key="3s_buyback")
 bs_rep('aoci', "Accumulated other comprehensive loss", D.BS['aoci'], lambda c: f"={PREV[c]}{BR['aoci']}")
 bs_rep('te', "TOTAL SHAREHOLDERS' EQUITY", D.BS['total_equity'],
        lambda c: f"={c}{BR['capic']}+{c}{BR['re']}+{c}{BR['aoci']}", bold=True, top=True)
@@ -358,10 +384,11 @@ def cf_band(text):
         cf[f'{c}{r[0]}'].fill = S.fill(S.GREY)
     r[0] += 1
 
-def cf_row(key, label, hist_dict, proj_fn, bold=False, top=False, dbl=False, blue=True):
+def cf_row(key, label, hist_dict, proj_fn, bold=False, top=False, dbl=False, blue=True, justify_key=""):
     CR[key] = r[0]
     bdr = S.top_double if dbl else (S.top_border if top else None)
     write(cf, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
+    write_row_docs(cf, r[0], justify_key)
     for y in HIST:
         if hist_dict is None:
             write(cf, f'{COL[y]}{r[0]}', "\u2014", S.BLACK, size=10, align=S.right, bdr=bdr)
@@ -370,23 +397,24 @@ def cf_row(key, label, hist_dict, proj_fn, bold=False, top=False, dbl=False, blu
                            bold=bold, size=10, numfmt=NUM, bdr=bdr)
     for y in PROJ:
         c = COL[y]
-        write(cf, f'{c}{r[0]}', proj_fn(c) if proj_fn else "\u2014", S.BLACK, bold=bold, size=10, numfmt=NUM, align=S.right, bdr=bdr)
+        col = S.RED if justify_key else S.BLACK
+        write(cf, f'{c}{r[0]}', proj_fn(c) if proj_fn else "\u2014", col, bold=bold, size=10, numfmt=NUM, align=S.right, bdr=bdr)
     r[0] += 1
 
 r = [4]
 cf_band("OPERATING ACTIVITIES")
 cf_row('ni', "Net income", D.CF['net_income'], lambda c: f"={isr2('ni', c)}")
-cf_row('da', "Depreciation & amortization", D.CF['d_and_a'], lambda c: f"={isr2('rev', c)}*{ar('da_pct', c)}")
-cf_row('sbc', "Stock-based compensation", D.CF['sbc'], lambda c: f"={ar('sbc', c)}")
+cf_row('da', "Depreciation & amortization", D.CF['d_and_a'], lambda c: f"={isr2('rev', c)}*{ar('da_pct', c)}", justify_key="3s_da_pct")
+cf_row('sbc', "Stock-based compensation", D.CF['sbc'], lambda c: f"={ar('sbc', c)}", justify_key="3s_sbc")
 wc_start = r[0]
-cf_row('d_inv', "  (Incr.)/decr. in inventories", None, lambda c: f"=-{delta('inv', c)}")
-cf_row('d_oca', "  (Incr.)/decr. in other current assets", None, lambda c: f"=-{delta('oca', c)}")
-cf_row('d_rou', "  (Incr.)/decr. in ROU assets", None, lambda c: f"=-{delta('rou', c)}")
-cf_row('d_onca', "  (Incr.)/decr. in other non-current assets", None, lambda c: f"=-{delta('onca', c)}")
-cf_row('d_ap', "  Incr./(decr.) in accounts payable", None, lambda c: f"={delta('ap', c)}")
-cf_row('d_accr', "  Incr./(decr.) in accrued liabilities", None, lambda c: f"={delta('accr', c)}")
-cf_row('d_ocl', "  Incr./(decr.) in other current liabilities", None, lambda c: f"={delta('ocl', c)}")
-cf_row('d_ol', "  Incr./(decr.) in operating lease liab.", None, lambda c: f"={delta('olc', c)}+{delta('olnc', c)}")
+cf_row('d_inv', "  (Incr.)/decr. in inventories", None, lambda c: f"=-{delta('inv', c)}", justify_key="3s_inv_pct")
+cf_row('d_oca', "  (Incr.)/decr. in other current assets", None, lambda c: f"=-{delta('oca', c)}", justify_key="3s_oca_pct")
+cf_row('d_rou', "  (Incr.)/decr. in ROU assets", None, lambda c: f"=-{delta('rou', c)}", justify_key="3s_rou_pct")
+cf_row('d_onca', "  (Incr.)/decr. in other non-current assets", None, lambda c: f"=-{delta('onca', c)}", justify_key="3s_onca_pct")
+cf_row('d_ap', "  Incr./(decr.) in accounts payable", None, lambda c: f"={delta('ap', c)}", justify_key="3s_ap_pct")
+cf_row('d_accr', "  Incr./(decr.) in accrued liabilities", None, lambda c: f"={delta('accr', c)}", justify_key="3s_accr_pct")
+cf_row('d_ocl', "  Incr./(decr.) in other current liabilities", None, lambda c: f"={delta('ocl', c)}", justify_key="3s_ocl_pct")
+cf_row('d_ol', "  Incr./(decr.) in operating lease liab.", None, lambda c: f"={delta('olc', c)}+{delta('olnc', c)}", justify_key="3s_olc_pct")
 cf_row('d_dtl', "  Incr./(decr.) in deferred income taxes", None, lambda c: f"={delta('dtl', c)}")
 cf_row('d_oncl', "  Incr./(decr.) in other non-current liab.", None, lambda c: f"={delta('oncl', c)}")
 wc_end = r[0] - 1
@@ -403,12 +431,14 @@ cf_row('cfo', "Net cash from operating activities", D.CF['cfo'],
 assert CR['cfo'] == cfo_row, (CR['cfo'], cfo_row)
 r[0] += 1
 cf_band("INVESTING ACTIVITIES")
-cf_row('capex', "Capital expenditures", {y: -D.CF['capex'][y] for y in HIST}, lambda c: f"=-{isr2('rev', c)}*{ar('capex_pct', c)}")
+cf_row('capex', "Capital expenditures", {y: -D.CF['capex'][y] for y in HIST},
+       lambda c: f"=-{isr2('rev', c)}*{ar('capex_pct', c)}", justify_key="3s_capex_pct")
 cf_row('cfi', "Net cash from investing activities", D.CF['cfi'], lambda c: f"={c}{CR['capex']}", bold=True, top=True)
 write(cf, f'A{r[0]}', "  (Projections: investing \u2248 capex; excl. M&A / securities)", S.BLACK, italic=True, size=8, align=S.left_indent)
 r[0] += 2
 cf_band("FINANCING ACTIVITIES")
-cf_row('buyback', "Repurchase of common stock", {y: -D.CF['buybacks'][y] for y in HIST}, lambda c: f"=-{ar('buyback', c)}")
+cf_row('buyback', "Repurchase of common stock", {y: -D.CF['buybacks'][y] for y in HIST},
+       lambda c: f"=-{ar('buyback', c)}", justify_key="3s_buyback")
 cf_row('cff', "Net cash from financing activities", D.CF['cff'], lambda c: f"={c}{CR['buyback']}", bold=True, top=True)
 write(cf, f'A{r[0]}', "  (Projections: financing \u2248 buybacks; SBC non-cash in equity)", S.BLACK, italic=True, size=8, align=S.left_indent)
 r[0] += 2
