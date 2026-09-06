@@ -159,7 +159,9 @@ JUST = {
     # WACC tab
     "wacc_rf": "4.8% risk-free = FRED DGS10 on 2026-09-03 (4.77%) rounded; replaces the stale 4.3% input.",
     "wacc_erp": "6.0% ERP is a conservative overlay vs Damodaran Jan-2026 implied 4.23%; used to keep CoE above the risk-free 4.8%.",
-    "wacc_beta": "0.95 levered beta vs StockAnalysis Beta (5Y) 0.86; modest uplift for post-guidance volatility.",
+    "wacc_beta_obs": "StockAnalysis Beta (5Y) is 0.86. Raw 5-year equity beta; no funded debt so levered ≈ unlevered.",
+    "wacc_beta_uplift": "10% because that 5Y beta is too calm after the Sep-4 −17% print and FY26 guide cut.",
+    "wacc_beta": "0.95 = ROUND(0.86 × 1.10, 2). 0.86 × 1.10 = 0.946, which rounds to 0.95. Formula, not a free 0.95.",
     "wacc_kd": "5.0% illustrative pre-tax debt cost; 10-K: no borrowings outstanding on the revolver.",
     "wacc_tax": "30% cash tax matches FY2026 guidance (“approximately 30%”); FY25 effective was 29.5%.",
     "wacc_we": "100% equity weight; net-cash balance sheet with no material funded debt at market values per FY2025 10-K.",
@@ -225,6 +227,8 @@ ASSUMPTION_SRC = {
     # WACC
     "wacc_rf": ("FRED: 10Y Treasury (DGS10)", SOURCES["fred_dgs10"]),
     "wacc_erp": ("Damodaran: Historical Implied ERP", SOURCES["damodaran_erp"]),
+    "wacc_beta_obs": ("StockAnalysis: LULU Beta (5Y)", SOURCES["lulu_stats"]),
+    "wacc_beta_uplift": ("StockAnalysis: LULU Sep-4 print", SOURCES["lulu_stats"]),
     "wacc_beta": ("StockAnalysis: LULU Beta (5Y)", SOURCES["lulu_stats"]),
     "wacc_kd": ("LULU FY2025 10-K (no funded debt)", filing_url("FY2025")),
     "wacc_tax": ("Q2 FY2026 outlook: tax rate ≈ 30%", SOURCES["earnings_sep2026"]),
@@ -290,7 +294,9 @@ SOURCE_HINT = {
     # WACC
     "wacc_rf": 'Ctrl+F "2026-09-03" → observation 4.77. Model uses 4.8%. Also Ctrl+F "DGS10" for the series title.',
     "wacc_erp": 'Ctrl+F "4.23%" on the 2025 row (last data row). Header is "Implied ERP (FCFE)". Model uses 6.0%.',
-    "wacc_beta": 'Ctrl+F "Beta (5Y)" → 0.86. Model uses 0.95.',
+    "wacc_beta_obs": 'Ctrl+F "Beta (5Y)" → 0.86. This is the raw 5-year beta, not the 0.95 the model uses.',
+    "wacc_beta_uplift": 'Ctrl+F "-17.38%" → Sep 4 close after Sep 3 earnings. Also Ctrl+F "52-Week Price Change" → -49.32%. +10% is the analyst overlay.',
+    "wacc_beta": '0.95 = ROUND(0.86 × 1.10, 2). Ctrl+F "Beta (5Y)" → 0.86. 0.86 × 1.10 = 0.946 → 0.95.',
     "wacc_kd": 'Ctrl+F "no borrowings were outstanding under this facility" on this 10-K HTML page (search the document, do not use the EDGAR viewer TOC).',
     "wacc_tax": 'Ctrl+F "a tax rate of approximately 30%" on the FY2026 outlook paragraph.',
     "wacc_we": 'Ctrl+F "Cash and cash equivalents" → 1,807,202 ($000) | no funded term debt',
@@ -350,6 +356,20 @@ SOURCE_HINT = {
 }
 
 # Organized Ctrl+F block for the capex assumption cell (column D)
+BETA_CTRL_F = (
+    "Observed 5Y beta (StockAnalysis)\n"
+    '  Ctrl+F "Beta (5Y)"  →  0.86\n'
+    "\n"
+    "Why not use 0.86 as-is\n"
+    '  Ctrl+F "-17.38%"  →  Sep 4 close after Sep 3 earnings\n'
+    '  Ctrl+F "52-Week Price Change"  →  -49.32%\n'
+    "  5Y beta is too calm for a name that just printed a guide cut\n"
+    "\n"
+    "Model levered beta\n"
+    "  0.86 × 1.10 = 0.946\n"
+    "  0.95 = ROUND(0.86 × 1.10, 2)"
+)
+
 CAPEX_CTRL_F = (
     "FY25 actual (10-K)\n"
     '  Ctrl+F "680,802"  →  capex $680.8M\n'

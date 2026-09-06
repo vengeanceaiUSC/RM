@@ -555,6 +555,7 @@ for t in [
     "No funded debt; an undrawn revolving credit facility provides liquidity",
     "$1,807.2M cash and equivalents \u2014 a net-cash position",
     "Enterprise value \u2248 equity value less cash; ~$9.3B EV at ~$100 per share",
+    "Levered beta 0.95 = ROUND(StockAnalysis Beta (5Y) 0.86 \u00d7 1.10, 2). The 5Y beta is too calm after the Sep-4 \u221217% print, so we add 10%.",
     "Capital returned via buybacks (no dividend); FY2025 repurchases $1,178.3M",
 ]:
     add_para(tf, t, 13, INK, bullet=True, space_after=6)
@@ -564,7 +565,7 @@ add_para(btf, "WACC BUILD (CAPM)", 13, CARD, bold=True, first=True, space_after=
 for t, v in [
     ("Risk-free rate (10-yr UST)", "4.8%"),
     ("Equity risk premium", "6.0%"),
-    ("Levered beta", "0.95"),
+    ("Levered beta", "0.95  (= 0.86 \u00d7 1.10)"),
     ("Cost of equity", "10.5%"),
     ("Debt weight", "0%"),
     ("Equity weight", "100%"),
