@@ -555,7 +555,7 @@ for t in [
     "No funded debt; an undrawn revolving credit facility provides liquidity",
     "$1,807.2M cash and equivalents \u2014 a net-cash position",
     "Enterprise value \u2248 equity value less cash; ~$9.3B EV at ~$100 per share",
-    "Levered beta 0.95 is Damodaran Jan-2026 Retail (Special Lines) unlevered beta. Company 5Y is 0.86; LULU has no funded debt, so we use the industry \u03b2u.",
+    "We use Damodaran\u2019s unlevered Retail (Special Lines) beta of 0.95 because LULU has no debt, so \u03b2u = \u03b2e. Company 5Y is 0.86 and is not used.",
     "Capital returned via buybacks (no dividend); FY2025 repurchases $1,178.3M",
 ]:
     add_para(tf, t, 13, INK, bullet=True, space_after=6)
@@ -565,7 +565,7 @@ add_para(btf, "WACC BUILD (CAPM)", 13, CARD, bold=True, first=True, space_after=
 for t, v in [
     ("Risk-free rate (10-yr UST)", "4.8%"),
     ("Equity risk premium", "6.0%"),
-    ("Levered beta", "0.95  (Damodaran \u03b2u)"),
+    ("Beta (unlev. retail; no debt)", "0.95"),
     ("Cost of equity", "10.5%"),
     ("Debt weight", "0%"),
     ("Equity weight", "100%"),

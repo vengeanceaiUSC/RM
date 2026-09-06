@@ -59,7 +59,7 @@ write(cov, 'B23', "Built from scratch for the GIS IR selection assignment.", S.B
 # ------------------------------------------------------------------ WACC
 wacc = wb.create_sheet("WACC")
 wacc.sheet_view.showGridLines = False
-S.set_col_widths(wacc, {'A': 38, 'B': 28, 'C': 18, 'D': 40, 'E': 12})
+S.set_col_widths(wacc, {'A': 46, 'B': 28, 'C': 18, 'D': 40, 'E': 12})
 write(wacc, 'A1', "WEIGHTED AVERAGE COST OF CAPITAL", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D', 'E']:
     wacc[f'{c}1'].fill = S.fill(S.DARK)
@@ -87,11 +87,17 @@ write(wacc, 'A2', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)
 w_row('rf', "Risk-free rate (10-yr UST)", 0.048, S.RED, doc_key='wacc_rf')
 w_row('erp', "Equity risk premium", 0.060, S.RED, doc_key='wacc_erp')
 w_row('beta_obs', "Observed Beta (5Y) \u2014 not used in WACC", 0.86, S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
-w_row('beta_ind', "Damodaran Retail (Special Lines) \u03b2u", 0.95, S.RED, fmt='0.00', doc_key='wacc_beta_ind')
-w_row('beta', "Levered beta (industry \u03b2u; no funded debt)",
+w_row('beta_ind', "Unlevered retail beta (Damodaran Special Lines)", 0.95, S.RED, fmt='0.00', doc_key='wacc_beta_ind')
+append_assumption_docs(wacc, WR['beta_ind'], DJ, DS, DC, 'wacc_wd', D.JUST, D.ASSUMPTION_SRC,
+                       hints=D.SOURCE_HINT, prefix="No debt")
+w_row('beta', "Beta used = unlevered retail \u03b2 \u2014 LULU has no debt",
       f"=E{WR['beta_ind']}",
       None, fmt='0.00', bold=True, top=True, doc_key='wacc_beta')
 write_ctrl_f(wacc, f'{DC}{WR["beta"]}', D.BETA_CTRL_F)
+write(wacc, f'A{r[0]}',
+      "  memo: we use the unlevered retail beta because LULU has no debt (\u03b2u = \u03b2e). Not the levered industry 1.09.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+r[0] += 1
 w_row('coe', "Cost of equity = rf + \u03b2 \u00d7 ERP", f"=E{WR['rf']}+E{WR['beta']}*E{WR['erp']}", None, bold=True, top=True)
 r[0] += 1
 write(wacc, f'A{r[0]}', "Cost of debt", S.ACCENT, bold=True, size=10)
