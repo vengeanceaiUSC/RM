@@ -257,7 +257,9 @@ def is_memo(label, fn, growth=False):
             write(is_, f'{c}{r[0]}', fn(c), S.BLACK, italic=True, size=9, numfmt=PCT, align=S.right)
     r[0] += 1
 is_memo("Gross margin %", lambda c: f"={c}{IR['gp']}/{c}{IR['rev']}")
-is_memo("Operating margin %", lambda c: f"={c}{IR['ebit']}/{c}{IR['rev']}")
+is_memo("Clean operating margin % (ex-refunds)",
+        lambda c: f"=({c}{IR['ebit']}+{c}{IR['tariff']})/{c}{IR['rev']}")
+is_memo("Operating margin % (reported, incl. FY26 refund)", lambda c: f"={c}{IR['ebit']}/{c}{IR['rev']}")
 is_memo("Net margin %", lambda c: f"={c}{IR['ni']}/{c}{IR['rev']}")
 is_memo("Revenue growth %", lambda c: f"={c}{IR['rev']}/{PREV[c]}{IR['rev']}-1", growth=True)
 
@@ -460,7 +462,9 @@ write(cf, f'A{begcash_row}', "Cash, beginning of year", S.BLACK, size=10, align=
 begmap = {'FY2022': 1150517, 'FY2023': D.BS['cash']['FY2022'], 'FY2024': D.BS['cash']['FY2023'], 'FY2025': D.BS['cash']['FY2024']}
 for y in HIST:
     write_reported(cf, f'{COL[y]}{begcash_row}', begmap[y], D.filing_url(y), size=10, numfmt=NUM)
-write(cf, f"G{begcash_row}", f"='{BSN}'!F{BR['cash']}", S.BLACK, size=10, numfmt=NUM, align=S.right)
+# FY26 opening cash = FY25 ending cash; later years roll forward from prior ending cash
+write(cf, f"{COL['FY2026E']}{begcash_row}", f"={COL['FY2025']}{endcash_row}",
+      S.BLACK, size=10, numfmt=NUM, align=S.right)
 for y in PROJ[1:]:
     c = COL[y]
     write(cf, f'{c}{begcash_row}', f"={PREV[c]}{endcash_row}", S.BLACK, size=10, numfmt=NUM, align=S.right)

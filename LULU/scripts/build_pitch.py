@@ -219,7 +219,7 @@ add_para(tf, "Three reasons to be long", 15, CARD, bold=True, first=True, space_
 add_para(tf, "1.  Priced for terminal decline \u2014 at ~3.5x EV/EBITDA and ~10x FY2026E EPS with a net-cash balance sheet, the stock embeds a permanent impairment that the business does not support", 13.5, INK, bold=False, space_after=7)
 add_para(tf, "2.  International is a multi-year growth engine \u2014 China Mainland and Rest-of-World more than offset a maturing Americas and can return total revenue to mid-single-digit growth", 13.5, INK, space_after=7)
 add_para(tf, "3.  Elite economics + accretive buybacks \u2014 FY2025 operating margin was 19.9% (last full year, not the trough); we model a 13.2% clean FY2026 run-rate (Q2 18.8% minus 560bps of tariff refunds), then add the $134.5M refund once (~14.5% reported). Diluted shares are down ~7% (128.0M \u2192 119.1M)", 13.5, INK, space_after=7)
-add_para(tf, "Base-case DCF $144; bear $91 (\u22129%) vs bull $239 (+139%) \u2014 downside is protected by net cash and an ~8\u20139% FCF yield", 13, NAVY, bold=True, italic=True, space_after=0)
+add_para(tf, "Base-case DCF $124; bear $66 (\u221234%) vs bull $227 (+127%) \u2014 downside is protected by net cash and an ~8\u20139% FCF yield", 13, NAVY, bold=True, italic=True, space_after=0)
 
 # =====================================================================
 # 4. SITUATION OVERVIEW
@@ -367,7 +367,7 @@ thesis_slide(
         "To justify $100 you must assume revenue and margins fall in perpetuity; that is inconsistent with international growth and the FY2026 tariff-refund tailwind",
     ],
     "VALUATION SNAPSHOT",
-    ["EV / EBITDA:  3.5x", "FY2026E P/E:  10.4x", "FCF yield:  ~8\u20139%", "Net cash:  $1.8B", "DCF base:  $144"],
+    ["EV / EBITDA:  3.5x", "FY2026E P/E:  10.4x", "FCF yield:  ~8\u20139%", "Net cash:  $1.8B", "DCF base:  $124"],
 )
 
 thesis_slide(
@@ -500,15 +500,15 @@ s = slide_base("Financials \u2014 Income Statement", "Historical results with ou
 hdr = ["US$ M"] + HY + ["FY2026E", "FY2028E", "FY2030E"]
 rows = [
     ["Net revenue"] + [m(D.IS['revenue'][y]/1000) for y in HY] + ["10,425", "10,845", "11,730"],
-    ["Gross profit"] + [m(D.IS['gross_profit'][y]/1000) for y in HY] + ["5,890", "6,236", "6,804"],
-    ["Operating income"] + [m(D.IS['operating_income'][y]/1000) for y in HY] + ["1,453", "1,837", "2,163"],
-    ["Operating margin %"] + [f"{D.IS['operating_income'][y]/D.IS['revenue'][y]*100:.1f}%" for y in HY] + ["13.9%", "16.9%", "18.4%"],
-    ["Net income"] + [m(D.IS['net_income'][y]/1000) for y in HY] + ["1,108", "1,338", "1,595"],
-    ["Diluted EPS ($)"] + [f"{D.IS['diluted_eps'][y]:.2f}" for y in HY] + ["9.69", "12.66", "16.26"],
+    ["Gross profit"] + [m(D.IS['gross_profit'][y]/1000) for y in HY] + ["6,025", "6,292", "6,642"],
+    ["Operating income"] + [m(D.IS['operating_income'][y]/1000) for y in HY] + ["1,587", "1,853", "2,112"],
+    ["Operating margin %"] + [f"{D.IS['operating_income'][y]/D.IS['revenue'][y]*100:.1f}%" for y in HY] + ["15.2%", "16.9%", "18.4%"],
+    ["Net income"] + [m(D.IS['net_income'][y]/1000) for y in HY] + ["1,142", "1,322", "1,496"],
+    ["Diluted EPS ($)"] + [f"{D.IS['diluted_eps'][y]:.2f}" for y in HY] + ["10.02", "12.58", "15.40"],
 ]
 stmt_table(s, rows, hdr, col0w=3.2, bold_rows=(0, 2, 5))
 tb, tf = textbox(s, Inches(0.5), Inches(6.75), Inches(12.35), Inches(0.35))
-add_para(tf, "FY2026E aligns with company guidance (revenue \u22126%, EPS ~$9.7); recovery driven by international growth and margin normalization", 11, GREY, italic=True, first=True, space_after=0)
+add_para(tf, "FY2026E reported OM 15.2% = clean ~13.9% (56.5% GM \u2212 42.5% SG&A) plus $134.5M IEEPA refund (~+1.3 ppt). DCF uses the Q2 clean 13.2% run-rate as its trough.", 11, GREY, italic=True, first=True, space_after=0)
 
 # =====================================================================
 # 15. BALANCE SHEET
@@ -517,11 +517,11 @@ s = slide_base("Financials \u2014 Balance Sheet", "A net-cash balance sheet unde
                sources="Source: company 10-K filings; projections per GIS operating model")
 hdr = ["US$ M"] + HY + ["FY2026E", "FY2028E", "FY2030E"]
 rows = [
-    ["Cash & equivalents"] + [m(D.BS['cash'][y]/1000) for y in HY] + ["2,505", "4,092", "6,061"],
-    ["Inventories"] + [m(D.BS['inventories'][y]/1000) for y in HY] + ["1,542", "1,521", "1,626"],
-    ["Total assets"] + [m(D.BS['total_assets'][y]/1000) for y in HY] + ["8,919", "10,700", "13,147"],
-    ["Total liabilities"] + [m(D.BS['total_liab'][y]/1000) for y in HY] + ["3,280", "3,402", "3,672"],
-    ["Total equity"] + [m(D.BS['total_equity'][y]/1000) for y in HY] + ["5,639", "7,298", "9,475"],
+    ["Cash & equivalents"] + [m(D.BS['cash'][y]/1000) for y in HY] + ["2,375", "3,778", "5,648"],
+    ["Inventories"] + [m(D.BS['inventories'][y]/1000) for y in HY] + ["1,542", "1,535", "1,587"],
+    ["Total assets"] + [m(D.BS['total_assets'][y]/1000) for y in HY] + ["8,946", "10,728", "12,888"],
+    ["Total liabilities"] + [m(D.BS['total_liab'][y]/1000) for y in HY] + ["3,280", "3,432", "3,586"],
+    ["Total equity"] + [m(D.BS['total_equity'][y]/1000) for y in HY] + ["5,666", "7,296", "9,303"],
     ["Funded debt"] + ["0", "0", "0", "0"] + ["0", "0", "0"],
 ]
 stmt_table(s, rows, hdr, col0w=3.2, bold_rows=(2, 4, 5))
@@ -535,11 +535,11 @@ s = slide_base("Financials \u2014 Cash Flow", "Durable free cash flow through th
                sources="Source: company 10-K filings; projections per GIS operating model")
 hdr = ["US$ M"] + HY + ["FY2026E", "FY2028E", "FY2030E"]
 rows = [
-    ["Cash from operations"] + [m(D.CF['cfo'][y]/1000) for y in HY] + ["1,771", "1,909", "2,173"],
-    ["Capital expenditures"] + [f"({m(D.CF['capex'][y]/1000)})" for y in HY] + ["(573)", "(542)", "(587)"],
-    ["Free cash flow"] + [m((D.CF['cfo'][y]-D.CF['capex'][y])/1000) for y in HY] + ["1,197", "1,366", "1,586"],
+    ["Cash from operations"] + [m(D.CF['cfo'][y]/1000) for y in HY] + ["1,797", "1,894", "2,068"],
+    ["Capital expenditures"] + [f"({m(D.CF['capex'][y]/1000)})" for y in HY] + ["(730)", "(602)", "(573)"],
+    ["Free cash flow"] + [m((D.CF['cfo'][y]-D.CF['capex'][y])/1000) for y in HY] + ["1,067", "1,292", "1,495"],
     ["Share repurchases"] + [f"({m(D.CF['buybacks'][y]/1000)})" for y in HY] + ["(500)", "(500)", "(500)"],
-    ["D&A"] + [m(D.CF['d_and_a'][y]/1000) for y in HY] + ["480", "488", "528"],
+    ["D&A"] + [m(D.CF['d_and_a'][y]/1000) for y in HY] + ["480", "492", "515"],
 ]
 stmt_table(s, rows, hdr, col0w=3.2, bold_rows=(2,))
 tb, tf = textbox(s, Inches(0.5), Inches(6.75), Inches(12.35), Inches(0.35))
@@ -612,24 +612,24 @@ add_para(tf, "Current $100", 10.5, INK, bold=True, align=PP_ALIGN.CENTER, first=
 tb, tf = textbox(s, Inches(pt_x-0.7), Inches(5.2), Inches(1.6), Inches(0.3))
 add_para(tf, "Target $140", 10.5, CARD, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
 tb, tf = textbox(s, Inches(0.5), Inches(5.7), Inches(12.35), Inches(1.2))
-add_para(tf, "We set a 12-month target of $140 \u2014 below the DCF base case of $144 to allow for execution risk \u2014 implying ~40% upside", 13, NAVY, bold=True, first=True, space_after=5)
+add_para(tf, "We set a 12-month target of $140 \u2014 above the conservative Gordon DCF of $124, for a partial re-rating toward historical multiples \u2014 implying ~40% upside", 13, NAVY, bold=True, first=True, space_after=5)
 add_para(tf, "The P/E low end (~$96) sits near today's price, showing how little recovery is required for the stock to work", 12.5, INK, italic=True, space_after=0)
 
 # =====================================================================
 # 19. DCF VALUATION
 # =====================================================================
-s = slide_base("DCF Valuation", "Base-case unlevered DCF yields ~$144 per share", page=pg(),
+s = slide_base("DCF Valuation", "Base-case unlevered DCF yields ~$124 per share", page=pg(),
                sources="Source: GIS DCF model (from scratch); FY2025 cash & share count per 10-K")
 # assumptions table
 tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(6.1), Inches(0.4))
 add_para(tf, "Base-case assumptions", 14, CARD, bold=True, first=True, space_after=0)
 arows = [
     ["Assumption", "Value"],
-    ["Revenue growth (FY26 \u2192 FY30)", "\u22126.1% \u2192 +3.0%"],
+    ["Revenue growth (FY26 \u2192 FY30)", "\u22126.1% \u2192 +2.3%"],
     ["EBIT margin (FY26 \u2192 FY30)", "13.2% clean \u2192 15.5% (+$134.5M FY26)"],
     ["Tax rate", "30%"],
     ["Capex % of revenue", "5.5% blend"],
-    ["WACC", "10.0%"],
+    ["WACC", "10.5%"],
     ["Terminal growth", "2.25%"],
 ]
 t = s.shapes.add_table(len(arows), 2, Inches(0.5), Inches(1.6), Inches(6.0), Inches(3.0)).table
@@ -647,26 +647,26 @@ box = rect(s, Inches(7.0), Inches(1.6), Inches(5.85), Inches(3.0), fill=LGREY)
 btf = box.text_frame; btf.word_wrap = True
 add_para(btf, "VALUATION OUTPUT (US$ M)", 12.5, CARD, bold=True, first=True, space_after=6)
 for t2, v in [
-    ("PV of explicit FCF (FY26\u2013FY30)", "4,283"),
-    ("PV of terminal value", "9,940"),
-    ("Enterprise value", "14,223"),
+    ("PV of explicit FCF (FY26\u2013FY30)", "3,732"),
+    ("PV of terminal value", "8,316"),
+    ("Enterprise value", "12,048"),
     ("Plus: cash", "1,807"),
-    ("Equity value", "16,030"),
+    ("Equity value", "13,856"),
     ("\u00f7 Diluted shares (M)", "111.4"),
 ]:
     p = btf.add_paragraph(); p.space_after = Pt(5)
     r = p.add_run(); r.text = t2; _set_font(r, 12.5, INK, bold=("Enterprise" in t2 or "Equity" in t2))
     r2 = p.add_run(); r2.text = f"      {v}"; _set_font(r2, 12.5, NAVY, bold=True)
 p = btf.add_paragraph(); p.space_before = Pt(6)
-r = p.add_run(); r.text = "Implied value:  $144 / share"; _set_font(r, 16, GREEN, bold=True)
+r = p.add_run(); r.text = "Implied value:  $124 / share"; _set_font(r, 16, GREEN, bold=True)
 # sensitivity mini
 tb, tf = textbox(s, Inches(0.5), Inches(4.85), Inches(12.35), Inches(2.0))
 add_para(tf, "Sensitivity \u2014 implied share price (WACC vs terminal growth)", 13, CARD, bold=True, first=True, space_after=4)
 sens = [
     ["WACC \\ g", "1.5%", "2.0%", "2.25%", "2.5%", "3.0%"],
-    ["9.0%", "$152", "$159", "$163", "$167", "$177"],
-    ["10.0%", "$135", "$141", "$144", "$147", "$154"],
-    ["11.0%", "$123", "$127", "$129", "$132", "$137"],
+    ["9.5%", "$131", "$136", "$140", "$143", "$151"],
+    ["10.5%", "$118", "$122", "$124", "$127", "$132"],
+    ["11.5%", "$107", "$111", "$113", "$114", "$119"],
 ]
 st = s.shapes.add_table(len(sens), 6, Inches(0.5), Inches(5.35), Inches(7.6), Inches(1.5)).table
 for ri, row in enumerate(sens):
@@ -705,23 +705,23 @@ add_para(tf, "Even a partial re-rating toward the low end of the peer group (e.g
 s = slide_base("Appendix \u2014 Bull / Bear Scenarios", "Asymmetric payoff: limited downside, substantial upside", page=pg(),
                sources="Source: GIS DCF model (scenario tab)")
 cols = [
-    ("BEAR", "$91", "\u22129%", CARD, [
+    ("BEAR", "$66", "\u221234%", CARD, [
         "FY2026 revenue \u22129%; growth stays negative (\u22121% avg FY28\u201330)",
         "Terminal EBIT margin 12.0%",
-        "WACC 11.0%; terminal growth 1.5%",
+        "WACC 11.5%; terminal growth 1.5%",
         "Americas decline persists; share loss continues",
     ]),
-    ("BASE", "$144", "+45%", GREEN, [
-        "FY2026 revenue \u22126%; returns to ~+3% by FY2028",
-        "Terminal EBIT margin 15.5%",
+    ("BASE", "$124", "+24%", GREEN, [
+        "FY2026 revenue \u22126.1%; then +2.3% (Street 3Y forecast)",
+        "Clean EBIT margin 13.2% \u2192 15.5%; +$134.5M refund in FY26 only",
         "WACC 10.5%; terminal growth 2.25%",
         "International offsets a stabilizing Americas",
     ]),
-    ("BULL", "$239", "+139%", NAVY, [
-        "FY2026 revenue \u22124%; +6% avg FY28\u201330",
+    ("BULL", "$227", "+127%", NAVY, [
+        "FY2026 revenue \u22124%; +6% avg FY27\u201330",
         "Terminal EBIT margin 19.0%",
-        "WACC 9.0%; terminal growth 3.0%",
-        "Margin recovery to peak; brand re-accelerates",
+        "WACC 9.5%; terminal growth 3.0%",
+        "Margin recovery toward peak; brand re-accelerates",
     ]),
 ]
 x = 0.5
