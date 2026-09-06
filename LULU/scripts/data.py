@@ -139,3 +139,64 @@ FILING_10K = {
 def filing_url(fy):
     acc, doc = FILING_10K[fy]
     return _sec_10k(acc, doc)
+
+# ---------------------------------------------------------------------------
+# Red-assumption justifications (~20 words each) for DCF / 3-statement models
+# ---------------------------------------------------------------------------
+JUST = {
+    # WACC tab
+    "wacc_rf": "10-year UST ~4.3% as of Sep 2026; standard risk-free anchor for US equity DCF discount-rate build.",
+    "wacc_erp": "6.0% long-run US equity risk premium; conventional CAPM input for mature, liquid large-cap consumer brands.",
+    "wacc_beta": "0.95 levered beta vs ~0.86 market; modest uplift for near-term earnings volatility and post-guidance de-rating.",
+    "wacc_kd": "5.0% illustrative pre-tax debt cost; LULU has no funded term debt, only an undrawn revolving credit facility.",
+    "wacc_tax": "27% normalized marginal cash tax rate; mid-point between recent effective rates and US federal-plus-state blend.",
+    "wacc_we": "100% equity weight; net-cash balance sheet with no material funded debt at market values per FY2025 10-K.",
+    "wacc_wd": "0% debt weight; no outstanding term loans or bonds, so WACC effectively equals levered cost of equity here.",
+    # Scenarios tab
+    "sc_g1": "−6.1% FY2026 revenue growth matches company guidance midpoint of −5% to −7% after Q2 FY2026 print.",
+    "sc_gterm": "2.8% avg FY27–30 growth assumes gradual recovery; well below historical double-digit LULU revenue expansion.",
+    "sc_m1": "13.9% FY2026 EBIT margin reflects Americas weakness and guided compression; above bear, below historical peak.",
+    "sc_mterm": "15.5% FY2030 EBIT margin assumes partial recovery; still materially below ~20–24% peak operating margins.",
+    "sc_wacc": "10.0% base WACC ties to CAPM build on WACC tab; drives scenario DCFs and base-case valuation.",
+    "sc_g": "2.25% terminal growth approximates long-run GDP plus inflation; conservative perpetuity rate for mature apparel.",
+    "sc_tax": "27% cash tax rate for scenario FCF; consistent with WACC normalized rate and DCF unlevered cash conversion.",
+    "sc_da_pct": "4.5% D&A to revenue near FY22–25 average; reflects store fleet, distribution, and technology amortization load.",
+    "sc_capex_pct": "5.0% capex to revenue aligned with recent investment intensity and continued global store expansion plans.",
+    "sc_nwc_pct": "7.5% of revenue change for ΔNWC; ties working-capital swings to sales trajectory per historical sensitivity.",
+    # DCF valuation
+    "dcf_exitm": "8.0x FY2030E exit EV/EBITDA; above trough, below premium peers, roughly one turn above Gordon-implied multiple.",
+    # Comps — peer multiples
+    "comps_nke": "Nike ~18x forward EV/EBITDA illustrative; mature global athletic benchmark with slower growth than LULU peak.",
+    "comps_deck": "Deckers ~15x reference; premium footwear peer with HOKA/UGG momentum and strong brand heat.",
+    "comps_onon": "On Holding ~25x; high-growth athletic peer setting upper bound for premium positioning and white space.",
+    "comps_ads": "adidas ~12x; global incumbent in restructuring with moderate growth and complex brand portfolio.",
+    "comps_vfc": "VFC ~10x; challenged multi-brand apparel operator representing lower bound for scaled apparel peers.",
+    "comps_ff_ev_lo": "4.5x EV/EBITDA low case on FY2025A; distressed trough pricing near current market de-rating.",
+    "comps_ff_ev_hi": "7.5x EV/EBITDA high case on FY2025A; partial recovery before terminal year, below historical peaks.",
+    "comps_ff_pe_lo": "10x P/E low on FY2026E EPS; trough earnings multiple after guidance reset and sentiment de-rating.",
+    "comps_ff_pe_hi": "18x P/E high on FY2026E EPS; modest recovery case still below historical premium LULU multiples.",
+    # Sensitivity axes (summary)
+    "sens_axes": "Red WACC and g grid values bracket base case ±100bps discount rate and ±75bps terminal growth for sensitivity.",
+    # 3-statement Assumptions tab
+    "3s_rev_growth": "FY26 −6.1% matches guidance; FY27–30 step up to low-single-digit then mid-single-digit recovery path.",
+    "3s_gm": "Gross margin recovers gradually from promo pressure; 56.5% to 58.0% still below peak ~58–59% historical.",
+    "3s_sga_pct": "SG&A leverage improves slowly as revenue stabilizes; ratio declines toward 39.5% by FY2030 from cost discipline.",
+    "3s_other_opex": "$7M annual amortization run-rate; stable intangible amortization per recent 10-K disclosure levels.",
+    "3s_other_inc": "Interest income declines as cash is deployed; $130M FY26 stepping down with lower cash balances.",
+    "3s_tax_rate": "30% effective tax rate on projections; conservative vs recent ~29% effective, allows for jurisdictional mix.",
+    "3s_da_pct": "D&A 4.5–4.6% of revenue; tracks recent depreciation intensity on PPE and lease-related amortization.",
+    "3s_capex_pct": "Capex fades from 5.5% to 5.0%; reflects completion of major supply-chain projects and normalized store growth.",
+    "3s_sbc": "$70M annual SBC; modest decline from FY25 as headcount growth slows in restructuring period.",
+    "3s_inv_pct": "Inventory 33–34% of COGS; slight normalization from FY25 build as Americas demand softens and clears.",
+    "3s_ap_pct": "AP 6.8% of COGS; holds near FY25 level reflecting vendor terms and production payment cadence.",
+    "3s_accr_pct": "Accrued liabilities 5.8% of revenue; stable comp, marketing, and operating accrual ratio.",
+    "3s_oca_pct": "Other current assets 6.8% of revenue; prepaid and receivable balance consistent with recent history.",
+    "3s_rou_pct": "ROU assets 14.7% of revenue; lease-intensive store model, stable vs FY25 operating lease footprint.",
+    "3s_onca_pct": "Other non-current assets 3.0% of revenue; deferred costs and long-term deposits at normalized level.",
+    "3s_olc_pct": "Current lease liabilities 2.7% of revenue; short-term portion of operating lease obligations.",
+    "3s_olnc_pct": "Non-current lease liabilities 13.5% of revenue; long-term store lease commitments per 10-K.",
+    "3s_ocl_pct": "Other current liabilities 5.5% of revenue; gift cards, deferred revenue, and other short-term obligations.",
+    "3s_oncl_pct": "Other non-current liabilities 0.5% of revenue; minor long-term accruals and provisions.",
+    "3s_buyback": "$500M annual repurchases; continued capital return at moderated pace vs FY24–25 peak buyback levels.",
+    "3s_rep_price": "Repurchase price rises with recovery thesis; $105 to $135 reflects assumed gradual share-price normalization.",
+}

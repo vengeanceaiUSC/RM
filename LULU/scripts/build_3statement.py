@@ -25,7 +25,7 @@ YEAR_OF = {c: y for y, c in COL.items()}
 PREV = {c: COLS[i-1] for i, c in enumerate(COLS) if i > 0}
 
 A, ISN, BSN, CFN = "Assumptions", "Income Statement", "Balance Sheet", "Cash Flow"
-WIDTHS = {'A': 46, 'B': 2, 'C': 12, 'D': 12, 'E': 12, 'F': 12, 'G': 12, 'H': 12, 'I': 12, 'J': 12, 'K': 12}
+WIDTHS = {'A': 46, 'B': 2, 'C': 12, 'D': 12, 'E': 12, 'F': 12, 'G': 12, 'H': 12, 'I': 12, 'J': 12, 'K': 12, 'L': 44}
 
 wb = Workbook()
 
@@ -83,7 +83,7 @@ def a_section(title):
         asum[f'{c}{r[0]}'].fill = S.fill(S.GREY)
     r[0] += 1
 
-def a_row(key, label, hist_vals, proj_vals, fmt=PCT):
+def a_row(key, label, hist_vals, proj_vals, fmt=PCT, justify=""):
     AR[key] = r[0]
     write(asum, f'A{r[0]}', label, S.BLACK, size=10, align=S.left_indent)
     for i, y in enumerate(HIST):
@@ -91,46 +91,69 @@ def a_row(key, label, hist_vals, proj_vals, fmt=PCT):
             write(asum, f'{COL[y]}{r[0]}', hist_vals[i], S.BLACK, size=10, numfmt=fmt, align=S.right)
     for i, y in enumerate(PROJ):
         write(asum, f'{COL[y]}{r[0]}', proj_vals[i], S.RED, size=10, numfmt=fmt, align=S.right)
+    if justify:
+        c = asum[f'L{r[0]}']
+        c.value = justify
+        c.font = S.font(color=S.BLACK, italic=True, size=8)
+        c.alignment = S.Alignment(horizontal='left', vertical='center', wrap_text=True)
     r[0] += 1
 
 rev, cogs = D.IS['revenue'], D.IS['cogs']
 a_section("GROWTH & MARGINS")
+write(asum, 'L3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 a_row('rev_growth', "Revenue growth %",
       [None, rev['FY2023']/rev['FY2022']-1, rev['FY2024']/rev['FY2023']-1, rev['FY2025']/rev['FY2024']-1],
-      [-0.061, 0.010, 0.030, 0.040, 0.040])
+      [-0.061, 0.010, 0.030, 0.040, 0.040], justify=D.JUST["3s_rev_growth"])
 a_row('gm', "Gross margin %", [D.IS['gross_profit'][y]/rev[y] for y in HIST],
-      [0.565, 0.570, 0.575, 0.575, 0.580])
+      [0.565, 0.570, 0.575, 0.575, 0.580], justify=D.JUST["3s_gm"])
 a_row('sga_pct', "SG&A % of revenue", [D.IS['sga'][y]/rev[y] for y in HIST],
-      [0.425, 0.415, 0.405, 0.400, 0.395])
-a_row('other_opex', "Amortization / other opex ($)", [D.IS['other_opex'][y] for y in HIST], [7000]*5, fmt=NUM)
+      [0.425, 0.415, 0.405, 0.400, 0.395], justify=D.JUST["3s_sga_pct"])
+a_row('other_opex', "Amortization / other opex ($)", [D.IS['other_opex'][y] for y in HIST], [7000]*5, fmt=NUM,
+      justify=D.JUST["3s_other_opex"])
 a_row('other_inc', "Other income, net ($)", [D.IS['other_income'][y] for y in HIST],
-      [130000, 60000, 75000, 95000, 115000], fmt=NUM)
-a_row('tax_rate', "Effective tax rate %", [D.IS['tax'][y]/D.IS['pretax_income'][y] for y in HIST], [0.300]*5)
+      [130000, 60000, 75000, 95000, 115000], fmt=NUM, justify=D.JUST["3s_other_inc"])
+a_row('tax_rate', "Effective tax rate %", [D.IS['tax'][y]/D.IS['pretax_income'][y] for y in HIST], [0.300]*5,
+      justify=D.JUST["3s_tax_rate"])
 
 a_section("CAPITAL & NON-CASH ITEMS")
-a_row('da_pct', "D&A % of revenue", [D.CF['d_and_a'][y]/rev[y] for y in HIST], [0.046, 0.046, 0.045, 0.045, 0.045])
-a_row('capex_pct', "Capex % of revenue", [D.CF['capex'][y]/rev[y] for y in HIST], [0.055, 0.050, 0.050, 0.050, 0.050])
-a_row('sbc', "Stock-based compensation ($)", [D.CF['sbc'][y] for y in HIST], [70000]*5, fmt=NUM)
+a_row('da_pct', "D&A % of revenue", [D.CF['d_and_a'][y]/rev[y] for y in HIST], [0.046, 0.046, 0.045, 0.045, 0.045],
+      justify=D.JUST["3s_da_pct"])
+a_row('capex_pct', "Capex % of revenue", [D.CF['capex'][y]/rev[y] for y in HIST], [0.055, 0.050, 0.050, 0.050, 0.050],
+      justify=D.JUST["3s_capex_pct"])
+a_row('sbc', "Stock-based compensation ($)", [D.CF['sbc'][y] for y in HIST], [70000]*5, fmt=NUM,
+      justify=D.JUST["3s_sbc"])
 
 a_section("WORKING CAPITAL & BALANCE SHEET DRIVERS")
 oca = {y: D.BS['current_assets'][y]-D.BS['cash'][y]-D.BS['inventories'][y] for y in HIST}
 onca = {y: D.BS['total_assets'][y]-D.BS['current_assets'][y]-D.BS['ppe_net'][y]-D.BS['rou_asset'][y]-D.BS['goodwill_intang'][y] for y in HIST}
 ocl = {y: D.BS['current_liab'][y]-D.BS['accounts_payable'][y]-D.BS['accrued_liab'][y]-D.BS['op_lease_cur'][y] for y in HIST}
 oncl = {y: D.BS['total_liab'][y]-D.BS['current_liab'][y]-D.BS['op_lease_noncur'][y]-D.BS['deferred_tax'][y] for y in HIST}
-a_row('inv_pct', "Inventories % of COGS", [D.BS['inventories'][y]/cogs[y] for y in HIST], [0.340, 0.335, 0.330, 0.330, 0.330])
-a_row('ap_pct', "Accounts payable % of COGS", [D.BS['accounts_payable'][y]/cogs[y] for y in HIST], [0.068]*5)
-a_row('accr_pct', "Accrued liabilities % of revenue", [D.BS['accrued_liab'][y]/rev[y] for y in HIST], [0.058]*5)
-a_row('oca_pct', "Other current assets % of revenue", [oca[y]/rev[y] for y in HIST], [0.068]*5)
-a_row('rou_pct', "Operating lease ROU asset % of revenue", [D.BS['rou_asset'][y]/rev[y] for y in HIST], [0.147]*5)
-a_row('onca_pct', "Other non-current assets % of revenue", [onca[y]/rev[y] for y in HIST], [0.030]*5)
-a_row('olc_pct', "Op lease liab (current) % of revenue", [D.BS['op_lease_cur'][y]/rev[y] for y in HIST], [0.027]*5)
-a_row('olnc_pct', "Op lease liab (non-current) % of revenue", [D.BS['op_lease_noncur'][y]/rev[y] for y in HIST], [0.135]*5)
-a_row('ocl_pct', "Other current liabilities % of revenue", [ocl[y]/rev[y] for y in HIST], [0.055]*5)
-a_row('oncl_pct', "Other non-current liab % of revenue", [oncl[y]/rev[y] for y in HIST], [0.005]*5)
+a_row('inv_pct', "Inventories % of COGS", [D.BS['inventories'][y]/cogs[y] for y in HIST], [0.340, 0.335, 0.330, 0.330, 0.330],
+      justify=D.JUST["3s_inv_pct"])
+a_row('ap_pct', "Accounts payable % of COGS", [D.BS['accounts_payable'][y]/cogs[y] for y in HIST], [0.068]*5,
+      justify=D.JUST["3s_ap_pct"])
+a_row('accr_pct', "Accrued liabilities % of revenue", [D.BS['accrued_liab'][y]/rev[y] for y in HIST], [0.058]*5,
+      justify=D.JUST["3s_accr_pct"])
+a_row('oca_pct', "Other current assets % of revenue", [oca[y]/rev[y] for y in HIST], [0.068]*5,
+      justify=D.JUST["3s_oca_pct"])
+a_row('rou_pct', "Operating lease ROU asset % of revenue", [D.BS['rou_asset'][y]/rev[y] for y in HIST], [0.147]*5,
+      justify=D.JUST["3s_rou_pct"])
+a_row('onca_pct', "Other non-current assets % of revenue", [onca[y]/rev[y] for y in HIST], [0.030]*5,
+      justify=D.JUST["3s_onca_pct"])
+a_row('olc_pct', "Op lease liab (current) % of revenue", [D.BS['op_lease_cur'][y]/rev[y] for y in HIST], [0.027]*5,
+      justify=D.JUST["3s_olc_pct"])
+a_row('olnc_pct', "Op lease liab (non-current) % of revenue", [D.BS['op_lease_noncur'][y]/rev[y] for y in HIST], [0.135]*5,
+      justify=D.JUST["3s_olnc_pct"])
+a_row('ocl_pct', "Other current liabilities % of revenue", [ocl[y]/rev[y] for y in HIST], [0.055]*5,
+      justify=D.JUST["3s_ocl_pct"])
+a_row('oncl_pct', "Other non-current liab % of revenue", [oncl[y]/rev[y] for y in HIST], [0.005]*5,
+      justify=D.JUST["3s_oncl_pct"])
 
 a_section("CAPITAL RETURN")
-a_row('buyback', "Share repurchases ($)", [D.CF['buybacks'][y] for y in HIST], [500000]*5, fmt=NUM)
-a_row('rep_price', "Avg repurchase price ($/sh)", [None]*4, [105, 112, 120, 128, 135], fmt=MONEY)
+a_row('buyback', "Share repurchases ($)", [D.CF['buybacks'][y] for y in HIST], [500000]*5, fmt=NUM,
+      justify=D.JUST["3s_buyback"])
+a_row('rep_price', "Avg repurchase price ($/sh)", [None]*4, [105, 112, 120, 128, 135], fmt=MONEY,
+      justify=D.JUST["3s_rep_price"])
 
 write(asum, f'A{r[0]+1}', "Historical columns = derived ratios (black); projection columns = analyst inputs (red).",
       S.BLACK, italic=True, size=8, align=S.left_indent)
