@@ -118,8 +118,10 @@ a_section("GROWTH & MARGINS")
 a_row('rev_growth', "Revenue growth %",
       [None, rev['FY2023']/rev['FY2022']-1, rev['FY2024']/rev['FY2023']-1, rev['FY2025']/rev['FY2024']-1],
       [-0.061, 0.026, 0.023, 0.023, 0.023], justify_key="3s_rev_growth")
-a_row('gm', "Gross margin %", [D.IS['gross_profit'][y]/rev[y] for y in HIST],
+a_row('gm', "Gross margin % (clean, ex-refunds)", [D.IS['gross_profit'][y]/rev[y] for y in HIST],
       [0.565, 0.570, 0.575, 0.575, 0.580], justify_key="3s_gm")
+a_row('tariff', "IEEPA tariff refunds ($k, FY26 only)", [0, 0, 0, 0],
+      [D.GUIDANCE['tariff_refund'], 0, 0, 0, 0], fmt=NUM, justify_key="3s_tariff")
 a_row('sga_pct', "SG&A % of revenue", [D.IS['sga'][y]/rev[y] for y in HIST],
       [0.425, 0.415, 0.405, 0.400, 0.395], justify_key="3s_sga_pct")
 a_row('other_opex', "Amortization / other opex ($)", [D.IS['other_opex'][y] for y in HIST], [7000]*5, fmt=NUM,
@@ -211,9 +213,12 @@ def is_calc(key, label, fn, bold=False, top=False, dbl=False, fmt=NUM):
 r = [4]
 is_reported('rev', "Net revenue", D.IS['revenue'], lambda c: f"={PREV[c]}{IR['rev']}*(1+{ar('rev_growth', c)})",
             justify_key="3s_rev_growth")
-is_reported('cogs', "Cost of goods sold", D.IS['cogs'], lambda c: f"={c}{IR['rev']}*(1-{ar('gm', c)})",
+is_reported('cogs', "Cost of goods sold (ex-refunds)", D.IS['cogs'], lambda c: f"={c}{IR['rev']}*(1-{ar('gm', c)})",
             justify_key="3s_gm")
-is_calc('gp', "Gross profit", lambda c: f"={c}{IR['rev']}-{c}{IR['cogs']}", bold=True, top=True)
+is_reported('tariff', "  Less: IEEPA tariff refunds (FY26 only)",
+            {y: 0 for y in HIST}, lambda c: f"=-{ar('tariff', c)}",
+            justify_key="3s_tariff")
+is_calc('gp', "Gross profit", lambda c: f"={c}{IR['rev']}-{c}{IR['cogs']}-{c}{IR['tariff']}", bold=True, top=True)
 is_reported('sga', "Selling, general & administrative", D.IS['sga'], lambda c: f"={c}{IR['rev']}*{ar('sga_pct', c)}",
             justify_key="3s_sga_pct")
 is_reported('oopex', "Amortization of intangibles / other", D.IS['other_opex'], lambda c: f"={ar('other_opex', c)}",

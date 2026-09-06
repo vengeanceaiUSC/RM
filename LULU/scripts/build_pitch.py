@@ -218,7 +218,7 @@ tb, tf = textbox(s, Inches(0.5), Inches(2.95), Inches(12.35), Inches(4.0))
 add_para(tf, "Three reasons to be long", 15, CARD, bold=True, first=True, space_after=6)
 add_para(tf, "1.  Priced for terminal decline \u2014 at ~3.5x EV/EBITDA and ~10x FY2026E EPS with a net-cash balance sheet, the stock embeds a permanent impairment that the business does not support", 13.5, INK, bold=False, space_after=7)
 add_para(tf, "2.  International is a multi-year growth engine \u2014 China Mainland and Rest-of-World more than offset a maturing Americas and can return total revenue to mid-single-digit growth", 13.5, INK, space_after=7)
-add_para(tf, "3.  Elite economics + accretive buybacks \u2014 FY2025 operating margin was 19.9% (last full year, not the trough); we model a 13.9% FY2026 trough. Diluted shares are down ~7% (128.0M \u2192 119.1M)", 13.5, INK, space_after=7)
+add_para(tf, "3.  Elite economics + accretive buybacks \u2014 FY2025 operating margin was 19.9% (last full year, not the trough); we model a 13.2% clean FY2026 run-rate (Q2 18.8% minus 560bps of tariff refunds), then add the $134.5M refund once (~14.5% reported). Diluted shares are down ~7% (128.0M \u2192 119.1M)", 13.5, INK, space_after=7)
 add_para(tf, "Base-case DCF $144; bear $91 (\u22129%) vs bull $239 (+139%) \u2014 downside is protected by net cash and an ~8\u20139% FCF yield", 13, NAVY, bold=True, italic=True, space_after=0)
 
 # =====================================================================
@@ -626,7 +626,7 @@ add_para(tf, "Base-case assumptions", 14, CARD, bold=True, first=True, space_aft
 arows = [
     ["Assumption", "Value"],
     ["Revenue growth (FY26 \u2192 FY30)", "\u22126.1% \u2192 +3.0%"],
-    ["EBIT margin (FY26 \u2192 FY30)", "13.9% \u2192 15.5%"],
+    ["EBIT margin (FY26 \u2192 FY30)", "13.2% clean \u2192 15.5% (+$134.5M FY26)"],
     ["Tax rate", "30%"],
     ["Capex % of revenue", "5.5% blend"],
     ["WACC", "10.0%"],

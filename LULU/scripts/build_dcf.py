@@ -137,7 +137,10 @@ write(scn, f'{DS}3', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left
 write(scn, f'{DC}3', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 s_assum('g1', "FY2026E revenue growth", -0.090, -0.061, -0.040, doc_key='sc_g1')
 s_assum('gterm', "FY2027\u2013FY2030E revenue growth (avg)", -0.010, 0.023, 0.060, doc_key='sc_gterm')
-s_assum('m1', "FY2026E EBIT margin", 0.125, 0.139, 0.150, doc_key='sc_m1')
+s_assum('m1', "Run-rate EBIT margin (clean, ex-refunds)", 0.120, 0.132, 0.145, doc_key='sc_m1')
+s_assum('tariff', "FY26 IEEPA tariff refunds ($k, already in guide)",
+        D.GUIDANCE['tariff_refund'], D.GUIDANCE['tariff_refund'], D.GUIDANCE['tariff_refund'],
+        fmt=NUM, doc_key='sc_tariff')
 s_assum('mterm', "Terminal (FY2030E) EBIT margin", 0.120, 0.155, 0.190, doc_key='sc_mterm')
 s_assum('wacc', "WACC", 0.115, 0.105, 0.095, doc_key='sc_wacc',
         internal_location=f"'WACC'!E{WR['wacc']}")
@@ -168,7 +171,7 @@ for t in range(1, 6):
     cur += 1
 for t in range(1, 6):
     mar_rows[t] = cur
-    put(cur, f"  EBIT margin \u2013 year {t}")
+    put(cur, f"  Clean EBIT margin \u2013 year {t}")
     for col in SCEN_COLS:
         f = f"={col}{SC['m1']}+({col}{SC['mterm']}-{col}{SC['m1']})*{(t-1)}/4"
         write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=PCT, align=S.right)
@@ -177,7 +180,10 @@ for t in range(1, 6):
     ebit_rows[t] = cur
     put(cur, f"  EBIT \u2013 year {t}")
     for col in SCEN_COLS:
-        f = f"={col}{rev_rows[t]}*{col}{mar_rows[t]}"
+        # FY26 only: add the already-recognized $134.5M refund on top of the clean margin.
+        # Later years interpolate 13.2% → 15.5% with no refund leakage.
+        extra = f"+{col}{SC['tariff']}" if t == 1 else ""
+        f = f"={col}{rev_rows[t]}*{col}{mar_rows[t]}{extra}"
         write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
     cur += 1
 for t in range(1, 6):
@@ -221,7 +227,7 @@ for t in range(1, 6):
 cur += 1
 write(scn, f'A{cur}', "Enterprise value (DCF)", S.DARK, bold=True, size=10, align=S.left_indent)
 ev_row = cur
-for col in ['C', 'D', 'E']:
+for col in SCEN_COLS:
     fcf_cells = ",".join(f"{col}{fcf_rows[t]}" for t in range(1, 6))
     lastf = f"{col}{fcf_rows[5]}"
     f = (f"=NPV({col}{SC['wacc']},{fcf_cells})"
@@ -230,13 +236,13 @@ for col in ['C', 'D', 'E']:
 cur += 1
 write(scn, f'A{cur}', "Implied share price", S.DARK, bold=True, size=11, align=S.left_indent)
 pt_row = cur
-for col in ['C', 'D', 'E']:
+for col in SCEN_COLS:
     f = f"=({col}{ev_row}+{D.MKT['cash']}-{D.MKT['debt']})/{D.MKT['shares_out']}"
     color = S.GREEN if col == SCEN_BASE else S.BLACK
     write(scn, f'{col}{cur}', f, color, bold=True, size=12, numfmt=MONEY, align=S.right, bdr=S.top_double, fillc=S.GREY)
 cur += 1
 write(scn, f'A{cur}', "Upside / (downside) vs current", S.DARK, bold=True, size=10, align=S.left_indent)
-for col in ['C', 'D', 'E']:
+for col in SCEN_COLS:
     write(scn, f'{col}{cur}', f"={col}{pt_row}/{D.MKT['price']}-1", S.BLACK, bold=True, size=10, numfmt=PCT, align=S.right)
 cur += 2
 write(scn, f'A{cur}', "Current price $%.2f; cash $%s k; net debt $0 (net-cash balance sheet)." % (D.MKT['price'], f"{D.MKT['cash']:,}"),
@@ -319,12 +325,18 @@ d_row('rev', "Net revenue", BASE_REV,
 d_row('growth', "Revenue growth %", None,
       lambda c: f"={c}{DR['rev']}/{PREVF[c]}{DR['rev']}-1", fmt=PCT,
       justify_key="sc_g1", extra_doc_key="sc_gterm")
-d_row('margin', "EBIT (operating) margin %", None,
+d_row('margin', "Clean / run-rate EBIT margin %", None,
       lambda c: f"=Scenarios!{SCEN_BASE}{mar_rows[YEAR_MAP[c]]}", fmt=PCT, sc_rows=mar_rows,
       justify_key="sc_m1", extra_doc_key="sc_mterm")
-d_row('ebit', "EBIT", D.IS['operating_income']['FY2025'],
+d_row('tariff', "Plus: FY26 IEEPA tariff refunds (one-time)", 0,
+      lambda c: f"={bref('tariff')}" if YEAR_MAP[c] == 1 else 0,
+      fmt=NUM, red=True, justify_key="sc_tariff")
+d_row('ebit', "EBIT (incl. FY26 refund)", D.IS['operating_income']['FY2025'],
       lambda c: f"=Scenarios!{SCEN_BASE}{ebit_rows[YEAR_MAP[c]]}", color_c=S.BLUE, bold=True, top=True,
       sc_rows=ebit_rows)
+d_row('rep_margin', "Reported EBIT margin % (incl. FY26 refund)",
+      D.IS['operating_income']['FY2025'] / BASE_REV,
+      lambda c: f"={c}{DR['ebit']}/{c}{DR['rev']}", fmt=PCT, color_c=S.BLUE)
 d_row('taxes', "Less: cash taxes on EBIT", None,
       lambda c: f"=-Scenarios!{SCEN_BASE}{ebit_rows[YEAR_MAP[c]]}*{bref('tax')}")
 d_row('nopat', "NOPAT", None,

@@ -98,6 +98,8 @@ GUIDANCE = {
     "fy2026_tax_rate": 0.30,
     "q3_rev_low": 2290000,
     "q3_rev_high": 2320000,
+    "tariff_refund": 134500,   # $134.5M IEEPA refund, Q2 FY2026, reduced COGS
+    "tariff_om_bps": 560,      # +560 bps to Q2 operating margin
 }
 
 # ---------------------------------------------------------------------------
@@ -164,7 +166,8 @@ JUST = {
     # Scenarios tab
     "sc_g1": "−6.1% FY2026 revenue growth matches company guidance midpoint of −5% to −7% after Q2 FY2026 print.",
     "sc_gterm": "2.3% FY27–30 growth matches StockAnalysis Revenue Growth Forecast (3Y) of 2.26%; next-year consensus is +2.64%.",
-    "sc_m1": "FY26 13.9% is derived: Q2 OM 18.8% minus 560bps tariff refunds = 13.2% clean; we set base slightly above that run-rate.",
+    "sc_m1": "13.2% is the real/run-rate OM: Q2 18.8% minus 560bps of tariff refunds. FY26 then adds the $134.5M refund once on top.",
+    "sc_tariff": "Add back $134.5M in FY26 only — already recognized (reduced COGS). +130bps on FY26 sales, not +560bps (that was Q2-only).",
     "sc_mterm": "FY30 15.5% is a recovery assumption vs FY25 10-K OM 19.9% (2,210,615 / 11,102,600); still well below FY24 peak ~23.7%.",
     "sc_wacc": "10.5% base WACC = rf 4.8% + 0.95×6.0% ERP on the WACC tab (FRED 4.77% rounded).",
     "sc_g": "2.25% terminal g sits next to FRED GDPC1 Q2/Q2 real GDP ≈ 2.1% (24,269.613 / 23,770.976 − 1).",
@@ -190,7 +193,8 @@ JUST = {
     "sens_g": "Terminal-g axis 1.5–3.0% brackets 2.25% base; bounded by long-run real GDP and inflation benchmarks.",
     # 3-statement Assumptions tab
     "3s_rev_growth": "FY26 −6.1% is guidance midpoint. FY27 +2.6% then +2.3% tracks StockAnalysis next-year +2.64% and 3Y forecast 2.26%.",
-    "3s_gm": "Gross margin recovers gradually from promo pressure; 56.5% to 58.0% still below peak ~58–59% historical.",
+    "3s_gm": "Clean GM 56.5%→58.0% (ex-refunds), still below peak ~58–59%. FY26 COGS is then reduced by the $134.5M IEEPA refund.",
+    "3s_tariff": "Add back $134.5M in FY26 only — already recognized (reduced COGS). +130bps on FY26 sales, not +560bps (that was Q2-only).",
     "3s_sga_pct": "FY26 SG&A 42.5% matches YTD 42.3% (earnings), vs FY25 36.7% 10-K; then fades to 39.5% as volume stabilizes.",
     "3s_other_opex": "$7M annual amortization run-rate; stable intangible amortization per recent 10-K disclosure levels.",
     "3s_other_inc": "FY26 $45M other income annualizes YTD $22,829; then steps down as cash is deployed (FY25 was only $28,352).",
@@ -225,7 +229,8 @@ ASSUMPTION_SRC = {
     # Scenarios
     "sc_g1": ("LULU Q2 FY2026 earnings release", SOURCES["earnings_sep2026"]),
     "sc_gterm": ("StockAnalysis: LULU 3Y revenue forecast", SOURCES["lulu_stats"]),
-    "sc_m1": ("Q2 FY2026 release: OM 18.8% less 560bps tariffs", SOURCES["earnings_sep2026"]),
+    "sc_m1": ("Q2 FY2026 release: 18.8% OM minus 560bps tariffs", SOURCES["earnings_sep2026"]),
+    "sc_tariff": ("Q2 FY2026 release: $134.5M IEEPA tariff refunds", SOURCES["earnings_sep2026"]),
     "sc_mterm": ("FY2025 10-K: Income from operations / revenue", filing_url("FY2025")),
     "sc_wacc": ("WACC tab: CAPM build", None),  # internal link set in build_dcf.py
     "sc_g": ("FRED: Real GDP (GDPC1)", SOURCES["fred_gdpc1"]),
@@ -250,6 +255,7 @@ ASSUMPTION_SRC = {
     # 3-statement
     "3s_rev_growth": ("StockAnalysis: LULU revenue forecast (FY27–30)", SOURCES["lulu_stats"]),
     "3s_gm": ("LULU historical gross margin (10-K)", filing_url("FY2025")),
+    "3s_tariff": ("Q2 FY2026 release: $134.5M IEEPA tariff refunds", SOURCES["earnings_sep2026"]),
     "3s_sga_pct": ("LULU Q2 FY2026 earnings release (YTD SG&A %)", SOURCES["earnings_sep2026"]),
     "3s_other_opex": ("LULU FY2025 10-K", filing_url("FY2025")),
     "3s_other_inc": ("Q2 FY2026 YTD other income (earnings)", SOURCES["earnings_sep2026"]),
@@ -285,7 +291,8 @@ SOURCE_HINT = {
     # Scenarios
     "sc_g1": 'Ctrl+F "decline of 5% to 7%" → FY2026 revenue guide; model −6.1% midpoint',
     "sc_gterm": 'Ctrl+F "Revenue Growth Forecast (3Y)" → 2.26%. That is the unique line (do not search "Net revenue"). Model FY27–30 uses 2.3%.',
-    "sc_m1": '1) Ctrl+F "18.8%" = Q2 operating margin. 2) Ctrl+F "560 basis points" = tariff add. 3) Clean Q2 = 18.8% − 5.6% = 13.2%. Model FY26 base 13.9% sits just above that. Do not use "decreased 13%" — that is the YoY $ decline in income from operations.',
+    "sc_m1": 'Ctrl+F "18.8%" (Q2 OM) and "560 basis points" (tariff boost). Real run-rate = 18.8% − 5.6% = 13.2%. Do not use "decreased 13%".',
+    "sc_tariff": 'Ctrl+F "134.5 million" → IEEPA tariff refunds reduced COGS. Add this dollar amount to FY26 EBIT only. Full-year boost = 134.5 / FY26 sales ≈ 1.3ppt, not 5.6ppt.',
     "sc_mterm": 'Ctrl+F "Income from operations" → 2,210,615 and "Net revenue" → 11,102,600. FY25 OM = 19.9%. Model FY30 15.5% is a partial-recovery assumption, not a reported figure.',
     "sc_wacc": 'WACC tab → cell E (green) = rf 4.8% + β 0.95 × ERP 6.0% = 10.5%',
     "sc_g": 'Ctrl+F "Q2 2026" → 24,269.613 and "Q2 2025" → 23,770.976. YoY = 2.1%. Model terminal g 2.25%.',
@@ -310,6 +317,7 @@ SOURCE_HINT = {
     # 3-statement
     "3s_rev_growth": 'FY26: earnings release Ctrl+F "decline of 5% to 7%". FY27–30: this page Ctrl+F "Revenue Growth Forecast (3Y)" → 2.26%. Model 2.3%.',
     "3s_gm": 'Ctrl+F "Gross profit" → 6,284,132 ÷ "Net revenue" 11,102,600 = 56.6% FY25 anchor',
+    "3s_tariff": 'Ctrl+F "134.5 million" → IEEPA tariff refunds reduced COGS. Add this dollar amount to FY26 EBIT only. Full-year boost = 134.5 / FY26 sales ≈ 1.3ppt, not 5.6ppt.',
     "3s_sga_pct": 'Ctrl+F "41.7%" (Q2 SG&A % of net revenue) and "42.3%" (first two quarters). FY25 10-K is 36.7%. Model FY26 42.5%',
     "3s_other_opex": 'Ctrl+F "Amortization of intangible assets" → 6,961 ($000); model $7,000/yr',
     "3s_other_inc": 'Ctrl+F "22,829" → YTD other income ($000) on the earnings P&L. FY26 model $45,000 annualizes that run-rate.',
