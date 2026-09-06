@@ -117,7 +117,7 @@ asum.freeze_panes = 'E4'
 a_section("GROWTH & MARGINS")
 a_row('rev_growth', "Revenue growth %",
       [None, rev['FY2023']/rev['FY2022']-1, rev['FY2024']/rev['FY2023']-1, rev['FY2025']/rev['FY2024']-1],
-      [-0.061, 0.010, 0.030, 0.040, 0.040], justify_key="3s_rev_growth")
+      [-0.061, 0.026, 0.023, 0.023, 0.023], justify_key="3s_rev_growth")
 a_row('gm', "Gross margin %", [D.IS['gross_profit'][y]/rev[y] for y in HIST],
       [0.565, 0.570, 0.575, 0.575, 0.580], justify_key="3s_gm")
 a_row('sga_pct', "SG&A % of revenue", [D.IS['sga'][y]/rev[y] for y in HIST],

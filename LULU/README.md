@@ -53,7 +53,7 @@ calendar year it mostly covers):
 
 ## Key base-case assumptions (DCF)
 
-- Revenue: −6.1% in FY2026E (in line with guidance), recovering to ~+3% by FY2028E
+- Revenue: −6.1% in FY2026E (guidance midpoint), then +2.3% FY27–30 (StockAnalysis 3Y forecast 2.26%)
 - EBIT margin: 13.9% FY2026E (model; Q2 reported OM was 18.8%, of which 560bps is tariff refunds) recovering to 15.5% FY2030E — well below the ~20–24% peak
 - Tax rate 30% (FY2026 guidance); capex 5.5% blend (2026 guide ~7.0% fading to 5.0%); NWC 7.5% of Δrevenue
 - WACC 10.5% (CAPM: rf 4.8% from FRED DGS10 4.77% on 2026-09-03, ERP 6.0%, β 0.95, ~100% equity / net cash)

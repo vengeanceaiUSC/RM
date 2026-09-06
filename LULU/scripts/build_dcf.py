@@ -136,7 +136,7 @@ write(scn, f'{DJ}3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, a
 write(scn, f'{DS}3', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 write(scn, f'{DC}3', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 s_assum('g1', "FY2026E revenue growth", -0.090, -0.061, -0.040, doc_key='sc_g1')
-s_assum('gterm', "FY2027\u2013FY2030E revenue growth (avg)", -0.010, 0.028, 0.060, doc_key='sc_gterm')
+s_assum('gterm', "FY2027\u2013FY2030E revenue growth (avg)", -0.010, 0.023, 0.060, doc_key='sc_gterm')
 s_assum('m1', "FY2026E EBIT margin", 0.125, 0.139, 0.150, doc_key='sc_m1')
 s_assum('mterm', "Terminal (FY2030E) EBIT margin", 0.120, 0.155, 0.190, doc_key='sc_mterm')
 s_assum('wacc', "WACC", 0.115, 0.105, 0.095, doc_key='sc_wacc',

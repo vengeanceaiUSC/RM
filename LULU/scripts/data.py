@@ -133,6 +133,7 @@ SOURCES = {
     "damodaran_erp": "https://www.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histimpl.html",
     "damodaran_tax": "https://www.stern.nyu.edu/~adamodar/New_Home_Page/datafile/taxrate.html",
     "lulu_stats": "https://stockanalysis.com/stocks/lulu/statistics/",
+    "lulu_forecast": "https://stockanalysis.com/stocks/lulu/forecast/",
 }
 
 # FY label -> (accession, primary 10-K document)
@@ -162,7 +163,7 @@ JUST = {
     "wacc_wd": "0% debt weight; no outstanding term loans or bonds, so WACC effectively equals levered cost of equity here.",
     # Scenarios tab
     "sc_g1": "−6.1% FY2026 revenue growth matches company guidance midpoint of −5% to −7% after Q2 FY2026 print.",
-    "sc_gterm": "2.8% avg FY27–30 growth assumes gradual recovery; well below historical double-digit LULU revenue expansion.",
+    "sc_gterm": "2.3% FY27–30 growth matches StockAnalysis Revenue Growth Forecast (3Y) of 2.26%; next-year consensus is +2.64%.",
     "sc_m1": "FY26 13.9% is derived: Q2 OM 18.8% minus 560bps tariff refunds = 13.2% clean; we set base slightly above that run-rate.",
     "sc_mterm": "FY30 15.5% is a recovery assumption vs FY25 10-K OM 19.9% (2,210,615 / 11,102,600); still well below FY24 peak ~23.7%.",
     "sc_wacc": "10.5% base WACC = rf 4.8% + 0.95×6.0% ERP on the WACC tab (FRED 4.77% rounded).",
@@ -188,7 +189,7 @@ JUST = {
     "sens_wacc": "WACC axis 9.0–11.0% brackets 10.0% base from CAPM (rf + β×ERP) on WACC tab; ±100bps sensitivity band.",
     "sens_g": "Terminal-g axis 1.5–3.0% brackets 2.25% base; bounded by long-run real GDP and inflation benchmarks.",
     # 3-statement Assumptions tab
-    "3s_rev_growth": "FY26 −6.1% matches guidance; FY27–30 step up to low-single-digit then mid-single-digit recovery path.",
+    "3s_rev_growth": "FY26 −6.1% is guidance midpoint. FY27 +2.6% then +2.3% tracks StockAnalysis next-year +2.64% and 3Y forecast 2.26%.",
     "3s_gm": "Gross margin recovers gradually from promo pressure; 56.5% to 58.0% still below peak ~58–59% historical.",
     "3s_sga_pct": "FY26 SG&A 42.5% matches YTD 42.3% (earnings), vs FY25 36.7% 10-K; then fades to 39.5% as volume stabilizes.",
     "3s_other_opex": "$7M annual amortization run-rate; stable intangible amortization per recent 10-K disclosure levels.",
@@ -223,7 +224,7 @@ ASSUMPTION_SRC = {
     "wacc_wd": ("LULU FY2025 10-K balance sheet", filing_url("FY2025")),
     # Scenarios
     "sc_g1": ("LULU Q2 FY2026 earnings release", SOURCES["earnings_sep2026"]),
-    "sc_gterm": ("LULU historical revenue (10-K)", filing_url("FY2025")),
+    "sc_gterm": ("StockAnalysis: LULU 3Y revenue forecast", SOURCES["lulu_stats"]),
     "sc_m1": ("Q2 FY2026 release: OM 18.8% less 560bps tariffs", SOURCES["earnings_sep2026"]),
     "sc_mterm": ("FY2025 10-K: Income from operations / revenue", filing_url("FY2025")),
     "sc_wacc": ("WACC tab: CAPM build", None),  # internal link set in build_dcf.py
@@ -247,7 +248,7 @@ ASSUMPTION_SRC = {
     "sens_wacc": ("Damodaran: Historical Implied ERP", SOURCES["damodaran_erp"]),
     "sens_g": ("FRED: Real GDP (GDPC1)", SOURCES["fred_gdpc1"]),
     # 3-statement
-    "3s_rev_growth": ("LULU Q2 FY2026 guidance", SOURCES["earnings_sep2026"]),
+    "3s_rev_growth": ("StockAnalysis: LULU revenue forecast (FY27–30)", SOURCES["lulu_stats"]),
     "3s_gm": ("LULU historical gross margin (10-K)", filing_url("FY2025")),
     "3s_sga_pct": ("LULU Q2 FY2026 earnings release (YTD SG&A %)", SOURCES["earnings_sep2026"]),
     "3s_other_opex": ("LULU FY2025 10-K", filing_url("FY2025")),
@@ -283,7 +284,7 @@ SOURCE_HINT = {
     "wacc_wd": 'Ctrl+F "no borrowings were outstanding under this facility" → debt weight 0%',
     # Scenarios
     "sc_g1": 'Ctrl+F "decline of 5% to 7%" → FY2026 revenue guide; model −6.1% midpoint',
-    "sc_gterm": 'Ctrl+F "Net revenue" → FY2025 11,102,600 ($000); FY27–30 growth = model assumption',
+    "sc_gterm": 'Ctrl+F "Revenue Growth Forecast (3Y)" → 2.26%. That is the unique line (do not search "Net revenue"). Model FY27–30 uses 2.3%.',
     "sc_m1": '1) Ctrl+F "18.8%" = Q2 operating margin. 2) Ctrl+F "560 basis points" = tariff add. 3) Clean Q2 = 18.8% − 5.6% = 13.2%. Model FY26 base 13.9% sits just above that. Do not use "decreased 13%" — that is the YoY $ decline in income from operations.',
     "sc_mterm": 'Ctrl+F "Income from operations" → 2,210,615 and "Net revenue" → 11,102,600. FY25 OM = 19.9%. Model FY30 15.5% is a partial-recovery assumption, not a reported figure.',
     "sc_wacc": 'WACC tab → cell E (green) = rf 4.8% + β 0.95 × ERP 6.0% = 10.5%',
@@ -307,7 +308,7 @@ SOURCE_HINT = {
     "sens_wacc": 'Ctrl+F "4.23%" (2025 implied ERP). Sensitivity WACC axis brackets the 10.5% base.',
     "sens_g": 'Ctrl+F "GDPC1" → bounds terminal-g sensitivity grid 1.5%–3.0%',
     # 3-statement
-    "3s_rev_growth": 'Ctrl+F "decline of 5% to 7%" → FY2026 guide; FY27–30 = model projection',
+    "3s_rev_growth": 'FY26: earnings release Ctrl+F "decline of 5% to 7%". FY27–30: this page Ctrl+F "Revenue Growth Forecast (3Y)" → 2.26%. Model 2.3%.',
     "3s_gm": 'Ctrl+F "Gross profit" → 6,284,132 ÷ "Net revenue" 11,102,600 = 56.6% FY25 anchor',
     "3s_sga_pct": 'Ctrl+F "41.7%" (Q2 SG&A % of net revenue) and "42.3%" (first two quarters). FY25 10-K is 36.7%. Model FY26 42.5%',
     "3s_other_opex": 'Ctrl+F "Amortization of intangible assets" → 6,961 ($000); model $7,000/yr',

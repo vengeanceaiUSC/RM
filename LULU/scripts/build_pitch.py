@@ -377,11 +377,11 @@ thesis_slide(
     [
         "China Mainland has been compounding at ~20%+ with a long runway in store count and brand awareness relative to the Americas base",
         "Rest of World (Europe, APAC) is early-stage and under-penetrated versus global peers \u2014 an incremental multi-year contributor",
-        "As international scales, it dilutes the drag from negative Americas comps; our model returns total revenue to ~3% growth by FY2028E after the FY2026 reset",
+        "As international scales, it dilutes the drag from negative Americas comps; our model returns total revenue to ~2.3% growth (Street 3Y forecast 2.26%) after the FY2026 reset",
         "Men's and the digital channel add further optionality that the market is not paying for today",
     ],
     "REVENUE PATH (model)",
-    ["FY2025A:  $11,102.6M", "FY2026E:  $10,425M (\u22126%)", "FY2028E:  $10,793M", "FY2030E:  $11,450M"],
+    ["FY2025A:  $11,102.6M", "FY2026E:  $10,425M (\u22126.1%)", "FY2028E:  $10,942M", "FY2030E:  $11,451M"],
 )
 
 thesis_slide(
