@@ -112,3 +112,30 @@ MKT = {
     "week52_low": 99.64,
     "beta": 0.86,
 }
+
+# ---------------------------------------------------------------------------
+# Source links for blue-font (reported) figures — click value or header link
+# ---------------------------------------------------------------------------
+def _sec_10k(accession, filename):
+    acc = accession.replace("-", "")
+    return f"https://www.sec.gov/Archives/edgar/data/1397187/{acc}/{filename}"
+
+SOURCES = {
+    "edgar_company": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001397187&type=10-K",
+    "edgar_xbrl": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001397187.json",
+    "earnings_sep2026": "https://investor.lululemon.com/news-releases",
+    "stock_info": "https://investor.lululemon.com/stock-information",
+    "nasdaq_quote": "https://www.nasdaq.com/market-activity/stocks/lulu",
+}
+
+# FY label -> (accession, primary 10-K document)
+FILING_10K = {
+    "FY2022": ("0001397187-23-000012", "lulu-20230129.htm"),
+    "FY2023": ("0001397187-24-000010", "lulu-20240128.htm"),
+    "FY2024": ("0001397187-25-000013", "lulu-20250202.htm"),
+    "FY2025": ("0001397187-26-000020", "lulu-20260201.htm"),
+}
+
+def filing_url(fy):
+    acc, doc = FILING_10K[fy]
+    return _sec_10k(acc, doc)

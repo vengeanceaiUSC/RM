@@ -23,8 +23,8 @@ ACCENT = "C8102E"    # USC-ish cardinal accent
 LIGHT = "D9E1F2"     # light blue band
 GREY = "F2F2F2"
 
-def font(color=BLACK, bold=False, size=10, italic=False, name=FONT_NAME):
-    return Font(name=name, color=color, bold=bold, size=size, italic=italic)
+def font(color=BLACK, bold=False, size=10, italic=False, name=FONT_NAME, underline=None):
+    return Font(name=name, color=color, bold=bold, size=size, italic=italic, underline=underline)
 
 def fill(color):
     return PatternFill("solid", fgColor=color)
@@ -74,4 +74,24 @@ def write(ws, cell, value, color=BLACK, bold=False, size=10, numfmt=None,
         c.fill = fill(fillc)
     if bdr:
         c.border = bdr
+    return c
+
+
+def write_link(ws, cell, text, url, color=BLUE, bold=False, size=10, numfmt=None,
+               align=None, fillc=None, bdr=None, italic=False, underline="single"):
+    c = write(ws, cell, text, color=color, bold=bold, size=size, numfmt=numfmt,
+              align=align, fillc=fillc, bdr=bdr, italic=italic)
+    c.hyperlink = url
+    c.font = font(color=color, bold=bold, size=size, italic=italic, underline=underline)
+    return c
+
+
+def write_reported(ws, cell, value, source_url=None, bold=False, size=10, numfmt=None,
+                   align=None, bdr=None):
+    """Blue-font reported figure; hyperlinks to source when URL provided."""
+    c = write(ws, cell, value, BLUE, bold=bold, size=size, numfmt=numfmt,
+              align=align or right, bdr=bdr)
+    if source_url:
+        c.hyperlink = source_url
+        c.font = font(color=BLUE, bold=bold, size=size, underline="single")
     return c

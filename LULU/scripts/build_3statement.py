@@ -9,7 +9,7 @@ Units: US$ thousands unless noted.
 import os
 from openpyxl import Workbook
 import styles as S
-from styles import write, NUM, PCT, MONEY, EPSFMT
+from styles import write, write_link, write_reported, NUM, PCT, MONEY, EPSFMT
 import data as D
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "LULU_3_Statement_Model.xlsx")
@@ -36,8 +36,10 @@ def year_header(ws, title):
         write(ws, f'{COL[y]}1', y, S.WHITE, bold=True, size=10, align=S.center,
               fillc=(S.ACCENT if y in PROJ else S.DARK))
     ws.row_dimensions[1].height = 16
-    write(ws, 'C2', "Reported (10-K)  \u2192", S.BLUE, italic=True, size=8, align=S.right)
-    write(ws, 'G2', "\u2190  Projected", S.ACCENT, italic=True, size=8, align=S.left_indent)
+    write(ws, 'A2', "Source", S.BLACK, italic=True, size=8, align=S.left_indent)
+    for y in HIST:
+        write_link(ws, f'{COL[y]}2', "10-K", D.filing_url(y), color=S.BLUE, size=8, align=S.center)
+    write(ws, 'G2', "Projected", S.ACCENT, italic=True, size=8, align=S.center)
 
 
 # ---------------------------------------------------------------- COVER
@@ -53,12 +55,13 @@ write(cov, 'B5', "Integrated Three-Statement Operating Model", S.ACCENT, bold=Tr
 write(cov, 'B7', "Historical figures (FY2022\u2013FY2025) per company SEC filings (Form 10-K).", S.BLACK, size=11)
 write(cov, 'B8', "Fiscal year ends late January / early February; FY2025 ended February 1, 2026.", S.BLACK, size=11)
 write(cov, 'B10', "FONT / COLOR CONVENTION", S.DARK, bold=True, size=12)
-write(cov, 'B11', "Blue font  =  figures reported by the company (release, filing, or call)", S.BLUE, bold=True, size=11)
+write(cov, 'B11', "Blue font  =  figures reported by the company (click value or 10-K link for source)", S.BLUE, bold=True, size=11)
 write(cov, 'B12', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
 write(cov, 'B13', "Red font  =  analyst assumptions / inputs", S.RED, bold=True, size=11)
 write(cov, 'B15', "SOURCES", S.DARK, bold=True, size=12)
-write(cov, 'B16', "SEC EDGAR XBRL company facts, CIK 0001397187 (Forms 10-K).", S.BLACK, size=10)
-write(cov, 'B17', "Q2 FY2026 results & FY2026 guidance: company earnings release dated Sep 3, 2026.", S.BLACK, size=10)
+write_link(cov, 'B16', "SEC EDGAR XBRL company facts, CIK 0001397187 (Forms 10-K)", D.SOURCES["edgar_xbrl"], color=S.BLUE, size=10)
+write_link(cov, 'B17', "FY2025 Form 10-K (ended Feb 1, 2026)", D.filing_url("FY2025"), color=S.BLUE, size=10)
+write_link(cov, 'B18', "Q2 FY2026 results & FY2026 guidance (Sep 3, 2026 earnings release)", D.SOURCES["earnings_sep2026"], color=S.BLUE, size=10)
 write(cov, 'B19', "TABS", S.DARK, bold=True, size=12)
 write(cov, 'B20', "Assumptions  \u2022  Income Statement  \u2022  Balance Sheet  \u2022  Cash Flow", S.BLACK, size=10)
 write(cov, 'B22', "Built from scratch for the GIS IR selection assignment. Units: US$ thousands unless noted.", S.BLACK, italic=True, size=9)
@@ -150,7 +153,8 @@ def is_reported(key, label, hist_dict, proj_fn, bold=False, top=False, dbl=False
     bdr = S.top_double if dbl else (S.top_border if top else None)
     write(is_, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
     for y in HIST:
-        write(is_, f'{COL[y]}{r[0]}', hist_dict[y], S.BLUE, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+        write_reported(is_, f'{COL[y]}{r[0]}', hist_dict[y], D.filing_url(y),
+                       bold=bold, size=10, numfmt=fmt, bdr=bdr)
     for y in PROJ:
         c = COL[y]
         write(is_, f'{c}{r[0]}', proj_fn(c), S.BLACK, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
@@ -182,7 +186,8 @@ is_reported('sh', "Diluted weighted-avg shares (000)", D.IS['diluted_shares'],
 IR['eps'] = r[0]
 write(is_, f'A{r[0]}', "Diluted EPS ($)", S.DARK, bold=True, size=10, align=S.left_indent)
 for y in HIST:
-    write(is_, f'{COL[y]}{r[0]}', D.IS['diluted_eps'][y], S.BLUE, bold=True, size=10, numfmt=EPSFMT, align=S.right)
+    write_reported(is_, f'{COL[y]}{r[0]}', D.IS['diluted_eps'][y], D.filing_url(y),
+                   bold=True, size=10, numfmt=EPSFMT)
 for y in PROJ:
     c = COL[y]
     write(is_, f'{c}{r[0]}', f"={c}{IR['ni']}/{c}{IR['sh']}", S.BLACK, bold=True, size=10, numfmt=EPSFMT, align=S.right)
@@ -227,7 +232,8 @@ def bs_rep(key, label, hist_dict, proj_fn, bold=False, top=False, dbl=False):
     bdr = S.top_double if dbl else (S.top_border if top else None)
     write(bs, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
     for y in HIST:
-        write(bs, f'{COL[y]}{r[0]}', hist_dict[y], S.BLUE, bold=bold, size=10, numfmt=NUM, align=S.right, bdr=bdr)
+        write_reported(bs, f'{COL[y]}{r[0]}', hist_dict[y], D.filing_url(y),
+                       bold=bold, size=10, numfmt=NUM, bdr=bdr)
     for y in PROJ:
         c = COL[y]
         write(bs, f'{c}{r[0]}', proj_fn(c), S.BLACK, bold=bold, size=10, numfmt=NUM, align=S.right, bdr=bdr)
@@ -262,7 +268,7 @@ bs_sub("Current assets:")
 BR['cash'] = r[0]
 write(bs, f'A{r[0]}', "Cash & cash equivalents", S.BLACK, size=10, align=S.left_indent)
 for y in HIST:
-    write(bs, f'{COL[y]}{r[0]}', D.BS['cash'][y], S.BLUE, size=10, numfmt=NUM, align=S.right)
+    write_reported(bs, f'{COL[y]}{r[0]}', D.BS['cash'][y], D.filing_url(y), size=10, numfmt=NUM)
 r[0] += 1  # projected cash filled after CF is built
 bs_rep('inv', "Inventories", D.BS['inventories'], lambda c: f"={isr('cogs', c)}*{ar('inv_pct', c)}")
 bs_plug('oca', "Other current assets", oca, lambda c: f"={isr('rev', c)}*{ar('oca_pct', c)}")
@@ -333,7 +339,8 @@ def cf_row(key, label, hist_dict, proj_fn, bold=False, top=False, dbl=False, blu
         if hist_dict is None:
             write(cf, f'{COL[y]}{r[0]}', "\u2014", S.BLACK, size=10, align=S.right, bdr=bdr)
         else:
-            write(cf, f'{COL[y]}{r[0]}', hist_dict[y], S.BLUE if blue else S.BLACK, bold=bold, size=10, numfmt=NUM, align=S.right, bdr=bdr)
+            write_reported(cf, f'{COL[y]}{r[0]}', hist_dict[y], D.filing_url(y),
+                           bold=bold, size=10, numfmt=NUM, bdr=bdr)
     for y in PROJ:
         c = COL[y]
         write(cf, f'{c}{r[0]}', proj_fn(c) if proj_fn else "\u2014", S.BLACK, bold=bold, size=10, numfmt=NUM, align=S.right, bdr=bdr)
@@ -390,7 +397,7 @@ CR['begcash'] = begcash_row
 write(cf, f'A{begcash_row}', "Cash, beginning of year", S.BLACK, size=10, align=S.left_indent)
 begmap = {'FY2022': 1150517, 'FY2023': D.BS['cash']['FY2022'], 'FY2024': D.BS['cash']['FY2023'], 'FY2025': D.BS['cash']['FY2024']}
 for y in HIST:
-    write(cf, f'{COL[y]}{begcash_row}', begmap[y], S.BLUE, size=10, numfmt=NUM, align=S.right)
+    write_reported(cf, f'{COL[y]}{begcash_row}', begmap[y], D.filing_url(y), size=10, numfmt=NUM)
 write(cf, f"G{begcash_row}", f"='{BSN}'!F{BR['cash']}", S.BLACK, size=10, numfmt=NUM, align=S.right)
 for y in PROJ[1:]:
     c = COL[y]
@@ -398,7 +405,8 @@ for y in PROJ[1:]:
 CR['endcash'] = endcash_row
 write(cf, f'A{endcash_row}', "Cash, end of year", S.DARK, bold=True, size=10, align=S.left_indent)
 for y in HIST:
-    write(cf, f'{COL[y]}{endcash_row}', D.BS['cash'][y], S.BLUE, bold=True, size=10, numfmt=NUM, align=S.right, bdr=S.top_double)
+    write_reported(cf, f'{COL[y]}{endcash_row}', D.BS['cash'][y], D.filing_url(y),
+                   bold=True, size=10, numfmt=NUM, bdr=S.top_double)
 for y in PROJ:
     c = COL[y]
     write(cf, f'{c}{endcash_row}', f"={c}{begcash_row}+{c}{CR['netchg']}", S.BLACK, bold=True, size=10, numfmt=NUM, align=S.right, bdr=S.top_double)

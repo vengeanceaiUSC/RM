@@ -11,7 +11,7 @@ Units: US$ thousands unless noted.
 import os
 from openpyxl import Workbook
 import styles as S
-from styles import write, NUM, PCT, MONEY, MULT, EPSFMT
+from styles import write, write_link, write_reported, NUM, PCT, MONEY, MULT, EPSFMT
 import data as D
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "LULU_DCF_Valuation_Model.xlsx")
@@ -34,15 +34,17 @@ write(cov, 'B4', "lululemon athletica inc. (NASDAQ: LULU)", S.DARK, bold=True, s
 write(cov, 'B5', "Discounted Cash Flow Valuation \u2014 Unlevered Free Cash Flow", S.ACCENT, bold=True, size=13)
 write(cov, 'B7', "Recommendation:  LONG / OVERWEIGHT", S.GREEN, bold=True, size=14)
 write(cov, 'B9', "FONT / COLOR CONVENTION", S.DARK, bold=True, size=12)
-write(cov, 'B10', "Blue font  =  figures reported by the company (release, filing, or call)", S.BLUE, bold=True, size=11)
+write(cov, 'B10', "Blue font  =  figures reported by the company (click value or source link)", S.BLUE, bold=True, size=11)
 write(cov, 'B11', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
 write(cov, 'B12', "Red font  =  analyst assumptions / inputs", S.RED, bold=True, size=11)
 write(cov, 'B14', "TABS", S.DARK, bold=True, size=12)
 write(cov, 'B15', "WACC  \u2022  DCF (base case + sensitivity)  \u2022  Scenarios  \u2022  Comps / Football Field", S.BLACK, size=10)
 write(cov, 'B17', "SOURCES", S.DARK, bold=True, size=12)
-write(cov, 'B18', "SEC EDGAR XBRL company facts, CIK 0001397187 (Form 10-K, FY2025 ended Feb 1, 2026).", S.BLACK, size=10)
-write(cov, 'B19', "Market data & Q2 FY2026 results per company release dated Sep 3, 2026.", S.BLACK, size=10)
-write(cov, 'B21', "Built from scratch for the GIS IR selection assignment.", S.BLACK, italic=True, size=9)
+write_link(cov, 'B18', "SEC EDGAR XBRL company facts, CIK 0001397187 (Form 10-K, FY2025)", D.SOURCES["edgar_xbrl"], color=S.BLUE, size=10)
+write_link(cov, 'B19', "FY2025 Form 10-K (ended Feb 1, 2026)", D.filing_url("FY2025"), color=S.BLUE, size=10)
+write_link(cov, 'B20', "Market data & Q2 FY2026 results (Sep 3, 2026 earnings release)", D.SOURCES["earnings_sep2026"], color=S.BLUE, size=10)
+write_link(cov, 'B21', "Current share price (NASDAQ: LULU)", D.SOURCES["nasdaq_quote"], color=S.BLUE, size=10)
+write(cov, 'B23', "Built from scratch for the GIS IR selection assignment.", S.BLACK, italic=True, size=9)
 
 # ------------------------------------------------------------------ WACC
 wacc = wb.create_sheet("WACC")
@@ -189,11 +191,12 @@ YEAR_MAP = {"D": 1, "E": 2, "F": 3, "G": 4, "H": 5}
 # ------------------------------------------------------------------ DCF (base — linked to Scenarios → Base column D)
 dcf = wb.create_sheet("DCF")
 dcf.sheet_view.showGridLines = False
-S.set_col_widths(dcf, {'A': 42, 'B': 2, 'C': 13, 'D': 13, 'E': 13, 'F': 13, 'G': 13, 'H': 13})
+S.set_col_widths(dcf, {'A': 42, 'B': 2, 'C': 13, 'D': 14, 'E': 13, 'F': 13, 'G': 13, 'H': 13})
 write(dcf, 'A1', "DISCOUNTED CASH FLOW \u2014 BASE CASE  (US$ thousands)", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
     dcf[f'{c}1'].fill = S.fill(S.DARK)
 write(dcf, 'C2', "FY2025A", S.BLUE, bold=True, size=10, align=S.center)
+write_link(dcf, 'C3', "10-K source", D.filing_url("FY2025"), color=S.BLUE, size=8, align=S.center, italic=True)
 for y in FY:
     write(dcf, f'{FCOL[y]}2', y, S.WHITE, bold=True, size=10, align=S.center, fillc=S.ACCENT)
 write(dcf, 'A3', "Forecast drivers linked to Scenarios tab \u2192 Base case (column D)", S.GREY, italic=True, size=9, align=S.left_indent)
@@ -206,7 +209,7 @@ def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, b
     bdr = S.top_double if dbl else (S.top_border if top else None)
     write(dcf, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
     if cval is not None:
-        write(dcf, f'C{r[0]}', cval, color_c, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+        write_reported(dcf, f'C{r[0]}', cval, D.filing_url("FY2025"), bold=bold, size=10, numfmt=fmt, bdr=bdr)
     for y in FY:
         c = FCOL[y]
         col = S.RED if red else color_p
@@ -242,15 +245,22 @@ d_row('pv', "PV of unlevered FCF", None, lambda c: f"={c}{DR['ufcf']}*{c}{DR['df
 r[0] += 1
 # Valuation block
 VR = {}
-def v_row(key, label, formula, fmt=NUM, color=S.BLACK, bold=False, top=False, dbl=False, red=False):
+def v_row(key, label, formula, fmt=NUM, color=S.BLACK, bold=False, top=False, dbl=False, red=False, source_url=None, source_label=""):
     VR[key] = r[0]
     bdr = S.top_double if dbl else (S.top_border if top else None)
     write(dcf, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
     col = S.RED if red else color
     if isinstance(formula, (int, float)):
-        write(dcf, f'C{r[0]}', formula, col, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+        if source_url and color == S.BLUE:
+            write_reported(dcf, f'C{r[0]}', formula, source_url, bold=bold, size=10, numfmt=fmt, bdr=bdr)
+        else:
+            write(dcf, f'C{r[0]}', formula, col, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
     else:
         write(dcf, f'C{r[0]}', formula, col, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+    if source_url and source_label:
+        write_link(dcf, f'D{r[0]}', source_label, source_url, color=S.BLUE, size=8, align=S.left_indent, italic=True)
+    elif source_label:
+        write(dcf, f'D{r[0]}', source_label, S.BLACK, italic=True, size=8, align=S.left_indent)
     r[0] += 1
 
 write(dcf, f'A{r[0]}', "VALUATION \u2014 GORDON GROWTH (PERPETUITY) METHOD", S.WHITE, bold=True, size=10, fillc=S.DARK)
@@ -266,14 +276,18 @@ v_row('implied_exit', "  Implied exit EV/EBITDA (Gordon Growth)",
       f"=C{VR['tv']}/C{VR['ebitda']}", fmt=MULT)
 v_row('pvtv', "PV of terminal value", f"=C{VR['tv']}/(1+{bref('wacc')})^H{DR['period']}", bold=True)
 v_row('ev', "Enterprise value", f"=C{VR['sumpv']}+C{VR['pvtv']}", bold=True, top=True)
-v_row('cash', "Plus: cash & equivalents (FY2025)", D.MKT['cash'], color=S.BLUE)
-v_row('debt', "Less: total debt", -D.MKT['debt'], color=S.BLUE)
+v_row('cash', "Plus: cash & equivalents (FY2025)", D.MKT['cash'], color=S.BLUE,
+      source_url=D.filing_url("FY2025"), source_label="10-K")
+v_row('debt', "Less: total debt", -D.MKT['debt'], color=S.BLUE,
+      source_url=D.filing_url("FY2025"), source_label="10-K")
 v_row('eqv', "Equity value", f"=C{VR['ev']}+C{VR['cash']}+C{VR['debt']}", bold=True, top=True)
-v_row('sh', "Diluted shares outstanding (000)", D.MKT['shares_out'], color=S.BLUE)
+v_row('sh', "Diluted shares outstanding (000)", D.MKT['shares_out'], color=S.BLUE,
+      source_url=D.filing_url("FY2025"), source_label="10-K")
 v_row('pt', "Implied value per share", f"=C{VR['eqv']}/C{VR['sh']}", fmt=MONEY, bold=True, top=True, dbl=True)
 dcf[f"C{VR['pt']}"].font = S.font(color=S.GREEN, bold=True, size=13)
 dcf[f"C{VR['pt']}"].fill = S.fill(S.GREY)
-v_row('px', "Current share price", D.MKT['price'], fmt=MONEY, color=S.BLUE)
+v_row('px', "Current share price", D.MKT['price'], fmt=MONEY, color=S.BLUE,
+      source_url=D.SOURCES["nasdaq_quote"], source_label="NASDAQ")
 v_row('upside', "Implied upside / (downside)", f"=C{VR['pt']}/C{VR['px']}-1", fmt=PCT, bold=True)
 dcf[f"C{VR['upside']}"].font = S.font(color=S.GREEN, bold=True, size=11)
 v_row('tvpct', "  memo: % of EV from terminal value", f"=C{VR['pvtv']}/C{VR['ev']}", fmt=PCT)
@@ -366,21 +380,32 @@ comps.row_dimensions[1].height = 16
 write(comps, 'A3', "LULU operating metrics (FY2025A / FY2026E)", S.ACCENT, bold=True, size=10)
 CM = {}
 rr = [4]
-def c_row(key, label, val, color=S.BLUE, fmt=NUM):
+def c_row(key, label, val, color=S.BLUE, fmt=NUM, source_url=None, source_label=""):
     CM[key] = rr[0]
     write(comps, f'A{rr[0]}', label, S.BLACK, size=10, align=S.left_indent)
-    write(comps, f'C{rr[0]}', val, color, size=10, numfmt=fmt, align=S.right)
+    if source_url and color == S.BLUE and isinstance(val, (int, float)):
+        write_reported(comps, f'C{rr[0]}', val, source_url, size=10, numfmt=fmt)
+    else:
+        write(comps, f'C{rr[0]}', val, color, size=10, numfmt=fmt, align=S.right)
+    if source_url and source_label:
+        write_link(comps, f'D{rr[0]}', source_label, source_url, color=S.BLUE, size=8,
+                   italic=True, align=S.left_indent)
     rr[0] += 1
 
-c_row('rev', "FY2025A revenue", D.IS['revenue']['FY2025'])
+c_row('rev', "FY2025A revenue", D.IS['revenue']['FY2025'],
+      source_url=D.filing_url("FY2025"), source_label="10-K")
 c_row('ebitda', "FY2025A EBITDA (EBIT + D&A)",
       D.IS['operating_income']['FY2025'] + D.CF['d_and_a']['FY2025'])
 comps[f"C{CM['ebitda']}"].value = f"={D.IS['operating_income']['FY2025']}+{D.CF['d_and_a']['FY2025']}"
 comps[f"C{CM['ebitda']}"].font = S.font(color=S.BLACK)
-c_row('eps26', "FY2026E diluted EPS (guidance midpoint)", 9.61, color=S.BLUE, fmt=EPSFMT)
-c_row('cash', "Cash & equivalents", D.MKT['cash'])
-c_row('sh', "Diluted shares (000)", D.MKT['shares_out'])
-c_row('px', "Current share price", D.MKT['price'], fmt=MONEY)
+c_row('eps26', "FY2026E diluted EPS (guidance midpoint)", 9.61, color=S.BLUE, fmt=EPSFMT,
+      source_url=D.SOURCES["earnings_sep2026"], source_label="Release")
+c_row('cash', "Cash & equivalents", D.MKT['cash'],
+      source_url=D.filing_url("FY2025"), source_label="10-K")
+c_row('sh', "Diluted shares (000)", D.MKT['shares_out'],
+      source_url=D.filing_url("FY2025"), source_label="10-K")
+c_row('px', "Current share price", D.MKT['price'], fmt=MONEY,
+      source_url=D.SOURCES["nasdaq_quote"], source_label="NASDAQ")
 # current multiples (black formulas)
 CM['ceved'] = rr[0]
 write(comps, f'A{rr[0]}', "  memo: current EV / EBITDA", S.BLACK, italic=True, size=9, align=S.left_indent)
@@ -481,7 +506,8 @@ write(comps, f'E{rr[0]}', f"=Scenarios!C{pt_row}", S.BLACK, size=10, numfmt=MONE
 write(comps, f'F{rr[0]}', f"=Scenarios!E{pt_row}", S.BLACK, size=10, numfmt=MONEY, align=S.center)
 rr[0] += 2
 write(comps, f'A{rr[0]}', "Current price", S.BLACK, bold=True, size=11, align=S.left_indent)
-write(comps, f'C{rr[0]}', D.MKT['price'], S.BLUE, bold=True, size=11, numfmt=MONEY, align=S.center)
+write_reported(comps, f'C{rr[0]}', D.MKT['price'], D.SOURCES["nasdaq_quote"], bold=True, size=11, numfmt=MONEY)
+write_link(comps, f'D{rr[0]}', "NASDAQ", D.SOURCES["nasdaq_quote"], color=S.BLUE, size=8, italic=True, align=S.left_indent)
 rr[0] += 1
 write(comps, f'A{rr[0]}', "Note: peer set includes NKE, DECK, ONON, adidas, VFC; multiples are analyst ranges (red).",
       S.BLACK, italic=True, size=8, align=S.left_indent)
