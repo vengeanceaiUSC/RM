@@ -218,7 +218,7 @@ tb, tf = textbox(s, Inches(0.5), Inches(2.95), Inches(12.35), Inches(4.0))
 add_para(tf, "Three reasons to be long", 15, CARD, bold=True, first=True, space_after=6)
 add_para(tf, "1.  Priced for terminal decline \u2014 at ~3.5x EV/EBITDA and ~10x FY2026E EPS with a net-cash balance sheet, the stock embeds a permanent impairment that the business does not support", 13.5, INK, bold=False, space_after=7)
 add_para(tf, "2.  International is a multi-year growth engine \u2014 China Mainland and Rest-of-World more than offset a maturing Americas and can return total revenue to mid-single-digit growth", 13.5, INK, space_after=7)
-add_para(tf, "3.  Elite economics + accretive buybacks \u2014 ~20% operating margins even in a trough year, ~$1B of unlevered free cash flow, and a share count already down ~13% over four years", 13.5, INK, space_after=7)
+add_para(tf, "3.  Elite economics + accretive buybacks \u2014 FY2025 operating margin was 19.9% (last full year, not the trough); we model a 13.9% FY2026 trough. Diluted shares are down ~7% (128.0M \u2192 119.1M)", 13.5, INK, space_after=7)
 add_para(tf, "Base-case DCF $144; bear $91 (\u22129%) vs bull $239 (+139%) \u2014 downside is protected by net cash and an ~8\u20139% FCF yield", 13, NAVY, bold=True, italic=True, space_after=0)
 
 # =====================================================================
@@ -359,7 +359,7 @@ def thesis_slide(num, title, desc, headline, bullets, metric_title, metric_lines
 thesis_slide(
     "I", "Priced for terminal decline",
     "The valuation already discounts a permanently shrinking business",
-    "The market is paying trough multiples for a brand still earning ~20% margins",
+    "The market is paying trough multiples for a brand that still earned 19.9% operating margin in FY2025",
     [
         "At ~$100 the stock trades at ~3.5x EV/EBITDA and ~10.4x FY2026E EPS \u2014 versus a 5-year history of ~20\u201330x earnings",
         "The balance sheet holds $1.8B of cash and no funded debt, so nearly the entire enterprise value is covered by the operating business at a very low multiple",

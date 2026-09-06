@@ -53,7 +53,7 @@ calendar year it mostly covers):
 ## Key base-case assumptions (DCF)
 
 - Revenue: −6.1% in FY2026E (in line with guidance), recovering to ~+3% by FY2028E
-- EBIT margin: 13.9% (FY2026E) recovering to 15.5% (FY2030E) — well below the ~20–24% peak
+- EBIT margin: 13.9% FY2026E (model; Q2 reported OM was 18.8%, of which 560bps is tariff refunds) recovering to 15.5% FY2030E — well below the ~20–24% peak
 - Tax rate 27%; capex 5.0% of revenue; NWC 7.5% of revenue
 - WACC 10.0% (CAPM: rf 4.3%, ERP 6.0%, β 0.95, ~100% equity / net cash)
 - Terminal growth 2.25%
