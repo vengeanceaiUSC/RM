@@ -86,10 +86,10 @@ def w_row(key, label, value, color, fmt=PCT, bold=False, top=False, doc_key=None
 write(wacc, 'A2', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)
 w_row('rf', "Risk-free rate (10-yr UST)", 0.048, S.RED, doc_key='wacc_rf')
 w_row('erp', "Equity risk premium", 0.060, S.RED, doc_key='wacc_erp')
-w_row('beta_obs', "Observed Beta (5Y)", 0.86, S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
-w_row('beta_uplift', "Post-guide vol uplift", 0.10, S.RED, doc_key='wacc_beta_uplift')
-w_row('beta', "Levered beta = ROUND(5Y \u00d7 (1+uplift), 2)",
-      f"=ROUND(E{WR['beta_obs']}*(1+E{WR['beta_uplift']}),2)",
+w_row('beta_obs', "Observed Beta (5Y) \u2014 not used in WACC", 0.86, S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
+w_row('beta_ind', "Damodaran Retail (Special Lines) \u03b2u", 0.95, S.RED, fmt='0.00', doc_key='wacc_beta_ind')
+w_row('beta', "Levered beta (industry \u03b2u; no funded debt)",
+      f"=E{WR['beta_ind']}",
       None, fmt='0.00', bold=True, top=True, doc_key='wacc_beta')
 write_ctrl_f(wacc, f'{DC}{WR["beta"]}', D.BETA_CTRL_F)
 w_row('coe', "Cost of equity = rf + \u03b2 \u00d7 ERP", f"=E{WR['rf']}+E{WR['beta']}*E{WR['erp']}", None, bold=True, top=True)
