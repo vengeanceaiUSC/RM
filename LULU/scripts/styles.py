@@ -79,9 +79,9 @@ def write(ws, cell, value, color=BLACK, bold=False, size=10, numfmt=None,
 
 
 def format_source_text(label, hint=None):
-    """Combine clickable label with a one-line 'where to find' cue for the reader."""
+    """Combine clickable label with exact Ctrl+F search strings for the reader."""
     if hint:
-        return f"{label}\nFind: {hint}"
+        return f"{label}\nCtrl+F: {hint}"
     return label
 
 
@@ -94,7 +94,8 @@ def write_link(ws, cell, text, url, color=BLUE, bold=False, size=10, numfmt=None
     c.font = font(color=color, bold=bold, size=size, italic=italic, underline=underline)
     if hint:
         c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
-        ws.row_dimensions[c.row].height = max(ws.row_dimensions[c.row].height or 15, 42)
+        lines = hint.count('\n') + 2
+        ws.row_dimensions[c.row].height = max(ws.row_dimensions[c.row].height or 15, min(72, 18 * lines))
     return c
 
 
@@ -117,8 +118,15 @@ def write_internal_link(ws, cell, text, location, color=BLUE, size=8, italic=Tru
     c.font = font(color=color, italic=italic, size=size, underline="single")
     if hint:
         c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
-        ws.row_dimensions[c.row].height = max(ws.row_dimensions[c.row].height or 15, 42)
+        lines = hint.count('\n') + 2
+        ws.row_dimensions[c.row].height = max(ws.row_dimensions[c.row].height or 15, min(72, 18 * lines))
     return c
+
+
+def _hint_row_height(ws, row, hint):
+    if hint:
+        lines = hint.count('\n') + 2
+        ws.row_dimensions[row].height = max(ws.row_dimensions[row].height or 15, min(72, 18 * lines))
 
 
 def write_assumption_docs(ws, row, justify_col, source_col, key, justify_dict, src_dict,
@@ -147,7 +155,7 @@ def write_assumption_docs(ws, row, justify_col, source_col, key, justify_dict, s
             if hint:
                 ws[f"{source_col}{row}"].alignment = Alignment(
                     horizontal='left', vertical='top', wrap_text=True)
-                ws.row_dimensions[row].height = max(ws.row_dimensions[row].height or 15, 42)
+                _hint_row_height(ws, row, hint)
     if extra_source_col and extra_label and extra_url:
         write_link(ws, f"{extra_source_col}{row}", extra_label, extra_url,
                    color=BLUE, size=8, italic=True, underline="single", hint=extra_hint)

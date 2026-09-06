@@ -36,7 +36,7 @@ write(cov, 'B7', "Recommendation:  LONG / OVERWEIGHT", S.GREEN, bold=True, size=
 write(cov, 'B9', "FONT / COLOR CONVENTION", S.DARK, bold=True, size=12)
 write(cov, 'B10', "Blue font  =  figures reported by the company (click value or source link)", S.BLUE, bold=True, size=11)
 write(cov, 'B11', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
-write(cov, 'B12', "Red font  =  analyst assumptions — justification then blue Source & where to find in next column right", S.RED, bold=True, size=11)
+write(cov, 'B12', "Red font  =  analyst assumptions — justification then blue source with Ctrl+F lines in next column", S.RED, bold=True, size=11)
 write(cov, 'B14', "TABS", S.DARK, bold=True, size=12)
 write(cov, 'B15', "WACC  \u2022  DCF (base case + sensitivity)  \u2022  Scenarios  \u2022  Comps / Football Field", S.BLACK, size=10)
 write(cov, 'B17', "SOURCES", S.DARK, bold=True, size=12)
@@ -59,7 +59,7 @@ for c in ['C', 'D', 'E']:
     wacc[f'{c}1'].fill = S.fill(S.DARK)
 wacc.row_dimensions[1].height = 16
 write(wacc, 'D2', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
-write(wacc, 'E2', "Source & where to find", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(wacc, 'E2', "Source & Ctrl+F lines", S.ACCENT, bold=True, size=9, align=S.left_indent)
 WR = {}
 r = [3]
 def w_row(key, label, value, color, fmt=PCT, bold=False, top=False, doc_key=None):
@@ -124,7 +124,7 @@ def s_assum(key, label, bear, base, bull, fmt=PCT, doc_key=None, internal_locati
 
 write(scn, 'A3', "Key assumptions (5-yr forecast)", S.ACCENT, bold=True, size=10)
 write(scn, 'F3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
-write(scn, 'G3', "Source & where to find", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(scn, 'G3', "Source & Ctrl+F lines", S.ACCENT, bold=True, size=9, align=S.left_indent)
 s_assum('g1', "FY2026E revenue growth", -0.090, -0.061, -0.040, doc_key='sc_g1')
 s_assum('gterm', "FY2027\u2013FY2030E revenue growth (avg)", -0.010, 0.028, 0.060, doc_key='sc_gterm')
 s_assum('m1', "FY2026E EBIT margin", 0.125, 0.139, 0.150, doc_key='sc_m1')
@@ -252,7 +252,7 @@ for y in FY:
 write(dcf, 'A3', "Forecast drivers linked to Scenarios tab \u2192 Base case (column D)", S.GREY, italic=True, size=9, align=S.left_indent)
 write(dcf, 'I2', "\u0394 vs Scenarios", S.ACCENT, bold=True, size=8, align=S.center)
 write(dcf, 'J2', "Justification (~20 words)", S.ACCENT, bold=True, size=8, align=S.left_indent)
-write(dcf, 'K2', "Source & where to find", S.ACCENT, bold=True, size=8, align=S.left_indent)
+write(dcf, 'K2', "Source & Ctrl+F lines", S.ACCENT, bold=True, size=8, align=S.left_indent)
 write(dcf, 'L2', "Alt. source", S.ACCENT, bold=True, size=8, align=S.left_indent)
 write(dcf, 'I3', "(should be 0)", S.GREY, italic=True, size=7, align=S.center)
 dcf.row_dimensions[1].height = 16
@@ -383,7 +383,7 @@ v_row('ev', "Enterprise value", f"=C{VR['sumpv']}+C{VR['pvtv']}", bold=True, top
 v_row('cash', "Plus: cash & equivalents (FY2025)", D.MKT['cash'], color=S.BLUE,
       source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_bs"])
 v_row('debt', "Less: total debt", -D.MKT['debt'], color=S.BLUE,
-      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_bs"])
+      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_debt"])
 v_row('eqv', "Equity value", f"=C{VR['ev']}+C{VR['cash']}+C{VR['debt']}", bold=True, top=True)
 v_row('sh', "Diluted shares outstanding (000)", D.MKT['shares_out'], color=S.BLUE,
       source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_shares"])
@@ -525,7 +525,7 @@ write_internal_link(comps, f'D{rr[0]}', "↳ DCF base case", f"'DCF'!C{VR['ebitd
 rr[0] += 1
 c_row('eps26', "FY2026E diluted EPS (guidance midpoint)", 9.61, color=S.BLUE, fmt=EPSFMT,
       source_url=D.SOURCES["earnings_sep2026"], source_label="Release",
-      source_hint=D.REPORTED_HINTS["earnings"])
+      source_hint=D.REPORTED_HINTS["earnings_eps"])
 c_row('cash', "Cash & equivalents", D.MKT['cash'],
       source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_bs"])
 c_row('sh', "Diluted shares (000)", D.MKT['shares_out'],
@@ -550,7 +550,7 @@ rr[0] += 1
 write(comps, f'A{rr[0]}', "Company", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
 write(comps, f'C{rr[0]}', "EV/EBITDA", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
 write(comps, f'E{rr[0]}', "Justification", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
-write(comps, f'F{rr[0]}', "Source & where to find", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'F{rr[0]}', "Source & Ctrl+F lines", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
 rr[0] += 1
 peer_rows = [
     ("lululemon (LULU) \u2014 current", f"=(C{CM['px']}*C{CM['sh']}-C{CM['cash']})/C{CM['ebitda']}", True,
@@ -617,9 +617,9 @@ write(comps, f'D{rr[0]}', "High mult.", S.WHITE, bold=True, size=10, fillc=S.DAR
 write(comps, f'E{rr[0]}', "Implied px (low)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
 write(comps, f'F{rr[0]}', "Implied px (high)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
 write(comps, f'G{rr[0]}', "Lo justification", S.WHITE, bold=True, size=9, fillc=S.DARK, align=S.left_indent)
-write(comps, f'H{rr[0]}', "Lo source & find", S.WHITE, bold=True, size=9, fillc=S.DARK, align=S.left_indent)
+write(comps, f'H{rr[0]}', "Lo source & Ctrl+F", S.WHITE, bold=True, size=9, fillc=S.DARK, align=S.left_indent)
 write(comps, f'I{rr[0]}', "Hi justification", S.WHITE, bold=True, size=9, fillc=S.DARK, align=S.left_indent)
-write(comps, f'J{rr[0]}', "Hi source & find", S.WHITE, bold=True, size=9, fillc=S.DARK, align=S.left_indent)
+write(comps, f'J{rr[0]}', "Hi source & Ctrl+F", S.WHITE, bold=True, size=9, fillc=S.DARK, align=S.left_indent)
 rr[0] += 1
 
 def ff_ev_ebitda(label, lo, hi, ebitda_key='ebitda30'):
