@@ -121,11 +121,18 @@ def _sec_10k(accession, filename):
     return f"https://www.sec.gov/Archives/edgar/data/1397187/{acc}/{filename}"
 
 SOURCES = {
-    "edgar_company": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001397187&type=10-K",
-    "edgar_xbrl": "https://data.sec.gov/api/xbrl/companyfacts/CIK0001397187.json",
-    "earnings_sep2026": "https://investor.lululemon.com/news-releases",
-    "stock_info": "https://investor.lululemon.com/stock-information",
+    "edgar_company": "https://www.sec.gov/edgar/browse/?CIK=1397187",
+    "edgar_xbrl": "https://www.sec.gov/edgar/browse/?CIK=1397187&owner=exclude",
+    # Q2 FY2026 results & FY2026 guidance (Sep 3, 2026 press release)
+    "earnings_sep2026": "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
+    "earnings_hub": "https://corporate.lululemon.com/newsroom/press-releases",
+    "stock_info": "https://corporate.lululemon.com/investors",
     "nasdaq_quote": "https://www.nasdaq.com/market-activity/stocks/lulu",
+    "fred_dgs10": "https://fred.stlouisfed.org/series/DGS10",
+    "fred_gdpc1": "https://fred.stlouisfed.org/series/GDPC1",
+    "damodaran_erp": "https://www.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histimpl.html",
+    "damodaran_tax": "https://www.stern.nyu.edu/~adamodar/New_Home_Page/datafile/taxrate.html",
+    "lulu_stats": "https://stockanalysis.com/stocks/lulu/statistics/",
 }
 
 # FY label -> (accession, primary 10-K document)
@@ -137,8 +144,9 @@ FILING_10K = {
 }
 
 def filing_url(fy):
-    acc, doc = FILING_10K[fy]
-    return _sec_10k(acc, doc)
+    """SEC EDGAR interactive viewer for the Form 10-K (reliable in browser/Excel)."""
+    acc, _ = FILING_10K[fy]
+    return f"https://www.sec.gov/cgi-bin/viewer?action=view&cik=1397187&accession_number={acc}&xbrl_type=v"
 
 # ---------------------------------------------------------------------------
 # Red-assumption justifications (~20 words each) for DCF / 3-statement models
@@ -206,38 +214,38 @@ JUST = {
 # Clickable source links for red assumptions (label, URL)
 ASSUMPTION_SRC = {
     # WACC
-    "wacc_rf": ("FRED: 10Y Treasury (DGS10)", "https://fred.stlouisfed.org/series/DGS10"),
-    "wacc_erp": ("Damodaran: Historical Implied ERP", "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histimpl.html"),
+    "wacc_rf": ("FRED: 10Y Treasury (DGS10)", SOURCES["fred_dgs10"]),
+    "wacc_erp": ("Damodaran: Historical Implied ERP", SOURCES["damodaran_erp"]),
     "wacc_beta": ("Yahoo Finance: LULU Beta", "https://finance.yahoo.com/quote/LULU/key-statistics/"),
-    "wacc_kd": ("LULU FY2025 10-K (no funded debt)", "https://www.sec.gov/Archives/edgar/data/1397187/000139718726000020/lulu-20260201.htm"),
-    "wacc_tax": ("Damodaran: US tax rate dataset", "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/taxrate.html"),
+    "wacc_kd": ("LULU FY2025 10-K (no funded debt)", filing_url("FY2025")),
+    "wacc_tax": ("Damodaran: US tax rate dataset", SOURCES["damodaran_tax"]),
     "wacc_we": ("LULU FY2025 10-K balance sheet", filing_url("FY2025")),
     "wacc_wd": ("LULU FY2025 10-K balance sheet", filing_url("FY2025")),
     # Scenarios
     "sc_g1": ("LULU Q2 FY2026 earnings release", SOURCES["earnings_sep2026"]),
     "sc_gterm": ("LULU historical revenue (10-K)", filing_url("FY2025")),
-    "sc_m1": ("LULU Q2 FY2026 guidance / 10-K margins", SOURCES["earnings_sep2026"]),
+    "sc_m1": ("LULU Q2 FY2026 earnings release", SOURCES["earnings_sep2026"]),
     "sc_mterm": ("LULU historical EBIT margins (10-K)", filing_url("FY2025")),
     "sc_wacc": ("WACC tab: CAPM build", None),  # internal link set in build_dcf.py
-    "sc_g": ("BEA: Real GDP (FRED GDPC1)", "https://fred.stlouisfed.org/series/GDPC1"),
-    "sc_tax": ("Damodaran: US tax rate dataset", "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/taxrate.html"),
+    "sc_g": ("FRED: Real GDP (GDPC1)", SOURCES["fred_gdpc1"]),
+    "sc_tax": ("Damodaran: US tax rate dataset", SOURCES["damodaran_tax"]),
     "sc_da_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
     "sc_capex_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
     "sc_nwc_pct": ("LULU BS/IS historical (10-K)", filing_url("FY2025")),
     # DCF / comps
-    "dcf_exitm": ("Macrotrends: LULU EV/EBITDA history", "https://www.macrotrends.net/stocks/charts/LULU/lululemon-athletica/enterprise-value-ebitda"),
+    "dcf_exitm": ("StockAnalysis: LULU EV/EBITDA", SOURCES["lulu_stats"]),
     "comps_nke": ("Yahoo Finance: NKE statistics", "https://finance.yahoo.com/quote/NKE/key-statistics/"),
     "comps_deck": ("Yahoo Finance: DECK statistics", "https://finance.yahoo.com/quote/DECK/key-statistics/"),
     "comps_onon": ("Yahoo Finance: ONON statistics", "https://finance.yahoo.com/quote/ONON/key-statistics/"),
-    "comps_ads": ("Yahoo Finance: ADS.DE statistics", "https://finance.yahoo.com/quote/ADS.DE/key-statistics/"),
+    "comps_ads": ("Yahoo Finance: adidas (ADDYY)", "https://finance.yahoo.com/quote/ADDYY/key-statistics/"),
     "comps_vfc": ("Yahoo Finance: VFC statistics", "https://finance.yahoo.com/quote/VFC/key-statistics/"),
-    "comps_ff_ev_lo": ("Yahoo Finance: LULU EV/EBITDA", "https://finance.yahoo.com/quote/LULU/key-statistics/"),
-    "comps_ff_ev_hi": ("Macrotrends: LULU EV/EBITDA history", "https://www.macrotrends.net/stocks/charts/LULU/lululemon-athletica/enterprise-value-ebitda"),
-    "comps_ff_pe_lo": ("Yahoo Finance: LULU P/E (FY26E)", "https://finance.yahoo.com/quote/LULU/key-statistics/"),
-    "comps_ff_pe_hi": ("Yahoo Finance: NKE P/E (peer benchmark)", "https://finance.yahoo.com/quote/NKE/key-statistics/"),
+    "comps_ff_ev_lo": ("StockAnalysis: LULU EV/EBITDA", SOURCES["lulu_stats"]),
+    "comps_ff_ev_hi": ("StockAnalysis: LULU valuation", SOURCES["lulu_stats"]),
+    "comps_ff_pe_lo": ("Yahoo Finance: LULU P/E", "https://finance.yahoo.com/quote/LULU/key-statistics/"),
+    "comps_ff_pe_hi": ("Yahoo Finance: NKE P/E (peer)", "https://finance.yahoo.com/quote/NKE/key-statistics/"),
     "sens_axes": ("Scenarios: WACC & terminal g", None),  # internal links set in build_dcf.py
-    "sens_wacc": ("Damodaran: Historical Implied ERP", "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histimpl.html"),
-    "sens_g": ("FRED: Real GDP (GDPC1)", "https://fred.stlouisfed.org/series/GDPC1"),
+    "sens_wacc": ("Damodaran: Historical Implied ERP", SOURCES["damodaran_erp"]),
+    "sens_g": ("FRED: Real GDP (GDPC1)", SOURCES["fred_gdpc1"]),
     # 3-statement
     "3s_rev_growth": ("LULU Q2 FY2026 guidance", SOURCES["earnings_sep2026"]),
     "3s_gm": ("LULU historical gross margin (10-K)", filing_url("FY2025")),
