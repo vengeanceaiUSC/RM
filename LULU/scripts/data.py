@@ -177,6 +177,8 @@ JUST = {
     "comps_ff_pe_hi": "18x P/E high on FY2026E EPS; modest recovery case still below historical premium LULU multiples.",
     # Sensitivity axes (summary)
     "sens_axes": "Red WACC and g grid values bracket base case ±100bps discount rate and ±75bps terminal growth for sensitivity.",
+    "sens_wacc": "WACC axis 9.0–11.0% brackets 10.0% base from CAPM (rf + β×ERP) on WACC tab; ±100bps sensitivity band.",
+    "sens_g": "Terminal-g axis 1.5–3.0% brackets 2.25% base; bounded by long-run real GDP and inflation benchmarks.",
     # 3-statement Assumptions tab
     "3s_rev_growth": "FY26 −6.1% matches guidance; FY27–30 step up to low-single-digit then mid-single-digit recovery path.",
     "3s_gm": "Gross margin recovers gradually from promo pressure; 56.5% to 58.0% still below peak ~58–59% historical.",
@@ -216,24 +218,26 @@ ASSUMPTION_SRC = {
     "sc_gterm": ("LULU historical revenue (10-K)", filing_url("FY2025")),
     "sc_m1": ("LULU Q2 FY2026 guidance / 10-K margins", SOURCES["earnings_sep2026"]),
     "sc_mterm": ("LULU historical EBIT margins (10-K)", filing_url("FY2025")),
-    "sc_wacc": ("WACC tab CAPM build (this model)", None),  # internal
+    "sc_wacc": ("WACC tab: CAPM build", None),  # internal link set in build_dcf.py
     "sc_g": ("BEA: Real GDP (FRED GDPC1)", "https://fred.stlouisfed.org/series/GDPC1"),
     "sc_tax": ("Damodaran: US tax rate dataset", "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/taxrate.html"),
     "sc_da_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
     "sc_capex_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
     "sc_nwc_pct": ("LULU BS/IS historical (10-K)", filing_url("FY2025")),
     # DCF / comps
-    "dcf_exitm": ("DCF Comps tab: Exit Multiple Build", None),
+    "dcf_exitm": ("Macrotrends: LULU EV/EBITDA history", "https://www.macrotrends.net/stocks/charts/LULU/lululemon-athletica/enterprise-value-ebitda"),
     "comps_nke": ("Yahoo Finance: NKE statistics", "https://finance.yahoo.com/quote/NKE/key-statistics/"),
     "comps_deck": ("Yahoo Finance: DECK statistics", "https://finance.yahoo.com/quote/DECK/key-statistics/"),
     "comps_onon": ("Yahoo Finance: ONON statistics", "https://finance.yahoo.com/quote/ONON/key-statistics/"),
     "comps_ads": ("Yahoo Finance: ADS.DE statistics", "https://finance.yahoo.com/quote/ADS.DE/key-statistics/"),
     "comps_vfc": ("Yahoo Finance: VFC statistics", "https://finance.yahoo.com/quote/VFC/key-statistics/"),
-    "comps_ff_ev_lo": ("LULU current EV/EBITDA (model)", None),
-    "comps_ff_ev_hi": ("Peer comp set (Comps tab)", None),
-    "comps_ff_pe_lo": ("LULU current P/E vs FY26E EPS", None),
-    "comps_ff_pe_hi": ("Peer P/E ranges (illustrative)", None),
-    "sens_axes": ("Base WACC/g from Scenarios tab", None),
+    "comps_ff_ev_lo": ("Yahoo Finance: LULU EV/EBITDA", "https://finance.yahoo.com/quote/LULU/key-statistics/"),
+    "comps_ff_ev_hi": ("Macrotrends: LULU EV/EBITDA history", "https://www.macrotrends.net/stocks/charts/LULU/lululemon-athletica/enterprise-value-ebitda"),
+    "comps_ff_pe_lo": ("Yahoo Finance: LULU P/E (FY26E)", "https://finance.yahoo.com/quote/LULU/key-statistics/"),
+    "comps_ff_pe_hi": ("Yahoo Finance: NKE P/E (peer benchmark)", "https://finance.yahoo.com/quote/NKE/key-statistics/"),
+    "sens_axes": ("Scenarios: WACC & terminal g", None),  # internal links set in build_dcf.py
+    "sens_wacc": ("Damodaran: Historical Implied ERP", "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histimpl.html"),
+    "sens_g": ("FRED: Real GDP (GDPC1)", "https://fred.stlouisfed.org/series/GDPC1"),
     # 3-statement
     "3s_rev_growth": ("LULU Q2 FY2026 guidance", SOURCES["earnings_sep2026"]),
     "3s_gm": ("LULU historical gross margin (10-K)", filing_url("FY2025")),
