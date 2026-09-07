@@ -11,7 +11,7 @@ Units: US$ thousands unless noted.
 import os
 from openpyxl import Workbook
 import styles as S
-from styles import write, write_link, write_reported, write_assumption_docs, write_internal_link, write_ctrl_f, write_source_with_ctrl_f, write_ff_dual_docs, append_assumption_docs, NUM, PCT, MONEY, MULT, EPSFMT
+from styles import write, write_link, write_reported, write_assumption_docs, write_internal_link, write_ctrl_f, write_source_with_ctrl_f, write_ff_dual_docs, append_assumption_docs, group_columns, NUM, PCT, MONEY, MULT, EPSFMT
 import data as D
 
 try:
@@ -75,7 +75,7 @@ write(wacc, 'A1', "WEIGHTED AVERAGE COST OF CAPITAL", S.WHITE, bold=True, size=1
 for c in ['B', 'C', 'D', 'E']:
     wacc[f'{c}1'].fill = S.fill(S.DARK)
 wacc.row_dimensions[1].height = 16
-write(wacc, f'{DJ}2', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(wacc, f'{DJ}2', "Justification (~20 words)  [cols B\u2013D: click + to expand]", S.ACCENT, bold=True, size=9, align=S.left_indent)
 write(wacc, f'{DS}2', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 write(wacc, f'{DC}2', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 wacc.freeze_panes = 'E3'
@@ -158,6 +158,7 @@ w_row('wd', "Debt weight (leases + funded)", f"=E{WR['debt_tot']}/(E{WR['mkt_eq'
 w_row('wacc', "WACC", f"=E{WR['we']}*E{WR['coe']}+E{WR['wd']}*E{WR['kdat']}", None, bold=True, top=True)
 wacc[f"E{WR['wacc']}"].font = S.font(color=S.GREEN, bold=True, size=12)
 wacc[f"E{WR['wacc']}"].fill = S.fill(S.GREY)
+group_columns(wacc, DJ, DC)
 
 def wref(key):
     return f"WACC!E{WR[key]}"
@@ -193,7 +194,7 @@ def s_assum(key, label, bear, base, bull, fmt=PCT, doc_key=None, extra_doc_key=N
     rr[0] += 1
 
 write(scn, 'A3', "Key assumptions (5-yr forecast)", S.ACCENT, bold=True, size=10)
-write(scn, f'{DJ}3', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(scn, f'{DJ}3', "Justification (~20 words)  [cols B\u2013D: click + to expand]", S.ACCENT, bold=True, size=9, align=S.left_indent)
 write(scn, f'{DS}3', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 write(scn, f'{DC}3', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 s_assum('g1', "FY2026E revenue growth", -0.090, -0.061, -0.040, doc_key='sc_g1')
@@ -420,6 +421,7 @@ cur += 2
 write(scn, f'A{cur}', "Current price $%.2f; cash $%s k; lease debt $%s k; funded debt $0; net cash $%s k." % (
       D.MKT['price'], f"{D.MKT['cash']:,}", f"{D.MKT['debt']:,}", f"{D.MKT['cash'] - D.MKT['debt']:,}"),
       S.BLACK, italic=True, size=8, align=S.left_indent)
+group_columns(scn, DJ, DC)
 
 # ------------------------------------------------------------------ REVENUE DRIVERS (bottom-up schedule)
 from revenue_drivers import build_revenue_drivers
@@ -450,10 +452,10 @@ write_link(dcf, 'A4', "Full Assumptions Guide (PDF)", "LULU_Assumptions_Memo.pdf
 write_internal_link(dcf, 'C4', 'Revenue Drivers tab', "'Revenue Drivers'!A1",
                     hint="Bottom-up store / DTC / category schedule (FY26–30).")
 write(dcf, f'{CHK_COL}2', "\u0394 vs Scenarios", S.ACCENT, bold=True, size=8, align=S.center)
-write(dcf, f'{DJ}2', "Justification (~20 words)", S.ACCENT, bold=True, size=8, align=S.left_indent)
+write(dcf, f'{DJ}2', "Justification (~20 words)  [cols B\u2013D: click + to expand]", S.ACCENT, bold=True, size=8, align=S.left_indent)
 write(dcf, f'{DS}2', "Source (click)", S.ACCENT, bold=True, size=8, align=S.left_indent)
 write(dcf, f'{DC}2', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=8, align=S.left_indent)
-write(dcf, 'L2', "Alt. source", S.ACCENT, bold=True, size=8, align=S.left_indent)
+write(dcf, 'L2', "Alt. source  [cols L\u2013M: click + to expand]", S.ACCENT, bold=True, size=8, align=S.left_indent)
 write(dcf, 'M2', "Alt. Ctrl+F", S.ACCENT, bold=True, size=8, align=S.left_indent)
 write(dcf, f'{CHK_COL}3', "(should be 0)", S.GREY, italic=True, size=7, align=S.center)
 dcf.freeze_panes = f'{FY25_COL}3'
@@ -772,7 +774,7 @@ write(comps, 'A1', "RELATIVE VALUATION \u2014 IMPLIED PRICE RANGES (FOOTBALL FIE
 for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
     comps[f'{c}1'].fill = S.fill(S.DARK)
 comps.row_dimensions[1].height = 16
-write(comps, f'{DJ}2', "Justification (~20 words)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(comps, f'{DJ}2', "Justification (~20 words)  [cols B\u2013D: click + to expand]", S.ACCENT, bold=True, size=9, align=S.left_indent)
 write(comps, f'{DS}2', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 write(comps, f'{DC}2', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9, align=S.left_indent)
 comps.freeze_panes = 'E3'
@@ -1053,9 +1055,12 @@ rr[0] += 1
 write(comps, f'A{rr[0]}',
       "Note: pubcomps are PitchBook 04-Sep-2026 (EV/EBITDA = daily EV / TTM EBITDA). UAA excluded from the mean. Selected TV is Gordon implied, not the PitchBook average. Alo EV/EBITDA is n.a.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
+group_columns(comps, DJ, DC)
 
 # Link DCF exit multiple to Comps peer build + peer table
 write_internal_link(dcf, f'M{VR["exitm"]}', 'Comps: Exit Multiple Build', f"'Comps'!A{EM['selected']}")
+group_columns(dcf, DJ, DC)
+group_columns(dcf, 'L', 'M')
 
 wb.calculation.fullCalcOnLoad = True
 wb.save(OUT)

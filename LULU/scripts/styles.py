@@ -71,6 +71,24 @@ def group_rows(ws, start_row, end_row, hidden=True, outline_level=1):
     ws.sheet_properties.outlinePr.summaryBelow = True
     ws.sheet_properties.outlinePr.applyStyles = True
 
+
+def group_columns(ws, start_col, end_col, hidden=True, outline_level=1):
+    """Outline-group columns (e.g. Justification | Source | Ctrl+F) — hidden by default."""
+    from openpyxl.utils import column_index_from_string, get_column_letter
+    if not start_col or not end_col:
+        return
+    start = column_index_from_string(start_col)
+    end = column_index_from_string(end_col)
+    if end < start:
+        return
+    for i in range(start, end + 1):
+        col = get_column_letter(i)
+        ws.column_dimensions[col].outline_level = outline_level
+        if hidden:
+            ws.column_dimensions[col].hidden = True
+    ws.sheet_properties.outlinePr.summaryRight = True
+    ws.sheet_properties.outlinePr.applyStyles = True
+
 def write(ws, cell, value, color=BLACK, bold=False, size=10, numfmt=None,
           align=None, fillc=None, bdr=None, italic=False, name=FONT_NAME):
     c = ws[cell]

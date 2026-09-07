@@ -57,7 +57,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, deq=DEQ, dj=DJ, ds=DS,
                   fillc=S.ACCENT if y == "FY2026E" else S.NAVY, align=S.center)
         write(ws, f"{UNITS_COL}{rr[0]}", "Units", S.WHITE, bold=True, size=9, fillc=S.NAVY, align=S.center)
         write(ws, f"{deq}{rr[0]}", "Equation", S.WHITE, bold=True, size=9, fillc=S.ACCENT, align=S.center)
-        write(ws, f"{dj}{rr[0]}", "Justification", S.WHITE, bold=True, size=9, fillc=S.NAVY)
+        write(ws, f"{dj}{rr[0]}", "Justification  [cols I\u2013L: click + to expand]", S.WHITE, bold=True, size=9, fillc=S.NAVY)
         write(ws, f"{ds}{rr[0]}", "Source", S.WHITE, bold=True, size=9, fillc=S.NAVY)
         write(ws, f"{dc}{rr[0]}", "Ctrl+F", S.WHITE, bold=True, size=9, fillc=S.NAVY)
         rr[0] += 1
@@ -331,5 +331,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, deq=DEQ, dj=DJ, ds=DS,
           "A small variance vs Scenarios means the bottom-up path still hangs together, so the Scenarios "
           "case stays viable. Bigger gaps = revisit drivers or Scenarios assumptions.",
           S.BLACK, italic=True, size=8, align=S.left_indent)
+
+    S.group_columns(ws, deq, dc)
 
     return ws, R
