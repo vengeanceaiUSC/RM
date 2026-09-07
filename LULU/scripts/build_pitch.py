@@ -683,8 +683,8 @@ for ri, row in enumerate(sens):
 # =====================================================================
 # 20. COMPS
 # =====================================================================
-s = slide_base("Comparable Companies", "LULU screens cheap vs public peers; Gymshark EV/EBITDA is implied, not a published print", page=pg(),
-               sources="Source: StockAnalysis public prints; Gymshark inputs are Guardian £1.25bn and SGB FY25 EBITDA £53.3m \u2014 no page prints the multiple")
+s = slide_base("Comparable Companies", "LULU screens cheap vs public peers; Alo has no EV/EBITDA print", page=pg(),
+               sources="Source: StockAnalysis public prints; Alo ask $10bn (Reuters) / parent sales ~$2bn (Forbes) \u2014 EV/EBITDA n.a.")
 hdr = ["Company", "EV/EBITDA", "P/E (fwd)", "Rev growth", "Op margin"]
 rows = [
     ["lululemon (LULU)", "3.5x", "10.4x", "\u22126% (FY26E)", "~20%"],
@@ -693,14 +693,14 @@ rows = [
     ["On Holding (ONON)", "14.0x", "15.2x", "20%+", "~10%"],
     ["adidas (ADS)", "9.3x", "14.2x", "mid-single", "~9%"],
     ["V.F. Corp (VFC)", "10.7x", "11.7x", "flat/decl.", "~8%"],
-    ["Gymshark (implied)", "23.5x", "n.m.", "low-single", "~8% EBITDA"],
+    ["Alo Yoga (private)", "n.a.", "n.m.", "fast", "n.a."],
 ]
 stmt_table(s, rows, hdr, col0w=3.4, top=1.25, height=3.85, bold_rows=(0,))
 tb, tf = textbox(s, Inches(0.5), Inches(5.2), Inches(12.35), Inches(1.75))
 add_para(tf, "Read-through \u2014 we do not average these for terminal value", 13.5, CARD, bold=True, first=True, space_after=3)
-add_para(tf, "Public 5-name mean is 10.8x; with implied Gymshark 12.9x. Both overstate a 2.25% g / 15.5% OM FY2030 exit", 12.5, INK, bullet=True, space_after=3)
+add_para(tf, "Public 5-name mean is 10.8x. That overstates a 2.25% g / 15.5% OM FY2030 exit", 12.5, INK, bullet=True, space_after=3)
 add_para(tf, "Selected TV is the Gordon identity (~6.0x) = TV / FY30 EBITDA = (UFCF/EBITDA)\u00d7(1+g)/(WACC\u2212g). Not Deckers 8.0x and not the 10.8x public mean", 12.5, INK, bullet=True, space_after=3)
-add_para(tf, "No source prints Gymshark EV/EBITDA. 23.5x is model math: 2020 Guardian £1.25bn / SGB FY25 EBITDA £53.3m \u2014 a cross-year implied multiple, not a tape print", 12.5, INK, bullet=True, space_after=0)
+add_para(tf, "Alo EV/EBITDA is n.a. Firecrawl found no EBITDA. Implied 5.0x is EV/Sales: unclosed $10bn Moelis ask / Forbes ~$2bn parent sales \u2014 not the TV", 12.5, INK, bullet=True, space_after=0)
 
 # =====================================================================
 # 21. APPENDIX: SCENARIOS
@@ -752,7 +752,7 @@ for t in [
     "Q2 FY2026 results and FY2026 guidance: company earnings release dated September 3, 2026",
     "Market data (price, shares, beta): public market sources as of early September 2026",
     "Projections, DCF and comparable-company analysis: GIS Investment Research models, built from scratch for this assignment",
-    "Gymshark: Guardian (2020 GA £1.25bn valuation) and SGB (FY25 EBITDA £53.3m). No page prints EV/EBITDA; 23.5x is implied model math, not the FY30 exit",
+    "Alo Yoga: Reuters 2023 Moelis ask ~$10bn (no deal announced, Reuters 2026) and Forbes Color Image sales nearly $2bn. No page prints EV/EBITDA; implied 5.0x is EV/Sales, not the FY30 exit",
 ]:
     add_para(tf, t, 12.5, INK, bullet=True, space_after=5)
 add_para(tf, "Disclaimer", 14, CARD, bold=True, space_after=5)

@@ -661,41 +661,52 @@ onon_r = EM["On Holding (ONON)"]
 ads_r = EM["adidas (ADS)"]
 vfc_r = EM["V.F. Corp (VFC)"]
 
-# Gymshark is not a published EV/EBITDA. Prove the two inputs, then divide.
+# Alo has no published EV/EBITDA. Prove the ask and parent sales, then show EV/Sales only.
 rr[0] += 1
 write(comps, f'A{rr[0]}',
-      "GYMSHARK BUILD \u2014 implied multiple (no source prints EV/EBITDA)",
+      "ALO YOGA BUILD \u2014 no source prints EV/EBITDA (Firecrawl: Reuters + Forbes)",
       S.ACCENT, bold=True, size=10)
 rr[0] += 1
 write(comps, f'A{rr[0]}',
-      "Column E on the next two rows is \u00a3m, not a multiple. Implied EV/EBITDA is the black formula below.",
+      "Column E on the next two rows is $bn, not EV/EBITDA. The black formula is implied EV/Sales on an unclosed ask.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 rr[0] += 1
-EM['gym_val'] = rr[0]
-write(comps, f'A{rr[0]}', "Gymshark 2020 GA valuation (\u00a3m)", S.BLACK, size=10, align=S.left_indent)
-write_reported(comps, f'E{rr[0]}', 1250, D.SOURCES["gymshark_guardian"], size=10,
-               numfmt='#,##0', align=S.center)
-write_assumption_docs(comps, rr[0], DJ, DS, DC, "comps_gymshark", D.JUST, D.ASSUMPTION_SRC,
-                      hints=D.SOURCE_HINT)
-rr[0] += 1
-EM['gym_ebitda'] = rr[0]
-write(comps, f'A{rr[0]}', "Gymshark FY25 EBITDA (\u00a3m)", S.BLACK, size=10, align=S.left_indent)
-write_reported(comps, f'E{rr[0]}', 53.3, D.SOURCES["gymshark_sgb"], size=10,
+EM['alo_ask'] = rr[0]
+write(comps, f'A{rr[0]}', "Alo / Color Image 2023 Moelis ask ($bn)", S.BLACK, size=10, align=S.left_indent)
+write_reported(comps, f'E{rr[0]}', 10, D.SOURCES["alo_reuters_2023"], size=10,
                numfmt='#,##0.0', align=S.center)
-write_assumption_docs(comps, rr[0], DJ, DS, DC, "comps_gymshark_ebitda", D.JUST, D.ASSUMPTION_SRC,
+write_assumption_docs(comps, rr[0], DJ, DS, DC, "comps_alo_ask", D.JUST, D.ASSUMPTION_SRC,
+                      hints=D.SOURCE_HINT)
+append_assumption_docs(comps, rr[0], DJ, DS, DC, "comps_alo_closed", D.JUST, D.ASSUMPTION_SRC,
+                       hints=D.SOURCE_HINT)
+rr[0] += 1
+EM['alo_sales'] = rr[0]
+write(comps, f'A{rr[0]}', "Color Image parent sales, Forbes est. ($bn)", S.BLACK, size=10, align=S.left_indent)
+write_reported(comps, f'E{rr[0]}', 2.0, D.SOURCES["alo_forbes"], size=10,
+               numfmt='#,##0.0', align=S.center)
+write_assumption_docs(comps, rr[0], DJ, DS, DC, "comps_alo_sales", D.JUST, D.ASSUMPTION_SRC,
                       hints=D.SOURCE_HINT)
 rr[0] += 1
-EM['gym_impl'] = rr[0]
-gym_r = rr[0]
-write(comps, f'A{rr[0]}', "Gymshark implied EV/EBITDA (model math)", S.BLACK, bold=True, size=10, align=S.left_indent)
-write(comps, f'E{rr[0]}', f"=E{EM['gym_val']}/E{EM['gym_ebitda']}", S.BLACK, bold=True, size=10,
+EM['alo_evs'] = rr[0]
+write(comps, f'A{rr[0]}', "Alo implied EV/Sales (ask / parent sales)", S.BLACK, bold=True, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', f"=E{EM['alo_ask']}/E{EM['alo_sales']}", S.BLACK, bold=True, size=10,
       numfmt=MULT, align=S.center)
-write(comps, f'{DJ}{rr[0]}', D.JUST["comps_gymshark_impl"], S.BLACK, italic=True, size=8, align=S.left_indent)
-write_internal_link(comps, f'{DS}{rr[0]}', "Comps: Gymshark valuation / EBITDA",
-                    f"'Comps'!E{EM['gym_val']}")
+write(comps, f'{DJ}{rr[0]}', D.JUST["comps_alo_impl"], S.BLACK, italic=True, size=8, align=S.left_indent)
+write_internal_link(comps, f'{DS}{rr[0]}', "Comps: Alo ask / parent sales",
+                    f"'Comps'!E{EM['alo_ask']}")
 write_ctrl_f(comps, f'{DC}{rr[0]}',
-             "No Ctrl+F. Neither Guardian nor SGB prints EV/EBITDA. "
-             f"This cell is E{EM['gym_val']} / E{EM['gym_ebitda']} (2020 valuation \u00f7 FY25 EBITDA).")
+             "No Ctrl+F for EV/EBITDA \u2014 Firecrawl found none on Reuters or Forbes. "
+             f"This cell is E{EM['alo_ask']} / E{EM['alo_sales']} (ask \u00f7 parent sales). Not the TV.")
+rr[0] += 1
+EM['alo_evebitda'] = rr[0]
+write(comps, f'A{rr[0]}', "Alo EV/EBITDA", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', "n.a.", S.BLACK, italic=True, size=10, align=S.center)
+write(comps, f'{DJ}{rr[0]}',
+      "No page prints Alo or Color Image EBITDA. PitchBook Alo column is blank. Cannot imply EV/EBITDA.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DS}{rr[0]}', "None \u2014 no EBITDA source", S.BLACK, italic=True, size=8, align=S.left_indent)
+write_ctrl_f(comps, f'{DC}{rr[0]}',
+             "No Ctrl+F. Reuters, Forbes, and PitchBook do not print Alo EV/EBITDA.")
 rr[0] += 1
 
 rr[0] += 1
@@ -723,19 +734,8 @@ write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of Deckers, adidas, VFC", S
 write(comps, f'{DC}{rr[0]}', "Math: (8.0+9.3+10.7)/3 = 9.3x. Not the selected FY30 exit.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 rr[0] += 1
-EM['incl_gym'] = rr[0]
-write(comps, f'A{rr[0]}', "Mean incl. Gymshark (do not use for TV)", S.BLACK, size=10, align=S.left_indent)
-write(comps, f'E{rr[0]}', f"=AVERAGE(E{nke_r},E{deck_r},E{onon_r},E{ads_r},E{vfc_r},E{gym_r})",
-      S.BLACK, size=10, numfmt=MULT, align=S.center)
-write(comps, f'{DJ}{rr[0]}',
-      "~12.9x. Gymshark implied 23.5x is model math (2020 val / FY25 EBITDA); averaging it overstates FY30 exit.",
-      S.BLACK, italic=True, size=8, align=S.left_indent)
-write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of five publics + Gymshark", S.BLACK, italic=True, size=8, align=S.left_indent)
-write(comps, f'{DC}{rr[0]}', "Math: (12.0+8.0+14.0+9.3+10.7+1,250/53.3)/6 \u2248 12.9x. Not the TV.",
-      S.BLACK, italic=True, size=8, align=S.left_indent)
-rr[0] += 1
 write(comps, f'A{rr[0]}',
-      "We do not average EV/EBITDA for terminal value. A 2.25% g year is not a growth-comp tape.",
+      "We do not average peers for terminal value, and we do not use Alo 5.0x EV/Sales as EV/EBITDA.",
       S.BLACK, italic=True, size=9, align=S.left_indent)
 rr[0] += 2
 write(comps, f'A{rr[0]}', "Terminal multiple selection (DCF exit method)", S.ACCENT, bold=True, size=10)
@@ -758,7 +758,7 @@ for bullet in [
     "\u2022  At base WACC 10.5% and g 2.25% that identity is ~6.0x \u2014 the stale \u201cGordon ~7x / pick Deckers 8.0x\u201d overlay is gone",
     "\u2022  Deckers 8.0x is a public print, not a derivation of our exit. It is only the football-field cap",
     "\u2022  Public 5-name mean 10.8x and mature mean 9.3x are current trading tapes, not a 2.25% g terminal year",
-    "\u2022  Gymshark implied 23.5x is 2020 valuation / FY25 EBITDA \u2014 no page prints that multiple; averaging it is not an FY30 exit",
+    "\u2022  Alo has no EV/EBITDA print. Implied 5.0x is EV/Sales (unclosed $10bn ask / ~$2bn parent sales) \u2014 not the FY30 exit",
     "\u2022  Current LULU ~3.5\u20135x is a trough. Gordon 6.0x is a partial recovery, not a re-rate to ONON 14x",
 ]:
     write(comps, f'A{rr[0]}', bullet, S.BLACK, size=9, align=S.left_indent)
@@ -822,7 +822,7 @@ write_source_with_ctrl_f(comps, f'{DS}{rr[0]}', f'{DC}{rr[0]}', "NASDAQ", D.SOUR
                          D.REPORTED_HINTS["nasdaq"])
 rr[0] += 1
 write(comps, f'A{rr[0]}',
-      "Note: public set is NKE, DECK, ONON, adidas, VFC (red). Selected TV is Gordon implied (TV/EBITDA), not Deckers and not an average. Gymshark 23.5x is implied only.",
+      "Note: public set is NKE, DECK, ONON, adidas, VFC (red). Alo is a private reference (implied 5.0x EV/Sales; EV/EBITDA n.a.). Selected TV is Gordon implied, not Alo.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 
 # Link DCF exit multiple to Comps peer build + peer table
