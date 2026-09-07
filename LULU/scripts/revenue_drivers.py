@@ -169,6 +169,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
             f"{prev}*0.13*(1+{c}{R['comp_row']})"
         )
         write(ws, f"{c}{rr[0]}", blend, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    write_assumption_docs(ws, rr[0], dj, ds, dc, "drv_comp_store_rev", D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
     rr[0] += 1
     R["new_store_rev"] = rr[0]
     write(ws, f"A{rr[0]}", "Net new store revenue contribution ($000)", S.BLACK, size=9, align=S.left_indent)

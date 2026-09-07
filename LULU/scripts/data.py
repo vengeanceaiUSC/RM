@@ -237,7 +237,8 @@ JUST = {
     "drv_comp_americas": "FY25 Americas comp −3% per 10-K (traffic, conversion, AOV down). FY26 −4%: modest step-down before flat FY27 as promo clears.",
     "drv_comp_china": "FY25 China comp +20% (+19% CCY) per 10-K. FY26 +14%: still fastest region but moderating as the store base scales.",
     "drv_comp_row": "FY25 RoW comp +9% (+7% CCY) per 10-K. FY26 +7%: hold above CCY, fade to +4% by FY30 as APAC/Europe base matures.",
-    "drv_new_store_rev": "New-store contribution = net openings × sq ft × SPSF × 55% first-year ramp (standard retail maturity).",
+    "drv_comp_store_rev": "Sales from existing stores open 12+ months, grown by regional comp % (Americas/China/RoW). Excludes new openings — those sit in the net-new-store line.",
+    "drv_new_store_rev": "Net new store $ = (Σ net openings by geo) × avg sq ft × SPSF ÷ 1,000 × 55% first-year ramp.",
     "drv_ecomm_sessions": "485M FY25 sessions implied from reported e-comm revenue / conv / AOV. FY26 −3% on Americas softness.",
     "drv_ecomm_conv": "3.3% FY26 digital conversion vs 3.5% pressure cited in 10-K Americas; gradual recovery to 3.6%.",
     "drv_ecomm_aov": "AOV $305 FY26 on promo intensity; steps to $315 by FY30 as mix normalizes.",
@@ -329,6 +330,7 @@ ASSUMPTION_SRC = {
     "drv_comp_americas": ("FY2025 10-K: Americas comparable sales", filing_url("FY2025")),
     "drv_comp_china": ("FY2025 10-K: China Mainland comparable sales", filing_url("FY2025")),
     "drv_comp_row": ("FY2025 10-K: Rest of World comparable sales", filing_url("FY2025")),
+    "drv_comp_store_rev": ("Revenue Drivers tab: comp formula", None),
     "drv_new_store_rev": ("Revenue Drivers tab: formula", None),
     "drv_ecomm_sessions": ("FY2025 10-K: e-commerce revenue", filing_url("FY2025")),
     "drv_ecomm_conv": ("FY2025 10-K: digital / traffic commentary", filing_url("FY2025")),
@@ -422,7 +424,12 @@ SOURCE_HINT = {
     "drv_comp_americas": 'Ctrl+F "Americas comparable sales decreased 3%" → FY25 anchor. FY26 model −4% before stabilization.',
     "drv_comp_china": 'Ctrl+F "China Mainland comparable sales increased 20%" → FY25 anchor. FY26 model +14% on a larger base.',
     "drv_comp_row": 'Ctrl+F "Rest of World comparable sales increased 9%" → FY25 +9% (+7% CCY). FY26 model +7%, fading to +4%.',
-    "drv_new_store_rev": "Formula: net openings × sq ft × SPSF / 1000 × 55% ramp. Not a sourced print.",
+    "drv_comp_store_rev": "Prior-year store rev × geo-weighted comp (71% Americas, 16% China, 13% RoW). Existing stores only — not new openings.",
+    "drv_new_store_rev": (
+        "=(open−close Americas + open−close China + open−close RoW) × avg sq ft × SPSF / 1000 × 55%.\n"
+        "Example FY27 (col D): (D7−D8+D11−D12+D15−D16)×D19×D24/1000×0.55.\n"
+        "Net stores × sq ft/store × $/sq ft → annual sales; ÷1,000 for $000; ×55% first-year maturity ramp."
+    ),
     "drv_ecomm_sessions": 'Ctrl+F "E-commerce" → 4,918,697 ($000). Sessions implied from revenue / conv / AOV.',
     "drv_ecomm_conv": 'Ctrl+F "lower conversion rates" (Americas MD&A). FY26 model 3.3% digital conversion.',
     "drv_ecomm_aov": 'Ctrl+F "average order value" (Americas MD&A). FY26 model $305 AOV.',
