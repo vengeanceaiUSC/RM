@@ -115,9 +115,13 @@ w_row('debt_tot', "Total debt equivalents", f"=E{WR['lease_d']}+E{WR['fund_d']}"
 r[0] += 1
 write(wacc, f'A{r[0]}', "Beta (unlever \u2192 relever)", S.ACCENT, bold=True, size=10)
 r[0] += 1
-w_row('beta_obs', "Observed Beta (5Y) \u2014 levered \u03b2L", D.MKT['beta'], S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
-w_row('de_unlever', "D/E for unlever (StockAnalysis; source of \u03b2L)",
-      D.MKT['de_ratio_sa'], S.BLUE, fmt='0.00', doc_key='wacc_beta_de_unlever')
+w_row('beta_obs', "Observed Beta (5Y Monthly) \u2014 levered \u03b2L", D.MKT['beta'], S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
+w_row('yahoo_debt', "Yahoo Total Debt (mrq)", D.MKT['yahoo_debt_mrq'], S.BLUE, fmt=NUM, doc_key='wacc_beta_yahoo_debt')
+w_row('yahoo_mcap', "Yahoo Market Cap (same page as \u03b2L)", D.MKT['yahoo_mkt_cap'], S.BLUE, fmt=NUM, doc_key='wacc_beta_yahoo_mktcap')
+w_row('de_unlever', "D/E for unlever (Yahoo debt mrq \u00f7 Yahoo market cap)",
+      f"=E{WR['yahoo_debt']}/E{WR['yahoo_mcap']}",
+      None, fmt='0.00', doc_key='wacc_beta_de_unlever')
+w_row('de_book_ref', "Yahoo book D/E (mrq) \u2014 reference only", D.MKT['de_ratio_yahoo_book'], S.BLUE, fmt='0.00', doc_key='wacc_beta_de_book_ref')
 w_row('beta_unlev', "Unlevered \u03b2u",
       f"=E{WR['beta_obs']}/(1+(1-E{WR['tax']})*E{WR['de_unlever']})",
       None, fmt='0.00', doc_key='wacc_beta_unlev')
@@ -130,10 +134,11 @@ w_row('beta', "Beta used (relevered for WACC capital structure)",
       None, fmt='0.00', bold=True, top=True, doc_key='wacc_beta')
 write_ctrl_f(wacc, f'{DC}{WR["beta"]}', D.BETA_CTRL_F)
 for i, line in enumerate([
-    "  \u03b2 walkthrough (Hamada):",
-    "  (0) StockAnalysis \u03b2L = 0.86 (levered; 5Y regression vs market).",
-    "  (1) Unlever at source D/E = 0.45 [(1\u2212T)=0.70 at 30% tax] \u2192 \u03b2u = 0.86 \u00f7 1.315 \u2248 0.65.",
-    "  (2) Relever at WACC D/E = FY25 lease debt \u00f7 market cap \u2248 0.16 \u2192 \u03b2 used \u2248 0.73 in CAPM below.",
+    "  \u03b2 walkthrough (Hamada; Yahoo Key Statistics source):",
+    "  (0) Yahoo \u03b2L = 0.86 (Beta 5Y Monthly). No vendor publishes D/E inside the regression.",
+    "  (1) Unlever at Yahoo market D/E = $2.14B debt (mrq) \u00f7 $11.14B mkt cap \u2248 0.19 \u2192 \u03b2u \u2248 0.76.",
+    "  (2) Relever at WACC D/E = FY25 10-K leases \u00f7 our market cap \u2248 0.16 \u2192 \u03b2 used \u2248 0.84.",
+    "  Book D/E 44.69% on Yahoo page is reference only (not used in formula).",
 ]):
     write(wacc, f'A{r[0]}', line, S.BLACK, italic=True, size=8, align=S.left_indent)
     r[0] += 1

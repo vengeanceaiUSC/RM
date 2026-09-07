@@ -22,6 +22,7 @@ URLS = {
     "10k_fy2025": D.filing_url("FY2025"),
     "earnings_sep2026": D.SOURCES["earnings_sep2026"],
     "nasdaq_quote": D.SOURCES["nasdaq_quote"],
+    "yahoo_lulu_stats": D.SOURCES["yahoo_lulu_stats"],
 }
 
 
@@ -221,6 +222,26 @@ def parse_earnings(md: str) -> dict:
     return out
 
 
+def parse_yahoo_beta(md: str) -> dict:
+    """Yahoo Key Statistics: beta + debt + market cap on one page."""
+    out = {}
+    m = re.search(r"Beta \(5Y Monthly\)\s*\|\s*([\d.]+)", md)
+    if m:
+        out["beta_5y"] = float(m.group(1))
+    m = re.search(r"Total Debt \(mrq\)\s*\|\s*([\d.]+)B", md)
+    if m:
+        out["total_debt_b"] = float(m.group(1))
+    m = re.search(r"Total Debt/Equity \(mrq\)\s*\|\s*([\d.]+)%", md)
+    if m:
+        out["de_book_pct"] = float(m.group(1)) / 100
+    m = re.search(r"\| Market Cap \| ([\d.]+)B", md)
+    if m:
+        out["market_cap_b"] = float(m.group(1))
+    if out.get("total_debt_b") and out.get("market_cap_b"):
+        out["de_market"] = out["total_debt_b"] / out["market_cap_b"]
+    return out
+
+
 def ingest() -> dict:
     result = {
         "ingested_at": datetime.now(timezone.utc).isoformat(),
@@ -249,6 +270,16 @@ def ingest() -> dict:
             _verify_ctrl_f_phrases(md_nasdaq, [phrase], "NASDAQ")
     except Exception as exc:
         result["ctrl_f_verified"]["nasdaq_error"] = str(exc)
+    try:
+        md_yahoo = _scrape_markdown(URLS["yahoo_lulu_stats"])
+        result["ctrl_f_verified"]["yahoo"] = parse_yahoo_beta(md_yahoo)
+        _verify_ctrl_f_phrases(
+            md_yahoo,
+            ["Beta (5Y Monthly)", "Total Debt (mrq)", "Market Cap", "Total Debt/Equity (mrq)"],
+            "Yahoo",
+        )
+    except Exception as exc:
+        result["ctrl_f_verified"]["yahoo_error"] = str(exc)
     try:
         md_er = _scrape_markdown(URLS["earnings_sep2026"])
         result["earnings"] = parse_earnings(md_er)

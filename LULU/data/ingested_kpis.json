@@ -1,9 +1,10 @@
 {
-  "ingested_at": "2026-09-07T22:24:53.619843+00:00",
+  "ingested_at": "2026-09-07T22:53:21.305437+00:00",
   "sources": {
     "10k_fy2025": "https://www.sec.gov/Archives/edgar/data/1397187/000139718726000020/lulu-20260201.htm",
     "earnings_sep2026": "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
-    "nasdaq_quote": "https://www.nasdaq.com/market-activity/stocks/lulu"
+    "nasdaq_quote": "https://www.nasdaq.com/market-activity/stocks/lulu",
+    "yahoo_lulu_stats": "https://finance.yahoo.com/quote/LULU/key-statistics/"
   },
   "kpis": {
     "stores_americas": {
@@ -92,6 +93,13 @@
     "nasdaq": {
       "last_sale": 100.61,
       "ctrl_f_price": "closed at $100.61"
+    },
+    "yahoo": {
+      "beta_5y": 0.86,
+      "total_debt_b": 2.14,
+      "de_book_pct": 0.44689999999999996,
+      "market_cap_b": 11.14,
+      "de_market": 0.19210053859964094
     }
   }
 }

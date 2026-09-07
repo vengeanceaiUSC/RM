@@ -102,6 +102,9 @@ def main():
                 url = D.SOURCES.get("fred_dgs10" if key == "wacc_rf" else "fred_gdpc1")
             elif key in ("wacc_erp", "wacc_tax", "sc_tax", "sens_wacc"):
                 url = D.SOURCES.get("damodaran_erp" if "erp" in key or key == "sens_wacc" else "damodaran_tax")
+            elif key in ("wacc_beta_obs", "wacc_beta_yahoo_debt", "wacc_beta_yahoo_mktcap",
+                         "wacc_beta_de_unlever", "wacc_beta_de_book_ref"):
+                url = D.SOURCES["yahoo_lulu_stats"]
             elif key == "wacc_beta" or key.startswith("comps_") or key == "dcf_exitm":
                 src = D.ASSUMPTION_SRC.get(key)
                 url = resolve_url(src[1]) if src else D.SOURCES["lulu_stats"]

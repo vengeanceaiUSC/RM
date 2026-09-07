@@ -119,8 +119,11 @@ MKT = {
     "week52_high": 225.98,
     "week52_low": 99.64,
     "beta": 0.86,
-    "de_ratio_sa": 0.45,       # StockAnalysis Debt/Equity (total debt incl. leases / book equity)
-    "total_debt_sa": 2141000,  # StockAnalysis Total Debt FY2025 ($000)
+    "yahoo_debt_mrq": 2140000,     # Yahoo Total Debt (mrq) $2.14B ($000)
+    "yahoo_mkt_cap": 11140000,     # Yahoo Market Cap $11.14B ($000) — same page as beta
+    "de_ratio_yahoo_book": 0.4469, # Yahoo Total Debt/Equity (mrq) 44.69% — book; reference only
+    "de_ratio_sa": 0.45,           # StockAnalysis book D/E — legacy reference
+    "total_debt_sa": 2141000,
 }
 
 # ---------------------------------------------------------------------------
@@ -143,6 +146,7 @@ SOURCES = {
     "damodaran_erp": "https://www.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histimpl.html",
     "damodaran_tax": "https://www.stern.nyu.edu/~adamodar/New_Home_Page/datafile/taxrate.html",
     "damodaran_betas": "https://www.stern.nyu.edu/~adamodar/New_Home_Page/datafile/Betas.html",
+    "yahoo_lulu_stats": "https://finance.yahoo.com/quote/LULU/key-statistics/",
     "lulu_stats": "https://stockanalysis.com/stocks/lulu/statistics/",
     "lulu_forecast": "https://stockanalysis.com/stocks/lulu/forecast/",
     "alo_reuters_2023": "https://www.reuters.com/markets/deals/alo-yoga-parent-seeks-investment-10-bln-valuation-sources-2023-10-30/",
@@ -170,12 +174,15 @@ JUST = {
     # WACC tab
     "wacc_rf": "4.8% risk-free = FRED DGS10 on 2026-09-03 (4.77%) rounded; replaces the stale 4.3% input.",
     "wacc_erp": "6.0% ERP is a conservative overlay vs Damodaran Jan-2026 implied 4.23%; used to keep CoE above the risk-free 4.8%.",
-    "wacc_beta_obs": "Step 0: StockAnalysis Beta (5Y) = 0.86. This is levered equity βL from a 5-year regression vs the market — not unlevered.",
-    "wacc_beta_de_unlever": "Step 1a: Source D/E = 0.45 on StockAnalysis ($2.14B total debt ÷ $4.79B book equity) — the leverage paired with βL on that page.",
-    "wacc_beta_unlev": "Step 1b: βu = 0.86 ÷ [1 + (1−T)×0.45]. With T=30% → (1−T)=0.70. Denominator = 1.315 → βu ≈ 0.65 (pure business risk).",
-    "wacc_beta_de_relever": "Step 2a: WACC D/E = FY25 lease debt ($1,798,441k) ÷ market cap ($100 × 111,380k shares) ≈ 0.16 — our modeled capital structure.",
-    "wacc_beta_ind": "Benchmark only: Damodaran unlevered Retail (Special Lines) βu = 0.95. Not used — we derive βu from company βL instead.",
-    "wacc_beta": "Step 2b: β used = 0.65 × [1 + 0.70×0.16] ≈ 0.73. This relevered βL feeds CAPM: CoE = rf + β×ERP.",
+    "wacc_beta_obs": "Yahoo Beta (5Y Monthly) = 0.86. Levered equity βL from ~60 monthly returns vs S&P 500 — not unlevered.",
+    "wacc_beta_yahoo_debt": "Yahoo Total Debt (mrq) = $2.14B on the same Key Statistics page as βL. Most recent quarter balance sheet.",
+    "wacc_beta_yahoo_mktcap": "Yahoo Market Cap = $11.14B on the same page as βL and Total Debt (mrq). Market value of equity.",
+    "wacc_beta_de_unlever": "Unlever D/E = Yahoo debt (mrq) ÷ Yahoo market cap ≈ 0.19. Market-value D/E from the beta source page (Hamada convention).",
+    "wacc_beta_de_book_ref": "Yahoo Total Debt/Equity (mrq) = 44.69% is book D/E on the same page — shown for reference, not used in Hamada.",
+    "wacc_beta_unlev": "βu = 0.86 ÷ [1 + 0.70 × 0.19]. Strip Yahoo market D/E from βL → βu ≈ 0.76. No vendor publishes D/E inside the regression.",
+    "wacc_beta_de_relever": "Relever D/E = FY25 10-K lease debt ÷ our market cap ≈ 0.16 — WACC capital structure we model.",
+    "wacc_beta_ind": "Benchmark only: Damodaran unlevered Retail (Special Lines) βu = 0.95. Not used — we derive βu from Yahoo βL.",
+    "wacc_beta": "β used = βu × [1 + 0.70 × WACC D/E] ≈ 0.84. Relevered βL feeds CAPM: CoE = rf + β×ERP.",
     "wacc_kd": "5.0% pre-tax lease-equivalent borrowing cost; cheaper than equity. No funded revolver borrowings per FY25 10-K.",
     "wacc_tax": "30% cash tax matches FY2026 guidance (“approximately 30%”). Also sets (1−T) = 0.70 in the Hamada β unlever/relever formulas.",
     "wacc_mkt_px": "$100 share price ≈ NASDAQ Last Sale after Q2 FY2026 guide cut; rounded from $100.61 close.",
@@ -288,9 +295,12 @@ ASSUMPTION_SRC = {
     # WACC
     "wacc_rf": ("FRED: 10Y Treasury (DGS10)", SOURCES["fred_dgs10"]),
     "wacc_erp": ("Damodaran: Historical Implied ERP", SOURCES["damodaran_erp"]),
-    "wacc_beta_obs": ("StockAnalysis: LULU Beta (5Y)", SOURCES["lulu_stats"]),
-    "wacc_beta_de_unlever": ("StockAnalysis: LULU Debt / Equity", SOURCES["lulu_stats"]),
-    "wacc_beta_unlev": ("WACC tab: Hamada unlever (source D/E)", None),
+    "wacc_beta_obs": ("Yahoo Finance: LULU Beta (5Y Monthly)", SOURCES["yahoo_lulu_stats"]),
+    "wacc_beta_yahoo_debt": ("Yahoo Finance: LULU Total Debt (mrq)", SOURCES["yahoo_lulu_stats"]),
+    "wacc_beta_yahoo_mktcap": ("Yahoo Finance: LULU Market Cap", SOURCES["yahoo_lulu_stats"]),
+    "wacc_beta_de_unlever": ("Yahoo Finance: debt (mrq) ÷ market cap", SOURCES["yahoo_lulu_stats"]),
+    "wacc_beta_de_book_ref": ("Yahoo Finance: Total Debt/Equity (mrq)", SOURCES["yahoo_lulu_stats"]),
+    "wacc_beta_unlev": ("WACC tab: Hamada unlever (Yahoo market D/E)", None),
     "wacc_beta_de_relever": ("WACC tab: FY25 lease debt / market equity", None),
     "wacc_beta_ind": ("Damodaran: US betas by sector (Jan 2026)", SOURCES["damodaran_betas"]),
     "wacc_beta": ("WACC tab: Hamada relever (total D/E incl. leases)", None),
@@ -404,12 +414,15 @@ SOURCE_HINT = {
     # WACC
     "wacc_rf": 'Ctrl+F "2026-09-03" → observation 4.77. Model uses 4.8%. Also Ctrl+F "DGS10" for the series title.',
     "wacc_erp": 'Ctrl+F "4.23%" on the 2025 row (last data row). Header is "Implied ERP (FCFE)". Model uses 6.0%.',
-    "wacc_beta_obs": 'Ctrl+F "Beta (5Y)" → 0.86. Levered equity βL — starting point (StockAnalysis).',
-    "wacc_beta_de_unlever": 'Ctrl+F "Debt / Equity" → 0.45. = $2.14B total debt ÷ $4.79B book equity (source page).',
-    "wacc_beta_unlev": 'Formula: βu = βL ÷ [1 + (1−T) × D/E]. (1−T) = 0.70 at 30% tax. 0.86 ÷ 1.315 ≈ 0.65.',
-    "wacc_beta_de_relever": 'Formula: D/E = E[lease debt] ÷ E[market equity]. 1,798,441 ÷ 11,138,000 ≈ 0.16 (10-K + NASDAQ).',
+    "wacc_beta_obs": 'Ctrl+F "Beta (5Y Monthly)" → 0.86. Levered βL (Yahoo Key Statistics).',
+    "wacc_beta_yahoo_debt": 'Ctrl+F "Total Debt (mrq)" → 2.14B. Same page as beta.',
+    "wacc_beta_yahoo_mktcap": 'Ctrl+F "Market Cap" → 11.14B. Same page as beta and debt.',
+    "wacc_beta_de_unlever": 'Formula: D/E = E[Yahoo debt mrq] ÷ E[Yahoo market cap]. 2.14B ÷ 11.14B ≈ 0.19.',
+    "wacc_beta_de_book_ref": 'Ctrl+F "Total Debt/Equity (mrq)" → 44.69%. Book D/E — reference only, not in Hamada.',
+    "wacc_beta_unlev": 'βu = E[βL] ÷ (1 + 0.70 × E[D/E Yahoo]). 0.86 ÷ 1.134 ≈ 0.76. Regression does not publish embedded D/E.',
+    "wacc_beta_de_relever": 'D/E = E[FY25 lease debt] ÷ E[market cap]. 1,798,441 ÷ 11,138,000 ≈ 0.16 (10-K + model).',
     "wacc_beta_ind": 'Ctrl+F "Retail (Special Lines)" → 0.95 βu. Sector benchmark — not used in WACC.',
-    "wacc_beta": 'Formula: β used = βu × [1 + (1−T) × D/E]. 0.65 × 1.113 ≈ 0.73 → plugs into CoE row below.',
+    "wacc_beta": 'β used = E[βu] × (1 + 0.70 × E[D/E WACC]). ≈ 0.84 → CoE row below.',
     "wacc_kd": 'Ctrl+F "Current lease liabilities" + "Non-current lease liabilities" → debt equiv. 5.0% illustrative lease borrowing cost.',
     "wacc_tax": 'Ctrl+F "a tax rate of approximately 30%" on the FY2026 outlook paragraph.',
     "wacc_mkt_px": 'Ctrl+F "closed at $100.61" → Last Sale $100.61 (NASDAQ). Model uses $100 rounded.',
@@ -518,30 +531,29 @@ SOURCE_HINT = {
 
 # Organized Ctrl+F block for the capex assumption cell (column D)
 BETA_CTRL_F = (
-    "HOW WE GET \u03b2 USED IN WACC (Hamada)\n"
+    "YAHOO KEY STATISTICS — \u03b2L + debt + equity on ONE page\n"
+    "(No vendor publishes the D/E embedded inside the regression.)\n"
     "\n"
-    "STEP 0 \u2014 Start with observed levered \u03b2L (StockAnalysis)\n"
-    '  Ctrl+F "Beta (5Y)"  \u2192  0.86\n'
-    "  5-year regression vs market. Already includes equity risk at source leverage.\n"
+    "Observed levered \u03b2L\n"
+    '  Ctrl+F "Beta (5Y Monthly)"  \u2192  0.86\n'
+    "  ~60 monthly returns vs S&P 500 (Yahoo label)\n"
     "\n"
-    "STEP 1 \u2014 UNLEVER at source D/E (strip leverage from \u03b2L)\n"
-    '  Ctrl+F "Debt / Equity"  \u2192  0.45  (= $2.14B debt \u00f7 $4.79B book equity)\n'
-    '  Ctrl+F "Total Debt"  \u2192  2.14B\n'
-    "  Formula:  \u03b2u = \u03b2L \u00f7 [1 + (1\u2212T) \u00d7 D/E]\n"
-    "  (1\u2212T) = 0.70  because tax rate T = 30% on this tab\n"
-    "  0.45 = source D/E from StockAnalysis (same page as \u03b2L)\n"
-    "  \u03b2u = 0.86 \u00f7 [1 + 0.70 \u00d7 0.45] = 0.86 \u00f7 1.315  \u2248  0.65\n"
+    "Paired inputs on same page (mrq = most recent quarter)\n"
+    '  Ctrl+F "Total Debt (mrq)"  \u2192  2.14B\n'
+    '  Ctrl+F "Market Cap"  \u2192  11.14B\n'
+    '  Ctrl+F "Total Debt/Equity (mrq)"  \u2192  44.69%  (book; reference only)\n'
     "\n"
-    "STEP 2 \u2014 RELEVER at WACC D/E (our modeled lease debt)\n"
-    "  D/E = FY25 lease debt equiv. \u00f7 market equity (rows above)\n"
+    "STEP 1 \u2014 UNLEVER (market D/E from Yahoo page)\n"
+    "  D/E = Total Debt (mrq) \u00f7 Market Cap = 2.14 \u00f7 11.14 \u2248  0.19\n"
+    "  \u03b2u = 0.86 \u00f7 [1 + 0.70 \u00d7 0.19] = 0.86 \u00f7 1.134  \u2248  0.76\n"
+    "  (1\u2212T) = 0.70 at 30% tax on this tab\n"
+    "\n"
+    "STEP 2 \u2014 RELEVER (WACC: FY25 10-K lease debt / our market cap)\n"
     '  Ctrl+F "Current lease liabilities"  \u2192  298,724\n'
     '  Ctrl+F "Non-current lease liabilities"  \u2192  1,499,717\n'
-    "  Sum = 1,798,441 ($000). Market cap = $100 \u00d7 111,380k shares.\n"
-    "  D/E \u2248 0.16.  Formula:  \u03b2 used = \u03b2u \u00d7 [1 + 0.70 \u00d7 D/E]\n"
-    "  \u03b2 used = 0.65 \u00d7 [1 + 0.70 \u00d7 0.16]  \u2248  0.73  \u2192  CoE = rf + \u03b2 \u00d7 ERP\n"
+    "  D/E \u2248 0.16.  \u03b2 used = 0.76 \u00d7 1.113  \u2248  0.84\n"
     "\n"
-    "Benchmark (not used): Damodaran Retail \u03b2u 0.95\n"
-    '  Ctrl+F "Retail (Special Lines)"  \u2192  0.95'
+    "Benchmark (not used): Damodaran Retail \u03b2u 0.95"
 )
 
 CAPEX_CTRL_F = (

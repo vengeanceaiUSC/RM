@@ -30,8 +30,11 @@ TAB_SECTIONS = [
 LABEL_OVERRIDES = {
     "wacc_rf": "Risk-free rate (10-yr UST)",
     "wacc_erp": "Equity risk premium",
-    "wacc_beta_obs": "Observed beta (5Y) — levered βL",
-    "wacc_beta_de_unlever": "D/E for unlever (StockAnalysis source)",
+    "wacc_beta_obs": "Observed beta (5Y Monthly) — levered βL",
+    "wacc_beta_yahoo_debt": "Yahoo Total Debt (mrq)",
+    "wacc_beta_yahoo_mktcap": "Yahoo Market Cap",
+    "wacc_beta_de_unlever": "D/E for unlever (Yahoo debt ÷ mkt cap)",
+    "wacc_beta_de_book_ref": "Yahoo book D/E (mrq) — reference",
     "wacc_beta_unlev": "Unlevered βu (Hamada)",
     "wacc_beta_de_relever": "D/E for relever (WACC lease debt / E)",
     "wacc_beta_ind": "Sector βu benchmark (Damodaran) — not used",
@@ -206,6 +209,7 @@ def build():
         ("FRED GDPC1 (GDP)", D.SOURCES["fred_gdpc1"]),
         ("Damodaran ERP", D.SOURCES["damodaran_erp"]),
         ("Damodaran betas", D.SOURCES["damodaran_betas"]),
+        ("Yahoo Finance LULU key statistics", D.SOURCES["yahoo_lulu_stats"]),
         ("StockAnalysis LULU stats", D.SOURCES["lulu_stats"]),
         ("NASDAQ LULU quote", D.SOURCES["nasdaq_quote"]),
     ]:
