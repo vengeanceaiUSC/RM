@@ -150,19 +150,18 @@ def write_source_with_ctrl_f(ws, source_cell, ctrl_f_cell, label, url, hint=None
     write_ctrl_f(ws, ctrl_f_cell, hint)
 
 
-def append_formula_justification(ws, row, justify_col, key, hints, prefix="Formula"):
-    """Append a readable equation note to the Justification column (not Ctrl+F)."""
+def write_equation_summary(ws, row, eq_col, key, hints):
+    """Dedicated Equation column — plain-English summary of how the cell is built."""
     hint = (hints or {}).get(key)
     if not hint:
         return
     s = str(hint).lstrip("'")
     if s.startswith("="):
         s = s[1:].strip()
-    c = ws[f"{justify_col}{row}"]
-    extra = f"{prefix}: {s}"
-    c.value = f"{c.value}\n\n{extra}" if c.value else extra
+    c = write(ws, f"{eq_col}{row}", s, BLACK, italic=True, size=8, align=left)
     c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
-    _hint_row_height(ws, row, c.value)
+    c.fill = fill(GREY)
+    _hint_row_height(ws, row, s)
 
 
 def write_assumption_docs(ws, row, justify_col, source_col, ctrl_f_col, key, justify_dict, src_dict,
