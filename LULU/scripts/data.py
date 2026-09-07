@@ -247,9 +247,27 @@ JUST = {
     "sc_gm": "56.6% of revenue (gross margin). Isolates COGS for inventory/AP drivers; base case held near FY25 reported GM.",
     "sc_dso": "Not % of revenue — DSO (days), flat ~6.3. Implied AR ≈1.7% of sales via (DSO÷365)×revenue.",
     "sc_ar": "Implied ~1.7% of revenue (not a direct % plug). Balance = (DSO÷365)×revenue; DSO flat at FY25.",
-    "sc_dio": "Not % of revenue — DIO (days), FY25 anchor ~129. Implied inventory ~15.3% of sales / 35.3% of COGS.",
-    "sc_dio_decline": "Not % of revenue — DIO falls 1 day/yr (−5 days by FY30). 10-K: fewer markdowns; unit inventories down.",
-    "sc_inventory": "Not % of revenue (DIO×COGS balance). FY25 ≈15.3% of sales; improves as DIO declines 1 day/yr.",
+    "sc_dio": (
+        "Not % of revenue — DIO (days).\n"
+        "FY25 anchor: DIO = (Inventories ÷ COGS) × 365\n"
+        "  = (1,700,753 ÷ 4,818,468) × 365 ≈ 129 days (FY24 inv: 1,442,081).\n"
+        "Forecast path: DIO_t = FY25 DIO − (1 day × year t); flat across scenarios."
+    ),
+    "sc_dio_decline": (
+        "Not % of revenue — subtract 1 DIO day per forecast year (−5 days FY26–30).\n"
+        "Feeds Inventories = (DIO_t ÷ 365) × COGS_t.\n"
+        'Ctrl+F "reduce the percentage of markdowns"\n'
+        'Ctrl+F "On a unit basis, we expect inventories to slightly decrease"'
+    ),
+    "sc_inventory": (
+        "Not % of revenue — $ balance (not a direct % plug).\n"
+        "Inventories_t = (DIO_t ÷ 365) × COGS_t\n"
+        "COGS_t = Revenue_t × (1 − GM%). FY25 check: (129 ÷ 365) × 4,818,468 ≈ 1,700,753.\n"
+        'Ctrl+F "Inventories"\n'
+        "→ 1,700,753 ($000)\n"
+        'Ctrl+F "Cost of goods sold"\n'
+        "→ 4,818,468 ($000)"
+    ),
     "sc_dpo": "Not % of revenue — DPO (days), flat ~25.1. Implied AP ≈3.0% of sales / 6.9% of COGS.",
     "sc_ap": "Implied ~3.0% of revenue (not a direct % plug). Balance = (DPO÷365)×COGS; DPO flat at FY25.",
     "sc_prepaid": "5.1% of revenue (flat). FY25 other current assets (prepaids + tax receivables) ÷ net revenue.",
@@ -532,21 +550,28 @@ SOURCE_HINT = {
         "Implied ~1.7% of revenue (= 190,657 ÷ 11,102,600); forecast via DSO×revenue."
     ),
     "sc_dio": (
+        "Not % of revenue — DIO (days).\n"
+        "FY25 anchor formula:\n"
+        "  DIO = (Inventories ÷ COGS) × 365\n"
         'Ctrl+F "Inventories"\n'
         "→ 1,700,753 ($000)  |  FY24: 1,442,081\n"
         'Ctrl+F "Cost of goods sold"\n'
         "→ 4,818,468 ($000)\n"
-        "Not % of revenue — DIO ≈ 129 days. Implied ~15.3% of sales / 35.3% of COGS."
+        "  = (1,700,753 ÷ 4,818,468) × 365 ≈ 129 days\n"
+        "Forecast: DIO_t = FY25 DIO − (1 × year t)"
     ),
     "sc_inventory": (
+        "Not % of revenue — Inventories_t = (DIO_t ÷ 365) × COGS_t.\n"
+        "COGS_t = Revenue_t × (1 − GM%).\n"
         'Ctrl+F "Inventories"\n'
         "→ 1,700,753 ($000)\n"
-        'Ctrl+F "Net revenue"\n'
-        "→ 11,102,600 ($000)\n"
-        "Not % of revenue (DIO×COGS). FY25 ≈ 15.3% of sales (= 1,700,753 ÷ 11,102,600)."
+        'Ctrl+F "Cost of goods sold"\n'
+        "→ 4,818,468 ($000)\n"
+        "FY25 proof: (129 ÷ 365) × 4,818,468 ≈ 1,700,753"
     ),
     "sc_dio_decline": (
         "Not % of revenue — DIO −1 day/yr (−5 days FY26–30).\n"
+        "Feeds Inventories_t = (DIO_t ÷ 365) × COGS_t.\n"
         'Ctrl+F "reduce the percentage of markdowns"\n'
         'Ctrl+F "On a unit basis, we expect inventories to slightly decrease"'
     ),
