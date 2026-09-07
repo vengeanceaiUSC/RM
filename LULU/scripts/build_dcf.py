@@ -99,28 +99,41 @@ w_row('rf', "Risk-free rate (10-yr UST)", 0.048, S.RED, doc_key='wacc_rf')
 w_row('erp', "Equity risk premium", 0.060, S.RED, doc_key='wacc_erp')
 w_row('beta_obs', "Observed Beta (5Y) \u2014 not used in WACC", 0.86, S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
 w_row('beta_ind', "Unlevered retail beta (Damodaran Special Lines)", 0.95, S.RED, fmt='0.00', doc_key='wacc_beta_ind')
-append_assumption_docs(wacc, WR['beta_ind'], DJ, DS, DC, 'wacc_wd', D.JUST, D.ASSUMPTION_SRC,
-                       hints=D.SOURCE_HINT, prefix="No debt")
-w_row('beta', "Beta used = unlevered retail \u03b2 \u2014 LULU has no debt",
-      f"=E{WR['beta_ind']}",
+w_row('tax', "Tax rate", 0.300, S.RED, doc_key='wacc_tax')
+r[0] += 1
+write(wacc, f'A{r[0]}', "Capital structure (market values)", S.ACCENT, bold=True, size=10)
+r[0] += 1
+w_row('mkt_eq', "Market value of equity (price \u00d7 diluted shares)",
+      f"={D.MKT['price']}*{D.MKT['shares_out']}", None, fmt=NUM, doc_key='wacc_mkt_eq')
+w_row('lease_d', "Operating lease liabilities (ASC 842 debt equiv.)", D.MKT['debt'], S.BLUE, fmt=NUM, doc_key='wacc_lease_d')
+write(wacc, f'A{r[0]}',
+      f"  memo: current ${D.MKT['lease_cur']:,}k + non-current ${D.MKT['lease_noncur']:,}k = ${D.MKT['debt']:,}k (FY25 10-K)",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+r[0] += 1
+w_row('fund_d', "Funded debt (term loans / bonds)", D.MKT['debt_funded'], S.BLUE, fmt=NUM, doc_key='wacc_fund_d')
+w_row('debt_tot', "Total debt equivalents", f"=E{WR['lease_d']}+E{WR['fund_d']}", None, bold=True, top=True, fmt=NUM)
+r[0] += 1
+write(wacc, f'A{r[0]}', "Cost of equity (CAPM) \u2014 relevered", S.ACCENT, bold=True, size=10)
+r[0] += 1
+w_row('beta', "Beta used (relevered for lease debt)",
+      f"=E{WR['beta_ind']}*(1+(1-E{WR['tax']})*E{WR['lease_d']}/E{WR['mkt_eq']})",
       None, fmt='0.00', bold=True, top=True, doc_key='wacc_beta')
 write_ctrl_f(wacc, f'{DC}{WR["beta"]}', D.BETA_CTRL_F)
 write(wacc, f'A{r[0]}',
-      "  memo: we use the unlevered retail beta because LULU has no debt (\u03b2u = \u03b2e). Not the levered industry 1.09.",
+      "  memo: relever unlevered retail \u03b2 for ASC 842 lease debt. \u03b2L = \u03b2u \u00d7 (1 + (1\u2212T) \u00d7 D/E). No funded term loans.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 r[0] += 1
 w_row('coe', "Cost of equity = rf + \u03b2 \u00d7 ERP", f"=E{WR['rf']}+E{WR['beta']}*E{WR['erp']}", None, bold=True, top=True)
 r[0] += 1
-write(wacc, f'A{r[0]}', "Cost of debt", S.ACCENT, bold=True, size=10)
+write(wacc, f'A{r[0]}', "Cost of debt (lease-equivalent)", S.ACCENT, bold=True, size=10)
 r[0] += 1
-w_row('kd', "Pre-tax cost of debt", 0.050, S.RED, doc_key='wacc_kd')
-w_row('tax', "Tax rate", 0.300, S.RED, doc_key='wacc_tax')
+w_row('kd', "Pre-tax cost of debt (lease-equivalent)", 0.050, S.RED, doc_key='wacc_kd')
 w_row('kdat', "After-tax cost of debt", f"=E{WR['kd']}*(1-E{WR['tax']})", None, top=True)
 r[0] += 1
-write(wacc, f'A{r[0]}', "Capital structure (market values)", S.ACCENT, bold=True, size=10)
+write(wacc, f'A{r[0]}', "WACC weights", S.ACCENT, bold=True, size=10)
 r[0] += 1
-w_row('we', "Equity weight", 1.00, S.RED, doc_key='wacc_we')
-w_row('wd', "Debt weight", 0.00, S.RED, doc_key='wacc_wd')
+w_row('we', "Equity weight", f"=E{WR['mkt_eq']}/(E{WR['mkt_eq']}+E{WR['debt_tot']})", None, doc_key='wacc_we')
+w_row('wd', "Debt weight (leases + funded)", f"=E{WR['debt_tot']}/(E{WR['mkt_eq']}+E{WR['debt_tot']})", None, doc_key='wacc_wd')
 w_row('wacc', "WACC", f"=E{WR['we']}*E{WR['coe']}+E{WR['wd']}*E{WR['kdat']}", None, bold=True, top=True)
 wacc[f"E{WR['wacc']}"].font = S.font(color=S.GREEN, bold=True, size=12)
 wacc[f"E{WR['wacc']}"].fill = S.fill(S.GREY)
@@ -169,8 +182,9 @@ s_assum('tariff', "FY26 IEEPA tariff refunds ($k, already in guide)",
         D.GUIDANCE['tariff_refund'], D.GUIDANCE['tariff_refund'], D.GUIDANCE['tariff_refund'],
         fmt=NUM, doc_key='sc_tariff')
 s_assum('mterm', "Terminal (FY2030E) EBIT margin", 0.120, 0.155, 0.190, doc_key='sc_mterm')
-s_assum('wacc', "WACC", 0.115, 0.105, 0.095, doc_key='sc_wacc',
+s_assum('wacc', "WACC", 0.110, 0.105, 0.095, doc_key='sc_wacc',
         internal_location=f"'WACC'!E{WR['wacc']}")
+write(scn, f'{SCEN_BASE}{SC["wacc"]}', f"={wref('wacc')}", S.BLACK, size=10, numfmt=PCT, align=S.right)
 s_assum('g', "Terminal growth", 0.015, 0.0225, 0.030, doc_key='sc_g')
 s_assum('tax', "Cash tax rate", 0.320, 0.300, 0.280, doc_key='sc_tax')
 s_assum('da_pct', "D&A % of revenue", 0.045, 0.045, 0.045, doc_key='sc_da_pct')
@@ -284,7 +298,8 @@ write(scn, f'A{cur}', "Upside / (downside) vs current", S.DARK, bold=True, size=
 for col in SCEN_COLS:
     write(scn, f'{col}{cur}', f"={col}{pt_row}/{D.MKT['price']}-1", S.BLACK, bold=True, size=10, numfmt=PCT, align=S.right)
 cur += 2
-write(scn, f'A{cur}', "Current price $%.2f; cash $%s k; net debt $0 (net-cash balance sheet)." % (D.MKT['price'], f"{D.MKT['cash']:,}"),
+write(scn, f'A{cur}', "Current price $%.2f; cash $%s k; lease debt $%s k; funded debt $0; net cash $%s k." % (
+      D.MKT['price'], f"{D.MKT['cash']:,}", f"{D.MKT['debt']:,}", f"{D.MKT['cash'] - D.MKT['debt']:,}"),
       S.BLACK, italic=True, size=8, align=S.left_indent)
 
 # ------------------------------------------------------------------ REVENUE DRIVERS (bottom-up schedule)
@@ -468,8 +483,19 @@ v_row('pvtv', "PV of terminal value", f"=E{VR['tv']}/(1+{bref('wacc')})^J{DR['pe
 v_row('ev', "Enterprise value", f"=E{VR['sumpv']}+E{VR['pvtv']}", bold=True, top=True)
 v_row('cash', "Plus: cash & equivalents (FY2025)", D.MKT['cash'], color=S.BLUE,
       source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_bs"])
-v_row('debt', "Less: total debt", -D.MKT['debt'], color=S.BLUE,
-      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_debt"])
+v_row('debt', "Less: total debt & operating leases", -D.MKT['debt'], color=S.BLUE,
+      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_debt"],
+      doc_key='dcf_debt_bridge')
+write(dcf, f'A{r[0]}',
+      f"  memo: funded term debt $0. Operating leases ${D.MKT['lease_cur']:,}k current + "
+      f"${D.MKT['lease_noncur']:,}k non-current = ${D.MKT['debt']:,}k (ASC 842 debt equivalent).",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+r[0] += 1
+write(dcf, f'A{r[0]}',
+      "  memo: UFCF is pre-interest; rent stays in opex. We subtract lease liabilities in the bridge "
+      "but do not add back implied lease interest to EBIT (simplified treatment).",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+r[0] += 1
 v_row('eqv', "Equity value", f"=E{VR['ev']}+E{VR['cash']}+E{VR['debt']}", bold=True, top=True)
 v_row('sh', "Diluted shares outstanding (000)", D.MKT['shares_out'], color=S.BLUE,
       source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_shares"])

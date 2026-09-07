@@ -106,11 +106,16 @@ GUIDANCE = {
 # ---------------------------------------------------------------------------
 # Market data (as of most recent close following Q2 FY2026 print, early Sep 2026)
 # ---------------------------------------------------------------------------
+LEASE_FY25 = BS['op_lease_cur']['FY2025'] + BS['op_lease_noncur']['FY2025']  # ASC 842 debt equiv. ($000)
+
 MKT = {
     "price": 100.00,          # ~ price after -18% post-earnings reaction
     "shares_out": 111380,     # thousands (FY2025 10-K)
     "cash": 1807202,          # thousands
-    "debt": 0,                # no funded debt; undrawn revolver
+    "debt_funded": 0,         # no term loans / bonds; undrawn revolver
+    "lease_cur": BS['op_lease_cur']['FY2025'],
+    "lease_noncur": BS['op_lease_noncur']['FY2025'],
+    "debt": LEASE_FY25,      # EV bridge: operating leases as debt equivalent ($000)
     "week52_high": 225.98,
     "week52_low": 99.64,
     "beta": 0.86,
@@ -164,19 +169,22 @@ JUST = {
     "wacc_rf": "4.8% risk-free = FRED DGS10 on 2026-09-03 (4.77%) rounded; replaces the stale 4.3% input.",
     "wacc_erp": "6.0% ERP is a conservative overlay vs Damodaran Jan-2026 implied 4.23%; used to keep CoE above the risk-free 4.8%.",
     "wacc_beta_obs": "StockAnalysis Beta (5Y) is 0.86. Company 5Y print; too calm after the guide cut, so not the WACC input.",
-    "wacc_beta_ind": "We use Damodaran’s unlevered Retail (Special Lines) beta of 0.95 because LULU has no debt.",
-    "wacc_beta": "Beta used is that unlevered retail β. No funded debt → βu = βe. Do not use the levered industry 1.09.",
-    "wacc_kd": "5.0% illustrative pre-tax debt cost; 10-K: no borrowings outstanding on the revolver.",
+    "wacc_beta_ind": "Damodaran unlevered Retail (Special Lines) β 0.95 is the starting point; we relever it for ASC 842 lease debt.",
+    "wacc_beta": "Relevered β = βu × (1 + (1−T) × lease debt / market equity). No funded term loans — leases are the debt equivalent.",
+    "wacc_kd": "5.0% pre-tax lease-equivalent borrowing cost; cheaper than equity. No funded revolver borrowings per FY25 10-K.",
     "wacc_tax": "30% cash tax matches FY2026 guidance (“approximately 30%”); FY25 effective was 29.5%.",
-    "wacc_we": "100% equity weight; net-cash balance sheet with no material funded debt at market values per FY2025 10-K.",
-    "wacc_wd": "0% debt weight; no outstanding term loans or bonds, so WACC effectively equals levered cost of equity here.",
+    "wacc_mkt_eq": "Market equity = $100 share price × 111,380k diluted shares (FY25 10-K). Capital-structure weighting numerator.",
+    "wacc_lease_d": "ASC 842 operating lease liabilities = current + non-current ($1,798,441k FY25). Treated as debt equivalent in WACC and EV bridge.",
+    "wacc_fund_d": "Funded term debt $0 — 10-K: no borrowings outstanding on the revolver. Leases are the only debt equivalent here.",
+    "wacc_we": "Equity weight = market cap ÷ (market cap + lease debt). ~86% at $100 and FY25 lease balance.",
+    "wacc_wd": "Debt weight = lease liabilities ÷ (market cap + lease debt). ~14% — ASC 842 leases, not bank debt.",
     # Scenarios tab
     "sc_g1": "−6.1% FY2026 revenue growth matches company guidance midpoint of −5% to −7% after Q2 FY2026 print.",
     "sc_gterm": "2.3% FY27–30 growth matches StockAnalysis Revenue Growth Forecast (3Y) of 2.26%; next-year consensus is +2.64%.",
     "sc_m1": "13.2% is the real/run-rate OM: Q2 18.8% minus 560bps of tariff refunds. FY26 then adds the $134.5M refund once on top.",
     "sc_tariff": "Add back $134.5M in FY26 only — already recognized (reduced COGS). +130bps on FY26 sales, not +560bps (that was Q2-only).",
     "sc_mterm": "FY30 15.5% is a partial recovery vs the FY25 10-K OM of 19.9% (unique Ctrl+F). Still well below the FY24 23.7% peak.",
-    "sc_wacc": "10.5% base WACC = rf 4.8% + 0.95×6.0% ERP on the WACC tab (FRED 4.77% rounded).",
+    "sc_wacc": "Base WACC from WACC tab (lease-adjusted CAPM). Bear/bull bracket ±100bps around the calculated base.",
     "sc_g": "2.25% terminal g sits next to FRED GDPC1 Q2/Q2 real GDP ≈ 2.1% (24,269.613 / 23,770.976 − 1).",
     "sc_tax": "30% cash tax from FY2026 outlook; FY25 10-K effective is 29.5% (659,784 / 2,238,967).",
     "sc_da_pct": "4.5% D&A / sales = FY25 496,228 / 11,102,600 on the 10-K cash-flow statement.",
@@ -186,6 +194,7 @@ JUST = {
     "sc_nwc_pct": "One NWC line: 7.5% of Δsales = AR + inv + OCA − AP − accrued. AR is not a separate FCF item.",
     # DCF valuation
     "dcf_exitm": "Selected exit is Gordon TV / FY30 EBITDA. Identity: (UFCF/EBITDA)×(1+g)/(WACC−g). Not Deckers and not a peer average.",
+    "dcf_debt_bridge": "Subtract ASC 842 operating lease liabilities as debt equivalent. Funded term debt $0 per FY25 10-K; leases ≈ $1.80B.",
     # Comps — peer multiples
     "comps_nke": "Nike EV/EBITDA is PitchBook daily EV / TTM EBITDA as of 04-Sep-2026. Black formula, not a typed print.",
     "comps_deck": "Deckers EV/EBITDA is PitchBook daily EV / TTM EBITDA as of 04-Sep-2026. Closest premium-footwear peer.",
@@ -274,11 +283,14 @@ ASSUMPTION_SRC = {
     "wacc_erp": ("Damodaran: Historical Implied ERP", SOURCES["damodaran_erp"]),
     "wacc_beta_obs": ("StockAnalysis: LULU Beta (5Y)", SOURCES["lulu_stats"]),
     "wacc_beta_ind": ("Damodaran: US betas by sector (Jan 2026)", SOURCES["damodaran_betas"]),
-    "wacc_beta": ("Damodaran: Retail (Special Lines) βu", SOURCES["damodaran_betas"]),
-    "wacc_kd": ("LULU FY2025 10-K (no funded debt)", filing_url("FY2025")),
+    "wacc_beta": ("Damodaran: relevered β for lease debt", SOURCES["damodaran_betas"]),
+    "wacc_kd": ("LULU FY2025 10-K: lease liabilities & no funded debt", filing_url("FY2025")),
     "wacc_tax": ("Q2 FY2026 outlook: tax rate ≈ 30%", SOURCES["earnings_sep2026"]),
-    "wacc_we": ("LULU FY2025 10-K balance sheet", filing_url("FY2025")),
-    "wacc_wd": ("LULU FY2025 10-K balance sheet", filing_url("FY2025")),
+    "wacc_mkt_eq": ("NASDAQ LULU last sale (current price)", SOURCES["nasdaq_quote"]),
+    "wacc_lease_d": ("LULU FY2025 10-K: operating lease liabilities", filing_url("FY2025")),
+    "wacc_fund_d": ("LULU FY2025 10-K (no funded debt)", filing_url("FY2025")),
+    "wacc_we": ("WACC tab: capital structure", None),
+    "wacc_wd": ("LULU FY2025 10-K: operating lease liabilities", filing_url("FY2025")),
     # Scenarios
     "sc_g1": ("LULU Q2 FY2026 earnings release", SOURCES["earnings_sep2026"]),
     "sc_gterm": ("StockAnalysis: LULU 3Y revenue forecast", SOURCES["lulu_stats"]),
@@ -295,6 +307,7 @@ ASSUMPTION_SRC = {
     "sc_nwc_pct": ("LULU BS/IS historical (10-K)", filing_url("FY2025")),
     # DCF / comps
     "dcf_exitm": ("DCF: Gordon implied exit (TV / FY30 EBITDA)", None),
+    "dcf_debt_bridge": ("LULU FY2025 10-K: operating lease liabilities", filing_url("FY2025")),
     "comps_nke": ("PitchBook Comps Set 04-Sep-2026", None),
     "comps_deck": ("PitchBook Comps Set 04-Sep-2026", None),
     "comps_ads": ("PitchBook Comps Set 04-Sep-2026", None),
@@ -380,12 +393,15 @@ SOURCE_HINT = {
     "wacc_rf": 'Ctrl+F "2026-09-03" → observation 4.77. Model uses 4.8%. Also Ctrl+F "DGS10" for the series title.',
     "wacc_erp": 'Ctrl+F "4.23%" on the 2025 row (last data row). Header is "Implied ERP (FCFE)". Model uses 6.0%.',
     "wacc_beta_obs": 'Ctrl+F "Beta (5Y)" → 0.86. Company 5Y beta. Not the WACC input.',
-    "wacc_beta_ind": 'Ctrl+F "Retail (Special Lines)" → Unlevered beta 0.95 (not the levered Beta 1.09). We take unlevered because LULU has no debt.',
-    "wacc_beta": 'We use unlevered retail β because LULU has no debt. Ctrl+F "Retail (Special Lines)" → Unlevered beta 0.95. Do not take levered 1.09.',
-    "wacc_kd": 'Ctrl+F "no borrowings were outstanding under this facility" on this 10-K HTML page (search the document, do not use the EDGAR viewer TOC).',
+    "wacc_beta_ind": 'Ctrl+F "Retail (Special Lines)" → Unlevered beta 0.95. Relever for ASC 842 lease debt on the next row.',
+    "wacc_beta": 'βL = βu × (1 + (1−T) × lease debt / market equity). Lease debt from 10-K; no funded term loans.',
+    "wacc_kd": 'Ctrl+F "Current lease liabilities" + "Non-current lease liabilities" → debt equiv. 5.0% illustrative lease borrowing cost.',
     "wacc_tax": 'Ctrl+F "a tax rate of approximately 30%" on the FY2026 outlook paragraph.',
-    "wacc_we": 'Ctrl+F "Cash and cash equivalents" → 1,807,202 ($000) | no funded term debt',
-    "wacc_wd": 'Ctrl+F "no borrowings were outstanding under this facility" → debt weight 0%',
+    "wacc_mkt_eq": 'Ctrl+F "LULU" → $100 price × 111,380k diluted shares (FY25 10-K).',
+    "wacc_lease_d": 'Ctrl+F "Current lease liabilities" → 298,724 | "Non-current lease liabilities" → 1,499,717 | sum = 1,798,441 ($000)',
+    "wacc_fund_d": 'Ctrl+F "no borrowings were outstanding under this facility" → funded debt $0',
+    "wacc_we": 'Equity weight = market cap ÷ (market cap + lease debt). Live formula on this tab.',
+    "wacc_wd": 'Debt weight = lease liabilities ÷ (market cap + lease debt). ~14% at FY25 balances.',
     # Scenarios
     "sc_g1": 'Ctrl+F "decline of 5% to 7%" → FY2026 revenue guide; model −6.1% midpoint',
     "sc_gterm": 'Ctrl+F "Revenue Growth Forecast (3Y)" → 2.26%. That is the unique line (do not search "Net revenue"). Model FY27–30 uses 2.3%.',
@@ -485,14 +501,16 @@ SOURCE_HINT = {
 
 # Organized Ctrl+F block for the capex assumption cell (column D)
 BETA_CTRL_F = (
-    "We use the unlevered retail beta because LULU has no debt (\u03b2u = \u03b2e).\n"
+    "Relever Damodaran unlevered retail β for ASC 842 lease debt.\n"
     "\n"
-    "Damodaran Jan 2026 \u2014 this is the 0.95\n"
+    "Unlevered β (Damodaran Jan 2026)\n"
     '  Ctrl+F "Retail (Special Lines)"  \u2192  Unlevered beta 0.95\n'
     "  Do not take the levered Beta column (1.09)\n"
     "\n"
-    "Why unlevered, not levered 1.09\n"
-    '  Ctrl+F "no borrowings were outstanding under this facility" on the FY25 10-K\n'
+    "Lease debt equivalent (FY25 10-K)\n"
+    '  Ctrl+F "Current lease liabilities"  \u2192  298,724\n'
+    '  Ctrl+F "Non-current lease liabilities"  \u2192  1,499,717\n'
+    "  Sum = 1,798,441 ($000). No funded term loans.\n"
     "\n"
     "Company 5Y (StockAnalysis) \u2014 shown, not used\n"
     '  Ctrl+F "Beta (5Y)"  \u2192  0.86'
@@ -529,7 +547,7 @@ REPORTED_HINTS = {
     "10k_is": 'Ctrl+F "Net revenue" → 11,102,600 ($000) in FY2025 column',
     "10k_ebit": 'Ctrl+F "19.9%" (one hit) → FY25 operating margin. Do not search the words Income from operations (17 hits). Dollar EBIT is 2,210,615 ($000).',
     "10k_bs": 'Ctrl+F "Cash and cash equivalents" → 1,807,202 ($000) FY2025',
-    "10k_debt": 'Ctrl+F "no borrowings were outstanding under this facility" → no funded term debt',
+    "10k_debt": 'Ctrl+F "Current lease liabilities" → 298,724 | "Non-current lease liabilities" → 1,499,717 | sum 1,798,441 ($000). Funded debt: "no borrowings were outstanding"',
     "10k_cf": 'Ctrl+F "Depreciation and amortization" → 496,228 | "680,802" capex ($000)',
     "10k_shares": 'Ctrl+F "Diluted weighted-average number of shares outstanding" → 119,068 (000)',
     "10k_ebitda": 'Ctrl+F "19.9%" → FY25 OM (EBIT $2,210,615). Ctrl+F "496,228" → Depreciation and amortization. Do not search the words Income from operations (17 hits).',
