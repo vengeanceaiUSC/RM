@@ -82,8 +82,12 @@ write_link(cov, 'B17', "FY2025 Form 10-K (ended Feb 1, 2026)", D.filing_url("FY2
 write_link(cov, 'B18', "Q2 FY2026 results & FY2026 guidance (Sep 3, 2026 earnings release)", D.SOURCES["earnings_sep2026"],
            color=S.BLUE, size=10, hint=D.COVER_HINTS["earnings_sep2026"])
 write(cov, 'B19', "TABS", S.DARK, bold=True, size=12)
-write(cov, 'B20', "Assumptions  \u2022  Income Statement  \u2022  Balance Sheet  \u2022  Cash Flow", S.BLACK, size=10)
-write(cov, 'B22', "Built from scratch for the GIS IR selection assignment. Units: US$ thousands unless noted.", S.BLACK, italic=True, size=9)
+write(cov, 'B20', "Assumptions  \u2022  Revenue Drivers  \u2022  Income Statement  \u2022  Balance Sheet  \u2022  Cash Flow", S.BLACK, size=10)
+write(cov, 'B22', "ASSUMPTIONS MEMO (1-page PDF)", S.DARK, bold=True, size=12)
+write_link(cov, 'B23', "LULU_Assumptions_Memo.pdf \u2014 justifications, Ctrl+F anchors, and strategic context",
+           "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=10,
+           hint="Open the linked PDF for a single-page summary of all red assumptions.")
+write(cov, 'B25', "Built from scratch for the GIS IR selection assignment. Units: US$ thousands unless noted.", S.BLACK, italic=True, size=9)
 
 # ---------------------------------------------------------------- ASSUMPTIONS
 asum = wb.create_sheet(A)

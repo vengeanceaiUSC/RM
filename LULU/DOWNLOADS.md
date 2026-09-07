@@ -5,6 +5,8 @@
 | File | Direct download |
 |------|-----------------|
 | DCF valuation model | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/LULU_DCF_Valuation_Model.xlsx |
+| Assumptions memo (PDF) | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/LULU_Assumptions_Memo.pdf |
+| Ingested KPIs (JSON) | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/data/ingested_kpis.json |
 | 3-statement model | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/LULU_3_Statement_Model.xlsx |
 | Pitch deck (PPTX) | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/LULU_Investment_Pitch_Deck.pptx |
 | Pitch deck (PDF) | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/LULU_Investment_Pitch_Deck.pdf |

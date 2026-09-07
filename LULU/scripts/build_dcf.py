@@ -14,7 +14,14 @@ import styles as S
 from styles import write, write_link, write_reported, write_assumption_docs, write_internal_link, write_ctrl_f, write_source_with_ctrl_f, write_ff_dual_docs, append_assumption_docs, NUM, PCT, MONEY, MULT, EPSFMT
 import data as D
 
+try:
+    from ingest_kpis import main as _ingest_kpis
+    _ingest_kpis()
+except Exception:
+    pass  # use committed ingested_kpis.json
+
 OUT = os.path.join(os.path.dirname(__file__), "..", "LULU_DCF_Valuation_Model.xlsx")
+MEMO_PDF = os.path.join(os.path.dirname(__file__), "..", "LULU_Assumptions_Memo.pdf")
 wb = Workbook()
 
 # Documentation columns B/C/D are always visible (no horizontal scroll needed)
@@ -44,17 +51,21 @@ write(cov, 'B10', "Blue font  =  figures reported by the company (click value or
 write(cov, 'B11', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
 write(cov, 'B12', "Red font  =  analyst assumptions — cols B/C/D on every tab: Justification | Source | Ctrl+F", S.RED, bold=True, size=11)
 write(cov, 'B14', "TABS", S.DARK, bold=True, size=12)
-write(cov, 'B15', "WACC  \u2022  DCF (base case + sensitivity)  \u2022  Scenarios  \u2022  Comps / Football Field", S.BLACK, size=10)
-write(cov, 'B17', "SOURCES", S.DARK, bold=True, size=12)
-write_link(cov, 'B18', "SEC EDGAR filings, CIK 0001397187 (Form 10-K, FY2025)", D.SOURCES["edgar_xbrl"],
+write(cov, 'B15', "WACC  \u2022  Revenue Drivers  \u2022  Scenarios  \u2022  DCF  \u2022  Comps / Football Field", S.BLACK, size=10)
+write(cov, 'B16', "ASSUMPTIONS MEMO (1-page PDF)", S.DARK, bold=True, size=12)
+write_link(cov, 'B17', "LULU_Assumptions_Memo.pdf \u2014 justifications, Ctrl+F anchors, and strategic context",
+           "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=10,
+           hint="Open the linked PDF for a single-page summary of all red assumptions.")
+write(cov, 'B19', "SOURCES", S.DARK, bold=True, size=12)
+write_link(cov, 'B20', "SEC EDGAR filings, CIK 0001397187 (Form 10-K, FY2025)", D.SOURCES["edgar_xbrl"],
            color=S.BLUE, size=10, hint=D.COVER_HINTS["edgar_xbrl"])
-write_link(cov, 'B19', "FY2025 Form 10-K (ended Feb 1, 2026)", D.filing_url("FY2025"),
+write_link(cov, 'B21', "FY2025 Form 10-K (ended Feb 1, 2026)", D.filing_url("FY2025"),
            color=S.BLUE, size=10, hint=D.COVER_HINTS["filing_fy2025"])
-write_link(cov, 'B20', "Market data & Q2 FY2026 results (Sep 3, 2026 earnings release)", D.SOURCES["earnings_sep2026"],
+write_link(cov, 'B22', "Market data & Q2 FY2026 results (Sep 3, 2026 earnings release)", D.SOURCES["earnings_sep2026"],
            color=S.BLUE, size=10, hint=D.COVER_HINTS["earnings_sep2026"])
-write_link(cov, 'B21', "Current share price (NASDAQ: LULU)", D.SOURCES["nasdaq_quote"],
+write_link(cov, 'B23', "Current share price (NASDAQ: LULU)", D.SOURCES["nasdaq_quote"],
            color=S.BLUE, size=10, hint=D.COVER_HINTS["nasdaq_quote"])
-write(cov, 'B23', "Built from scratch for the GIS IR selection assignment.", S.BLACK, italic=True, size=9)
+write(cov, 'B25', "Built from scratch for the GIS IR selection assignment.", S.BLACK, italic=True, size=9)
 
 # ------------------------------------------------------------------ WACC
 wacc = wb.create_sheet("WACC")
@@ -276,6 +287,12 @@ cur += 2
 write(scn, f'A{cur}', "Current price $%.2f; cash $%s k; net debt $0 (net-cash balance sheet)." % (D.MKT['price'], f"{D.MKT['cash']:,}"),
       S.BLACK, italic=True, size=8, align=S.left_indent)
 
+# ------------------------------------------------------------------ REVENUE DRIVERS (bottom-up schedule)
+from revenue_drivers import build_revenue_drivers
+rev_row_map = {fy: rev_rows[t] for t, fy in enumerate(FY, start=1)}
+rev_row_map["FY2025"] = None
+drv_ws, DRV = build_revenue_drivers(wb, SCEN_BASE, rev_row_map)
+
 def bref(key):
     return f"Scenarios!${SCEN_BASE}${SC[key]}"
 
@@ -294,6 +311,10 @@ write_ctrl_f(dcf, f'{DS}3', D.COVER_HINTS["filing_fy2025"])
 for y in FY:
     write(dcf, f'{FCOL[y]}2', y, S.WHITE, bold=True, size=10, align=S.center, fillc=S.ACCENT)
 write(dcf, 'A3', "Forecast drivers linked to Scenarios tab \u2192 Base case (column G)", S.GREY, italic=True, size=9, align=S.left_indent)
+write_link(dcf, 'A4', "Assumptions Memo (PDF)", "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=9, italic=True,
+           hint="1-page summary: justifications, Ctrl+F anchors, WACC, terminal multiple.")
+write_internal_link(dcf, 'C4', 'Revenue Drivers tab', "'Revenue Drivers'!A1",
+                    hint="Bottom-up store / DTC / category schedule (FY26–30).")
 write(dcf, f'{CHK_COL}2', "\u0394 vs Scenarios", S.ACCENT, bold=True, size=8, align=S.center)
 write(dcf, f'{DJ}2', "Justification (~20 words)", S.ACCENT, bold=True, size=8, align=S.left_indent)
 write(dcf, f'{DS}2', "Source (click)", S.ACCENT, bold=True, size=8, align=S.left_indent)
@@ -852,3 +873,6 @@ write_internal_link(dcf, f'M{VR["exitm"]}', 'Comps: Exit Multiple Build', f"'Com
 wb.calculation.fullCalcOnLoad = True
 wb.save(OUT)
 print("Saved", os.path.abspath(OUT))
+
+from build_assumptions_memo import build as _build_memo
+_build_memo()
