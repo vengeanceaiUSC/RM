@@ -1,7 +1,7 @@
 """Add the Revenue Drivers worksheet to the DCF workbook."""
 import styles as S
 from styles import (
-    write, write_reported, write_assumption_docs, write_ctrl_f, NUM, PCT, MONEY,
+    write, write_reported, write_assumption_docs, append_assumption_docs, write_ctrl_f, NUM, PCT, MONEY,
 )
 import data as D
 import driver_kpis as DK
@@ -26,6 +26,10 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
     })
     kpis = load_kpis()
     rr = [1]
+
+    def f_docs(row, key, internal=None):
+        write_assumption_docs(ws, row, dj, ds, dc, key, D.JUST, D.ASSUMPTION_SRC,
+                              hints=D.SOURCE_HINT, internal_location=internal)
 
     def hdr(title):
         write(ws, f"A{rr[0]}", title, S.WHITE, bold=True, size=11, fillc=S.DARK, align=S.left_indent)
@@ -113,12 +117,12 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
                   f"={c}{beg_row}+{c}{opn[key]}-{c}{cls[key]}",
                   S.BLACK, bold=True, size=9, numfmt=NUM, align=S.right)
         write(ws, f"{UNITS_COL}{end[key]}", "stores", S.BLACK, italic=True, size=8, align=S.center)
-        write_ctrl_f(ws, f"{dc}{end[key]}",
-                     f'Ctrl+F "{label}" → FY2025 ending stores {fy25_end}.')
+        f_docs(end[key], "drv_f_end_stores")
         rr[0] += 1
         for i, c in enumerate(FCOLS):
             write(ws, f"{c}{beg_row}", f"={FY25 if i == 0 else FCOLS[i-1]}{end[key]}",
                   S.BLACK, size=9, numfmt=NUM, align=S.right)
+        f_docs(beg_row, "drv_f_beg_stores")
 
     R["total_end"] = rr[0]
     write(ws, f"A{rr[0]}", "Total ending stores", S.BLACK, bold=True, size=9, align=S.left_indent)
@@ -128,6 +132,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         write(ws, f"{c}{rr[0]}",
               f"={c}{end['americas']}+{c}{end['china']}+{c}{end['row']}",
               S.BLACK, bold=True, size=9, numfmt=NUM, align=S.right)
+    f_docs(R["total_end"], "drv_f_total_stores")
     rr[0] += 1
 
     R["sqft_store"] = row("Avg square feet per store", kpis["avg_sqft_per_store"]["FY2025"],
@@ -142,6 +147,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
               f"={c}{R['total_end']}*{c}{R['sqft_store']}",
               S.BLACK, size=9, numfmt=NUM, align=S.right)
     write(ws, f"{UNITS_COL}{rr[0]}", "sq ft", S.BLACK, italic=True, size=8, align=S.center)
+    f_docs(R["total_sqft"], "drv_f_total_sqft")
     rr[0] += 1
 
     # --- STORE PRODUCTIVITY ---
@@ -169,7 +175,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
             f"{prev}*0.13*(1+{c}{R['comp_row']})"
         )
         write(ws, f"{c}{rr[0]}", blend, S.BLACK, size=9, numfmt=NUM, align=S.right)
-    write_assumption_docs(ws, rr[0], dj, ds, dc, "drv_comp_store_rev", D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
+    f_docs(R["store_comp_rev"], "drv_comp_store_rev")
     rr[0] += 1
     R["new_store_rev"] = rr[0]
     write(ws, f"A{rr[0]}", "Net new store revenue contribution ($000)", S.BLACK, size=9, align=S.left_indent)
@@ -183,7 +189,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         write(ws, f"{c}{rr[0]}",
               f"={net_open}*{c}{R['sqft_store']}*{c}{R['spsf']}/1000*0.55",
               S.BLACK, size=9, numfmt=NUM, align=S.right)
-    write_assumption_docs(ws, rr[0], dj, ds, dc, "drv_new_store_rev", D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
+    f_docs(R["new_store_rev"], "drv_new_store_rev")
     rr[0] += 1
     R["store_rev"] = rr[0]
     write(ws, f"A{rr[0]}", "Store channel revenue ($000)", S.BLACK, bold=True, size=9, align=S.left_indent)
@@ -198,6 +204,8 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         write(ws, f"{c}{R['store_rev_base']}",
               f"={FY25 if i == 0 else FCOLS[i-1]}{R['store_rev']}",
               S.BLACK, size=9, numfmt=NUM, align=S.right)
+    f_docs(R["store_rev_base"], "drv_f_store_rev_base")
+    f_docs(R["store_rev"], "drv_f_store_rev")
     rr[0] += 1
 
     # Unit economics memo (implied / forward)
@@ -226,8 +234,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         write(ws, f"{c}{rr[0]}",
               f"={c}{R['sessions']}*1000000*{c}{R['econv']}*{c}{R['eaov']}/1000",
               S.BLACK, bold=True, size=9, numfmt=NUM, align=S.right)
-    write_ctrl_f(ws, f"{dc}{rr[0]}",
-                 'Ctrl+F "E-commerce" → 4,918,697 ($000 FY2025). Forward = sessions × conversion × AOV.')
+    f_docs(R["ecomm_rev"], "drv_f_ecomm_rev")
     rr[0] += 1
 
     # --- OTHER + GEO + CATEGORY ---
@@ -242,6 +249,8 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         g = DK.FORECAST["other_rev_growth"][i]
         write(ws, f"{c}{R['other_rev']}", f"={prev}*(1+{g})", S.BLACK, size=9, numfmt=NUM, align=S.right)
     write_assumption_docs(ws, R["other_rev"], dj, ds, dc, "drv_other_rev", D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
+    append_assumption_docs(ws, R["other_rev"], dj, ds, dc, "drv_f_other_rev_growth", D.JUST, D.ASSUMPTION_SRC,
+                           hints=D.SOURCE_HINT, prefix="Formula")
 
     for key, label, doc in [
         ("americas", "Americas net revenue ($000)", "drv_geo_americas"),
@@ -258,6 +267,8 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
                   f"({FY25}{R['store_rev']}+{FY25}{R['ecomm_rev']}+{FY25}{R['other_rev']})",
                   S.BLACK, size=9, numfmt=NUM, align=S.right)
         write_assumption_docs(ws, r, dj, ds, dc, doc, D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
+        append_assumption_docs(ws, r, dj, ds, dc, "drv_f_geo_scale", D.JUST, D.ASSUMPTION_SRC,
+                               hints=D.SOURCE_HINT, prefix="Formula")
 
     R["mix_w"] = row("Women's % of revenue", kpis["mix_women"]["FY2025"],
                      DK.FORECAST["mix_women"][1:], fmt=PCT, red=True, doc_key="drv_mix_women")
@@ -278,6 +289,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         write(ws, f"{c}{rr[0]}",
               f"={c}{R['store_rev']}+{c}{R['ecomm_rev']}+{c}{R['other_rev']}",
               S.BLACK, bold=True, size=10, numfmt=NUM, align=S.right)
+    f_docs(R["total_rev"], "drv_f_total_rev")
     rr[0] += 1
 
     R["scen_rev"] = rr[0]
@@ -287,6 +299,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
     for y, c in zip(FY, FCOLS):
         write(ws, f"{c}{rr[0]}", f"=Scenarios!{scen_base_col}{rev_row_map[y]}",
               S.BLACK, size=9, numfmt=NUM, align=S.right)
+    f_docs(R["scen_rev"], "drv_f_scen_rev")
     rr[0] += 1
 
     R["variance"] = rr[0]
@@ -296,6 +309,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
     for c in FCOLS:
         write(ws, f"{c}{rr[0]}", f"={c}{R['total_rev']}-{c}{R['scen_rev']}",
               S.BLACK, size=9, numfmt=NUM, align=S.right)
+    f_docs(R["variance"], "drv_f_variance")
     rr[0] += 1
 
     R["var_pct"] = rr[0]
@@ -304,6 +318,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         write(ws, f"{col}{rr[0]}",
               f"=IF({col}{R['scen_rev']}=0,\"\",{col}{R['variance']}/{col}{R['scen_rev']})",
               S.BLACK, size=9, numfmt=PCT, align=S.right)
+    f_docs(R["var_pct"], "drv_f_var_pct")
     rr[0] += 1
 
     write(ws, f"A{rr[0]}",

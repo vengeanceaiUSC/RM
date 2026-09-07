@@ -64,10 +64,11 @@ calendar year it mostly covers):
 ## Reproducing the outputs
 
 ```bash
-pip install openpyxl python-pptx
+pip install openpyxl python-pptx reportlab
 cd scripts
+python3 ingest_kpis.py          # Firecrawl: refresh store / DTC / geo KPIs from 10-K
 python3 build_3statement.py     # -> ../LULU_3_Statement_Model.xlsx
-python3 build_dcf.py            # -> ../LULU_DCF_Valuation_Model.xlsx
+python3 build_dcf.py            # -> ../LULU_DCF_Valuation_Model.xlsx + Assumptions Memo PDF
 python3 build_pitch.py         # -> ../LULU_Investment_Pitch_Deck.pptx
 # optional PDF export:
 soffice --headless --convert-to pdf ../LULU_Investment_Pitch_Deck.pptx
