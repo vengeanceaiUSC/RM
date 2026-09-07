@@ -52,10 +52,10 @@ write(cov, 'B11', "Black font  =  calculations / formulas", S.BLACK, bold=True, 
 write(cov, 'B12', "Red font  =  analyst assumptions — cols B/C/D on every tab: Justification | Source | Ctrl+F", S.RED, bold=True, size=11)
 write(cov, 'B14', "TABS", S.DARK, bold=True, size=12)
 write(cov, 'B15', "WACC  \u2022  Revenue Drivers  \u2022  Scenarios  \u2022  DCF  \u2022  Comps / Football Field", S.BLACK, size=10)
-write(cov, 'B16', "ASSUMPTIONS MEMO (1-page PDF)", S.DARK, bold=True, size=12)
-write_link(cov, 'B17', "LULU_Assumptions_Memo.pdf \u2014 justifications, Ctrl+F anchors, and strategic context",
+write(cov, 'B16', "ASSUMPTIONS GUIDE (PDF — every tab)", S.DARK, bold=True, size=12)
+write_link(cov, 'B17', "LULU_Assumptions_Memo.pdf — full guide: every red assumption on WACC, Scenarios, Revenue Drivers, DCF, Comps & 3-Statement",
            "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=10,
-           hint="Open the linked PDF for a single-page summary of all red assumptions.")
+           hint="Open for justification, clickable source links, and Ctrl+F proof for every assumption.")
 write(cov, 'B19', "SOURCES", S.DARK, bold=True, size=12)
 write_link(cov, 'B20', "SEC EDGAR filings, CIK 0001397187 (Form 10-K, FY2025)", D.SOURCES["edgar_xbrl"],
            color=S.BLUE, size=10, hint=D.COVER_HINTS["edgar_xbrl"])
@@ -326,8 +326,8 @@ write_ctrl_f(dcf, f'{DS}3', D.COVER_HINTS["filing_fy2025"])
 for y in FY:
     write(dcf, f'{FCOL[y]}2', y, S.WHITE, bold=True, size=10, align=S.center, fillc=S.ACCENT)
 write(dcf, 'A3', "Forecast drivers linked to Scenarios tab \u2192 Base case (column G)", S.GREY, italic=True, size=9, align=S.left_indent)
-write_link(dcf, 'A4', "Assumptions Memo (PDF)", "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=9, italic=True,
-           hint="1-page summary: justifications, Ctrl+F anchors, WACC, terminal multiple.")
+write_link(dcf, 'A4', "Full Assumptions Guide (PDF)", "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=9, italic=True,
+           hint="Every red assumption on every tab — justification, source link, Ctrl+F proof.")
 write_internal_link(dcf, 'C4', 'Revenue Drivers tab', "'Revenue Drivers'!A1",
                     hint="Bottom-up store / DTC / category schedule (FY26–30).")
 write(dcf, f'{CHK_COL}2', "\u0394 vs Scenarios", S.ACCENT, bold=True, size=8, align=S.center)

@@ -20,7 +20,7 @@ partial multiple recovery).
 |------|-------------|
 | `LULU_3_Statement_Model.xlsx` | Integrated three-statement operating model (Income Statement, Balance Sheet, Cash Flow) with FY2022–FY2025 reported history and a linked FY2026E–FY2030E forecast. The balance sheet ties every year (cash is the plug from the cash-flow statement). |
 | `LULU_DCF_Valuation_Model.xlsx` | Unlevered DCF: WACC build, **Revenue Drivers** (bottom-up store / DTC / category schedule), five-year FCF forecast, Gordon-growth and exit-multiple terminal value, EV→equity bridge, WACC×g sensitivity grid, bull/base/bear scenarios, and a comps football field. |
-| `LULU_Assumptions_Memo.pdf` | **1-page assumptions memo** (FICO-style layout): justifications, SEC Ctrl+F anchors, and strategic context for revenue drivers, margins, WACC, and terminal multiples. Linked on Cover and DCF tabs. |
+| `LULU_Assumptions_Memo.pdf` | **Full assumptions guide (PDF):** every red assumption on every tab — justification, clickable source links, and Ctrl+F proof. Linked on Cover and DCF tabs. |
 | `LULU_Investment_Pitch_Deck.pptx` | 22-slide investment pitch following the GIS template structure and formatting rules. |
 | `LULU_Investment_Pitch_Deck.pdf` | PDF export of the pitch deck (submission format). |
 | `scripts/` | Reproducible Python build scripts and the sourced data module. |
