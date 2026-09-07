@@ -103,10 +103,10 @@ w_row('tax', "Tax rate", 0.300, S.RED, doc_key='wacc_tax')
 r[0] += 1
 write(wacc, f'A{r[0]}', "Capital structure (market values)", S.ACCENT, bold=True, size=10)
 r[0] += 1
-w_row('mkt_eq', "Market value of equity (price \u00d7 shares outstanding)",
-      f"={D.MKT['price']}*{D.MKT['shares_out']}", None, fmt=NUM, doc_key='wacc_mkt_eq')
-append_assumption_docs(wacc, WR['mkt_eq'], DJ, DS, DC, 'wacc_mkt_shares', D.JUST, D.ASSUMPTION_SRC,
-                       hints=D.SOURCE_HINT)
+w_row('mkt_px', "Share price ($)", D.MKT['price'], S.BLUE, fmt=MONEY, doc_key='wacc_mkt_px')
+w_row('mkt_sh', "Shares outstanding (000)", D.MKT['shares_out'], S.BLUE, fmt=NUM, doc_key='wacc_mkt_shares')
+w_row('mkt_eq', "Market value of equity",
+      f"=E{WR['mkt_px']}*E{WR['mkt_sh']}", None, fmt=NUM, bold=True, top=True, doc_key='wacc_mkt_eq')
 w_row('lease_d', "Operating lease liabilities (ASC 842 debt equiv.)", D.MKT['debt'], S.BLUE, fmt=NUM, doc_key='wacc_lease_d')
 write(wacc, f'A{r[0]}',
       f"  memo: current ${D.MKT['lease_cur']:,}k + non-current ${D.MKT['lease_noncur']:,}k = ${D.MKT['debt']:,}k (FY25 10-K)",
