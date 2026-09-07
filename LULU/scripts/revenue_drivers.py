@@ -7,9 +7,10 @@ import data as D
 import driver_kpis as DK
 
 FY = D.PROJ_YEARS
-FCOLS = ["F", "G", "H", "I", "J"]
-FY25 = "E"
-DJ, DS, DC = "B", "C", "D"
+FY25 = "B"
+FCOLS = ["C", "D", "E", "F", "G"]
+UNITS_COL = "H"
+DJ, DS, DC = "I", "J", "K"   # docs on the right (after data columns)
 K = load_kpis = DK.load_kpis
 
 
@@ -18,15 +19,17 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
     ws = wb.create_sheet("Revenue Drivers")
     ws.sheet_view.showGridLines = False
     S.set_col_widths(ws, {
-        "A": 42, "B": 24, "C": 16, "D": 34, "E": 12,
-        "F": 11, "G": 11, "H": 11, "I": 11, "J": 11, "K": 10,
+        "A": 42, "B": 12,
+        "C": 11, "D": 11, "E": 11, "F": 11, "G": 11,
+        "H": 10,
+        "I": 24, "J": 16, "K": 36,
     })
     kpis = load_kpis()
     rr = [1]
 
     def hdr(title):
         write(ws, f"A{rr[0]}", title, S.WHITE, bold=True, size=11, fillc=S.DARK, align=S.left_indent)
-        for c in list("BCDEFGHIJK"):
+        for c in list("ABCDEFGHIJK"):
             ws[f"{c}{rr[0]}"].fill = S.fill(S.DARK)
         rr[0] += 1
 
@@ -36,14 +39,14 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
 
     def col_hdr():
         write(ws, f"A{rr[0]}", "Driver", S.WHITE, bold=True, size=9, fillc=S.NAVY, align=S.left_indent)
-        write(ws, f"{dj}{rr[0]}", "Justification", S.WHITE, bold=True, size=9, fillc=S.NAVY)
-        write(ws, f"{ds}{rr[0]}", "Source", S.WHITE, bold=True, size=9, fillc=S.NAVY)
-        write(ws, f"{dc}{rr[0]}", "Ctrl+F", S.WHITE, bold=True, size=9, fillc=S.NAVY)
         write(ws, f"{FY25}{rr[0]}", "FY2025A", S.WHITE, bold=True, size=9, fillc=S.NAVY, align=S.center)
         for y, c in zip(FY, FCOLS):
             write(ws, f"{c}{rr[0]}", y, S.WHITE, bold=True, size=9,
                   fillc=S.ACCENT if y == "FY2026E" else S.NAVY, align=S.center)
-        write(ws, f"K{rr[0]}", "Units", S.WHITE, bold=True, size=9, fillc=S.NAVY, align=S.center)
+        write(ws, f"{UNITS_COL}{rr[0]}", "Units", S.WHITE, bold=True, size=9, fillc=S.NAVY, align=S.center)
+        write(ws, f"{dj}{rr[0]}", "Justification", S.WHITE, bold=True, size=9, fillc=S.NAVY)
+        write(ws, f"{ds}{rr[0]}", "Source", S.WHITE, bold=True, size=9, fillc=S.NAVY)
+        write(ws, f"{dc}{rr[0]}", "Ctrl+F", S.WHITE, bold=True, size=9, fillc=S.NAVY)
         rr[0] += 1
 
     def row(label, fy25_val, proj_vals, fmt=NUM, red=False, doc_key=None, units="", formula_row=False):
@@ -64,7 +67,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
                 else:
                     write(ws, f"{c}{r}", v, S.RED if red else S.BLACK, size=9, numfmt=fmt, align=S.right)
         if units:
-            write(ws, f"K{r}", units, S.BLACK, italic=True, size=8, align=S.center)
+            write(ws, f"{UNITS_COL}{r}", units, S.BLACK, italic=True, size=8, align=S.center)
         if doc_key:
             write_assumption_docs(ws, r, dj, ds, dc, doc_key, D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
         rr[0] += 1
@@ -79,7 +82,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
     write(ws, f"{dj}{rr[0]}", "Justification (~20 words)", S.ACCENT, bold=True, size=9)
     write(ws, f"{ds}{rr[0]}", "Source (click)", S.ACCENT, bold=True, size=9)
     write(ws, f"{dc}{rr[0]}", "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9)
-    ws.freeze_panes = "E5"
+    ws.freeze_panes = "I5"
     rr[0] += 1
 
     # --- STORE FLEET BY GEO ---
@@ -96,7 +99,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         beg_row = rr[0]
         write(ws, f"A{beg_row}", f"  {label} — beginning stores", S.BLACK, size=9, align=S.left_indent)
         write(ws, f"{FY25}{beg_row}", fy24_beg, S.BLUE, size=9, numfmt=NUM, align=S.right)
-        write(ws, f"K{beg_row}", "stores", S.BLACK, italic=True, size=8, align=S.center)
+        write(ws, f"{UNITS_COL}{beg_row}", "stores", S.BLACK, italic=True, size=8, align=S.center)
         rr[0] += 1
         opn[key] = row(f"  {label} — openings", None, DK.FORECAST["openings"][key], red=True,
                        doc_key="drv_openings", units="stores")
@@ -109,7 +112,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
             write(ws, f"{c}{end[key]}",
                   f"={c}{beg_row}+{c}{opn[key]}-{c}{cls[key]}",
                   S.BLACK, bold=True, size=9, numfmt=NUM, align=S.right)
-        write(ws, f"K{end[key]}", "stores", S.BLACK, italic=True, size=8, align=S.center)
+        write(ws, f"{UNITS_COL}{end[key]}", "stores", S.BLACK, italic=True, size=8, align=S.center)
         write_ctrl_f(ws, f"{dc}{end[key]}",
                      f'Ctrl+F "{label}" → FY2025 ending stores {fy25_end}.')
         rr[0] += 1
@@ -138,7 +141,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         write(ws, f"{c}{rr[0]}",
               f"={c}{R['total_end']}*{c}{R['sqft_store']}",
               S.BLACK, size=9, numfmt=NUM, align=S.right)
-    write(ws, f"K{rr[0]}", "sq ft", S.BLACK, italic=True, size=8, align=S.center)
+    write(ws, f"{UNITS_COL}{rr[0]}", "sq ft", S.BLACK, italic=True, size=8, align=S.center)
     rr[0] += 1
 
     # --- STORE PRODUCTIVITY ---
