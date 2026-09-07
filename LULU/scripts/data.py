@@ -184,15 +184,16 @@ JUST = {
     "sc_ar": "AR sits inside NWC: 190,657 / 11,102,600 = 1.7% of sales. Same NWC block as inv, OCA, AP, accrued.",
     "sc_nwc_pct": "One NWC line: 7.5% of Δsales = AR + inv + OCA − AP − accrued. AR is not a separate FCF item.",
     # DCF valuation
-    "dcf_exitm": "8.0x equals Deckers; ~1 turn above Gordon ~7x. Public mean 10.8x and Gymshark 23.5x are growth prints, not FY30 exit.",
+    "dcf_exitm": "8.0x equals Deckers; ~1 turn above Gordon ~7x. Public mean 10.8x and Gymshark implied 23.5x are not FY30 exit.",
     # Comps — peer multiples
     "comps_nke": "Nike EV/EBITDA 12.0x equals StockAnalysis 11.97x, rounded; mature athletic benchmark.",
     "comps_deck": "Deckers EV/EBITDA 8.0x equals StockAnalysis 7.95x, rounded; closest premium-footwear peer.",
     "comps_onon": "On Holding EV/EBITDA 14.0x equals StockAnalysis 14.03x, rounded; high-growth athletic peer.",
     "comps_ads": "adidas (ADDYY) EV/EBITDA 9.3x equals StockAnalysis 9.31x; global incumbent.",
     "comps_vfc": "VFC EV/EBITDA 10.7x equals StockAnalysis 10.71x; challenged multi-brand apparel peer.",
-    "comps_gymshark": "23.5x = 1,250 / 53.3. 2020 GA EV on FY25 EBITDA; private growth print, not an FY30 exit.",
-    "comps_gymshark_ebitda": "FY25 EBITDA £53.3m (SGB). 62.3% is gross margin, not EBITDA. Margin ≈ 53.3 / 646 = 8.3%.",
+    "comps_gymshark": "£1.25bn = 1,250 in £m. 2020 GA headline valuation (Guardian). Not a published EV or EV/EBITDA.",
+    "comps_gymshark_ebitda": "FY25 EBITDA is £53.3m (SGB). 62.3% is gross margin. This cell is EBITDA £m, not a multiple.",
+    "comps_gymshark_impl": "No page prints Gymshark EV/EBITDA. Black formula = 2020 valuation / FY25 EBITDA. Cross-year; not the TV.",
     "comps_ff_ev_lo": "6.5x on FY2030E terminal EBITDA; bear exit below Gordon-implied ~7x; brackets DCF downside.",
     "comps_ff_ev_hi": "9.5x on FY2030E terminal EBITDA; bull exit above 8.0x DCF base; still below public mean ~10.8x.",
     "comps_ff_pe_lo": "10x P/E low on FY2026E EPS; trough earnings multiple after guidance reset and sentiment de-rating.",
@@ -329,8 +330,8 @@ SOURCE_HINT = {
     "comps_onon": 'Ctrl+F "EV / EBITDA" → 14.03. Model uses 14.0x.',
     "comps_ads": 'Ctrl+F "EV / EBITDA" → 9.31. Model uses 9.3x.',
     "comps_vfc": 'Ctrl+F "EV / EBITDA" → 10.71. Model uses 10.7x.',
-    "comps_gymshark": 'Ctrl+F "£1.25bn valuation" and "sold a 21% stake" → 2020 GA EV. 23.5x = 1,250 / 53.3.',
-    "comps_gymshark_ebitda": 'Ctrl+F "our EBITDA, which reached £53.3 million". Do not take "62.3 percent" — that is gross margin.',
+    "comps_gymshark": 'Ctrl+F "£1.25bn valuation" and "sold a 21% stake". That proves the 2020 valuation (£m = 1,250), not EV/EBITDA.',
+    "comps_gymshark_ebitda": 'Ctrl+F "our EBITDA, which reached £53.3 million". That proves FY25 EBITDA £m. Do not take "62.3 percent" (gross margin).',
     "comps_ff_ev_lo": 'Ctrl+F "EV / EBITDA" → LULU trough ~5x; bear terminal exit assumption 6.5x',
     "comps_ff_ev_hi": 'Ctrl+F "EV / EBITDA" → bull terminal exit assumption 9.5x on FY2030E EBITDA',
     "comps_ff_pe_lo": 'Ctrl+F "Forward PE" → LULU ~12.3x; low-case multiple assumption 10.0x',
@@ -397,19 +398,6 @@ CAPEX_CTRL_F = (
     "  5.5% = (7.0+6.0+5.5+5.0+4.0)/5"
 )
 
-GYMSHARK_CTRL_F = (
-    "Private print — do not use as FY30 exit\n"
-    "  23.5x = 1,250 / 53.3\n"
-    "\n"
-    "2020 GA EV (Guardian)\n"
-    '  Ctrl+F "£1.25bn valuation"\n'
-    '  Ctrl+F "sold a 21% stake"\n'
-    "\n"
-    "FY25 EBITDA (SGB)\n"
-    '  Ctrl+F "our EBITDA, which reached £53.3 million"\n'
-    '  Do not take "62.3 percent" — that is gross margin\n'
-    "  EBITDA margin ≈ 53.3 / 646 = 8.3%"
-)
 
 COVER_HINTS = {
     "edgar_xbrl": 'Ctrl+F "10-K" → FY2025 accession 0001397187-26-000020',
