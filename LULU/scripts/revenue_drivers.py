@@ -327,8 +327,9 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, deq=DEQ, dj=DJ, ds=DS,
     rr[0] += 1
 
     write(ws, f"A{rr[0]}",
-          "Note: DCF / Scenarios consolidated revenue is the valuation anchor. "
-          "Drivers explain the path; minor variances are acceptable if documented.",
+          "Note: DCF / Scenarios consolidated revenue is the valuation anchor — drivers do not feed the DCF. "
+          "A small variance vs Scenarios means the bottom-up path still hangs together, so the Scenarios "
+          "case stays viable. Bigger gaps = revisit drivers or Scenarios assumptions.",
           S.BLACK, italic=True, size=8, align=S.left_indent)
 
     return ws, R
