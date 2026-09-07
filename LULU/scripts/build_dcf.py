@@ -547,19 +547,19 @@ d_row('dso', "  DSO (days) — flat vs FY25", D.NWC_FY25['dso'],
       justify_key="sc_dso")
 d_row('ar', "  Accounts receivable, net", D.NWC_FY25['ar'],
       lambda c: f"=Scenarios!{SCEN_BASE}{ar_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=ar_rows,
-      justify_key="sc_dso")
+      justify_key="sc_ar")
 d_row('dio', "  DIO (days) — FY25 anchor, −1 day/yr", D.NWC_FY25['dio'],
       lambda c: f"=Scenarios!{SCEN_BASE}{dio_rows[YEAR_MAP[c]]}", fmt='0.00', sc_rows=dio_rows,
       justify_key="sc_dio", extra_doc_key="sc_dio_decline")
 d_row('inventory', "  Inventories", D.NWC_FY25['inventory'],
       lambda c: f"=Scenarios!{SCEN_BASE}{inv_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=inv_rows,
-      justify_key="sc_dio")
+      justify_key="sc_inventory")
 d_row('dpo', "  DPO (days) — flat vs FY25", D.NWC_FY25['dpo'],
       lambda c: f"=Scenarios!{SCEN_BASE}{dpo_rows[YEAR_MAP[c]]}", fmt='0.00', sc_rows=dpo_rows,
       justify_key="sc_dpo")
 d_row('ap', "  Accounts payable", D.NWC_FY25['ap'],
       lambda c: f"=Scenarios!{SCEN_BASE}{ap_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=ap_rows,
-      justify_key="sc_dpo")
+      justify_key="sc_ap")
 d_row('prepaid_pct', "  Prepaid expenses (% of revenue)", D.NWC_FY25['prepaid_pct'],
       lambda c: f"={bref('prepaid_pct')}", fmt=PCT, red=True, justify_key="sc_prepaid")
 d_row('prepaid', "  Prepaid expenses (other current assets)", D.NWC_FY25['prepaid'],
@@ -571,11 +571,14 @@ d_row('accrued', "  Accrued liabilities and other", D.NWC_FY25['accrued'],
       lambda c: f"=Scenarios!{SCEN_BASE}{accrued_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=accrued_rows,
       justify_key="sc_accrued")
 d_row('coa', "Current operating assets (AR + inv + prepaids)", None,
-      lambda c: f"=Scenarios!{SCEN_BASE}{coa_rows[YEAR_MAP[c]]}", sc_rows=coa_rows)
+      lambda c: f"=Scenarios!{SCEN_BASE}{coa_rows[YEAR_MAP[c]]}", sc_rows=coa_rows,
+      justify_key="sc_coa", internal_location=f"'Scenarios'!A{coa_rows[1]}")
 d_row('col', "Current operating liabilities (AP + accruals)", None,
-      lambda c: f"=Scenarios!{SCEN_BASE}{col_rows[YEAR_MAP[c]]}", sc_rows=col_rows)
+      lambda c: f"=Scenarios!{SCEN_BASE}{col_rows[YEAR_MAP[c]]}", sc_rows=col_rows,
+      justify_key="sc_col", internal_location=f"'Scenarios'!A{col_rows[1]}")
 d_row('nwc', "Net working capital", D.NWC_FY25['nwc'],
-      lambda c: f"=Scenarios!{SCEN_BASE}{nwc_rows[YEAR_MAP[c]]}", bold=True, top=True, sc_rows=nwc_rows)
+      lambda c: f"=Scenarios!{SCEN_BASE}{nwc_rows[YEAR_MAP[c]]}", bold=True, top=True, sc_rows=nwc_rows,
+      justify_key="sc_nwc")
 wc_detail_end = r[0] - 1
 d_row('dnwc', "\u0394NWC (prior yr \u2212 current yr)", None,
       lambda c: f"=Scenarios!{SCEN_BASE}{dnwc_rows[YEAR_MAP[c]]}", sc_rows=dnwc_rows,
