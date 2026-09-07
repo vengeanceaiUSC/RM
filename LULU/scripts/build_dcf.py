@@ -190,6 +190,8 @@ def s_assum(key, label, bear, base, bull, fmt=PCT, doc_key=None, extra_doc_key=N
                                    hints=D.SOURCE_HINT, prefix="Also")
         if doc_key in ("sc_capex_pct", "3s_capex_pct") or extra_doc_key == "sc_capex_sales":
             write_ctrl_f(scn, f'{DC}{rr[0]}', D.CAPEX_CTRL_F)
+        if doc_key in ("sc_dso", "sc_dio", "sc_dpo", "sc_prepaid", "sc_accrued"):
+            write_ctrl_f(scn, f'{DC}{rr[0]}', D.NWC_CTRL_F)
     rr[0] += 1
 
 write(scn, 'A3', "Key assumptions (5-yr forecast)", S.ACCENT, bold=True, size=10)
@@ -211,8 +213,19 @@ s_assum('tax', "Cash tax rate", 0.320, 0.300, 0.280, doc_key='sc_tax')
 s_assum('da_pct', "D&A % of revenue", 0.045, 0.045, 0.045, doc_key='sc_da_pct')
 s_assum('capex_pct', "Capex % of revenue", 0.070, 0.055, 0.045, doc_key='sc_capex_pct',
         extra_doc_key='sc_capex_sales')
-s_assum('nwc_pct', "NWC % of \u0394revenue (AR + inv + OCA \u2212 AP \u2212 accrued)", 0.080, 0.075, 0.070, doc_key='sc_nwc_pct')
-s_assum('ar_pct', "  of which: AR % of revenue", 0.015, 0.017, 0.020, doc_key='sc_ar')
+_NWC = D.NWC_FY25
+s_assum('gm_pct', "Gross margin %", 0.560, round(_NWC['gm_pct'], 4), 0.575, doc_key='sc_gm')
+s_assum('dso', "DSO (days) — flat vs FY25", _NWC['dso'], _NWC['dso'], _NWC['dso'],
+        fmt='0.00', doc_key='sc_dso')
+s_assum('dio_fy25', "FY25 DIO anchor (days)", _NWC['dio'], _NWC['dio'], _NWC['dio'],
+        fmt='0.00', doc_key='sc_dio')
+s_assum('dio_decline', "DIO decline (days / forecast yr)", 1, 1, 1, fmt='0', doc_key='sc_dio_decline')
+s_assum('dpo', "DPO (days) — flat vs FY25", _NWC['dpo'], _NWC['dpo'], _NWC['dpo'],
+        fmt='0.00', doc_key='sc_dpo')
+s_assum('prepaid_pct', "Prepaid expenses (% of revenue)", _NWC['prepaid_pct'], _NWC['prepaid_pct'],
+        _NWC['prepaid_pct'], doc_key='sc_prepaid')
+s_assum('accrued_pct', "Accrued liabilities (% of revenue)", _NWC['accrued_pct'], _NWC['accrued_pct'],
+        _NWC['accrued_pct'], doc_key='sc_accrued')
 
 rr[0] += 1
 write(scn, f'A{rr[0]}', "5-year forecast paths (by scenario)", S.ACCENT, bold=True, size=10)
@@ -222,9 +235,11 @@ def put(row, lab):
     write(scn, f'A{row}', lab, S.BLACK, size=9, align=S.left_indent)
 
 cur = rr[0]
-BASE_AR = D.BS['ar']['FY2025']
-rev_rows, mar_rows, ebit_rows, nopat_rows, da_rows, capex_rows = {}, {}, {}, {}, {}, {}
-ar_rows, dnwc_rows, fcf_rows = {}, {}, {}
+BASE_NWC = D.NWC_FY25['nwc']
+rev_rows, gm_rows, cogs_rows, mar_rows, ebit_rows, nopat_rows, da_rows, capex_rows = {}, {}, {}, {}, {}, {}, {}, {}
+dso_rows, dio_rows, dpo_rows = {}, {}, {}
+ar_rows, inv_rows, ap_rows, prepaid_rows, accrued_rows = {}, {}, {}, {}, {}
+coa_rows, col_rows, nwc_rows, dnwc_rows, fcf_rows = {}, {}, {}, {}, {}
 for t in range(1, 6):
     rev_rows[t] = cur
     put(cur, f"  Revenue \u2013 year {t}")
@@ -234,6 +249,19 @@ for t in range(1, 6):
         else:
             f = f"={col}{rev_rows[t-1]}*(1+{col}{SC['gterm']})"
         write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    gm_rows[t] = cur
+    put(cur, f"  Gross margin % \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{SC['gm_pct']}", S.BLACK, size=9, numfmt=PCT, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    cogs_rows[t] = cur
+    put(cur, f"  Cost of goods sold (COGS) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{rev_rows[t]}*(1-{col}{gm_rows[t]})",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
     cur += 1
 for t in range(1, 6):
     mar_rows[t] = cur
@@ -274,19 +302,91 @@ for t in range(1, 6):
         write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
     cur += 1
 for t in range(1, 6):
-    ar_rows[t] = cur
-    put(cur, f"  NWC \u2013 AR balance (inside NWC) \u2013 year {t}")
+    dso_rows[t] = cur
+    put(cur, f"  DSO (days) \u2013 year {t}")
     for col in SCEN_COLS:
-        write(scn, f'{col}{cur}', f"={col}{rev_rows[t]}*{col}{SC['ar_pct']}",
+        write(scn, f'{col}{cur}', f"={col}{SC['dso']}", S.BLACK, size=9, numfmt='0.00', align=S.right)
+    cur += 1
+for t in range(1, 6):
+    ar_rows[t] = cur
+    put(cur, f"  Accounts receivable \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}',
+              f"=({col}{dso_rows[t]}/365)*{col}{rev_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    dio_rows[t] = cur
+    put(cur, f"  DIO (days) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}',
+              f"={col}{SC['dio_fy25']}-{col}{SC['dio_decline']}*{t}",
+              S.BLACK, size=9, numfmt='0.00', align=S.right)
+    cur += 1
+for t in range(1, 6):
+    inv_rows[t] = cur
+    put(cur, f"  Inventories \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}',
+              f"=({col}{dio_rows[t]}/365)*{col}{cogs_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    dpo_rows[t] = cur
+    put(cur, f"  DPO (days) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{SC['dpo']}", S.BLACK, size=9, numfmt='0.00', align=S.right)
+    cur += 1
+for t in range(1, 6):
+    ap_rows[t] = cur
+    put(cur, f"  Accounts payable \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}',
+              f"=({col}{dpo_rows[t]}/365)*{col}{cogs_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    prepaid_rows[t] = cur
+    put(cur, f"  Prepaid expenses (other current assets) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{rev_rows[t]}*{col}{SC['prepaid_pct']}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    accrued_rows[t] = cur
+    put(cur, f"  Accrued liabilities \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{rev_rows[t]}*{col}{SC['accrued_pct']}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    coa_rows[t] = cur
+    put(cur, f"  Current operating assets (AR + inv + prepaids) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}',
+              f"={col}{ar_rows[t]}+{col}{inv_rows[t]}+{col}{prepaid_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    col_rows[t] = cur
+    put(cur, f"  Current operating liabilities (AP + accruals) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{ap_rows[t]}+{col}{accrued_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    nwc_rows[t] = cur
+    put(cur, f"  Net working capital \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{coa_rows[t]}-{col}{col_rows[t]}",
               S.BLACK, size=9, numfmt=NUM, align=S.right)
     cur += 1
 for t in range(1, 6):
     dnwc_rows[t] = cur
-    put(cur, f"  \u0394NWC (includes AR) \u2013 year {t}")
+    put(cur, f"  \u0394NWC (prior yr \u2212 current yr) \u2013 year {t}")
     for col in SCEN_COLS:
-        prev_rev = f"{col}{rev_rows[t-1]}" if t > 1 else str(BASE_REV)
-        write(scn, f'{col}{cur}',
-              f"={col}{SC['nwc_pct']}*({col}{rev_rows[t]}-{prev_rev})",
+        prev_nwc = str(BASE_NWC) if t == 1 else f"{col}{nwc_rows[t-1]}"
+        write(scn, f'{col}{cur}', f"={prev_nwc}-{col}{nwc_rows[t]}",
               S.BLACK, size=9, numfmt=NUM, align=S.right)
     cur += 1
 for t in range(1, 6):
@@ -294,7 +394,7 @@ for t in range(1, 6):
     put(cur, f"  Unlevered FCF \u2013 year {t}")
     for col in SCEN_COLS:
         f = (f"={col}{nopat_rows[t]}+{col}{da_rows[t]}"
-             f"-{col}{capex_rows[t]}-{col}{dnwc_rows[t]}")
+             f"-{col}{capex_rows[t]}+{col}{dnwc_rows[t]}")
         write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
     cur += 1
 
@@ -397,6 +497,8 @@ def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, b
                                    hints=D.SOURCE_HINT, prefix="Also")
         if justify_key in ("sc_capex_pct", "3s_capex_pct") or extra_doc_key == "sc_capex_sales":
             write_ctrl_f(dcf, f'{DC}{row_num}', D.CAPEX_CTRL_F)
+        if justify_key in ("sc_dso", "sc_dio", "sc_dpo", "sc_prepaid", "sc_accrued", "sc_gm"):
+            write_ctrl_f(dcf, f'{DC}{row_num}', D.NWC_CTRL_F)
     elif extra_doc_key:
         src = D.ASSUMPTION_SRC.get(extra_doc_key)
         if src and src[1]:
@@ -412,6 +514,10 @@ d_row('rev', "Net revenue", BASE_REV,
 d_row('growth', "Revenue growth %", None,
       lambda c: f"={c}{DR['rev']}/{PREVF[c]}{DR['rev']}-1", fmt=PCT,
       justify_key="sc_g1", extra_doc_key="sc_gterm")
+d_row('gm_pct', "Gross margin %", D.NWC_FY25['gm_pct'],
+      lambda c: f"={bref('gm_pct')}", fmt=PCT, red=True, justify_key="sc_gm")
+d_row('cogs', "Cost of goods sold (COGS)", D.NWC_FY25['cogs'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{cogs_rows[YEAR_MAP[c]]}", sc_rows=cogs_rows)
 d_row('margin', "Clean / run-rate EBIT margin %", None,
       lambda c: f"=Scenarios!{SCEN_BASE}{mar_rows[YEAR_MAP[c]]}", fmt=PCT, sc_rows=mar_rows,
       justify_key="sc_m1", extra_doc_key="sc_mterm")
@@ -436,17 +542,46 @@ d_row('capex_pct', "  Capex % of revenue", None, lambda c: f"={bref('capex_pct')
       justify_key="sc_capex_pct", extra_doc_key="sc_capex_sales")
 d_row('capex', "Less: capital expenditures", None,
       lambda c: f"=-Scenarios!{SCEN_BASE}{capex_rows[YEAR_MAP[c]]}", sc_rows=capex_rows, sc_sign=-1)
-d_row('nwc_pct', "NWC % of \u0394revenue (AR + inv + OCA \u2212 AP \u2212 accrued)", None,
-      lambda c: f"={bref('nwc_pct')}", fmt=PCT, red=True, justify_key="sc_nwc_pct")
-d_row('ar_pct', "  of which: AR % of revenue", None, lambda c: f"={bref('ar_pct')}", fmt=PCT, red=True,
-      justify_key="sc_ar")
-d_row('ar', "  of which: Accounts receivable, net", BASE_AR,
+write(dcf, f'A{r[0]}', "Working capital schedule (driver-based)", S.ACCENT, bold=True, size=10, align=S.left_indent)
+r[0] += 1
+d_row('dso', "  DSO (days) — flat vs FY25", D.NWC_FY25['dso'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{dso_rows[YEAR_MAP[c]]}", fmt='0.00', sc_rows=dso_rows,
+      justify_key="sc_dso")
+d_row('ar', "  Accounts receivable, net", D.NWC_FY25['ar'],
       lambda c: f"=Scenarios!{SCEN_BASE}{ar_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=ar_rows,
-      justify_key="sc_ar")
-d_row('dnwc', "(Increase)/decrease in NWC (includes AR)", None,
-      lambda c: f"=-Scenarios!{SCEN_BASE}{dnwc_rows[YEAR_MAP[c]]}", sc_rows=dnwc_rows, sc_sign=-1)
+      justify_key="sc_dso")
+d_row('dio', "  DIO (days) — FY25 anchor, −1 day/yr", D.NWC_FY25['dio'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{dio_rows[YEAR_MAP[c]]}", fmt='0.00', sc_rows=dio_rows,
+      justify_key="sc_dio", extra_doc_key="sc_dio_decline")
+d_row('inventory', "  Inventories", D.NWC_FY25['inventory'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{inv_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=inv_rows,
+      justify_key="sc_dio")
+d_row('dpo', "  DPO (days) — flat vs FY25", D.NWC_FY25['dpo'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{dpo_rows[YEAR_MAP[c]]}", fmt='0.00', sc_rows=dpo_rows,
+      justify_key="sc_dpo")
+d_row('ap', "  Accounts payable", D.NWC_FY25['ap'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{ap_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=ap_rows,
+      justify_key="sc_dpo")
+d_row('prepaid_pct', "  Prepaid expenses (% of revenue)", D.NWC_FY25['prepaid_pct'],
+      lambda c: f"={bref('prepaid_pct')}", fmt=PCT, red=True, justify_key="sc_prepaid")
+d_row('prepaid', "  Prepaid expenses (other current assets)", D.NWC_FY25['prepaid'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{prepaid_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=prepaid_rows,
+      justify_key="sc_prepaid")
+d_row('accrued_pct', "  Accrued liabilities (% of revenue)", D.NWC_FY25['accrued_pct'],
+      lambda c: f"={bref('accrued_pct')}", fmt=PCT, red=True, justify_key="sc_accrued")
+d_row('accrued', "  Accrued liabilities and other", D.NWC_FY25['accrued'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{accrued_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=accrued_rows,
+      justify_key="sc_accrued")
+d_row('coa', "Current operating assets (AR + inv + prepaids)", None,
+      lambda c: f"=Scenarios!{SCEN_BASE}{coa_rows[YEAR_MAP[c]]}", sc_rows=coa_rows)
+d_row('col', "Current operating liabilities (AP + accruals)", None,
+      lambda c: f"=Scenarios!{SCEN_BASE}{col_rows[YEAR_MAP[c]]}", sc_rows=col_rows)
+d_row('nwc', "Net working capital", D.NWC_FY25['nwc'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{nwc_rows[YEAR_MAP[c]]}", bold=True, top=True, sc_rows=nwc_rows)
+d_row('dnwc', "\u0394NWC (prior yr \u2212 current yr)", None,
+      lambda c: f"=Scenarios!{SCEN_BASE}{dnwc_rows[YEAR_MAP[c]]}", sc_rows=dnwc_rows)
 write(dcf, f'A{r[0]}',
-      "  memo: NWC and AR are one line. 7.5% of \u0394sales already includes AR; UFCF does not take \u0394AR separately.",
+      "  memo: driver-based NWC. ΔNWC = prior-year NWC \u2212 current-year NWC; added to UFCF (NWC build = cash outflow).",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 r[0] += 1
 d_row('ufcf', "Unlevered free cash flow", None,

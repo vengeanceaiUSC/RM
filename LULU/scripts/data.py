@@ -108,6 +108,38 @@ GUIDANCE = {
 # ---------------------------------------------------------------------------
 LEASE_FY25 = BS['op_lease_cur']['FY2025'] + BS['op_lease_noncur']['FY2025']  # ASC 842 debt equiv. ($000)
 
+# FY25 working-capital anchors (driver-based NWC schedule on Scenarios / DCF tabs)
+_NWC_REV = IS['revenue']['FY2025']
+_NWC_COGS = IS['cogs']['FY2025']
+_NWC_AR = BS['ar']['FY2025']
+_NWC_INV = BS['inventories']['FY2025']
+_NWC_AP = BS['accounts_payable']['FY2025']
+_NWC_ACCR = BS['accrued_liab']['FY2025']
+_NWC_PREPAID = (
+    BS['current_assets']['FY2025']
+    - BS['cash']['FY2025']
+    - _NWC_AR
+    - _NWC_INV
+)
+
+NWC_FY25 = {
+    "revenue": _NWC_REV,
+    "cogs": _NWC_COGS,
+    "gross_profit": IS['gross_profit']['FY2025'],
+    "gm_pct": IS['gross_profit']['FY2025'] / _NWC_REV,
+    "ar": _NWC_AR,
+    "inventory": _NWC_INV,
+    "ap": _NWC_AP,
+    "accrued": _NWC_ACCR,
+    "prepaid": _NWC_PREPAID,
+    "dso": (_NWC_AR / _NWC_REV) * 365,
+    "dio": (_NWC_INV / _NWC_COGS) * 365,
+    "dpo": (_NWC_AP / _NWC_COGS) * 365,
+    "prepaid_pct": _NWC_PREPAID / _NWC_REV,
+    "accrued_pct": _NWC_ACCR / _NWC_REV,
+    "nwc": (_NWC_AR + _NWC_INV + _NWC_PREPAID) - (_NWC_AP + _NWC_ACCR),
+}
+
 MKT = {
     "price": 100.00,          # ~ price after -18% post-earnings reaction
     "shares_out": 111380,     # thousands (FY2025 10-K)
@@ -204,8 +236,13 @@ JUST = {
     "sc_da_pct": "4.5% D&A / sales = FY25 496,228 / 11,102,600 on the 10-K cash-flow statement.",
     "sc_capex_pct": "FY26 7.0% is $735M on $10.4B sales, not FY25 $11.1B. Since 7.0% steps toward FY25 6.1%, we assume a fade: DCF 5.5% = (7.0+6.0+5.5+5.0+4.0)/5.",
     "sc_capex_sales": "FY26 sales are $10.35–$10.50B (earnings). Use that $10.4B year as the 7% denominator, not FY25 $11.1B.",
-    "sc_ar": "AR sits inside NWC: 190,657 / 11,102,600 = 1.7% of sales. Same NWC block as inv, OCA, AP, accrued.",
-    "sc_nwc_pct": "One NWC line: 7.5% of Δsales = AR + inv + OCA − AP − accrued. AR is not a separate FCF item.",
+    "sc_gm": "Gross margin % isolates COGS = Rev × (1 − GM%). FY25 anchor 56.6% = 6,284,132 ÷ 11,102,600 on the 10-K.",
+    "sc_dso": "DSO flat at FY25 (AR ÷ Rev) × 365 ≈ 6.3 days. AR balance = (DSO ÷ 365) × projected revenue.",
+    "sc_dio": "DIO FY25 anchor ≈ 129 days = (Inventories ÷ COGS) × 365. Declines 1 day/yr (−5 days over FY26–30) to clear excess stock.",
+    "sc_dio_decline": "One day of DIO improvement per forecast year — five days total by FY30 vs the FY25 anchor.",
+    "sc_dpo": "DPO flat at FY25 (AP ÷ COGS) × 365 ≈ 25.1 days. AP balance = (DPO ÷ 365) × projected COGS.",
+    "sc_prepaid": "Prepaid / other current assets held at FY25 % of revenue (564,089 ÷ 11,102,600 ≈ 5.1%).",
+    "sc_accrued": "Accrued liabilities held at FY25 % of revenue (662,982 ÷ 11,102,600 ≈ 6.0%).",
     # DCF valuation
     "dcf_exitm": "Selected exit is Gordon TV / FY30 EBITDA. Identity: (UFCF/EBITDA)×(1+g)/(WACC−g). Not Deckers and not a peer average.",
     "dcf_debt_bridge": "Subtract ASC 842 operating lease liabilities as debt equivalent. Funded term debt $0 per FY25 10-K; leases ≈ $1.80B.",
@@ -325,8 +362,13 @@ ASSUMPTION_SRC = {
     "sc_da_pct": ("LULU CF statement (10-K)", filing_url("FY2025")),
     "sc_capex_pct": ("LULU 10-K: 2026 capex guide $725–745M", filing_url("FY2025")),
     "sc_capex_sales": ("Q2 FY2026 outlook: $10.350B–$10.500B sales", SOURCES["earnings_sep2026"]),
-    "sc_ar": ("LULU FY2025 10-K: Accounts receivable, net", filing_url("FY2025")),
-    "sc_nwc_pct": ("LULU BS/IS historical (10-K)", filing_url("FY2025")),
+    "sc_gm": ("LULU FY2025 10-K: Gross profit & COGS", filing_url("FY2025")),
+    "sc_dso": ("LULU FY2025 10-K: Accounts receivable, net", filing_url("FY2025")),
+    "sc_dio": ("LULU FY2025 10-K: Inventories & COGS", filing_url("FY2025")),
+    "sc_dio_decline": ("Scenarios: DIO clearance path (−5 days / 5 yrs)", None),
+    "sc_dpo": ("LULU FY2025 10-K: Accounts payable & COGS", filing_url("FY2025")),
+    "sc_prepaid": ("LULU FY2025 10-K: other current assets (residual)", filing_url("FY2025")),
+    "sc_accrued": ("LULU FY2025 10-K: Accrued liabilities and other", filing_url("FY2025")),
     # DCF / comps
     "dcf_exitm": ("DCF: Gordon implied exit (TV / FY30 EBITDA)", None),
     "dcf_debt_bridge": ("LULU FY2025 10-K: operating lease liabilities", filing_url("FY2025")),
@@ -444,8 +486,13 @@ SOURCE_HINT = {
     "sc_da_pct": 'Ctrl+F "Depreciation and amortization" → 496,228 on this 10-K HTML (not the SEC viewer). ÷ "Net revenue" 11,102,600 = 4.5%.',
     "sc_capex_pct": 'Ctrl+F "680,802" → FY25 capex $680.8M. Ctrl+F "11,102,600" → FY25 sales $11.1B. Ctrl+F "$725.0 million and $745.0 million" → FY26 capex mid $735M.',
     "sc_capex_sales": 'Ctrl+F "$10.350 billion to $10.500 billion" → FY26 net revenue guide (one hit). Mid $10.425B.',
-    "sc_ar": 'Ctrl+F "Accounts receivable, net" (one hit on the BS) → 190,657. 190,657 / 11,102,600 = 1.7% of sales. Lives inside the NWC line below.',
-    "sc_nwc_pct": 'One NWC. Ctrl+F "Accounts receivable, net" → 190,657 | "Inventories" → 1,700,753 | "Accounts payable" → 331,421 | "Accrued liabilities and other" → 662,982.',
+    "sc_gm": 'Ctrl+F "Gross profit" → 6,284,132 | Ctrl+F "Net revenue" → 11,102,600 | GM = 56.6%. Ctrl+F "Cost of goods sold" → 4,818,468.',
+    "sc_dso": 'Ctrl+F "Accounts receivable, net" → 190,657 | Ctrl+F "Net revenue" → 11,102,600 | DSO = (190,657 ÷ 11,102,600) × 365 ≈ 6.3 days.',
+    "sc_dio": 'Ctrl+F "Inventories" → 1,700,753 | Ctrl+F "Cost of goods sold" → 4,818,468 | DIO = (1,700,753 ÷ 4,818,468) × 365 ≈ 129 days.',
+    "sc_dio_decline": "Model assumption: −1 day DIO per forecast year (−5 days FY26–30 vs FY25 anchor). No 10-K Ctrl+F.",
+    "sc_dpo": 'Ctrl+F "Accounts payable" → 331,421 | Ctrl+F "Cost of goods sold" → 4,818,468 | DPO = (331,421 ÷ 4,818,468) × 365 ≈ 25.1 days.',
+    "sc_prepaid": 'OCA = "Total current assets" 4,262,701 − cash 1,807,202 − AR 190,657 − Inventories 1,700,753 = 564,089 (5.1% of sales). Ctrl+F "Inventories" / "Accounts receivable, net" for components.',
+    "sc_accrued": 'Ctrl+F "Accrued liabilities and other" → 662,982 | Ctrl+F "Net revenue" → 11,102,600 | 662,982 ÷ 11,102,600 ≈ 6.0%.',
     # DCF / comps
     "dcf_exitm": "No peer Ctrl+F. This cell = Gordon TV / FY30 EBITDA = (UFCF/EBITDA)×(1+g)/(WACC−g). WACC and g are sourced on those rows.",
     "comps_nke": "No public HTML. PitchBook Comps Set 04-Sep-2026. Prove daily EV and TTM EBITDA on that screen; E = I/J.",
@@ -554,6 +601,29 @@ BETA_CTRL_F = (
     "  D/E \u2248 0.16.  \u03b2 used = 0.76 \u00d7 1.113  \u2248  0.84\n"
     "\n"
     "Benchmark (not used): Damodaran Retail \u03b2u 0.95"
+)
+
+NWC_CTRL_F = (
+    "FY25 WORKING CAPITAL ANCHORS (Form 10-K)\n"
+    "\n"
+    'Ctrl+F "Accounts receivable, net"\n'
+    "  → 190,657 ($000)\n"
+    'Ctrl+F "Inventories"\n'
+    "  → 1,700,753 ($000)\n"
+    'Ctrl+F "Accounts payable"\n'
+    "  → 331,421 ($000)\n"
+    'Ctrl+F "Accrued liabilities and other"\n'
+    "  → 662,982 ($000)\n"
+    'Ctrl+F "Cost of goods sold"\n'
+    "  → 4,818,468 ($000)\n"
+    'Ctrl+F "Net revenue"\n'
+    "  → 11,102,600 ($000)\n"
+    "\n"
+    "Derived drivers\n"
+    "  DSO ≈ 6.3 days  |  DIO ≈ 129 days  |  DPO ≈ 25.1 days\n"
+    "  Prepaids ≈ 5.1% of revenue  |  Accruals ≈ 6.0% of revenue\n"
+    "  DIO −1 day/yr (−5 days by FY30)  |  DSO & DPO flat\n"
+    "  ΔNWC = prior-year NWC − current-year NWC"
 )
 
 CAPEX_CTRL_F = (
