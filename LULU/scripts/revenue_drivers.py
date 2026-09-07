@@ -1,7 +1,8 @@
 """Add the Revenue Drivers worksheet to the DCF workbook."""
 import styles as S
 from styles import (
-    write, write_reported, write_assumption_docs, append_assumption_docs, write_ctrl_f, NUM, PCT, MONEY,
+    write, write_reported, write_assumption_docs, append_assumption_docs,
+    append_formula_justification, write_ctrl_f, NUM, PCT, MONEY,
 )
 import data as D
 import driver_kpis as DK
@@ -22,14 +23,15 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         "A": 42, "B": 12,
         "C": 11, "D": 11, "E": 11, "F": 11, "G": 11,
         "H": 10,
-        "I": 24, "J": 16, "K": 36,
+        "I": 34, "J": 16, "K": 36,
     })
     kpis = load_kpis()
     rr = [1]
 
     def f_docs(row, key, internal=None):
         write_assumption_docs(ws, row, dj, ds, dc, key, D.JUST, D.ASSUMPTION_SRC,
-                              hints=D.SOURCE_HINT, internal_location=internal)
+                              hints=None, internal_location=internal)
+        append_formula_justification(ws, row, dj, key, D.SOURCE_HINT)
 
     def hdr(title):
         write(ws, f"A{rr[0]}", title, S.WHITE, bold=True, size=11, fillc=S.DARK, align=S.left_indent)
@@ -83,7 +85,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
           "Consolidated revenue cross-checks to Scenarios base case.",
           S.BLACK, italic=True, size=8, align=S.left_indent)
     rr[0] += 1
-    write(ws, f"{dj}{rr[0]}", "Justification (~20 words)", S.ACCENT, bold=True, size=9)
+    write(ws, f"{dj}{rr[0]}", "Justification + formula (~20 words)", S.ACCENT, bold=True, size=9)
     write(ws, f"{ds}{rr[0]}", "Source (click)", S.ACCENT, bold=True, size=9)
     write(ws, f"{dc}{rr[0]}", "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9)
     ws.freeze_panes = "I5"
@@ -249,8 +251,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         g = DK.FORECAST["other_rev_growth"][i]
         write(ws, f"{c}{R['other_rev']}", f"={prev}*(1+{g})", S.BLACK, size=9, numfmt=NUM, align=S.right)
     write_assumption_docs(ws, R["other_rev"], dj, ds, dc, "drv_other_rev", D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
-    append_assumption_docs(ws, R["other_rev"], dj, ds, dc, "drv_f_other_rev_growth", D.JUST, D.ASSUMPTION_SRC,
-                           hints=D.SOURCE_HINT, prefix="Formula")
+    append_formula_justification(ws, R["other_rev"], dj, "drv_f_other_rev_growth", D.SOURCE_HINT)
 
     for key, label, doc in [
         ("americas", "Americas net revenue ($000)", "drv_geo_americas"),
@@ -267,8 +268,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
                   f"({FY25}{R['store_rev']}+{FY25}{R['ecomm_rev']}+{FY25}{R['other_rev']})",
                   S.BLACK, size=9, numfmt=NUM, align=S.right)
         write_assumption_docs(ws, r, dj, ds, dc, doc, D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
-        append_assumption_docs(ws, r, dj, ds, dc, "drv_f_geo_scale", D.JUST, D.ASSUMPTION_SRC,
-                               hints=D.SOURCE_HINT, prefix="Formula")
+        append_formula_justification(ws, r, dj, "drv_f_geo_scale", D.SOURCE_HINT)
 
     R["mix_w"] = row("Women's % of revenue", kpis["mix_women"]["FY2025"],
                      DK.FORECAST["mix_women"][1:], fmt=PCT, red=True, doc_key="drv_mix_women")
