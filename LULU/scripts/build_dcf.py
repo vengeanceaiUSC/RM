@@ -439,8 +439,10 @@ v_row('g', "Terminal growth rate (g)", f"={bref('g')}", fmt=PCT, doc_key='sc_g')
 v_row('ebitda', "Terminal EBITDA (FY2030E EBIT + D&A)", f"=J{DR['ebit']}+J{DR['da']}", bold=True, top=True)
 v_row('tv', "Terminal value = FCF\u2085\u00d7(1+g)/(WACC\u2212g)",
       f"=J{DR['ufcf']}*(1+{bref('g')})/({bref('wacc')}-{bref('g')})")
-v_row('implied_exit', "  Implied exit EV/EBITDA (Gordon Growth)",
+v_row('implied_exit', "  Implied exit EV/EBITDA = Gordon TV / FY30 EBITDA",
       f"=E{VR['tv']}/E{VR['ebitda']}", fmt=MULT)
+v_row('exit_id', "  memo: (UFCF\u2083\u2080 / EBITDA\u2083\u2080) \u00d7 (1+g) / (WACC\u2212g)",
+      f"=J{DR['ufcf']}/E{VR['ebitda']}*(1+{bref('g')})/({bref('wacc')}-{bref('g')})", fmt=MULT)
 v_row('pvtv', "PV of terminal value", f"=E{VR['tv']}/(1+{bref('wacc')})^J{DR['period']}", bold=True)
 v_row('ev', "Enterprise value", f"=E{VR['sumpv']}+E{VR['pvtv']}", bold=True, top=True)
 v_row('cash', "Plus: cash & equivalents (FY2025)", D.MKT['cash'], color=S.BLUE,
@@ -466,9 +468,11 @@ write(dcf, f'A{r[0]}', "CROSS-CHECK \u2014 EXIT MULTIPLE METHOD", S.WHITE, bold=
 for c in ['B', 'C']:
     dcf[f'{c}{r[0]}'].fill = S.fill(S.DARK)
 r[0] += 1
-write(dcf, f'A{r[0]}', "Exit multiple selection (see Comps tab for peer build)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(dcf, f'A{r[0]}', "Exit multiple is the Gordon identity \u2014 not a peer pick or an average", S.ACCENT, bold=True, size=9, align=S.left_indent)
 r[0] += 1
-v_row('exitm', "Selected exit EV/EBITDA multiple (FY2030E)", 8.0, fmt=MULT, red=True, doc_key='dcf_exitm')
+v_row('exitm', "Selected exit EV/EBITDA (Gordon implied)",
+      f"=E{VR['implied_exit']}", fmt=MULT, doc_key='dcf_exitm',
+      internal_location=f"'DCF'!E{VR['implied_exit']}")
 v_row('tv2', "Terminal value = Terminal EBITDA \u00d7 exit multiple", f"=E{VR['ebitda']}*E{VR['exitm']}")
 v_row('pvtv2', "PV of terminal value", f"=E{VR['tv2']}/(1+{bref('wacc')})^J{DR['period']}")
 v_row('ev2', "Enterprise value (exit method)", f"=E{VR['sumpv']}+E{VR['pvtv2']}", bold=True, top=True)
@@ -507,8 +511,8 @@ recon_row("Implied share price",
 # sanity check flag: multiples within 1.5 turns
 write(dcf, f'A{r[0]}', "Sanity check: multiples within \u00b11.5 turns?", S.BLACK, bold=True, size=10, align=S.left_indent)
 write(dcf, f'B{r[0]}', f'=IF(ABS(D{mult_var_row})<=1.5,"PASS","REVIEW")', S.GREEN, bold=True, size=11, align=S.center)
-write(dcf, f'C{r[0]}', f'=TEXT(D{mult_var_row},"0.0")&"x spread vs 8.0x exit multiple"', S.BLACK, italic=True, size=9, align=S.left_indent)
-write(dcf, f'D{r[0]}', "Gordon implied should bracket exit assumption", S.BLACK, italic=True, size=8, align=S.left_indent)
+write(dcf, f'C{r[0]}', f'=TEXT(D{mult_var_row},"0.0")&"x spread vs Gordon-implied exit"', S.BLACK, italic=True, size=9, align=S.left_indent)
+write(dcf, f'D{r[0]}', "Selected exit is the Gordon identity, so spread should be 0", S.BLACK, italic=True, size=8, align=S.left_indent)
 r[0] += 1
 
 # ------------------------------------------------------------------ SENSITIVITY (WACC x g)
@@ -608,7 +612,7 @@ write(comps, f'A{rr[0]}', "  memo: current P / E (FY2026E)", S.BLACK, italic=Tru
 write(comps, f'E{rr[0]}', f"=E{CM['px']}/E{CM['eps26']}", S.BLACK, italic=True, size=9, numfmt=MULT, align=S.right)
 rr[0] += 2
 
-# ---- Exit multiple build (supports DCF 8.0x terminal assumption) ----
+# ---- Exit multiple build (selected exit = Gordon implied, not a peer pick) ----
 write(comps, f'A{rr[0]}', "EXIT MULTIPLE BUILD \u2014 FY2030E TERMINAL YEAR", S.ACCENT, bold=True, size=10)
 rr[0] += 1
 write(comps, f'A{rr[0]}', "Peer / reference EV/EBITDA (forward / illustrative)", S.BLACK, italic=True, size=9, align=S.left_indent)
@@ -713,10 +717,10 @@ write(comps, f'A{rr[0]}', "Mature public mean (DECK / ADS / VFC)", S.BLACK, size
 write(comps, f'E{rr[0]}', f"=AVERAGE(E{deck_r},E{ads_r},E{vfc_r})",
       S.BLACK, size=10, numfmt=MULT, align=S.center)
 write(comps, f'{DJ}{rr[0]}',
-      "~9.3x closest mature set. Still haircut ~1 turn to 8.0x for 2.25% terminal g.",
+      "~9.3x closest mature set. Comps check only \u2014 selected exit is Gordon implied, below this tape.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of Deckers, adidas, VFC", S.BLACK, italic=True, size=8, align=S.left_indent)
-write(comps, f'{DC}{rr[0]}', "Math: (8.0+9.3+10.7)/3 = 9.3x. Haircut to selected 8.0x.",
+write(comps, f'{DC}{rr[0]}', "Math: (8.0+9.3+10.7)/3 = 9.3x. Not the selected FY30 exit.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 rr[0] += 1
 EM['incl_gym'] = rr[0]
@@ -747,15 +751,15 @@ rr[0] += 1
 write(comps, f'A{rr[0]}', "Spread (selected \u2212 Gordon implied)", S.BLACK, size=10, align=S.left_indent)
 write(comps, f'E{rr[0]}', f"=E{EM['selected']}-E{EM['gordon']}", S.BLACK, size=10, numfmt=MULT, align=S.right)
 rr[0] += 1
-write(comps, f'A{rr[0]}', "Rationale for 8.0x (not the average)", S.BLACK, bold=True, size=10, align=S.left_indent)
+write(comps, f'A{rr[0]}', "Rationale for selected exit (Gordon identity, not a peer pick)", S.BLACK, bold=True, size=10, align=S.left_indent)
 rr[0] += 1
 for bullet in [
-    "\u2022  8.0x equals Deckers (7.95x rounded) \u2014 closest mature premium analog on the tape",
-    "\u2022  ~1 turn above Gordon-implied ~7x \u2014 buffer vs perpetuity math on 2.25% terminal g",
-    "\u2022  Mid-point of the 6.5\u20139.5x football field \u2014 not the 10.8x public 5-name mean",
-    "\u2022  Mature public mean (DECK / ADS / VFC) is ~9.3x; we haircut ~1 turn for 2.25% terminal g",
-    "\u2022  Gymshark implied 23.5x is 2020 valuation / FY25 EBITDA \u2014 no page prints that multiple; averaging it (~12.9x) is not an FY30 exit",
-    "\u2022  Current LULU ~3.5x on FY2025A is a trough \u2014 8.0x assumes partial recovery, not a re-rate to ONON 14x",
+    "\u2022  Selected exit = Gordon TV / FY30 EBITDA. Identity: (UFCF/EBITDA)\u00d7(1+g)/(WACC\u2212g). Live formula, not a typed 8.0x",
+    "\u2022  At base WACC 10.5% and g 2.25% that identity is ~6.0x \u2014 the stale \u201cGordon ~7x / pick Deckers 8.0x\u201d overlay is gone",
+    "\u2022  Deckers 8.0x is a public print, not a derivation of our exit. It is only the football-field cap",
+    "\u2022  Public 5-name mean 10.8x and mature mean 9.3x are current trading tapes, not a 2.25% g terminal year",
+    "\u2022  Gymshark implied 23.5x is 2020 valuation / FY25 EBITDA \u2014 no page prints that multiple; averaging it is not an FY30 exit",
+    "\u2022  Current LULU ~3.5\u20135x is a trough. Gordon 6.0x is a partial recovery, not a re-rate to ONON 14x",
 ]:
     write(comps, f'A{rr[0]}', bullet, S.BLACK, size=9, align=S.left_indent)
     rr[0] += 1
@@ -795,10 +799,10 @@ def ff_pe(label, lo, hi):
                        D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
     rr[0] += 1
 
-ff_ev_ebitda("EV / EBITDA (FY2030E terminal)", 6.5, 9.5)
-# DCF exit-method row (8.0x on same terminal EBITDA base)
+ff_ev_ebitda("EV / EBITDA (FY2030E terminal)", 5.0, 8.0)
+# DCF exit-method row (Gordon-implied multiple on same terminal EBITDA base)
 exit_ff_row = rr[0]
-write(comps, f'A{exit_ff_row}', "DCF exit method (8.0x on FY2030E EBITDA)", S.BLACK, bold=True, size=10, align=S.left_indent)
+write(comps, f'A{exit_ff_row}', "DCF exit method (Gordon-implied on FY2030E EBITDA)", S.BLACK, bold=True, size=10, align=S.left_indent)
 write(comps, f'E{exit_ff_row}', f"=DCF!E{VR['exitm']}", S.BLACK, bold=True, size=10, numfmt=MULT, align=S.center)
 write(comps, f'G{exit_ff_row}', f"=(E{CM['ebitda30']}*E{exit_ff_row}+E{CM['cash']})/E{CM['sh']}", S.BLACK, bold=True, size=10, numfmt=MONEY, align=S.center)
 write_assumption_docs(comps, exit_ff_row, DJ, DS, DC, 'dcf_exitm', D.JUST, D.ASSUMPTION_SRC,
@@ -818,7 +822,7 @@ write_source_with_ctrl_f(comps, f'{DS}{rr[0]}', f'{DC}{rr[0]}', "NASDAQ", D.SOUR
                          D.REPORTED_HINTS["nasdaq"])
 rr[0] += 1
 write(comps, f'A{rr[0]}',
-      "Note: public set is NKE, DECK, ONON, adidas, VFC (red). Gymshark 23.5x is implied (2020 £1.25bn / FY25 £53.3m) \u2014 no source prints EV/EBITDA. Selected TV is 8.0x, not the average.",
+      "Note: public set is NKE, DECK, ONON, adidas, VFC (red). Selected TV is Gordon implied (TV/EBITDA), not Deckers and not an average. Gymshark 23.5x is implied only.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 
 # Link DCF exit multiple to Comps peer build + peer table

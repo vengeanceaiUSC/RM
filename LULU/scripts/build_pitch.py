@@ -699,7 +699,7 @@ stmt_table(s, rows, hdr, col0w=3.4, top=1.25, height=3.85, bold_rows=(0,))
 tb, tf = textbox(s, Inches(0.5), Inches(5.2), Inches(12.35), Inches(1.75))
 add_para(tf, "Read-through \u2014 we do not average these for terminal value", 13.5, CARD, bold=True, first=True, space_after=3)
 add_para(tf, "Public 5-name mean is 10.8x; with implied Gymshark 12.9x. Both overstate a 2.25% g / 15.5% OM FY2030 exit", 12.5, INK, bullet=True, space_after=3)
-add_para(tf, "Selected TV is 8.0x = Deckers, ~1 turn above Gordon ~7x and a haircut from the mature public mean (DECK / ADS / VFC) of 9.3x", 12.5, INK, bullet=True, space_after=3)
+add_para(tf, "Selected TV is the Gordon identity (~6.0x) = TV / FY30 EBITDA = (UFCF/EBITDA)\u00d7(1+g)/(WACC\u2212g). Not Deckers 8.0x and not the 10.8x public mean", 12.5, INK, bullet=True, space_after=3)
 add_para(tf, "No source prints Gymshark EV/EBITDA. 23.5x is model math: 2020 Guardian £1.25bn / SGB FY25 EBITDA £53.3m \u2014 a cross-year implied multiple, not a tape print", 12.5, INK, bullet=True, space_after=0)
 
 # =====================================================================

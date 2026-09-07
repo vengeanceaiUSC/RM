@@ -184,7 +184,7 @@ JUST = {
     "sc_ar": "AR sits inside NWC: 190,657 / 11,102,600 = 1.7% of sales. Same NWC block as inv, OCA, AP, accrued.",
     "sc_nwc_pct": "One NWC line: 7.5% of Δsales = AR + inv + OCA − AP − accrued. AR is not a separate FCF item.",
     # DCF valuation
-    "dcf_exitm": "8.0x equals Deckers; ~1 turn above Gordon ~7x. Public mean 10.8x and Gymshark implied 23.5x are not FY30 exit.",
+    "dcf_exitm": "Selected exit is Gordon TV / FY30 EBITDA. Identity: (UFCF/EBITDA)×(1+g)/(WACC−g). Not Deckers and not a peer average.",
     # Comps — peer multiples
     "comps_nke": "Nike EV/EBITDA 12.0x equals StockAnalysis 11.97x, rounded; mature athletic benchmark.",
     "comps_deck": "Deckers EV/EBITDA 8.0x equals StockAnalysis 7.95x, rounded; closest premium-footwear peer.",
@@ -194,8 +194,8 @@ JUST = {
     "comps_gymshark": "£1.25bn = 1,250 in £m. 2020 GA headline valuation (Guardian). Not a published EV or EV/EBITDA.",
     "comps_gymshark_ebitda": "FY25 EBITDA is £53.3m (SGB). 62.3% is gross margin. This cell is EBITDA £m, not a multiple.",
     "comps_gymshark_impl": "No page prints Gymshark EV/EBITDA. Black formula = 2020 valuation / FY25 EBITDA. Cross-year; not the TV.",
-    "comps_ff_ev_lo": "6.5x on FY2030E terminal EBITDA; bear exit below Gordon-implied ~7x; brackets DCF downside.",
-    "comps_ff_ev_hi": "9.5x on FY2030E terminal EBITDA; bull exit above 8.0x DCF base; still below public mean ~10.8x.",
+    "comps_ff_ev_lo": "5.0x on FY2030E EBITDA ≈ LULU current trough print. Floor of the range, not the selected exit.",
+    "comps_ff_ev_hi": "8.0x = Deckers print as the high end of the range only. Selected exit is Gordon implied, not this cap.",
     "comps_ff_pe_lo": "10x P/E low on FY2026E EPS; trough earnings multiple after guidance reset and sentiment de-rating.",
     "comps_ff_pe_hi": "18x P/E high on FY2026E EPS; modest recovery case still below historical premium LULU multiples.",
     # Sensitivity axes (summary)
@@ -255,7 +255,7 @@ ASSUMPTION_SRC = {
     "sc_ar": ("LULU FY2025 10-K: Accounts receivable, net", filing_url("FY2025")),
     "sc_nwc_pct": ("LULU BS/IS historical (10-K)", filing_url("FY2025")),
     # DCF / comps
-    "dcf_exitm": ("StockAnalysis: LULU EV/EBITDA", SOURCES["lulu_stats"]),
+    "dcf_exitm": ("DCF: Gordon implied exit (TV / FY30 EBITDA)", None),
     "comps_nke": ("StockAnalysis: NKE EV/EBITDA", "https://stockanalysis.com/stocks/nke/statistics/"),
     "comps_deck": ("StockAnalysis: DECK EV/EBITDA", "https://stockanalysis.com/stocks/deck/statistics/"),
     "comps_onon": ("StockAnalysis: ONON EV/EBITDA", "https://stockanalysis.com/stocks/onon/statistics/"),
@@ -264,7 +264,7 @@ ASSUMPTION_SRC = {
     "comps_gymshark": ("Guardian: Gymshark 2020 GA £1.25bn", SOURCES["gymshark_guardian"]),
     "comps_gymshark_ebitda": ("SGB: Gymshark FY25 EBITDA £53.3m", SOURCES["gymshark_sgb"]),
     "comps_ff_ev_lo": ("StockAnalysis: LULU EV/EBITDA", SOURCES["lulu_stats"]),
-    "comps_ff_ev_hi": ("StockAnalysis: LULU valuation", SOURCES["lulu_stats"]),
+    "comps_ff_ev_hi": ("StockAnalysis: DECK EV/EBITDA", "https://stockanalysis.com/stocks/deck/statistics/"),
     "comps_ff_pe_lo": ("StockAnalysis: LULU Forward P/E", SOURCES["lulu_stats"]),
     "comps_ff_pe_hi": ("StockAnalysis: NKE Forward P/E", "https://stockanalysis.com/stocks/nke/statistics/"),
     "sens_axes": ("Scenarios: WACC & terminal g", None),  # internal links set in build_dcf.py
@@ -324,7 +324,7 @@ SOURCE_HINT = {
     "sc_ar": 'Ctrl+F "Accounts receivable, net" (one hit on the BS) → 190,657. 190,657 / 11,102,600 = 1.7% of sales. Lives inside the NWC line below.',
     "sc_nwc_pct": 'One NWC. Ctrl+F "Accounts receivable, net" → 190,657 | "Inventories" → 1,700,753 | "Accounts payable" → 331,421 | "Accrued liabilities and other" → 662,982.',
     # DCF / comps
-    "dcf_exitm": 'Ctrl+F "EV / EBITDA" → LULU ~4.99x on page; model terminal exit 8.0x equals Deckers, not the public mean',
+    "dcf_exitm": "No peer Ctrl+F. This cell = Gordon TV / FY30 EBITDA = (UFCF/EBITDA)×(1+g)/(WACC−g). WACC and g are sourced on those rows.",
     "comps_nke": 'Ctrl+F "EV / EBITDA" → 11.97. Model uses 12.0x.',
     "comps_deck": 'Ctrl+F "EV / EBITDA" → 7.95. Model uses 8.0x.',
     "comps_onon": 'Ctrl+F "EV / EBITDA" → 14.03. Model uses 14.0x.',
@@ -332,8 +332,8 @@ SOURCE_HINT = {
     "comps_vfc": 'Ctrl+F "EV / EBITDA" → 10.71. Model uses 10.7x.',
     "comps_gymshark": 'Ctrl+F "£1.25bn valuation" and "sold a 21% stake". That proves the 2020 valuation (£m = 1,250), not EV/EBITDA.',
     "comps_gymshark_ebitda": 'Ctrl+F "our EBITDA, which reached £53.3 million". That proves FY25 EBITDA £m. Do not take "62.3 percent" (gross margin).',
-    "comps_ff_ev_lo": 'Ctrl+F "EV / EBITDA" → LULU trough ~5x; bear terminal exit assumption 6.5x',
-    "comps_ff_ev_hi": 'Ctrl+F "EV / EBITDA" → bull terminal exit assumption 9.5x on FY2030E EBITDA',
+    "comps_ff_ev_lo": 'Ctrl+F "EV / EBITDA" → LULU trough ~5x; football-field floor 5.0x',
+    "comps_ff_ev_hi": 'Ctrl+F "EV / EBITDA" → 7.95. Football-field cap 8.0x (Deckers). Not the selected exit.',
     "comps_ff_pe_lo": 'Ctrl+F "Forward PE" → LULU ~12.3x; low-case multiple assumption 10.0x',
     "comps_ff_pe_hi": 'Ctrl+F "Forward PE" → NKE peer benchmark; high-case assumption 18.0x',
     "sens_axes": 'Scenarios tab → Ctrl+F "WACC" and "Terminal growth" rows (base-case inputs)',
