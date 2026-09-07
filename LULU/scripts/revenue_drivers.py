@@ -148,7 +148,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
     R["spsf"] = row("Sales per square foot ($)", kpis["sales_per_sqft"]["FY2025"],
                      DK.FORECAST["sales_per_sqft"][1:], red=True, doc_key="drv_spsf", units="$/sq ft")
     for key, label in geo:
-        comp = kpis["comp_sales"][key]["FY2025"]
+        comp = kpis.get("comp_sales", {}).get(key, {}).get("FY2025", DK.FORECAST["comp_sales"][key][0])
         R[f"comp_{key}"] = row(f"  {label} — comparable sales growth",
                                comp, DK.FORECAST["comp_sales"][key], fmt=PCT, red=True,
                                doc_key="drv_comp_sales", units="%")
@@ -161,9 +161,9 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
     for i, c in enumerate(FCOLS):
         prev = f"{FY25 if i == 0 else FCOLS[i-1]}{R['store_rev_base']}"
         blend = (
-            f"({prev}*0.71*(1+{c}{R['comp_americas']})+"
+            f"={prev}*0.71*(1+{c}{R['comp_americas']})+"
             f"{prev}*0.16*(1+{c}{R['comp_china']})+"
-            f"{prev}*0.13*(1+{c}{R['comp_row']}))"
+            f"{prev}*0.13*(1+{c}{R['comp_row']})"
         )
         write(ws, f"{c}{rr[0]}", blend, S.BLACK, size=9, numfmt=NUM, align=S.right)
     rr[0] += 1
@@ -189,6 +189,11 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         write(ws, f"{c}{rr[0]}",
               f"={c}{R['store_comp_rev']}+{c}{R['new_store_rev']}",
               S.BLACK, bold=True, size=9, numfmt=NUM, align=S.right)
+    # FY26+ prior-year store revenue = prior column total store channel revenue
+    for i, c in enumerate(FCOLS):
+        write(ws, f"{c}{R['store_rev_base']}",
+              f"={FY25 if i == 0 else FCOLS[i-1]}{R['store_rev']}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
     rr[0] += 1
 
     # Unit economics memo (implied / forward)
