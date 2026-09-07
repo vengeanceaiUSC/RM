@@ -30,8 +30,9 @@ TAB_SECTIONS = [
 LABEL_OVERRIDES = {
     "wacc_rf": "Risk-free rate (10-yr UST)",
     "wacc_erp": "Equity risk premium",
-    "wacc_beta_obs": "Observed beta (5Y) — not used",
-    "wacc_beta_ind": "Unlevered retail beta (Damodaran)",
+    "wacc_beta_obs": "Observed beta (5Y) — levered βL",
+    "wacc_beta_unlev": "Unlevered βu (Hamada; funded D/E)",
+    "wacc_beta_ind": "Sector βu benchmark (Damodaran) — not used",
     "wacc_beta": "Beta used (relevered for lease debt)",
     "wacc_kd": "Pre-tax cost of debt (lease-equivalent)",
     "wacc_tax": "Tax rate",

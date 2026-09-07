@@ -97,8 +97,6 @@ def w_row(key, label, value, color, fmt=PCT, bold=False, top=False, doc_key=None
 write(wacc, 'A2', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)
 w_row('rf', "Risk-free rate (10-yr UST)", 0.048, S.RED, doc_key='wacc_rf')
 w_row('erp', "Equity risk premium", 0.060, S.RED, doc_key='wacc_erp')
-w_row('beta_obs', "Observed Beta (5Y) \u2014 levered \u03b2L, not used in WACC", 0.86, S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
-w_row('beta_ind', "Unlevered retail beta (Damodaran Special Lines)", 0.95, S.RED, fmt='0.00', doc_key='wacc_beta_ind')
 w_row('tax', "Tax rate", 0.300, S.RED, doc_key='wacc_tax')
 r[0] += 1
 write(wacc, f'A{r[0]}', "Capital structure (market values)", S.ACCENT, bold=True, size=10)
@@ -115,15 +113,23 @@ r[0] += 1
 w_row('fund_d', "Funded debt (term loans / bonds)", D.MKT['debt_funded'], S.BLUE, fmt=NUM, doc_key='wacc_fund_d')
 w_row('debt_tot', "Total debt equivalents", f"=E{WR['lease_d']}+E{WR['fund_d']}", None, bold=True, top=True, fmt=NUM)
 r[0] += 1
-write(wacc, f'A{r[0]}', "Cost of equity (CAPM) \u2014 relevered", S.ACCENT, bold=True, size=10)
+write(wacc, f'A{r[0]}', "Beta (unlever \u2192 relever)", S.ACCENT, bold=True, size=10)
 r[0] += 1
+w_row('beta_obs', "Observed Beta (5Y) \u2014 levered \u03b2L", D.MKT['beta'], S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
+w_row('beta_unlev', "Unlevered \u03b2u (Hamada; funded D/E only)",
+      f"=E{WR['beta_obs']}/(1+(1-E{WR['tax']})*E{WR['fund_d']}/E{WR['mkt_eq']})",
+      None, fmt='0.00', doc_key='wacc_beta_unlev')
+w_row('beta_ind', "Sector \u03b2u benchmark (Damodaran Special Lines) \u2014 not used", 0.95, S.BLUE, fmt='0.00', doc_key='wacc_beta_ind')
 w_row('beta', "Beta used (relevered for lease debt)",
-      f"=E{WR['beta_ind']}*(1+(1-E{WR['tax']})*E{WR['lease_d']}/E{WR['mkt_eq']})",
+      f"=E{WR['beta_unlev']}*(1+(1-E{WR['tax']})*E{WR['debt_tot']}/E{WR['mkt_eq']})",
       None, fmt='0.00', bold=True, top=True, doc_key='wacc_beta')
 write_ctrl_f(wacc, f'{DC}{WR["beta"]}', D.BETA_CTRL_F)
 write(wacc, f'A{r[0]}',
-      "  memo: relever unlevered retail \u03b2 for ASC 842 lease debt. \u03b2L = \u03b2u \u00d7 (1 + (1\u2212T) \u00d7 D/E). No funded term loans.",
+      "  memo: \u03b2u strips funded debt only (none). \u03b2L relevers for ASC 842 leases. "
+      "\u03b2L = \u03b2u \u00d7 (1 + (1\u2212T) \u00d7 D/E).",
       S.BLACK, italic=True, size=8, align=S.left_indent)
+r[0] += 1
+write(wacc, f'A{r[0]}', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)
 r[0] += 1
 w_row('coe', "Cost of equity = rf + \u03b2 \u00d7 ERP", f"=E{WR['rf']}+E{WR['beta']}*E{WR['erp']}", None, bold=True, top=True)
 r[0] += 1
