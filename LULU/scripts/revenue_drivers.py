@@ -2,7 +2,7 @@
 import styles as S
 from styles import (
     write, write_reported, write_assumption_docs,
-    write_equation_summary, write_ctrl_f, NUM, PCT, MONEY,
+    write_equation_summary, write_geo_scale_equation, write_ctrl_f, NUM, PCT, MONEY,
 )
 import data as D
 import driver_kpis as DK
@@ -272,7 +272,8 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, deq=DEQ, dj=DJ, ds=DS,
                   f"({FY25}{R['store_rev']}+{FY25}{R['ecomm_rev']}+{FY25}{R['other_rev']})",
                   S.BLACK, size=9, numfmt=NUM, align=S.right)
         write_assumption_docs(ws, r, dj, ds, dc, doc, D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
-        write_equation_summary(ws, r, deq, "drv_f_geo_scale", D.SOURCE_HINT)
+        write_geo_scale_equation(ws, r, deq, R["store_rev"], R["ecomm_rev"], R["other_rev"],
+                                 fy25_col=FY25, example_col=FCOLS[0])
 
     R["mix_w"] = row("Women's % of revenue", kpis["mix_women"]["FY2025"],
                      DK.FORECAST["mix_women"][1:], fmt=PCT, red=True, doc_key="drv_mix_women")

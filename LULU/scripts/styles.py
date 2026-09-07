@@ -150,6 +150,20 @@ def write_source_with_ctrl_f(ws, source_cell, ctrl_f_cell, label, url, hint=None
     write_ctrl_f(ws, ctrl_f_cell, hint)
 
 
+def write_geo_scale_equation(ws, row, eq_col, store_row, ecomm_row, other_row, fy25_col="B", example_col="C"):
+    """Geo revenue: FY25 anchor scaled by consolidated growth, with plugged cell refs."""
+    text = (
+        "FY26 geo rev = FY25 geo rev × (FY26 total rev ÷ FY25 total rev).\n"
+        "Total rev = store channel + e-comm + other. Keeps FY25 geo mix; scales with consolidated growth.\n\n"
+        f"FY26E plugged: {fy25_col}{row} × ({example_col}{store_row}+{example_col}{ecomm_row}+{example_col}{other_row}) "
+        f"÷ ({fy25_col}{store_row}+{fy25_col}{ecomm_row}+{fy25_col}{other_row})"
+    )
+    c = write(ws, f"{eq_col}{row}", text, BLACK, italic=True, size=8, align=left)
+    c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+    c.fill = fill(GREY)
+    _hint_row_height(ws, row, text)
+
+
 def write_equation_summary(ws, row, eq_col, key, hints):
     """Dedicated Equation column — plain-English summary of how the cell is built."""
     hint = (hints or {}).get(key)
