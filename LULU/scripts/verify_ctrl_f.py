@@ -1,4 +1,5 @@
 """Verify every quoted Ctrl+F phrase appears in its linked source."""
+import json
 import re
 import sys
 import urllib.request
@@ -10,6 +11,7 @@ FY25_10K = (
     "000139718726000020/lulu-20260201.htm"
 )
 CACHE = {}
+NASDAQ_URL = D.SOURCES["nasdaq_quote"]
 
 
 def fetch(url):
@@ -17,6 +19,22 @@ def fetch(url):
         req = urllib.request.Request(url, headers={"User-Agent": UA})
         with urllib.request.urlopen(req, timeout=45) as resp:
             CACHE[url] = resp.read().decode("utf-8", errors="replace")
+    return CACHE[url]
+
+
+def fetch_firecrawl_markdown(url: str) -> str:
+    if url not in CACHE:
+        payload = json.dumps({"url": url, "formats": ["markdown"], "onlyMainContent": True}).encode()
+        req = urllib.request.Request(
+            "https://api.firecrawl.dev/v1/scrape",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            body = json.load(resp)
+        if not body.get("success"):
+            raise RuntimeError(f"Firecrawl failed for {url}: {body}")
+        CACHE[url] = body["data"]["markdown"]
     return CACHE[url]
 
 
@@ -39,6 +57,13 @@ def resolve_url(url):
     return url
 
 
+def fetch_body(url):
+    """NASDAQ quote text is JS-rendered; use Firecrawl markdown for Ctrl+F verification."""
+    if url == NASDAQ_URL:
+        return fetch_firecrawl_markdown(url)
+    return plain(fetch(url))
+
+
 def check_hint(name, hint, url):
     if not hint:
         return None
@@ -47,7 +72,7 @@ def check_hint(name, hint, url):
            or name.endswith((":comps_nke", ":comps_deck", ":comps_ads", ":comps_pb")):
             return None
         return (name, "no_url", [])
-    body = plain(fetch(url))
+    body = fetch_body(url)
     missing = [q for q in quotes(hint) if q.lower() not in body.lower()]
     if missing:
         return (name, "MISSING", missing)

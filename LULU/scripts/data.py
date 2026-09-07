@@ -173,7 +173,8 @@ JUST = {
     "wacc_beta": "Relevered β = βu × (1 + (1−T) × lease debt / market equity). No funded term loans — leases are the debt equivalent.",
     "wacc_kd": "5.0% pre-tax lease-equivalent borrowing cost; cheaper than equity. No funded revolver borrowings per FY25 10-K.",
     "wacc_tax": "30% cash tax matches FY2026 guidance (“approximately 30%”); FY25 effective was 29.5%.",
-    "wacc_mkt_eq": "Market equity = $100 share price × 111,380k diluted shares (FY25 10-K). Capital-structure weighting numerator.",
+    "wacc_mkt_eq": "Market equity = $100 share price × 111,380k shares outstanding (FY25 10-K). Capital-structure weighting numerator.",
+    "wacc_mkt_shares": "111,380k class A shares outstanding at FY25 year-end (10-K cover). Diluted WA 119,068 is for EPS, not market cap.",
     "wacc_lease_d": "ASC 842 operating lease liabilities = current + non-current ($1,798,441k FY25). Treated as debt equivalent in WACC and EV bridge.",
     "wacc_fund_d": "Funded term debt $0 — 10-K: no borrowings outstanding on the revolver. Leases are the only debt equivalent here.",
     "wacc_we": "Equity weight = market cap ÷ (market cap + lease debt). ~86% at $100 and FY25 lease balance.",
@@ -287,6 +288,7 @@ ASSUMPTION_SRC = {
     "wacc_kd": ("LULU FY2025 10-K: lease liabilities & no funded debt", filing_url("FY2025")),
     "wacc_tax": ("Q2 FY2026 outlook: tax rate ≈ 30%", SOURCES["earnings_sep2026"]),
     "wacc_mkt_eq": ("NASDAQ LULU last sale (current price)", SOURCES["nasdaq_quote"]),
+    "wacc_mkt_shares": ("LULU FY2025 10-K: shares outstanding", filing_url("FY2025")),
     "wacc_lease_d": ("LULU FY2025 10-K: operating lease liabilities", filing_url("FY2025")),
     "wacc_fund_d": ("LULU FY2025 10-K (no funded debt)", filing_url("FY2025")),
     "wacc_we": ("WACC tab: capital structure", None),
@@ -397,7 +399,8 @@ SOURCE_HINT = {
     "wacc_beta": 'βL = βu × (1 + (1−T) × lease debt / market equity). Lease debt from 10-K; no funded term loans.',
     "wacc_kd": 'Ctrl+F "Current lease liabilities" + "Non-current lease liabilities" → debt equiv. 5.0% illustrative lease borrowing cost.',
     "wacc_tax": 'Ctrl+F "a tax rate of approximately 30%" on the FY2026 outlook paragraph.',
-    "wacc_mkt_eq": 'Ctrl+F "LULU" → $100 price × 111,380k diluted shares (FY25 10-K).',
+    "wacc_mkt_eq": 'Ctrl+F "closed at $100.61" → Last Sale $100.61 (NASDAQ). Model uses $100 rounded.',
+    "wacc_mkt_shares": 'Ctrl+F "111,380 and 116,166 issued and outstanding" → 111,380k class A shares (FY25 10-K cover).',
     "wacc_lease_d": 'Ctrl+F "Current lease liabilities" → 298,724 | "Non-current lease liabilities" → 1,499,717 | sum = 1,798,441 ($000)',
     "wacc_fund_d": 'Ctrl+F "no borrowings were outstanding under this facility" → funded debt $0',
     "wacc_we": 'Equity weight = market cap ÷ (market cap + lease debt). Live formula on this tab.',
@@ -457,7 +460,7 @@ SOURCE_HINT = {
     "3s_ocl_pct": 'Ctrl+F "Total current liabilities" 1,887,548 − "Accounts payable" 331,421 − "Accrued liabilities and other" 662,982 − "Current lease liabilities" 298,724 ≈ 594,421 (5.4%)',
     "3s_oncl_pct": 'Ctrl+F "Other non-current liabilities" → 55,360 ÷ "Net revenue" 11,102,600 = 0.5%',
     "3s_buyback": 'Ctrl+F "Repurchase of common stock" → ( 1,178,349 ) ($000) FY25; model (500,000)/yr',
-    "3s_rep_price": 'Ctrl+F "LULU" → Last Sale / Previous Close (~$100). FY26 model repurchase price starts at $100.',
+    "3s_rep_price": 'Ctrl+F "closed at $100.61" → Last Sale (NASDAQ). Model repurchase price starts at $100.',
     # Revenue drivers
     "drv_openings": 'Ctrl+F "Total company-operated stores" → 811 (FY25). FY25 added 44 net stores; model skews openings to China.',
     "drv_closures": 'Ctrl+F "lease" / store fleet — immaterial closures vs expansion; 2–3 per mature region.',
@@ -539,7 +542,7 @@ COVER_HINTS = {
     "edgar_xbrl": 'Ctrl+F "10-K" → FY2025 accession 0001397187-26-000020',
     "filing_fy2025": 'Ctrl+F "Net revenue" → 11,102,600 or "Depreciation and amortization" → 496,228 on this 10-K HTML file',
     "earnings_sep2026": 'Ctrl+F "decline of 5% to 7%" | "$10.350 billion to $10.500 billion" | "$9.48 to $9.73"',
-    "nasdaq_quote": 'Ctrl+F "LULU" → Last Sale or Previous Close price',
+    "nasdaq_quote": 'Ctrl+F "closed at $100.61" → Last Sale on NASDAQ quote page',
 }
 
 REPORTED_HINTS = {
@@ -549,9 +552,10 @@ REPORTED_HINTS = {
     "10k_bs": 'Ctrl+F "Cash and cash equivalents" → 1,807,202 ($000) FY2025',
     "10k_debt": 'Ctrl+F "Current lease liabilities" → 298,724 | "Non-current lease liabilities" → 1,499,717 | sum 1,798,441 ($000). Funded debt: "no borrowings were outstanding"',
     "10k_cf": 'Ctrl+F "Depreciation and amortization" → 496,228 | "680,802" capex ($000)',
-    "10k_shares": 'Ctrl+F "Diluted weighted-average number of shares outstanding" → 119,068 (000)',
+    "10k_shares": 'Ctrl+F "Diluted weighted-average number of shares outstanding" → 119,068 (000) for EPS',
+    "10k_shares_out": 'Ctrl+F "111,380 and 116,166 issued and outstanding" → 111,380k class A (FY25 10-K cover)',
     "10k_ebitda": 'Ctrl+F "19.9%" → FY25 OM (EBIT $2,210,615). Ctrl+F "496,228" → Depreciation and amortization. Do not search the words Income from operations (17 hits).',
     "earnings_rev": 'Ctrl+F "$10.350 billion to $10.500 billion" → FY2026 net revenue guidance',
     "earnings_eps": 'Ctrl+F "$9.48 to $9.73" → FY2026 diluted EPS guidance; model midpoint $9.61',
-    "nasdaq": 'Ctrl+F "LULU" → Last Sale or Previous Close on NASDAQ quote page',
+    "nasdaq": 'Ctrl+F "closed at $100.61" → Last Sale on NASDAQ quote page',
 }

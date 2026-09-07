@@ -21,6 +21,7 @@ FALLBACK = OUT
 URLS = {
     "10k_fy2025": D.filing_url("FY2025"),
     "earnings_sep2026": D.SOURCES["earnings_sep2026"],
+    "nasdaq_quote": D.SOURCES["nasdaq_quote"],
 }
 
 
@@ -167,6 +168,44 @@ def parse_10k(md: str) -> dict:
     return out
 
 
+def parse_nasdaq(md: str) -> dict:
+    """Extract Last Sale price and a unique Ctrl+F anchor from NASDAQ quote page."""
+    out = {}
+    m = re.search(r"closed at \$([\d.]+),\s*down", md, re.I)
+    if m:
+        out["last_sale"] = float(m.group(1))
+        out["ctrl_f_price"] = f"closed at ${m.group(1)}"
+    m2 = re.search(r"\$([\d]+\.[\d]{2})\s*\n\$([\d]+\.[\d]{2})", md)
+    if m2 and "last_sale" not in out:
+        out["last_sale"] = float(m2.group(1))
+        out["ctrl_f_price"] = f"${m2.group(1)}"
+    return out
+
+
+def _verify_ctrl_f_phrases(md: str, phrases: list[str], label: str) -> list[str]:
+    missing = [p for p in phrases if p not in md]
+    if missing:
+        print(f"  WARN {label}: Ctrl+F phrases not found: {missing}")
+    return missing
+
+
+def parse_10k_ctrl_f(md: str) -> dict:
+    """Verified Ctrl+F anchors for capital-structure lines on the FY25 10-K."""
+    out = {}
+    if "111,380 and 116,166 issued and outstanding" in md:
+        out["shares_outstanding_ctrl_f"] = "111,380 and 116,166 issued and outstanding"
+        out["shares_outstanding_fy2025"] = 111380
+    if "Diluted weighted-average number of shares outstanding" in md:
+        m = re.search(
+            r"Diluted weighted-average number of shares outstanding\s*\|\s*\|\s*([\d,]+)",
+            md,
+        )
+        if m:
+            out["diluted_shares_ctrl_f"] = "Diluted weighted-average number of shares outstanding"
+            out["diluted_shares_fy2025"] = int(m.group(1).replace(",", ""))
+    return out
+
+
 def parse_earnings(md: str) -> dict:
     out = {}
     m = re.search(r"decline of (\d+)% to (\d+)%", md, re.I)
@@ -188,9 +227,28 @@ def ingest() -> dict:
         "sources": URLS,
         "kpis": {},
         "earnings": {},
+        "ctrl_f_verified": {},
     }
     md_10k = _scrape_markdown(URLS["10k_fy2025"])
     result["kpis"] = parse_10k(md_10k)
+    result["ctrl_f_verified"]["10k"] = parse_10k_ctrl_f(md_10k)
+    _verify_ctrl_f_phrases(
+        md_10k,
+        [
+            "111,380 and 116,166 issued and outstanding",
+            "Current lease liabilities",
+            "Non-current lease liabilities",
+        ],
+        "10-K",
+    )
+    try:
+        md_nasdaq = _scrape_markdown(URLS["nasdaq_quote"])
+        result["ctrl_f_verified"]["nasdaq"] = parse_nasdaq(md_nasdaq)
+        phrase = result["ctrl_f_verified"]["nasdaq"].get("ctrl_f_price")
+        if phrase:
+            _verify_ctrl_f_phrases(md_nasdaq, [phrase], "NASDAQ")
+    except Exception as exc:
+        result["ctrl_f_verified"]["nasdaq_error"] = str(exc)
     try:
         md_er = _scrape_markdown(URLS["earnings_sep2026"])
         result["earnings"] = parse_earnings(md_er)

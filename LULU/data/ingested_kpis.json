@@ -1,8 +1,9 @@
 {
-  "ingested_at": "2026-09-07T22:16:37.744910+00:00",
+  "ingested_at": "2026-09-07T22:24:53.619843+00:00",
   "sources": {
     "10k_fy2025": "https://www.sec.gov/Archives/edgar/data/1397187/000139718726000020/lulu-20260201.htm",
-    "earnings_sep2026": "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733"
+    "earnings_sep2026": "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
+    "nasdaq_quote": "https://www.nasdaq.com/market-activity/stocks/lulu"
   },
   "kpis": {
     "stores_americas": {
@@ -79,6 +80,18 @@
     "fy2026_rev_guide": {
       "low": 2290000,
       "high": 2320000
+    }
+  },
+  "ctrl_f_verified": {
+    "10k": {
+      "shares_outstanding_ctrl_f": "111,380 and 116,166 issued and outstanding",
+      "shares_outstanding_fy2025": 111380,
+      "diluted_shares_ctrl_f": "Diluted weighted-average number of shares outstanding",
+      "diluted_shares_fy2025": 119068
+    },
+    "nasdaq": {
+      "last_sale": 100.61,
+      "ctrl_f_price": "closed at $100.61"
     }
   }
 }

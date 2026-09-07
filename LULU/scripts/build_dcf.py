@@ -103,8 +103,10 @@ w_row('tax', "Tax rate", 0.300, S.RED, doc_key='wacc_tax')
 r[0] += 1
 write(wacc, f'A{r[0]}', "Capital structure (market values)", S.ACCENT, bold=True, size=10)
 r[0] += 1
-w_row('mkt_eq', "Market value of equity (price \u00d7 diluted shares)",
+w_row('mkt_eq', "Market value of equity (price \u00d7 shares outstanding)",
       f"={D.MKT['price']}*{D.MKT['shares_out']}", None, fmt=NUM, doc_key='wacc_mkt_eq')
+append_assumption_docs(wacc, WR['mkt_eq'], DJ, DS, DC, 'wacc_mkt_shares', D.JUST, D.ASSUMPTION_SRC,
+                       hints=D.SOURCE_HINT)
 w_row('lease_d', "Operating lease liabilities (ASC 842 debt equiv.)", D.MKT['debt'], S.BLUE, fmt=NUM, doc_key='wacc_lease_d')
 write(wacc, f'A{r[0]}',
       f"  memo: current ${D.MKT['lease_cur']:,}k + non-current ${D.MKT['lease_noncur']:,}k = ${D.MKT['debt']:,}k (FY25 10-K)",
@@ -497,8 +499,8 @@ write(dcf, f'A{r[0]}',
       S.BLACK, italic=True, size=8, align=S.left_indent)
 r[0] += 1
 v_row('eqv', "Equity value", f"=E{VR['ev']}+E{VR['cash']}+E{VR['debt']}", bold=True, top=True)
-v_row('sh', "Diluted shares outstanding (000)", D.MKT['shares_out'], color=S.BLUE,
-      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_shares"])
+v_row('sh', "Shares outstanding (000)", D.MKT['shares_out'], color=S.BLUE,
+      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_shares_out"])
 v_row('pt', "Implied value per share", f"=E{VR['eqv']}/E{VR['sh']}", fmt=MONEY, bold=True, top=True, dbl=True)
 dcf[f"E{VR['pt']}"].font = S.font(color=S.GREEN, bold=True, size=13)
 dcf[f"E{VR['pt']}"].fill = S.fill(S.GREY)
@@ -645,8 +647,8 @@ c_row('eps26', "FY2026E diluted EPS (guidance midpoint)", 9.61, color=S.BLUE, fm
       source_hint=D.REPORTED_HINTS["earnings_eps"])
 c_row('cash', "Cash & equivalents", D.MKT['cash'],
       source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_bs"])
-c_row('sh', "Diluted shares (000)", D.MKT['shares_out'],
-      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_shares"])
+c_row('sh', "Shares outstanding (000)", D.MKT['shares_out'],
+      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_shares_out"])
 c_row('px', "Current share price", D.MKT['price'], fmt=MONEY,
       source_url=D.SOURCES["nasdaq_quote"], source_label="NASDAQ",
       source_hint=D.REPORTED_HINTS["nasdaq"])

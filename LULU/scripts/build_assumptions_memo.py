@@ -36,6 +36,7 @@ LABEL_OVERRIDES = {
     "wacc_kd": "Pre-tax cost of debt (lease-equivalent)",
     "wacc_tax": "Tax rate",
     "wacc_mkt_eq": "Market value of equity",
+    "wacc_mkt_shares": "Shares outstanding (market cap)",
     "wacc_lease_d": "Operating lease liabilities (debt equiv.)",
     "wacc_fund_d": "Funded debt (term loans / bonds)",
     "wacc_we": "Equity weight",
