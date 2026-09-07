@@ -151,7 +151,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, dj=DJ, ds=DS, dc=DC):
         comp = kpis.get("comp_sales", {}).get(key, {}).get("FY2025", DK.FORECAST["comp_sales"][key][0])
         R[f"comp_{key}"] = row(f"  {label} — comparable sales growth",
                                comp, DK.FORECAST["comp_sales"][key], fmt=PCT, red=True,
-                               doc_key="drv_comp_sales", units="%")
+                               doc_key=f"drv_comp_{key}", units="%")
     R["store_rev_base"] = row("Prior-year store channel revenue ($000)",
                               kpis["revenue_stores"]["FY2025"], [None] * 5, units="$000")
     R["store_comp_rev"] = rr[0]
