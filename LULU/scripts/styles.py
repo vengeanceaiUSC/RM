@@ -129,11 +129,17 @@ def _hint_row_height(ws, row, hint):
         ws.row_dimensions[row].height = max(ws.row_dimensions[row].height or 15, min(150, 14 * lines))
 
 
+def _excel_text(value):
+    """Force literal text when a note starts with '=' so Excel won't parse it as a formula."""
+    s = str(value)
+    return f"'{s}" if s.startswith("=") else s
+
+
 def write_ctrl_f(ws, cell, hint):
     """Dedicated Ctrl+F column — exact strings to locate the number in the source."""
     if not hint:
         return
-    c = write(ws, cell, hint, BLACK, italic=True, size=8, align=left)
+    c = write(ws, cell, _excel_text(hint), BLACK, italic=True, size=8, align=left)
     c.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
     _hint_row_height(ws, c.row, hint)
 
