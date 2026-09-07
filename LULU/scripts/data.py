@@ -245,8 +245,8 @@ JUST = {
     "sc_capex_pct": "FY26 7.0% is $735M on $10.4B sales, not FY25 $11.1B. Since 7.0% steps toward FY25 6.1%, we assume a fade: DCF 5.5% = (7.0+6.0+5.5+5.0+4.0)/5.",
     "sc_capex_sales": "FY26 sales are $10.35–$10.50B (earnings). Use that $10.4B year as the 7% denominator, not FY25 $11.1B.",
     "sc_gm": "56.6% of revenue (gross margin). Isolates COGS for inventory/AP drivers; base case held near FY25 reported GM.",
-    "sc_dso": "Not % of revenue — DSO (days), flat ~6.3. Implied AR ≈1.7% of sales via (DSO÷365)×revenue.",
-    "sc_ar": "Implied ~1.7% of revenue (not a direct % plug). Balance = (DSO÷365)×revenue; DSO flat at FY25.",
+    "sc_dso": "Not % of revenue — DSO (days), flat ~6.3. Mostly own stores/DTC (cash at register); AR is small wholesale residual — predictable ~6 days FY22–25.",
+    "sc_ar": "Implied ~1.7% of revenue (not a direct % plug). AR = (DSO÷365)×revenue; flat DSO because sales are mostly own-store/DTC, not credit wholesale.",
     "sc_dio": (
         "Not % of revenue — DIO (days).\n"
         "FY25 anchor: DIO = (Inventories ÷ COGS) × 365\n"
@@ -536,18 +536,24 @@ SOURCE_HINT = {
         "→ 4,818,468 ($000)"
     ),
     "sc_dso": (
+        "Not % of revenue — DSO (days), flat ~6.3.\n"
+        "Why flat: ~90%+ revenue is company-operated stores + e-commerce (cash/card at sale);\n"
+        "AR is a small, stable wholesale/license residual — predictable collection, not trade credit.\n"
         'Ctrl+F "Accounts receivable, net"\n'
         "→ 190,657 ($000)\n"
         'Ctrl+F "Net revenue"\n'
         "→ 11,102,600 ($000)\n"
-        "Not % of revenue — DSO ≈ 6.3 days. Implied AR ≈ 1.7% of sales."
+        "DSO = (190,657 ÷ 11,102,600) × 365 ≈ 6.3 days (~6.0–6.3 FY22–25).\n"
+        'Ctrl+F "company-operated stores"\n'
+        'Ctrl+F "E-commerce"'
     ),
     "sc_ar": (
+        "Implied ~1.7% of revenue (= 190,657 ÷ 11,102,600); not a direct % plug.\n"
+        "AR_t = (DSO ÷ 365) × Revenue_t. DSO flat because own-store/DTC dominates — AR scales predictably with sales.\n"
         'Ctrl+F "Accounts receivable, net"\n'
         "→ 190,657 ($000)\n"
         'Ctrl+F "Net revenue"\n'
-        "→ 11,102,600 ($000)\n"
-        "Implied ~1.7% of revenue (= 190,657 ÷ 11,102,600); forecast via DSO×revenue."
+        "→ 11,102,600 ($000)"
     ),
     "sc_dio": (
         "Not % of revenue — DIO (days).\n"
