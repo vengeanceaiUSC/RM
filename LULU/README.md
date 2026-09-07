@@ -58,7 +58,7 @@ calendar year it mostly covers):
 - Tax rate 30% (FY2026 guidance); capex 5.5% blend (FY26 guided 7.0% is *up* vs FY25 6.1%, then fade); one NWC line at 7.5% of Δrevenue (AR + inv + OCA − AP − accrued; AR 1.7% of sales sits inside it)
 - WACC 10.5% (CAPM: rf 4.8% from FRED DGS10 4.77% on 2026-09-03, ERP 6.0%, β 0.95 = Damodaran unlevered Retail (Special Lines) beta because LULU has no debt; company 5Y is 0.86, ~100% equity / net cash)
 - Terminal growth 2.25%
-- FY2030E exit EV/EBITDA is the **Gordon identity** (~6.0x) = TV / FY30 EBITDA = (UFCF/EBITDA)×(1+g)/(WACC−g). Public 5-name mean is 10.8x; mature public mean (DECK/ADS/VFC) is 9.3x — comps checks only. Alo Yoga has **no published EV/EBITDA**. Implied 5.0x is EV/Sales (Reuters $10bn unclosed Moelis ask / Forbes ~$2bn Color Image parent sales). Not the TV.
+- FY2030E exit EV/EBITDA is the **Gordon identity** (~6.0x) = TV / FY30 EBITDA = (UFCF/EBITDA)×(1+g)/(WACC−g). Public comps are the **PitchBook set as of 04-Sep-2026** (daily EV / TTM EBITDA; UAA excluded from the mean). That tape is a check, not the exit. Alo Yoga has **no published EV/EBITDA**. Implied 5.0x is EV/Sales (Reuters $10bn unclosed Moelis ask / Forbes ~$2bn Color Image parent sales).
 
 ## Reproducing the outputs
 

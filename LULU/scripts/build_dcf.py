@@ -559,7 +559,7 @@ r[0] += 1
 # ------------------------------------------------------------------ COMPS / FOOTBALL FIELD
 comps = wb.create_sheet("Comps")
 comps.sheet_view.showGridLines = False
-S.set_col_widths(comps, {'A': 48, 'B': 28, 'C': 18, 'D': 44, 'E': 14, 'F': 14, 'G': 12, 'H': 12})
+S.set_col_widths(comps, {'A': 48, 'B': 28, 'C': 18, 'D': 44, 'E': 14, 'F': 14, 'G': 12, 'H': 12, 'I': 16, 'J': 16})
 write(comps, 'A1', "RELATIVE VALUATION \u2014 IMPLIED PRICE RANGES (FOOTBALL FIELD)", S.WHITE, bold=True, size=12, fillc=S.DARK)
 for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
     comps[f'{c}1'].fill = S.fill(S.DARK)
@@ -617,49 +617,68 @@ write(comps, f'A{rr[0]}', "EXIT MULTIPLE BUILD \u2014 FY2030E TERMINAL YEAR", S.
 rr[0] += 1
 write(comps, f'A{rr[0]}', "Peer / reference EV/EBITDA (forward / illustrative)", S.BLACK, italic=True, size=9, align=S.left_indent)
 rr[0] += 1
+write(comps, f'A{rr[0]}', "PITCHBOOK PUBCOMPS \u2014 daily EV / TTM EBITDA as of 04-Sep-2026 ($000)",
+      S.ACCENT, bold=True, size=10)
+rr[0] += 1
+write(comps, f'A{rr[0]}',
+      "EV/EBITDA is a black formula (I/J). UAA is shown but excluded from averages (negative TTM EBITDA).",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+rr[0] += 1
 write(comps, f'A{rr[0]}', "Company", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
 write(comps, f'{DJ}{rr[0]}', "Justification", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
-write(comps, f'{DS}{rr[0]}', "Source (click)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
-write(comps, f'{DC}{rr[0]}', "Ctrl+F (prove number)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'{DS}{rr[0]}', "Source", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'{DC}{rr[0]}', "Ctrl+F / proof", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
 write(comps, f'E{rr[0]}', "EV/EBITDA", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
-comps.freeze_panes = 'E4'
+write(comps, f'I{rr[0]}', "EV ($000)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
+write(comps, f'J{rr[0]}', "EBITDA ($000)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
 rr[0] += 1
-peer_rows = [
-    ("lululemon (LULU) \u2014 current", f"=(E{CM['px']}*E{CM['sh']}-E{CM['cash']})/E{CM['ebitda']}", True,
-     "Distressed trough multiple on FY2025A EBITDA", D.filing_url("FY2025"), "LULU FY2025 10-K"),
-    ("Nike (NKE)", 12.0, False, "comps_nke"),
-    ("Deckers (DECK)", 8.0, False, "comps_deck"),
-    ("On Holding (ONON)", 14.0, False, "comps_onon"),
-    ("adidas (ADS)", 9.3, False, "comps_ads"),
-    ("V.F. Corp (VFC)", 10.7, False, "comps_vfc"),
+
+# PitchBook extract (user screen, 04-Sep-2026). Amounts in thousands.
+# UAA EBITDA is negative — keep the row, drop from AVERAGE.
+pb_rows = [
+    ("lululemon (LULU)", 11890440, 2548084, True),
+    ("Under Armour (UAA)", 3208397, -23230, False),
+    ("adidas (ADS)", 35661944, 3857684, True),
+    ("Nike (NKE)", 58972350, 4647000, True),
+    ("Deckers (DECK)", 10555510, 1329439, True),
+    ("Williams-Sonoma (WSM)", 27284350, 1768400, True),
+    ("Crocs (CROX)", 7153911, 922278, True),
+    ("Movado (MOV)", 616045, 62010, True),
+    ("Levi Strauss (LEVI)", 9422753, 976700, True),
+    ("La-Z-Boy (LZB)", 1598873, 235723, True),
+    ("Kontoor (KTB)", 5236269, 407521, True),
 ]
 EM = {}
-for row in peer_rows:
-    if len(row) == 6:
-        name, mult, is_formula, just_text, src_url, src_label = row
-        src_key = None
-    else:
-        name, mult, is_formula, src_key = row
-        just_text = src_url = src_label = None
+core_keys = []
+pos_keys = []
+for name, ev, ebitda, in_core in pb_rows:
     EM[name] = rr[0]
     write(comps, f'A{rr[0]}', name, S.BLACK, size=10, align=S.left_indent)
-    if is_formula:
-        write(comps, f'E{rr[0]}', mult, S.BLACK, size=10, numfmt=MULT, align=S.center)
-        if src_url:
-            write_link(comps, f'{DS}{rr[0]}', src_label, src_url, color=S.BLUE, size=8, italic=True)
-            write_ctrl_f(comps, f'{DC}{rr[0]}', D.REPORTED_HINTS["10k_ebitda"])
-        write(comps, f'{DJ}{rr[0]}', just_text, S.BLACK, italic=True, size=8, align=S.left_indent)
-    else:
-        write(comps, f'E{rr[0]}', mult, S.RED, size=10, numfmt=MULT, align=S.center)
-        write_assumption_docs(comps, rr[0], DJ, DS, DC, src_key, D.JUST, D.ASSUMPTION_SRC,
-                              hints=D.SOURCE_HINT)
+    write(comps, f'I{rr[0]}', ev, S.BLACK, size=9, numfmt=NUM, align=S.center)
+    write(comps, f'J{rr[0]}', ebitda, S.BLACK, size=9, numfmt=NUM, align=S.center)
+    write(comps, f'E{rr[0]}',
+          f'=IF(J{rr[0]}<=0,"n.m.",I{rr[0]}/J{rr[0]})',
+          S.BLACK, size=10, numfmt=MULT, align=S.center)
+    write_assumption_docs(comps, rr[0], DJ, DS, DC, "comps_pb", D.JUST, D.ASSUMPTION_SRC,
+                          hints=D.SOURCE_HINT)
+    if ebitda > 0:
+        pos_keys.append(rr[0])
+        if in_core and name != "Williams-Sonoma (WSM)" and name not in (
+                "Movado (MOV)", "La-Z-Boy (LZB)"):
+            core_keys.append(rr[0])
     rr[0] += 1
 
+# Core athletic/apparel: LULU, ADS, NKE, DECK, CROX, LEVI, KTB (not WSM/MOV/LZB, not UAA)
 nke_r = EM["Nike (NKE)"]
 deck_r = EM["Deckers (DECK)"]
-onon_r = EM["On Holding (ONON)"]
 ads_r = EM["adidas (ADS)"]
-vfc_r = EM["V.F. Corp (VFC)"]
+lulu_r = EM["lululemon (LULU)"]
+crox_r = EM["Crocs (CROX)"]
+levi_r = EM["Levi Strauss (LEVI)"]
+ktb_r = EM["Kontoor (KTB)"]
+wsm_r = EM["Williams-Sonoma (WSM)"]
+mov_r = EM["Movado (MOV)"]
+lzb_r = EM["La-Z-Boy (LZB)"]
 
 # Alo has no published EV/EBITDA. Prove the ask and parent sales, then show EV/Sales only.
 rr[0] += 1
@@ -713,25 +732,27 @@ rr[0] += 1
 write(comps, f'A{rr[0]}', "Averages (live Excel AVERAGE \u2014 shown so TV is not a blended print)", S.ACCENT, bold=True, size=10)
 rr[0] += 1
 EM['pub_mean'] = rr[0]
-write(comps, f'A{rr[0]}', "Public 5-name mean (NKE / DECK / ONON / ADS / VFC)", S.BLACK, size=10, align=S.left_indent)
-write(comps, f'E{rr[0]}', f"=AVERAGE(E{nke_r},E{deck_r},E{onon_r},E{ads_r},E{vfc_r})",
+write(comps, f'A{rr[0]}', "Core athletic / apparel mean (LULU / NKE / ADS / DECK / CROX / LEVI / KTB)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}',
+      f"=AVERAGE({','.join(f'E{k}' for k in (lulu_r, nke_r, ads_r, deck_r, crox_r, levi_r, ktb_r))})",
       S.BLACK, size=10, numfmt=MULT, align=S.center)
 write(comps, f'{DJ}{rr[0]}',
-      "10.8x simple mean. Too high for a 2.25% g / 15.5% OM terminal year \u2014 not the TV.",
+      "PitchBook core set, UAA out. Current tape \u2014 not a 2.25% g FY30 exit.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
-write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of the five public prints", S.BLACK, italic=True, size=8, align=S.left_indent)
-write(comps, f'{DC}{rr[0]}', "Math: (12.0+8.0+14.0+9.3+10.7)/5 = 10.8x. Do not use as FY30 exit.",
+write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of the seven core prints", S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DC}{rr[0]}', "Each E cell is I/J from the PitchBook extract. Do not use as FY30 exit.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 rr[0] += 1
 EM['mature_mean'] = rr[0]
-write(comps, f'A{rr[0]}', "Mature public mean (DECK / ADS / VFC)", S.BLACK, size=10, align=S.left_indent)
-write(comps, f'E{rr[0]}', f"=AVERAGE(E{deck_r},E{ads_r},E{vfc_r})",
+write(comps, f'A{rr[0]}', "All positive-EBITDA mean (ex-UAA; includes WSM / MOV / LZB)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}',
+      f"=AVERAGE({','.join(f'E{k}' for k in pos_keys)})",
       S.BLACK, size=10, numfmt=MULT, align=S.center)
 write(comps, f'{DJ}{rr[0]}',
-      "~9.3x closest mature set. Comps check only \u2014 selected exit is Gordon implied, below this tape.",
+      "Wider PitchBook tape. WSM/MOV/LZB are adjacent retail, not athletic. Not the TV.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
-write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of Deckers, adidas, VFC", S.BLACK, italic=True, size=8, align=S.left_indent)
-write(comps, f'{DC}{rr[0]}', "Math: (8.0+9.3+10.7)/3 = 9.3x. Not the selected FY30 exit.",
+write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of every positive-EBITDA row", S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DC}{rr[0]}', "UAA omitted because TTM EBITDA is negative. Not the selected FY30 exit.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 rr[0] += 1
 write(comps, f'A{rr[0]}',
@@ -756,10 +777,10 @@ rr[0] += 1
 for bullet in [
     "\u2022  Selected exit = Gordon TV / FY30 EBITDA. Identity: (UFCF/EBITDA)\u00d7(1+g)/(WACC\u2212g). Live formula, not a typed 8.0x",
     "\u2022  At base WACC 10.5% and g 2.25% that identity is ~6.0x \u2014 the stale \u201cGordon ~7x / pick Deckers 8.0x\u201d overlay is gone",
-    "\u2022  Deckers 8.0x is a public print, not a derivation of our exit. It is only the football-field cap",
-    "\u2022  Public 5-name mean 10.8x and mature mean 9.3x are current trading tapes, not a 2.25% g terminal year",
+    "\u2022  PitchBook pubcomps (04-Sep-2026) are the current tape: each multiple is daily EV / TTM EBITDA",
+    "\u2022  That tape is a check, not the exit. A 2.25% g / 15.5% OM year is not today\u2019s NKE/WSM multiple",
     "\u2022  Alo has no EV/EBITDA print. Implied 5.0x is EV/Sales (unclosed $10bn ask / ~$2bn parent sales) \u2014 not the FY30 exit",
-    "\u2022  Current LULU ~3.5\u20135x is a trough. Gordon 6.0x is a partial recovery, not a re-rate to ONON 14x",
+    "\u2022  PitchBook LULU is ~4.7x TTM. Gordon 6.0x is a partial recovery, not a re-rate to WSM ~15x",
 ]:
     write(comps, f'A{rr[0]}', bullet, S.BLACK, size=9, align=S.left_indent)
     rr[0] += 1
@@ -822,7 +843,7 @@ write_source_with_ctrl_f(comps, f'{DS}{rr[0]}', f'{DC}{rr[0]}', "NASDAQ", D.SOUR
                          D.REPORTED_HINTS["nasdaq"])
 rr[0] += 1
 write(comps, f'A{rr[0]}',
-      "Note: public set is NKE, DECK, ONON, adidas, VFC (red). Alo is a private reference (implied 5.0x EV/Sales; EV/EBITDA n.a.). Selected TV is Gordon implied, not Alo.",
+      "Note: pubcomps are PitchBook 04-Sep-2026 (EV/EBITDA = daily EV / TTM EBITDA). UAA excluded from the mean. Selected TV is Gordon implied, not the PitchBook average. Alo EV/EBITDA is n.a.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 
 # Link DCF exit multiple to Comps peer build + peer table

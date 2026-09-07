@@ -43,7 +43,8 @@ def check_hint(name, hint, url):
     if not hint:
         return None
     if not url:
-        if name in ("sc_wacc", "sens_axes") or name.endswith(":dcf_exitm") or name == "SOURCE:dcf_exitm":
+        if name in ("sc_wacc", "sens_axes") or name.endswith(":dcf_exitm") or name == "SOURCE:dcf_exitm" \
+           or name.endswith((":comps_nke", ":comps_deck", ":comps_ads", ":comps_pb")):
             return None
         return (name, "no_url", [])
     body = plain(fetch(url))

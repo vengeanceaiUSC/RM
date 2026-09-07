@@ -683,24 +683,25 @@ for ri, row in enumerate(sens):
 # =====================================================================
 # 20. COMPS
 # =====================================================================
-s = slide_base("Comparable Companies", "LULU screens cheap vs public peers; Alo has no EV/EBITDA print", page=pg(),
-               sources="Source: StockAnalysis public prints; Alo ask $10bn (Reuters) / parent sales ~$2bn (Forbes) \u2014 EV/EBITDA n.a.")
-hdr = ["Company", "EV/EBITDA", "P/E (fwd)", "Rev growth", "Op margin"]
+s = slide_base("Comparable Companies", "PitchBook pubcomps are the current tape; Alo still has no EV/EBITDA", page=pg(),
+               sources="Source: PitchBook Comps Set 04-Sep-2026 (EV/EBITDA = daily EV / TTM EBITDA); Alo ask $10bn / Forbes ~$2bn")
+hdr = ["Company", "EV/EBITDA", "P/E", "EV ($000)", "EBITDA ($000)"]
 rows = [
-    ["lululemon (LULU)", "3.5x", "10.4x", "\u22126% (FY26E)", "~20%"],
-    ["Nike (NKE)", "12.0x", "22.4x", "low-single", "~11%"],
-    ["Deckers (DECK)", "8.0x", "11.2x", "mid-teens", "~22%"],
-    ["On Holding (ONON)", "14.0x", "15.2x", "20%+", "~10%"],
-    ["adidas (ADS)", "9.3x", "14.2x", "mid-single", "~9%"],
-    ["V.F. Corp (VFC)", "10.7x", "11.7x", "flat/decl.", "~8%"],
-    ["Alo Yoga (private)", "n.a.", "n.m.", "fast", "n.a."],
+    ["lululemon (LULU)", "4.7x", "8.3x", "11,890,440", "2,548,084"],
+    ["Nike (NKE)", "12.7x", "18.3x", "58,972,350", "4,647,000"],
+    ["adidas (ADS)", "9.2x", "19.1x", "35,661,944", "3,857,684"],
+    ["Deckers (DECK)", "7.9x", "12.1x", "10,555,510", "1,329,439"],
+    ["Crocs (CROX)", "7.8x", "10.3x", "7,153,911", "922,278"],
+    ["Levi Strauss (LEVI)", "9.6x", "15.0x", "9,422,753", "976,700"],
+    ["Kontoor (KTB)", "12.9x", "18.0x", "5,236,269", "407,521"],
+    ["Alo Yoga (private)", "n.a.", "n.m.", "\u2014", "\u2014"],
 ]
-stmt_table(s, rows, hdr, col0w=3.4, top=1.25, height=3.85, bold_rows=(0,))
-tb, tf = textbox(s, Inches(0.5), Inches(5.2), Inches(12.35), Inches(1.75))
+stmt_table(s, rows, hdr, col0w=3.4, top=1.20, height=3.90, bold_rows=(0,))
+tb, tf = textbox(s, Inches(0.5), Inches(5.20), Inches(12.35), Inches(1.75))
 add_para(tf, "Read-through \u2014 we do not average these for terminal value", 13.5, CARD, bold=True, first=True, space_after=3)
-add_para(tf, "Public 5-name mean is 10.8x. That overstates a 2.25% g / 15.5% OM FY2030 exit", 12.5, INK, bullet=True, space_after=3)
-add_para(tf, "Selected TV is the Gordon identity (~6.0x) = TV / FY30 EBITDA = (UFCF/EBITDA)\u00d7(1+g)/(WACC\u2212g). Not Deckers 8.0x and not the 10.8x public mean", 12.5, INK, bullet=True, space_after=3)
-add_para(tf, "Alo EV/EBITDA is n.a. Firecrawl found no EBITDA. Implied 5.0x is EV/Sales: unclosed $10bn Moelis ask / Forbes ~$2bn parent sales \u2014 not the TV", 12.5, INK, bullet=True, space_after=0)
+add_para(tf, "PitchBook core mean (ex-UAA, ex-WSM/MOV/LZB) is the current athletic/apparel tape. UAA has negative EBITDA so it is out of the average", 12.5, INK, bullet=True, space_after=3)
+add_para(tf, "Selected TV is the Gordon identity (~6.0x). A 2.25% g year is not today\u2019s NKE 12.7x or WSM 15.4x", 12.5, INK, bullet=True, space_after=3)
+add_para(tf, "Alo EV/EBITDA is still n.a. Implied 5.0x is EV/Sales on an unclosed $10bn ask \u2014 not in this PitchBook set and not the TV", 12.5, INK, bullet=True, space_after=0)
 
 # =====================================================================
 # 21. APPENDIX: SCENARIOS
