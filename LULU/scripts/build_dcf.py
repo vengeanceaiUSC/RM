@@ -129,10 +129,14 @@ w_row('beta', "Beta used (relevered for WACC capital structure)",
       f"=E{WR['beta_unlev']}*(1+(1-E{WR['tax']})*E{WR['de_relever']})",
       None, fmt='0.00', bold=True, top=True, doc_key='wacc_beta')
 write_ctrl_f(wacc, f'{DC}{WR["beta"]}', D.BETA_CTRL_F)
-write(wacc, f'A{r[0]}',
-      "  memo: Unlever strips StockAnalysis 0.45 D/E ($2.14B debt). Relever applies FY25 10-K lease debt / market cap.",
-      S.BLACK, italic=True, size=8, align=S.left_indent)
-r[0] += 1
+for i, line in enumerate([
+    "  \u03b2 walkthrough (Hamada):",
+    "  (0) StockAnalysis \u03b2L = 0.86 (levered; 5Y regression vs market).",
+    "  (1) Unlever at source D/E = 0.45 [(1\u2212T)=0.70 at 30% tax] \u2192 \u03b2u = 0.86 \u00f7 1.315 \u2248 0.65.",
+    "  (2) Relever at WACC D/E = FY25 lease debt \u00f7 market cap \u2248 0.16 \u2192 \u03b2 used \u2248 0.73 in CAPM below.",
+]):
+    write(wacc, f'A{r[0]}', line, S.BLACK, italic=True, size=8, align=S.left_indent)
+    r[0] += 1
 write(wacc, f'A{r[0]}', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)
 r[0] += 1
 w_row('coe', "Cost of equity = rf + \u03b2 \u00d7 ERP", f"=E{WR['rf']}+E{WR['beta']}*E{WR['erp']}", None, bold=True, top=True)

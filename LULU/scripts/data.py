@@ -170,14 +170,14 @@ JUST = {
     # WACC tab
     "wacc_rf": "4.8% risk-free = FRED DGS10 on 2026-09-03 (4.77%) rounded; replaces the stale 4.3% input.",
     "wacc_erp": "6.0% ERP is a conservative overlay vs Damodaran Jan-2026 implied 4.23%; used to keep CoE above the risk-free 4.8%.",
-    "wacc_beta_obs": "StockAnalysis Beta (5Y) 0.86 is levered equity βL — observed alongside D/E 0.45 and $2.14B total debt on the same page.",
-    "wacc_beta_de_unlever": "Unlever D/E = StockAnalysis 0.45 ($2.14B total debt ÷ $4.79B book equity) — leverage embedded in the source βL.",
-    "wacc_beta_unlev": "βu = βL ÷ [1 + (1−T) × D/E_source]. Strip StockAnalysis 0.45 D/E → βu ≈ 0.65.",
-    "wacc_beta_de_relever": "Relever D/E = FY25 10-K lease debt equiv. ÷ market equity — WACC capital structure we model.",
-    "wacc_beta_ind": "Damodaran unlevered Retail (Special Lines) βu 0.95 shown as a sector benchmark only — not the WACC input.",
-    "wacc_beta": "βL = βu × [1 + (1−T) × D/E_WACC]. Relevers to FY25 lease debt / market cap (~0.73 used β).",
+    "wacc_beta_obs": "Step 0: StockAnalysis Beta (5Y) = 0.86. This is levered equity βL from a 5-year regression vs the market — not unlevered.",
+    "wacc_beta_de_unlever": "Step 1a: Source D/E = 0.45 on StockAnalysis ($2.14B total debt ÷ $4.79B book equity) — the leverage paired with βL on that page.",
+    "wacc_beta_unlev": "Step 1b: βu = 0.86 ÷ [1 + (1−T)×0.45]. With T=30% → (1−T)=0.70. Denominator = 1.315 → βu ≈ 0.65 (pure business risk).",
+    "wacc_beta_de_relever": "Step 2a: WACC D/E = FY25 lease debt ($1,798,441k) ÷ market cap ($100 × 111,380k shares) ≈ 0.16 — our modeled capital structure.",
+    "wacc_beta_ind": "Benchmark only: Damodaran unlevered Retail (Special Lines) βu = 0.95. Not used — we derive βu from company βL instead.",
+    "wacc_beta": "Step 2b: β used = 0.65 × [1 + 0.70×0.16] ≈ 0.73. This relevered βL feeds CAPM: CoE = rf + β×ERP.",
     "wacc_kd": "5.0% pre-tax lease-equivalent borrowing cost; cheaper than equity. No funded revolver borrowings per FY25 10-K.",
-    "wacc_tax": "30% cash tax matches FY2026 guidance (“approximately 30%”); FY25 effective was 29.5%.",
+    "wacc_tax": "30% cash tax matches FY2026 guidance (“approximately 30%”). Also sets (1−T) = 0.70 in the Hamada β unlever/relever formulas.",
     "wacc_mkt_px": "$100 share price ≈ NASDAQ Last Sale after Q2 FY2026 guide cut; rounded from $100.61 close.",
     "wacc_mkt_eq": "Market equity = share price × shares outstanding. Capital-structure weighting numerator for relevered β and WACC weights.",
     "wacc_mkt_shares": "111,380k class A shares outstanding at FY25 year-end (10-K cover). Diluted WA 119,068 is for EPS, not market cap.",
@@ -404,12 +404,12 @@ SOURCE_HINT = {
     # WACC
     "wacc_rf": 'Ctrl+F "2026-09-03" → observation 4.77. Model uses 4.8%. Also Ctrl+F "DGS10" for the series title.',
     "wacc_erp": 'Ctrl+F "4.23%" on the 2025 row (last data row). Header is "Implied ERP (FCFE)". Model uses 6.0%.',
-    "wacc_beta_obs": 'Ctrl+F "Beta (5Y)" → 0.86. Levered equity βL (StockAnalysis).',
-    "wacc_beta_de_unlever": 'Ctrl+F "Debt / Equity" → 0.45 | "Total Debt" → 2.14B. Source D/E for unlever step.',
-    "wacc_beta_unlev": 'βu = E[βL] ÷ (1 + (1−T) × E[D/E source]). With StockAnalysis 0.45 → βu ≈ 0.65.',
-    "wacc_beta_de_relever": 'D/E = E[total debt equiv.] ÷ E[market equity]. FY25 10-K leases ÷ market cap for relever.',
-    "wacc_beta_ind": 'Ctrl+F "Retail (Special Lines)" → Unlevered beta 0.95 (βu). Sector benchmark only — not used in WACC.',
-    "wacc_beta": 'βL = E[βu] × (1 + (1−T) × E[D/E WACC]). Relever to modeled lease-debt capital structure.',
+    "wacc_beta_obs": 'Ctrl+F "Beta (5Y)" → 0.86. Levered equity βL — starting point (StockAnalysis).',
+    "wacc_beta_de_unlever": 'Ctrl+F "Debt / Equity" → 0.45. = $2.14B total debt ÷ $4.79B book equity (source page).',
+    "wacc_beta_unlev": 'Formula: βu = βL ÷ [1 + (1−T) × D/E]. (1−T) = 0.70 at 30% tax. 0.86 ÷ 1.315 ≈ 0.65.',
+    "wacc_beta_de_relever": 'Formula: D/E = E[lease debt] ÷ E[market equity]. 1,798,441 ÷ 11,138,000 ≈ 0.16 (10-K + NASDAQ).',
+    "wacc_beta_ind": 'Ctrl+F "Retail (Special Lines)" → 0.95 βu. Sector benchmark — not used in WACC.',
+    "wacc_beta": 'Formula: β used = βu × [1 + (1−T) × D/E]. 0.65 × 1.113 ≈ 0.73 → plugs into CoE row below.',
     "wacc_kd": 'Ctrl+F "Current lease liabilities" + "Non-current lease liabilities" → debt equiv. 5.0% illustrative lease borrowing cost.',
     "wacc_tax": 'Ctrl+F "a tax rate of approximately 30%" on the FY2026 outlook paragraph.',
     "wacc_mkt_px": 'Ctrl+F "closed at $100.61" → Last Sale $100.61 (NASDAQ). Model uses $100 rounded.',
@@ -518,24 +518,30 @@ SOURCE_HINT = {
 
 # Organized Ctrl+F block for the capex assumption cell (column D)
 BETA_CTRL_F = (
-    "Unlever at source D/E (StockAnalysis) \u2192 relever at WACC D/E (10-K leases).\n"
+    "HOW WE GET \u03b2 USED IN WACC (Hamada)\n"
     "\n"
-    "Observed levered \u03b2L (same source as D/E below)\n"
+    "STEP 0 \u2014 Start with observed levered \u03b2L (StockAnalysis)\n"
     '  Ctrl+F "Beta (5Y)"  \u2192  0.86\n'
+    "  5-year regression vs market. Already includes equity risk at source leverage.\n"
     "\n"
-    "Step 1 \u2014 Unlever (source leverage)\n"
-    '  Ctrl+F "Debt / Equity"  \u2192  0.45\n'
-    '  Ctrl+F "Total Debt"  \u2192  2.14B (leases on StockAnalysis)\n'
-    "  \u03b2u = 0.86 \u00f7 [1 + (1\u2212T) \u00d7 0.45]  \u2192  \u2248 0.65\n"
+    "STEP 1 \u2014 UNLEVER at source D/E (strip leverage from \u03b2L)\n"
+    '  Ctrl+F "Debt / Equity"  \u2192  0.45  (= $2.14B debt \u00f7 $4.79B book equity)\n'
+    '  Ctrl+F "Total Debt"  \u2192  2.14B\n'
+    "  Formula:  \u03b2u = \u03b2L \u00f7 [1 + (1\u2212T) \u00d7 D/E]\n"
+    "  (1\u2212T) = 0.70  because tax rate T = 30% on this tab\n"
+    "  0.45 = source D/E from StockAnalysis (same page as \u03b2L)\n"
+    "  \u03b2u = 0.86 \u00f7 [1 + 0.70 \u00d7 0.45] = 0.86 \u00f7 1.315  \u2248  0.65\n"
     "\n"
-    "Step 2 \u2014 Relever (WACC capital structure)\n"
-    "  D/E = FY25 lease debt equiv. \u00f7 market equity\n"
+    "STEP 2 \u2014 RELEVER at WACC D/E (our modeled lease debt)\n"
+    "  D/E = FY25 lease debt equiv. \u00f7 market equity (rows above)\n"
     '  Ctrl+F "Current lease liabilities"  \u2192  298,724\n'
     '  Ctrl+F "Non-current lease liabilities"  \u2192  1,499,717\n'
-    "  \u03b2L = \u03b2u \u00d7 [1 + (1\u2212T) \u00d7 D/E]  \u2192  \u2248 0.73\n"
+    "  Sum = 1,798,441 ($000). Market cap = $100 \u00d7 111,380k shares.\n"
+    "  D/E \u2248 0.16.  Formula:  \u03b2 used = \u03b2u \u00d7 [1 + 0.70 \u00d7 D/E]\n"
+    "  \u03b2 used = 0.65 \u00d7 [1 + 0.70 \u00d7 0.16]  \u2248  0.73  \u2192  CoE = rf + \u03b2 \u00d7 ERP\n"
     "\n"
-    "Sector benchmark (Damodaran) \u2014 not used\n"
-    '  Ctrl+F "Retail (Special Lines)"  \u2192  Unlevered beta 0.95'
+    "Benchmark (not used): Damodaran Retail \u03b2u 0.95\n"
+    '  Ctrl+F "Retail (Special Lines)"  \u2192  0.95'
 )
 
 CAPEX_CTRL_F = (
