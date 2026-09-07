@@ -116,21 +116,24 @@ r[0] += 1
 write(wacc, f'A{r[0]}', "Beta (unlever \u2192 relever)", S.ACCENT, bold=True, size=10)
 r[0] += 1
 w_row('beta_obs', "Observed Beta (5Y) \u2014 levered \u03b2L", D.MKT['beta'], S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
-w_row('de_unlever', "D/E for unlever (StockAnalysis; total debt / book equity)",
-      D.MKT['de_ratio_sa'], S.BLUE, fmt='0.00', doc_key='wacc_beta_de_unlever')
-w_row('beta_unlev', "Unlevered \u03b2u",
-      f"=E{WR['beta_obs']}/(1+(1-E{WR['tax']})*E{WR['de_unlever']})",
-      None, fmt='0.00', doc_key='wacc_beta_unlev')
-w_row('de_relever', "D/E for relever (WACC lease debt / market equity)",
+w_row('de_beta', "D/E (lease debt / market equity)",
       f"=E{WR['debt_tot']}/E{WR['mkt_eq']}",
-      None, fmt='0.00', doc_key='wacc_beta_de_relever')
+      None, fmt='0.00', doc_key='wacc_beta_de')
+w_row('beta_unlev', "Unlevered \u03b2u",
+      f"=E{WR['beta_obs']}/(1+(1-E{WR['tax']})*E{WR['de_beta']})",
+      None, fmt='0.00', doc_key='wacc_beta_unlev')
 w_row('beta_ind', "Sector \u03b2u benchmark (Damodaran Special Lines) \u2014 not used", 0.95, S.BLUE, fmt='0.00', doc_key='wacc_beta_ind')
+w_row('beta_sa_de', "StockAnalysis D/E (book; reference only)", D.MKT['de_ratio_sa'], S.BLUE, fmt='0.00')
+write(wacc, f'{DJ}{WR["beta_sa_de"]}', D.JUST["wacc_beta_sa_ref"], S.BLACK, italic=True, size=8, align=S.left_indent)
+write_ctrl_f(wacc, f'{DC}{WR["beta_sa_de"]}', 'Ctrl+F "Debt / Equity" → 0.45 | "Total Debt" → 2.14B. Reference only — not used in unlever formula.')
+write_link(wacc, f'{DS}{WR["beta_sa_de"]}', "StockAnalysis: LULU statistics", D.SOURCES["lulu_stats"], color=S.BLUE, size=9, italic=True)
 w_row('beta', "Beta used (relevered for WACC capital structure)",
-      f"=E{WR['beta_unlev']}*(1+(1-E{WR['tax']})*E{WR['de_relever']})",
+      f"=E{WR['beta_unlev']}*(1+(1-E{WR['tax']})*E{WR['de_beta']})",
       None, fmt='0.00', bold=True, top=True, doc_key='wacc_beta')
 write_ctrl_f(wacc, f'{DC}{WR["beta"]}', D.BETA_CTRL_F)
 write(wacc, f'A{r[0]}',
-      "  memo: Unlever strips StockAnalysis 0.45 D/E ($2.14B debt). Relever uses FY25 10-K lease debt / market cap.",
+      "  memo: Unlever and relever use the same D/E (FY25 lease debt \u00f7 market cap). "
+      "\u03b2 used = observed 0.86 when capital structure is unchanged.",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 r[0] += 1
 write(wacc, f'A{r[0]}', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)

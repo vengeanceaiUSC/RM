@@ -170,12 +170,12 @@ JUST = {
     # WACC tab
     "wacc_rf": "4.8% risk-free = FRED DGS10 on 2026-09-03 (4.77%) rounded; replaces the stale 4.3% input.",
     "wacc_erp": "6.0% ERP is a conservative overlay vs Damodaran Jan-2026 implied 4.23%; used to keep CoE above the risk-free 4.8%.",
-    "wacc_beta_obs": "StockAnalysis Beta (5Y) 0.86 is levered equity βL — observed while D/E ≈ 0.45 (total debt incl. leases).",
-    "wacc_beta_de_unlever": "StockAnalysis D/E 0.45 = $2.14B total debt ÷ $4.79B book equity — leverage embedded in the 0.86 regression βL.",
-    "wacc_beta_unlev": "βu = βL ÷ [1 + (1−T) × D/E]. Strip StockAnalysis 0.45 D/E → βu ≈ 0.65.",
-    "wacc_beta_de_relever": "WACC target D/E = FY25 lease debt equiv. ÷ market equity — real ASC 842 debt for relever step.",
+    "wacc_beta_obs": "StockAnalysis Beta (5Y) 0.86 is levered equity βL — strip WACC D/E, then relever to the same lease-debt capital structure.",
+    "wacc_beta_de": "D/E = FY25 lease debt equiv. ÷ market equity (~0.16). Same ratio for unlever and relever — our 10-K debt numbers.",
+    "wacc_beta_sa_ref": "StockAnalysis 0.45 D/E is book debt / book equity ($2.14B / $4.79B). Shown for reference; Hamada uses market D/E above.",
+    "wacc_beta_unlev": "βu = βL ÷ [1 + (1−T) × D/E]. Strips lease leverage embedded in the 0.86 regression using WACC D/E.",
     "wacc_beta_ind": "Damodaran unlevered Retail (Special Lines) βu 0.95 shown as a sector benchmark only — not the WACC input.",
-    "wacc_beta": "βL = βu × [1 + (1−T) × WACC D/E]. Relevers to FY25 lease debt in market-value capital structure.",
+    "wacc_beta": "βL = βu × [1 + (1−T) × D/E]. Relevers to the same FY25 lease debt / market equity. β used = 0.86 when D/E matches.",
     "wacc_kd": "5.0% pre-tax lease-equivalent borrowing cost; cheaper than equity. No funded revolver borrowings per FY25 10-K.",
     "wacc_tax": "30% cash tax matches FY2026 guidance (“approximately 30%”); FY25 effective was 29.5%.",
     "wacc_mkt_px": "$100 share price ≈ NASDAQ Last Sale after Q2 FY2026 guide cut; rounded from $100.61 close.",
@@ -289,9 +289,8 @@ ASSUMPTION_SRC = {
     "wacc_rf": ("FRED: 10Y Treasury (DGS10)", SOURCES["fred_dgs10"]),
     "wacc_erp": ("Damodaran: Historical Implied ERP", SOURCES["damodaran_erp"]),
     "wacc_beta_obs": ("StockAnalysis: LULU Beta (5Y)", SOURCES["lulu_stats"]),
-    "wacc_beta_de_unlever": ("StockAnalysis: LULU Debt / Equity", SOURCES["lulu_stats"]),
+    "wacc_beta_de": ("WACC tab: lease debt / market equity", None),
     "wacc_beta_unlev": ("WACC tab: Hamada unlever", None),
-    "wacc_beta_de_relever": ("WACC tab: lease debt / market equity", None),
     "wacc_beta_ind": ("Damodaran: US betas by sector (Jan 2026)", SOURCES["damodaran_betas"]),
     "wacc_beta": ("WACC tab: Hamada relever (total D/E incl. leases)", None),
     "wacc_kd": ("LULU FY2025 10-K: lease liabilities & no funded debt", filing_url("FY2025")),
@@ -405,11 +404,10 @@ SOURCE_HINT = {
     "wacc_rf": 'Ctrl+F "2026-09-03" → observation 4.77. Model uses 4.8%. Also Ctrl+F "DGS10" for the series title.',
     "wacc_erp": 'Ctrl+F "4.23%" on the 2025 row (last data row). Header is "Implied ERP (FCFE)". Model uses 6.0%.',
     "wacc_beta_obs": 'Ctrl+F "Beta (5Y)" → 0.86. Levered equity βL (StockAnalysis).',
-    "wacc_beta_de_unlever": 'Ctrl+F "Debt / Equity" → 0.45 | "Total Debt" → 2.14B (leases; StockAnalysis FY25).',
-    "wacc_beta_unlev": 'βu = E[βL] ÷ (1 + (1−T) × E[D/E unlever]). With 0.45 D/E → βu ≈ 0.65.',
-    "wacc_beta_de_relever": 'D/E = E[total debt equiv.] ÷ E[market equity]. FY25 10-K leases ÷ $100 × shares.',
+    "wacc_beta_de": 'D/E = E[total debt equiv.] ÷ E[market equity]. FY25 10-K leases ($1,798,441k) ÷ market cap.',
+    "wacc_beta_unlev": 'βu = E[βL] ÷ (1 + (1−T) × E[D/E]). Same D/E as relever row.',
     "wacc_beta_ind": 'Ctrl+F "Retail (Special Lines)" → Unlevered beta 0.95 (βu). Sector benchmark only — not used in WACC.',
-    "wacc_beta": 'βL = E[βu] × (1 + (1−T) × E[D/E relever]). Relever to WACC lease-adjusted capital structure.',
+    "wacc_beta": 'βL = E[βu] × (1 + (1−T) × E[D/E]). Same D/E → β used equals observed 0.86.',
     "wacc_kd": 'Ctrl+F "Current lease liabilities" + "Non-current lease liabilities" → debt equiv. 5.0% illustrative lease borrowing cost.',
     "wacc_tax": 'Ctrl+F "a tax rate of approximately 30%" on the FY2026 outlook paragraph.',
     "wacc_mkt_px": 'Ctrl+F "closed at $100.61" → Last Sale $100.61 (NASDAQ). Model uses $100 rounded.',
@@ -518,23 +516,23 @@ SOURCE_HINT = {
 
 # Organized Ctrl+F block for the capex assumption cell (column D)
 BETA_CTRL_F = (
-    "Company β: unlever at StockAnalysis D/E, relever at WACC lease debt.\n"
+    "Company β: unlever then relever using WACC lease debt / market equity.\n"
     "\n"
-    "Step 1 — Observed levered βL (StockAnalysis)\n"
+    "Observed levered βL (StockAnalysis)\n"
     '  Ctrl+F "Beta (5Y)"  \u2192  0.86\n'
     "\n"
-    "Step 2 — D/E embedded in that β (StockAnalysis)\n"
-    '  Ctrl+F "Debt / Equity"  \u2192  0.45\n'
-    '  Ctrl+F "Total Debt"  \u2192  2.14B (leases; no term loans)\n'
-    "\n"
-    "Step 3 — Unlever (Hamada)\n"
-    "  \u03b2u = \u03b2L \u00f7 [1 + (1\u2212T) \u00d7 0.45]  \u2192  \u2248 0.65\n"
-    "\n"
-    "Step 4 — Relever (WACC real debt / market equity)\n"
-    "  D/E = FY25 lease debt equiv. \u00f7 market cap\n"
+    "D/E (same for unlever and relever)\n"
+    "  = total debt equiv. \u00f7 market equity\n"
     '  Ctrl+F "Current lease liabilities"  \u2192  298,724\n'
     '  Ctrl+F "Non-current lease liabilities"  \u2192  1,499,717\n'
-    "  \u03b2L = \u03b2u \u00d7 [1 + (1\u2212T) \u00d7 D/E]  \u2192  \u2248 0.73\n"
+    "  Sum = 1,798,441 ($000) \u00f7 market cap\n"
+    "\n"
+    "Unlever:  \u03b2u = \u03b2L \u00f7 [1 + (1\u2212T) \u00d7 D/E]\n"
+    "Relever:  \u03b2L = \u03b2u \u00d7 [1 + (1\u2212T) \u00d7 D/E]\n"
+    "Same D/E both steps \u2192 \u03b2 used = 0.86\n"
+    "\n"
+    "StockAnalysis D/E 0.45 (book) \u2014 reference only, not used here\n"
+    '  Ctrl+F "Debt / Equity"  \u2192  0.45 | "Total Debt"  \u2192  2.14B\n'
     "\n"
     "Sector benchmark (Damodaran) \u2014 not used\n"
     '  Ctrl+F "Retail (Special Lines)"  \u2192  Unlevered beta 0.95'
