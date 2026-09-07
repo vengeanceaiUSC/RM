@@ -190,8 +190,6 @@ def s_assum(key, label, bear, base, bull, fmt=PCT, doc_key=None, extra_doc_key=N
                                    hints=D.SOURCE_HINT, prefix="Also")
         if doc_key in ("sc_capex_pct", "3s_capex_pct") or extra_doc_key == "sc_capex_sales":
             write_ctrl_f(scn, f'{DC}{rr[0]}', D.CAPEX_CTRL_F)
-        if doc_key in ("sc_dso", "sc_dio", "sc_dpo", "sc_prepaid", "sc_accrued"):
-            write_ctrl_f(scn, f'{DC}{rr[0]}', D.NWC_CTRL_F)
     rr[0] += 1
 
 write(scn, 'A3', "Key assumptions (5-yr forecast)", S.ACCENT, bold=True, size=10)
@@ -470,7 +468,8 @@ def _sc_status(row_num, sc_rows, fmt=NUM):
     return f'=IF(MAX({",".join(parts)})<{tol},"OK","CHECK")'
 
 def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, bold=False,
-          top=False, dbl=False, red=False, sc_rows=None, sc_sign=1, justify_key="", extra_doc_key=""):
+          top=False, dbl=False, red=False, sc_rows=None, sc_sign=1, justify_key="", extra_doc_key="",
+          internal_location=None):
     DR[key] = r[0]
     row_num = r[0]
     bdr = S.top_double if dbl else (S.top_border if top else None)
@@ -491,14 +490,12 @@ def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, b
         write(dcf, f'{CHK_COL}{row_num}', status, S.BLACK, bold=bold, size=8, align=S.center)
     if justify_key:
         write_assumption_docs(dcf, row_num, DJ, DS, DC, justify_key, D.JUST, D.ASSUMPTION_SRC,
-                              hints=D.SOURCE_HINT)
+                              internal_location=internal_location, hints=D.SOURCE_HINT)
         if extra_doc_key:
             append_assumption_docs(dcf, row_num, DJ, DS, DC, extra_doc_key, D.JUST, D.ASSUMPTION_SRC,
                                    hints=D.SOURCE_HINT, prefix="Also")
         if justify_key in ("sc_capex_pct", "3s_capex_pct") or extra_doc_key == "sc_capex_sales":
             write_ctrl_f(dcf, f'{DC}{row_num}', D.CAPEX_CTRL_F)
-        if justify_key in ("sc_dso", "sc_dio", "sc_dpo", "sc_prepaid", "sc_accrued", "sc_gm"):
-            write_ctrl_f(dcf, f'{DC}{row_num}', D.NWC_CTRL_F)
     elif extra_doc_key:
         src = D.ASSUMPTION_SRC.get(extra_doc_key)
         if src and src[1]:
@@ -542,8 +539,9 @@ d_row('capex_pct', "  Capex % of revenue", None, lambda c: f"={bref('capex_pct')
       justify_key="sc_capex_pct", extra_doc_key="sc_capex_sales")
 d_row('capex', "Less: capital expenditures", None,
       lambda c: f"=-Scenarios!{SCEN_BASE}{capex_rows[YEAR_MAP[c]]}", sc_rows=capex_rows, sc_sign=-1)
-write(dcf, f'A{r[0]}', "Working capital schedule (driver-based)", S.ACCENT, bold=True, size=10, align=S.left_indent)
+write(dcf, f'A{r[0]}', "Working capital schedule (driver-based)  [click \u2212 to collapse detail]", S.ACCENT, bold=True, size=10, align=S.left_indent)
 r[0] += 1
+wc_detail_start = r[0]
 d_row('dso', "  DSO (days) — flat vs FY25", D.NWC_FY25['dso'],
       lambda c: f"=Scenarios!{SCEN_BASE}{dso_rows[YEAR_MAP[c]]}", fmt='0.00', sc_rows=dso_rows,
       justify_key="sc_dso")
@@ -578,8 +576,12 @@ d_row('col', "Current operating liabilities (AP + accruals)", None,
       lambda c: f"=Scenarios!{SCEN_BASE}{col_rows[YEAR_MAP[c]]}", sc_rows=col_rows)
 d_row('nwc', "Net working capital", D.NWC_FY25['nwc'],
       lambda c: f"=Scenarios!{SCEN_BASE}{nwc_rows[YEAR_MAP[c]]}", bold=True, top=True, sc_rows=nwc_rows)
+wc_detail_end = r[0] - 1
 d_row('dnwc', "\u0394NWC (prior yr \u2212 current yr)", None,
-      lambda c: f"=Scenarios!{SCEN_BASE}{dnwc_rows[YEAR_MAP[c]]}", sc_rows=dnwc_rows)
+      lambda c: f"=Scenarios!{SCEN_BASE}{dnwc_rows[YEAR_MAP[c]]}", sc_rows=dnwc_rows,
+      bold=True, top=True, justify_key="sc_dnwc",
+      internal_location=f"'Scenarios'!A{dnwc_rows[1]}")
+S.group_rows(dcf, wc_detail_start, wc_detail_end, hidden=True)
 write(dcf, f'A{r[0]}',
       "  memo: driver-based NWC. ΔNWC = prior-year NWC \u2212 current-year NWC; added to UFCF (NWC build = cash outflow).",
       S.BLACK, italic=True, size=8, align=S.left_indent)

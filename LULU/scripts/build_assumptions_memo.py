@@ -66,6 +66,7 @@ LABEL_OVERRIDES = {
     "sc_dpo": "DPO (days) — flat vs FY25",
     "sc_prepaid": "Prepaid expenses (% of revenue)",
     "sc_accrued": "Accrued liabilities (% of revenue)",
+    "sc_dnwc": "ΔNWC (prior yr − current yr)",
     "dcf_exitm": "Selected exit EV/EBITDA (Gordon implied)",
     "dcf_debt_bridge": "EV bridge: debt & operating leases",
     "sens_axes": "Sensitivity grid axes",

@@ -62,6 +62,15 @@ def set_col_widths(ws, widths):
     for col, w in widths.items():
         ws.column_dimensions[col].width = w
 
+
+def group_rows(ws, start_row, end_row, hidden=True, outline_level=1):
+    """Outline-group rows so Excel shows +/- collapse controls (detail hidden by default)."""
+    if start_row is None or end_row is None or end_row < start_row:
+        return
+    ws.row_dimensions.group(start_row, end_row, outline_level=outline_level, hidden=hidden)
+    ws.sheet_properties.outlinePr.summaryBelow = True
+    ws.sheet_properties.outlinePr.applyStyles = True
+
 def write(ws, cell, value, color=BLACK, bold=False, size=10, numfmt=None,
           align=None, fillc=None, bdr=None, italic=False, name=FONT_NAME):
     c = ws[cell]
