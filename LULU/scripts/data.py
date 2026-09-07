@@ -168,8 +168,8 @@ JUST = {
     # WACC tab
     "wacc_rf": "4.8% risk-free = FRED DGS10 on 2026-09-03 (4.77%) rounded; replaces the stale 4.3% input.",
     "wacc_erp": "6.0% ERP is a conservative overlay vs Damodaran Jan-2026 implied 4.23%; used to keep CoE above the risk-free 4.8%.",
-    "wacc_beta_obs": "StockAnalysis Beta (5Y) is 0.86. Company 5Y print; too calm after the guide cut, so not the WACC input.",
-    "wacc_beta_ind": "Damodaran unlevered Retail (Special Lines) β 0.95 is the starting point; we relever it for ASC 842 lease debt.",
+    "wacc_beta_obs": "StockAnalysis Beta (5Y) 0.86 is levered equity β (βL) from regressions — not unlevered βu. Too calm post-guide-cut; not the WACC input.",
+    "wacc_beta_ind": "Damodaran unlevered Retail (Special Lines) βu 0.95 is the starting point; we relever it for ASC 842 lease debt. Do not confuse with company βL 0.86.",
     "wacc_beta": "Relevered β = βu × (1 + (1−T) × lease debt / market equity). No funded term loans — leases are the debt equivalent.",
     "wacc_kd": "5.0% pre-tax lease-equivalent borrowing cost; cheaper than equity. No funded revolver borrowings per FY25 10-K.",
     "wacc_tax": "30% cash tax matches FY2026 guidance (“approximately 30%”); FY25 effective was 29.5%.",
@@ -396,8 +396,8 @@ SOURCE_HINT = {
     # WACC
     "wacc_rf": 'Ctrl+F "2026-09-03" → observation 4.77. Model uses 4.8%. Also Ctrl+F "DGS10" for the series title.',
     "wacc_erp": 'Ctrl+F "4.23%" on the 2025 row (last data row). Header is "Implied ERP (FCFE)". Model uses 6.0%.',
-    "wacc_beta_obs": 'Ctrl+F "Beta (5Y)" → 0.86. Company 5Y beta. Not the WACC input.',
-    "wacc_beta_ind": 'Ctrl+F "Retail (Special Lines)" → Unlevered beta 0.95. Relever for ASC 842 lease debt on the next row.',
+    "wacc_beta_obs": 'Ctrl+F "Beta (5Y)" → 0.86. This is levered equity β (βL), not unlevered βu. Shown for reference only.',
+    "wacc_beta_ind": 'Ctrl+F "Retail (Special Lines)" → Unlevered beta 0.95 (βu). Do not use levered column 1.09 or company βL 0.86 here.',
     "wacc_beta": 'βL = βu × (1 + (1−T) × lease debt / market equity). Lease debt from 10-K; no funded term loans.',
     "wacc_kd": 'Ctrl+F "Current lease liabilities" + "Non-current lease liabilities" → debt equiv. 5.0% illustrative lease borrowing cost.',
     "wacc_tax": 'Ctrl+F "a tax rate of approximately 30%" on the FY2026 outlook paragraph.',
@@ -507,9 +507,9 @@ SOURCE_HINT = {
 
 # Organized Ctrl+F block for the capex assumption cell (column D)
 BETA_CTRL_F = (
-    "Relever Damodaran unlevered retail β for ASC 842 lease debt.\n"
+    "Relever Damodaran unlevered retail βu for ASC 842 lease debt.\n"
     "\n"
-    "Unlevered β (Damodaran Jan 2026)\n"
+    "Unlevered βu (Damodaran Jan 2026)\n"
     '  Ctrl+F "Retail (Special Lines)"  \u2192  Unlevered beta 0.95\n'
     "  Do not take the levered Beta column (1.09)\n"
     "\n"
@@ -518,8 +518,9 @@ BETA_CTRL_F = (
     '  Ctrl+F "Non-current lease liabilities"  \u2192  1,499,717\n'
     "  Sum = 1,798,441 ($000). No funded term loans.\n"
     "\n"
-    "Company 5Y (StockAnalysis) \u2014 shown, not used\n"
-    '  Ctrl+F "Beta (5Y)"  \u2192  0.86'
+    "Company 5Y (StockAnalysis) \u2014 levered βL, not βu; not used\n"
+    '  Ctrl+F "Beta (5Y)"  \u2192  0.86 = equity beta (βL), not unlevered\n'
+    "  0.86 is not a substitute for βu 0.95 on the relever row above"
 )
 
 CAPEX_CTRL_F = (

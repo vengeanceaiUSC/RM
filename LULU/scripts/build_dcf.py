@@ -97,7 +97,7 @@ def w_row(key, label, value, color, fmt=PCT, bold=False, top=False, doc_key=None
 write(wacc, 'A2', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)
 w_row('rf', "Risk-free rate (10-yr UST)", 0.048, S.RED, doc_key='wacc_rf')
 w_row('erp', "Equity risk premium", 0.060, S.RED, doc_key='wacc_erp')
-w_row('beta_obs', "Observed Beta (5Y) \u2014 not used in WACC", 0.86, S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
+w_row('beta_obs', "Observed Beta (5Y) \u2014 levered \u03b2L, not used in WACC", 0.86, S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
 w_row('beta_ind', "Unlevered retail beta (Damodaran Special Lines)", 0.95, S.RED, fmt='0.00', doc_key='wacc_beta_ind')
 w_row('tax', "Tax rate", 0.300, S.RED, doc_key='wacc_tax')
 r[0] += 1
