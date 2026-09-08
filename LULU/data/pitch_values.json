@@ -457,5 +457,66 @@
       "wacc": 41
     }
   },
+  "dcf_base": {
+    "rev_growth_fy26": -0.061,
+    "rev_growth_fy27_30": 0.023,
+    "ebit_margin_clean": 0.132,
+    "ebit_margin_terminal": 0.155,
+    "tariff_refund_k": 134500,
+    "terminal_g": 0.0225,
+    "tax": 0.3,
+    "capex_pct": 0.055,
+    "da_pct": 0.045,
+    "exit_multiple": 7.35855528365163,
+    "implied_exit_multiple": 7.35855528365163,
+    "tv_pct_ev": 0.734906301526022,
+    "fy30_ebitda_m": 2284,
+    "gordon_tv_m": 16804,
+    "exit_tv_m": 16804
+  },
+  "sotp": {
+    "segments": [
+      {
+        "segment": "Americas",
+        "fy30_rev_m": 8070,
+        "ebitda_margin_pct": 16.5,
+        "fy30_ebitda_m": 1332,
+        "ev_ebitda_lo": 5.0,
+        "ev_ebitda_hi": 6.5,
+        "ev_lo_m": 6658,
+        "ev_hi_m": 8655
+      },
+      {
+        "segment": "China Mainland",
+        "fy30_rev_m": 1805,
+        "ebitda_margin_pct": 19.5,
+        "fy30_ebitda_m": 352,
+        "ev_ebitda_lo": 7.0,
+        "ev_ebitda_hi": 9.0,
+        "ev_lo_m": 2463,
+        "ev_hi_m": 3167
+      },
+      {
+        "segment": "Rest of World",
+        "fy30_rev_m": 1543,
+        "ebitda_margin_pct": 18.0,
+        "fy30_ebitda_m": 278,
+        "ev_ebitda_lo": 6.0,
+        "ev_ebitda_hi": 8.0,
+        "ev_lo_m": 1667,
+        "ev_hi_m": 2222
+      }
+    ],
+    "total_ev_lo_m": 10788,
+    "total_ev_hi_m": 14045,
+    "cash_m": 1807,
+    "debt_m": 1798,
+    "equity_lo_m": 10797,
+    "equity_hi_m": 14054,
+    "implied_px_lo": 97,
+    "implied_px_hi": 126,
+    "consolidated_dcf_px": 134,
+    "fy30_rev_m": 11418
+  },
   "source": "LULU_DCF_Valuation_Model.xlsx \u2192 Scenarios cols G (base) & H (bull)"
 }

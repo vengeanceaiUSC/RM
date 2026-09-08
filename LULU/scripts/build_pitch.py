@@ -41,6 +41,8 @@ FF = PV["football_field"]
 MR = PV.get("model_refs", {})
 WB = PV.get("wacc_build", {})
 WR = WB.get("rows", {})
+DCF_BASE = PV.get("dcf_base", {})
+SOTP = PV.get("sotp", {})
 
 
 def _d(v):
@@ -93,7 +95,8 @@ LULU_TOC = [
     "11. Risks & mitigants", "12. Catalyst timeline", "13. Financials \u2014 income statement",
     "14. Financials \u2014 balance sheet", "15. Financials \u2014 cash flow",
     "16. Financials \u2014 capital structure", "17. Valuation summary (football field)",
-    "18. DCF valuation", "19. Comparable companies", "20. Appendix \u2014 bull / bear scenarios",
+    "18. Sum of the parts", "19. DCF valuation (base case)",
+    "20. Comparable companies", "21. Appendix \u2014 bull / bear scenarios",
 ]
 deck.toc_slide(LULU_TOC)
 
@@ -885,105 +888,263 @@ stmt_table(
 # =====================================================================
 # 17. VALUATION SUMMARY (FOOTBALL FIELD)
 # =====================================================================
-s = slide_base("Valuation Summary", "Multiple methods converge above the current price \u2014 target $140", page=pg(),
-               sources="Source: GIS DCF and comps models; multiples are analyst ranges")
-# football field: horizontal floating bars
-methods = [
+s = slide_base(
+    "Valuation Summary",
+    "Football field \u2014 implied share-price ranges by methodology (base case DCF; bear/bull in appendix)",
+    page=pg(),
+    sources=f"Source: {DCF_MODEL} \u2192 Comps / football field tab; geographic SOTP on FY30E base revenue mix",
+)
+
+_base_px = int(V["base_dcf"])
+_sotp_lo = SOTP.get("implied_px_lo", _base_px)
+_sotp_hi = SOTP.get("implied_px_hi", _base_px)
+ff_methods = [
     ("P / E (10\u201318x FY2026E)", round(FF["P / E"]["low"]), round(FF["P / E"]["high"])),
-    ("EV / EBITDA (4.5\u20137.5x)", round(FF["EV / EBITDA"]["low"]), round(FF["EV / EBITDA"]["high"])),
-    ("DCF (bear \u2013 bull)", round(FF["DCF"]["low"]), round(FF["DCF"]["high"])),
+    ("EV / EBITDA (5.0\u20138.0x FY30E)", round(FF["EV / EBITDA"]["low"]), round(FF["EV / EBITDA"]["high"])),
+    ("Geographic SOTP (FY30E)", _sotp_lo, _sotp_hi),
+    ("Unlevered DCF (base / Gordon g)", _base_px, _base_px),
     ("52-week range", 100, 226),
 ]
-chart_l, chart_r = 3.2, 12.6
-vmin, vmax = 60, 250
-def xpos(v):
+chart_l, chart_r = 3.35, 12.5
+vmin, vmax = 50, 240
+
+
+def _xpos(v):
     return chart_l + (v - vmin) / (vmax - vmin) * (chart_r - chart_l)
-top = 1.7
-for name, lo, hi in methods:
-    tb, tf = textbox(s, Inches(0.5), Inches(top-0.02), Inches(2.6), Inches(0.5), anchor=MSO_ANCHOR.MIDDLE)
-    add_para(tf, name, 12, NAVY, bold=True, first=True, space_after=0)
-    bar = rect(s, Inches(xpos(lo)), Inches(top), Inches(xpos(hi)-xpos(lo)), Inches(0.45), fill=GOLD)
-    bt = bar.text_frame; bt.word_wrap = False; bt.vertical_anchor = MSO_ANCHOR.MIDDLE
-    bt.margin_left = Pt(4); bt.margin_right = Pt(4)
-    p = bt.paragraphs[0]; p.alignment = PP_ALIGN.LEFT
-    r = p.add_run(); r.text = f"${lo}"; _set_font(r, 10.5, NAVY, bold=True)
-    tb2, tf2 = textbox(s, Inches(xpos(hi)+0.02), Inches(top), Inches(0.9), Inches(0.45), anchor=MSO_ANCHOR.MIDDLE)
-    add_para(tf2, f"${hi}", 10.5, NAVY, bold=True, first=True, space_after=0)
-    top += 0.75
-# current price line and target line
-cp_x = xpos(100); pt_x = xpos(140)
-ln = rect(s, Inches(cp_x), Inches(1.55), Pt(2), Inches(3.4), fill=INK)
-ln2 = rect(s, Inches(pt_x), Inches(1.55), Pt(2), Inches(3.4), fill=CARD)
-tb, tf = textbox(s, Inches(cp_x-0.7), Inches(4.95), Inches(1.6), Inches(0.3))
-add_para(tf, "Current $100", 10.5, INK, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
-tb, tf = textbox(s, Inches(pt_x-0.7), Inches(5.2), Inches(1.6), Inches(0.3))
-add_para(tf, "Target $140", 10.5, CARD, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
-tb, tf = textbox(s, Inches(0.5), Inches(5.7), Inches(12.35), Inches(1.2))
-add_para(tf, f"We set a 12-month target of $140 \u2014 above the Gordon DCF of {_d(V['base_dcf'])}, for a partial re-rating toward historical multiples \u2014 implying ~40% upside", 13, NAVY, bold=True, first=True, space_after=5)
-add_para(tf, "The P/E low end (~$96) sits near today's price, showing how little recovery is required for the stock to work", 12.5, INK, italic=True, space_after=0)
+
+
+# axis
+for tick in (50, 100, 150, 200):
+    tx = _xpos(tick)
+    rect(s, Inches(tx), Inches(1.38), Pt(1), Inches(4.35), fill=LGREY)
+    tb, tf = textbox(s, Inches(tx - 0.25), Inches(5.78), Inches(0.55), Inches(0.22))
+    add_para(tf, f"${tick}", 8, GREY, align=PP_ALIGN.CENTER, first=True, space_after=0)
+
+top = 1.55
+for name, lo, hi in ff_methods:
+    tb, tf = textbox(s, Inches(0.5), Inches(top - 0.02), Inches(2.75), Inches(0.48), anchor=MSO_ANCHOR.MIDDLE)
+    add_para(tf, name, 11, NAVY, bold=True, first=True, space_after=0)
+    bar_w = max(_xpos(hi) - _xpos(lo), 0.08)
+    bar = rect(s, Inches(_xpos(lo)), Inches(top), Inches(bar_w), Inches(0.42), fill=GOLD)
+    bt = bar.text_frame
+    bt.vertical_anchor = MSO_ANCHOR.MIDDLE
+    bt.margin_left = Pt(3)
+    p = bt.paragraphs[0]
+    p.alignment = PP_ALIGN.LEFT
+    r = p.add_run()
+    r.text = f"${lo}" if lo == hi else f"${lo}"
+    _set_font(r, 10, NAVY, bold=True)
+    if hi != lo:
+        tb2, tf2 = textbox(s, Inches(_xpos(hi) + 0.02), Inches(top), Inches(0.85), Inches(0.42), anchor=MSO_ANCHOR.MIDDLE)
+        add_para(tf2, f"${hi}", 10, NAVY, bold=True, first=True, space_after=0)
+    top += 0.72
+
+cp_x = _xpos(100)
+pt_x = _xpos(140)
+rect(s, Inches(cp_x), Inches(1.45), Pt(2), Inches(4.25), fill=INK)
+rect(s, Inches(pt_x), Inches(1.45), Pt(2), Inches(4.25), fill=CARD)
+tb, tf = textbox(s, Inches(cp_x - 0.65), Inches(5.82), Inches(1.5), Inches(0.25))
+add_para(tf, "Current $100", 9.5, INK, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
+tb, tf = textbox(s, Inches(pt_x - 0.65), Inches(5.82), Inches(1.5), Inches(0.25))
+add_para(tf, "Target $140", 9.5, CARD, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
+
+tb, tf = textbox(s, Inches(0.5), Inches(6.12), Inches(12.35), Inches(0.88))
+add_para(
+    tf,
+    f"12-month target $140 sits above base-case DCF {_d(_base_px)} and inside the comps/SOTP ranges \u2014 a partial re-rating, not a return to peak multiples.",
+    12.5, NAVY, bold=True, first=True, space_after=4,
+)
+add_para(
+    tf,
+    "DCF row = Scenarios col G (Gordon growth). Bear ${_d(V['bear'])} / bull ${_d(V['bull'])} bracket scenarios are in the appendix.",
+    11, INK, italic=True, space_after=0,
+)
 
 # =====================================================================
-# 19. DCF VALUATION
+# 18. SUM OF THE PARTS (GEOGRAPHIC)
 # =====================================================================
-s = slide_base("DCF Valuation", f"Base-case unlevered DCF yields ~{_d(V['base_dcf'])} per share", page=pg(),
-               sources="Source: GIS DCF model (from scratch); FY2025 cash & share count per 10-K")
-# assumptions table
-tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(6.1), Inches(0.4))
-add_para(tf, "Base-case assumptions", 14, CARD, bold=True, first=True, space_after=0)
+s = slide_base(
+    "Sum of the Parts",
+    "Geographic segments valued separately on FY30E base-case revenue \u2014 illustrative EV/EBITDA ranges",
+    page=pg(),
+    sources="Segment revenue: FY2025 10-K geography; FY30E scaled to base-case consolidated revenue (Scenarios col G)",
+)
+seg_rows = []
+for seg in SOTP.get("segments", []):
+    seg_rows.append([
+        seg["segment"],
+        f"{seg['fy30_rev_m']:,}",
+        f"{seg['ebitda_margin_pct']:.1f}%",
+        f"{seg['fy30_ebitda_m']:,}",
+        f"{seg['ev_ebitda_lo']:.1f}x\u2013{seg['ev_ebitda_hi']:.1f}x",
+        f"{seg['ev_lo_m']:,}\u2013{seg['ev_hi_m']:,}",
+    ])
+seg_rows.append([
+    "Total segment EV",
+    f"{SOTP.get('fy30_rev_m', 0):,}",
+    "\u2014",
+    "\u2014",
+    "\u2014",
+    f"{SOTP.get('total_ev_lo_m', 0):,}\u2013{SOTP.get('total_ev_hi_m', 0):,}",
+])
+seg_rows.append([
+    "Corporate / HQ (no separate carve-out)",
+    "\u2014", "\u2014", "\u2014", "\u2014", "$0",
+])
+seg_rows.append([
+    "+ Cash / \u2212 lease debt (EV bridge)",
+    "\u2014", "\u2014", "\u2014", "\u2014",
+    f"+{SOTP.get('cash_m', 0):,} / \u2212{SOTP.get('debt_m', 0):,}",
+])
+seg_rows.append([
+    "Implied equity value / share",
+    "\u2014", "\u2014", "\u2014", "\u2014",
+    f"${SOTP.get('implied_px_lo', 0)}\u2013${SOTP.get('implied_px_hi', 0)}",
+])
+stmt_table(
+    s, seg_rows,
+    ["Segment", "FY30E rev", "EBITDA %", "FY30E EBITDA", "EV/EBITDA", "Segment EV ($M)"],
+    col0w=2.15, top=1.2, height=3.05, font_size=9, header_font_size=9,
+    bold_rows=(3, len(seg_rows) - 1),
+)
+tb, tf = textbox(s, Inches(0.5), Inches(4.38), Inches(7.8), Inches(1.05))
+add_para(tf, "Methodology", 12, CARD, bold=True, first=True, space_after=3)
+for t in [
+    "Single-brand retailer \u2014 geography is the cleanest SOTP cut (Americas / China / RoW per 10-K)",
+    "FY30E segment revenue = FY25 geo mix \u00d7 base-case consolidated FY30 revenue (Scenarios col G)",
+    "Segment EBITDA margins are illustrative (mature Americas vs growth China); multiples are range checks, not peer averages",
+    f"Consolidated base-case DCF {_d(_base_px)} is the primary valuation anchor; SOTP triangulates geographic optionality",
+]:
+    add_para(tf, t, 10.5, INK, bullet=True, space_after=3)
+
+box = rect(s, Inches(8.5), Inches(4.38), Inches(4.35), Inches(1.55), fill=LGREY)
+btf = box.text_frame
+btf.word_wrap = True
+add_para(btf, "SOTP vs DCF", 12, CARD, bold=True, first=True, space_after=4)
+add_para(btf, f"SOTP range: ${_sotp_lo}\u2013${_sotp_hi}", 13, NAVY, bold=True, space_after=3)
+add_para(btf, f"Base-case DCF: {_d(_base_px)}", 13, NAVY, bold=True, space_after=3)
+add_para(btf, "Overlap is expected \u2014 SOTP uses terminal-year EBITDA; DCF discounts explicit FCF + Gordon TV.", 9.5, INK, space_after=0)
+
+# =====================================================================
+# 19. DCF VALUATION (BASE CASE)
+# =====================================================================
+_rev_g1 = DCF_BASE.get("rev_growth_fy26", -0.061)
+_rev_gt = DCF_BASE.get("rev_growth_fy27_30", 0.023)
+_exit_m = DCF_BASE.get("exit_multiple", 7.36)
+_tg = DCF_BASE.get("terminal_g", 0.0225)
+_tv_pct = DCF_BASE.get("tv_pct_ev", 0.735)
+
+s = slide_base(
+    "DCF Valuation",
+    f"Base-case unlevered DCF (Scenarios col G) \u2014 Gordon growth & exit-multiple terminal value reconcile to {_d(_base_px)}",
+    page=pg(),
+    sources=f"Source: {DCF_MODEL} \u2192 Scenarios col G + DCF tab; bear/bull scenarios in appendix",
+)
+
+# --- Assumptions (left) ---
+tb, tf = textbox(s, Inches(0.5), Inches(1.12), Inches(6.2), Inches(0.28))
+add_para(tf, "BASE-CASE ASSUMPTIONS (SCENARIOS COL G)", 11, CARD, bold=True, first=True, space_after=0)
 arows = [
     ["Assumption", "Value"],
-    ["Revenue growth (FY26 \u2192 FY30)", "\u22126.1% \u2192 +2.3%"],
-    ["EBIT margin (FY26 \u2192 FY30)", "13.2% clean \u2192 15.5% (+$134.5M FY26)"],
-    ["Tax rate", "30%"],
-    ["Capex % of revenue", "5.5% blend"],
+    ["FY2026 revenue growth", f"{_rev_g1 * 100:.1f}%"],
+    ["FY2027\u201330 revenue growth (avg)", f"{_rev_gt * 100:+.1f}%"],
+    ["Clean EBIT margin (FY26 run-rate)", f"{DCF_BASE.get('ebit_margin_clean', 0.132) * 100:.1f}%"],
+    ["Terminal EBIT margin (FY2030E)", f"{DCF_BASE.get('ebit_margin_terminal', 0.155) * 100:.1f}%"],
+    ["FY26 tariff refunds (one-time)", f"${DCF_BASE.get('tariff_refund_k', 134500) / 1000:.1f}M"],
+    ["Cash tax rate", f"{DCF_BASE.get('tax', 0.30) * 100:.0f}%"],
+    ["Capex % of revenue", f"{DCF_BASE.get('capex_pct', 0.055) * 100:.1f}%"],
     ["WACC", _pct(V["wacc"])],
-    ["Terminal growth", "2.25%"],
+    ["Terminal growth (g)", f"{_tg * 100:.2f}%"],
+    ["Exit EV/EBITDA (Gordon implied)", f"{_exit_m:.1f}x"],
 ]
-t = s.shapes.add_table(len(arows), 2, Inches(0.5), Inches(1.6), Inches(6.0), Inches(3.0)).table
-t.columns[0].width = Inches(4.0); t.columns[1].width = Inches(2.0)
-for ri, row in enumerate(arows):
-    for ci, val in enumerate(row):
-        cell = t.cell(ri, ci); cell.fill.solid()
-        cell.fill.fore_color.rgb = NAVY if ri == 0 else (WHITE if ri % 2 else LGREY)
-        p = cell.text_frame.paragraphs[0]; p.alignment = PP_ALIGN.LEFT if ci == 0 else PP_ALIGN.RIGHT
-        r = p.add_run(); r.text = val
-        _set_font(r, 11.5, WHITE if ri == 0 else (CARD if ci == 1 and ri > 0 else INK), bold=(ri == 0))
-        cell.vertical_anchor = MSO_ANCHOR.MIDDLE
-# output box
-box = rect(s, Inches(7.0), Inches(1.6), Inches(5.85), Inches(3.0), fill=LGREY)
-btf = box.text_frame; btf.word_wrap = True
-add_para(btf, "VALUATION OUTPUT (US$ M)", 12.5, CARD, bold=True, first=True, space_after=6)
+stmt_table(s, arows[1:], arows[0], col0w=3.5, top=1.38, height=2.85, left=0.5, width=6.15,
+           font_size=9, header_font_size=9, bold_rows=())
+
+# --- Terminal value approaches (left bottom) ---
+tb, tf = textbox(s, Inches(0.5), Inches(4.32), Inches(6.15), Inches(0.25))
+add_para(tf, "TERMINAL VALUE \u2014 TWO APPROACHES (IDENTICAL IN MODEL)", 10, CARD, bold=True, first=True, space_after=0)
+tv_rows = [
+    ["Method", "Formula / input", "FY30 TV ($M)"],
+    [
+        "Gordon growth",
+        f"FCF\u2085 \u00d7 (1+g) / (WACC\u2212g); g={_tg*100:.2f}%",
+        f"{DCF_BASE.get('gordon_tv_m', 0):,}",
+    ],
+    [
+        "Exit multiple",
+        f"FY30 EBITDA \u00d7 {_exit_m:.1f}x (Gordon identity, not peer avg)",
+        f"{DCF_BASE.get('exit_tv_m', 0):,}",
+    ],
+]
+stmt_table(s, tv_rows[1:], tv_rows[0], col0w=1.55, top=4.58, height=0.72, left=0.5, width=6.15,
+           font_size=8.5, header_font_size=8.5, bold_rows=())
+
+# --- Output (right) ---
+box = rect(s, Inches(6.85), Inches(1.35), Inches(6.0), Inches(2.55), fill=LGREY)
+btf = box.text_frame
+btf.word_wrap = True
+add_para(btf, "VALUATION OUTPUT (US$ M)", 11, CARD, bold=True, first=True, space_after=5)
 for t2, v in [
     ("PV of explicit FCF (FY26\u2013FY30)", _m(round(V["pv_fcf_m"]))),
     ("PV of terminal value", _m(round(V["pv_tv_m"]))),
     ("Enterprise value", _m(round(V["ev_m"]))),
     ("Plus: cash", _m(round(V["cash_m"]))),
+    ("Less: lease debt (ASC 842)", f"({_m(round(WB.get('total_debt_m', 0)))})"),
     ("Equity value", _m(round(V["equity_m"]))),
     ("\u00f7 Diluted shares (M)", f"{V['shares_m']:.1f}"),
 ]:
-    p = btf.add_paragraph(); p.space_after = Pt(5)
-    r = p.add_run(); r.text = t2; _set_font(r, 12.5, INK, bold=("Enterprise" in t2 or "Equity" in t2))
-    r2 = p.add_run(); r2.text = f"      {v}"; _set_font(r2, 12.5, NAVY, bold=True)
-p = btf.add_paragraph(); p.space_before = Pt(6)
-r = p.add_run(); r.text = f"Implied value:  {_d(V['base_dcf'])} / share"; _set_font(r, 16, GREEN, bold=True)
-# sensitivity mini
-tb, tf = textbox(s, Inches(0.5), Inches(4.85), Inches(12.35), Inches(2.0))
-add_para(tf, "Sensitivity \u2014 implied share price (WACC vs terminal growth)", 13, CARD, bold=True, first=True, space_after=4)
+    p = btf.add_paragraph()
+    p.space_after = Pt(3)
+    r = p.add_run()
+    r.text = t2
+    _set_font(r, 10.5, INK, bold=("Enterprise" in t2 or "Equity" in t2))
+    r2 = p.add_run()
+    r2.text = f"  {v}"
+    _set_font(r2, 10.5, NAVY, bold=True)
+p = btf.add_paragraph()
+p.space_before = Pt(4)
+r = p.add_run()
+r.text = f"Implied value:  {_d(_base_px)} / share"
+_set_font(r, 15, GREEN, bold=True)
+
+box2 = rect(s, Inches(6.85), Inches(4.05), Inches(6.0), Inches(1.25), fill=NAVY)
+b2 = box2.text_frame
+b2.word_wrap = True
+add_para(
+    b2,
+    f"TV = {_tv_pct * 100:.0f}% of EV  \u00b7  Exit {_exit_m:.1f}x = Gordon identity on FY30 EBITDA ${_m(DCF_BASE.get('fy30_ebitda_m', 0))}M",
+    10.5, WHITE, bold=True, first=True, space_after=3,
+)
+add_para(
+    b2,
+    "We do not average PitchBook comps for TV. Bear/bull WACC & g brackets are in the appendix.",
+    9, WHITE, space_after=0,
+)
+
+# --- Sensitivity ---
+tb, tf = textbox(s, Inches(0.5), Inches(5.42), Inches(12.35), Inches(0.25))
+add_para(tf, "SENSITIVITY \u2014 IMPLIED SHARE PRICE (WACC vs TERMINAL g)", 10, CARD, bold=True, first=True, space_after=0)
 _g_cols = ["1.5%", "2.0%", "2.25%", "2.5%", "3.0%"]
 sens = [["WACC \\ g"] + _g_cols]
-_base_wacc_idx = min(range(len(PV["sensitivity"])), key=lambda i: abs(float(PV["sensitivity"][i]["wacc"].rstrip("%")) - V["wacc"] * 100))
+_base_wacc_idx = min(
+    range(len(PV["sensitivity"])),
+    key=lambda i: abs(float(PV["sensitivity"][i]["wacc"].rstrip("%")) - V["wacc"] * 100),
+)
 for row in PV["sensitivity"]:
     sens.append([row["wacc"]] + [_d(p) for p in row["prices"]])
-st = s.shapes.add_table(len(sens), 6, Inches(0.5), Inches(5.35), Inches(7.6), Inches(1.5)).table
-for ri, row in enumerate(sens):
-    for ci, val in enumerate(row):
-        cell = st.cell(ri, ci); cell.fill.solid()
-        hot = (ri == _base_wacc_idx + 1 and ci == 3)
-        cell.fill.fore_color.rgb = NAVY if (ri == 0 or ci == 0) else (GOLD if hot else (WHITE if ri % 2 else LGREY))
-        p = cell.text_frame.paragraphs[0]; p.alignment = PP_ALIGN.CENTER
-        r = p.add_run(); r.text = val
-        _set_font(r, 10.5, WHITE if (ri == 0 or ci == 0) else (NAVY if hot else INK), bold=(ri == 0 or ci == 0 or hot))
-        cell.vertical_anchor = MSO_ANCHOR.MIDDLE
+stmt_table(
+    s, sens[1:], sens[0], col0w=1.0, top=5.65, height=1.05, left=0.5, width=7.4,
+    font_size=9, header_font_size=9,
+    bold_rows=(),
+)
+# highlight base cell via note
+tb, tf = textbox(s, Inches(8.1), Inches(5.65), Inches(4.75), Inches(1.05))
+add_para(tf, "Base-case cell", 9, CARD, bold=True, first=True, space_after=2)
+add_para(
+    tf,
+    f"WACC {_pct(V['wacc'])} \u00d7 g {_tg*100:.2f}% \u2192 {_d(_base_px)}. Grid brackets \u00b1100bps WACC and 1.5\u20133.0% g.",
+    9, INK, space_after=0,
+)
 
 # =====================================================================
 # 20. COMPS

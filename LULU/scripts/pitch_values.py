@@ -9,6 +9,7 @@ import os
 import openpyxl
 
 import data as D
+from driver_kpis import CANONICAL
 from scenario_extract import extract_scenario, discover_model_refs, COL_BASE, COL_BULL, PROJ_YEARS
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
@@ -100,6 +101,116 @@ def _extract_wacc_build(wacc):
     }
 
 
+def _scen_cell(sc, needle, col=COL_BASE):
+    for r in range(1, 400):
+        lab = sc.cell(r, 1).value
+        if not lab:
+            continue
+        if needle.lower() in str(lab).strip().lower():
+            return r, sc.cell(r, col).value
+    raise KeyError(f"Scenarios row not found: {needle}")
+
+
+def _dcf_cell(dcf, needle):
+    for r in range(1, 120):
+        lab = dcf.cell(r, 1).value
+        if not lab:
+            continue
+        if needle.lower() in str(lab).strip().lower():
+            return r, dcf.cell(r, 5).value
+    raise KeyError(f"DCF row not found: {needle}")
+
+
+def _extract_dcf_base(dcf, sc):
+    _, rev_g1 = _scen_cell(sc, "fy2026e revenue growth")
+    _, rev_gterm = _scen_cell(sc, "fy2027")
+    _, m1 = _scen_cell(sc, "run-rate ebit margin")
+    _, mterm = _scen_cell(sc, "terminal (fy2030e) ebit")
+    _, tg = _scen_cell(sc, "terminal growth")
+    _, tax = _scen_cell(sc, "cash tax rate")
+    _, capex_pct = _scen_cell(sc, "capex % of revenue")
+    _, da_pct = _scen_cell(sc, "d&a % of revenue")
+    _, tariff = _scen_cell(sc, "ieepa tariff refunds")
+    _, impl_exit = _dcf_cell(dcf, "implied exit ev/ebitda")
+    _, exit_sel = _dcf_cell(dcf, "selected exit ev/ebitda")
+    _, tv_pct = _dcf_cell(dcf, "% of ev from terminal value")
+    _, fy30_ebitda = _dcf_cell(dcf, "terminal ebitda (fy2030e")
+    _, gordon_tv = _dcf_cell(dcf, "terminal value = fcf")
+    _, exit_tv = _dcf_cell(dcf, "terminal value = terminal ebitda")
+    return {
+        "rev_growth_fy26": rev_g1,
+        "rev_growth_fy27_30": rev_gterm,
+        "ebit_margin_clean": m1,
+        "ebit_margin_terminal": mterm,
+        "tariff_refund_k": tariff,
+        "terminal_g": tg,
+        "tax": tax,
+        "capex_pct": capex_pct,
+        "da_pct": da_pct,
+        "exit_multiple": exit_sel,
+        "implied_exit_multiple": impl_exit,
+        "tv_pct_ev": tv_pct,
+        "fy30_ebitda_m": round(fy30_ebitda / 1000),
+        "gordon_tv_m": round(gordon_tv / 1000),
+        "exit_tv_m": round(exit_tv / 1000),
+    }
+
+
+def _extract_sotp(income_base, wacc_build, base_dcf):
+    """Geographic SOTP on FY30E base-case revenue mix (10-K segment geography)."""
+    fy25_m = D.IS["revenue"]["FY2025"] / 1000
+    fy30_m = income_base["FY2030E"]["revenue"]
+    scale = fy30_m / fy25_m
+    geo = {
+        "Americas": CANONICAL["revenue_geo_americas"]["FY2025"] / 1000,
+        "China Mainland": CANONICAL["revenue_geo_china"]["FY2025"] / 1000,
+        "Rest of World": CANONICAL["revenue_geo_row"]["FY2025"] / 1000,
+    }
+    # FY30E EBITDA margin by geography (illustrative; scales to ~consolidated FY30 EBITDA)
+    seg_cfg = [
+        ("Americas", 5.0, 6.5, 0.165),
+        ("China Mainland", 7.0, 9.0, 0.195),
+        ("Rest of World", 6.0, 8.0, 0.180),
+    ]
+    segments = []
+    ev_lo = ev_hi = 0.0
+    for name, mlo, mhi, ebitda_m in seg_cfg:
+        rev30 = geo[name] * scale
+        ebitda = rev30 * ebitda_m
+        seg_ev_lo = ebitda * mlo
+        seg_ev_hi = ebitda * mhi
+        ev_lo += seg_ev_lo
+        ev_hi += seg_ev_hi
+        segments.append({
+            "segment": name,
+            "fy30_rev_m": round(rev30),
+            "ebitda_margin_pct": round(ebitda_m * 100, 1),
+            "fy30_ebitda_m": round(ebitda),
+            "ev_ebitda_lo": mlo,
+            "ev_ebitda_hi": mhi,
+            "ev_lo_m": round(seg_ev_lo),
+            "ev_hi_m": round(seg_ev_hi),
+        })
+    cash = wacc_build["cash_m"]
+    debt = wacc_build["total_debt_m"]
+    shares_m = D.MKT["shares_out"] / 1000
+    eq_lo = ev_lo + cash - debt
+    eq_hi = ev_hi + cash - debt
+    return {
+        "segments": segments,
+        "total_ev_lo_m": round(ev_lo),
+        "total_ev_hi_m": round(ev_hi),
+        "cash_m": cash,
+        "debt_m": debt,
+        "equity_lo_m": round(eq_lo),
+        "equity_hi_m": round(eq_hi),
+        "implied_px_lo": round(eq_lo / shares_m),
+        "implied_px_hi": round(eq_hi / shares_m),
+        "consolidated_dcf_px": round(base_dcf),
+        "fy30_rev_m": round(fy30_m),
+    }
+
+
 def extract():
     dcf_wb = _recalc_dcf()
     dcf = dcf_wb["DCF"]
@@ -135,6 +246,10 @@ def extract():
                 "high": comps.cell(r, 8).value,
             }
 
+    wacc_build = _extract_wacc_build(wacc)
+    dcf_base = _extract_dcf_base(dcf, sc)
+    sotp = _extract_sotp(income_base, wacc_build, round(base, 0))
+
     return {
         "valuation": {
             "base_dcf": round(base, 0),
@@ -160,7 +275,9 @@ def extract():
         "cash_flow": {"base": cash_base, "bull": cash_bull},
         "proj_years": list(PROJ_YEARS),
         "model_refs": discover_model_refs(sc),
-        "wacc_build": _extract_wacc_build(wacc),
+        "wacc_build": wacc_build,
+        "dcf_base": dcf_base,
+        "sotp": sotp,
         "source": "LULU_DCF_Valuation_Model.xlsx → Scenarios cols G (base) & H (bull)",
     }
 
