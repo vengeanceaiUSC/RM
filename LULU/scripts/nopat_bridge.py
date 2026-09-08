@@ -1,4 +1,5 @@
 """Build NOPAT Bridge tab — 5-phase reported EBIT → normalized NOPAT (base case)."""
+from openpyxl.styles import Alignment
 import styles as S
 from styles import (
     write, write_reported, write_assumption_docs, group_columns, group_rows,
@@ -26,8 +27,8 @@ def build_nopat_bridge(wb, scen_base_col, rev_rows, ebit_rows, drv, sc_tariff_ce
     ws = wb.create_sheet("NOPAT Bridge")
     ws.sheet_view.showGridLines = False
     S.set_col_widths(ws, {
-        "A": 52, "B": 26, "C": 16, "D": 38,
-        "E": 12, "F": 11, "G": 11, "H": 11, "I": 11, "J": 11,
+        "A": 52, "B": 22, "C": 28, "D": 28,
+        "E": 12, "F": 14, "G": 11, "H": 11, "I": 11, "J": 11,
     })
     write(ws, "A1", "NOPAT NORMALIZATION PIPELINE (BASE CASE)", S.WHITE, bold=True, size=12, fillc=S.DARK)
     for c in list("BCDEFGHIJ"):
@@ -192,25 +193,52 @@ def build_nopat_bridge(wb, scen_base_col, rev_rows, ebit_rows, drv, sc_tariff_ce
 
     rr[0] += 1
     sub("Phase 5 — Agent workflow (execution steps)")
+    write(ws, f"B{rr[0]}", "Source", S.ACCENT, bold=True, size=8, align=S.left_indent)
+    write(ws, f"C{rr[0]}", "Without applied (FY26 DCF)", S.ACCENT, bold=True, size=8, align=S.left_indent)
+    write(ws, f"D{rr[0]}", "With applied (FY26 DCF)", S.ACCENT, bold=True, size=8, align=S.left_indent)
+    write(ws, f"F{rr[0]}", "Output", S.ACCENT, bold=True, size=8, align=S.left_indent)
+    rr[0] += 1
     workflow = [
         ("1. Clean base", "SEC 10-K income statement",
-         "Add back impairments, restructuring, M&A; optional SBC add-back.", "EBIT_adj (Phase 1)"),
+         "FY26 EBIT = Rev × 13.2% + tariff. No impairment/SBC/restructuring add-backs in forecast.",
+         "Would lift EBIT by adding back one-offs + SBC — runs on FY25 history only; FY26 DCF unchanged.",
+         "EBIT_adj (Phase 1)"),
         ("2. Capitalize R&D", "SG&A footnotes",
-         "Capitalize multi-year software/R&D; amortize over N years.", "EBIT_lease-adj (Phase 2)"),
+         "R&D/software expensed in full each year. LULU = $0 cap; no FY26 EBIT change.",
+         "Would spread expense over 4 yrs (cap + amort) — higher near-term EBIT; not wired to FY26 DCF.",
+         "EBIT_capitalized (Phase 2)"),
         ("3. Lease shift", "ASC 842 lease footnote",
-         "Add implied lease interest; standardize to unlevered EBIT.", "EBIT_capitalized"),
+         "Rent stays in operating costs; no lease-interest add-back. FY26 DCF EBIT unchanged.",
+         "Would add implied lease interest to EBIT (unlevered) — FY25 bridge only; FY26 DCF same.",
+         "EBIT_lease-adj (Phase 2)"),
         ("4. Segment mix", "Revenue Drivers tab",
-         "Blend store / e-comm / other EBIT margins by channel revenue share.", "Forecast EBIT"),
+         "DCF uses consolidated 13.2% on total revenue (+ tariff). Channel EBIT not used.",
+         "Channel EBIT = Σ(Rev_i × margin_i) — higher illustrative EBIT; check row shows gap vs Scenarios.",
+         "Forecast EBIT (Phase 3)"),
         ("5. NOPAT bridge", "Normalized EBIT & t_operating",
-         "NOPAT = EBIT x (1 - t); transition t toward marginal rate.", "Normalized NOPAT"),
+         "NOPAT = EBIT × (1 − 30%) flat sc_tax. Same EBIT as Scenarios.",
+         "NOPAT = EBIT × (1 − t_operating). Same EBIT; ~29.6% FY26 tax → slightly higher NOPAT.",
+         "Normalized NOPAT"),
+        ("6. Tariff refund (Scenarios)", "Q2 FY2026 earnings release",
+         "EBIT = Rev × 13.2% only — run-rate margin, no IEEPA refund.",
+         "+ $134,500k in FY26 only — DCF uses this; EBIT and NOPAT both higher vs without.",
+         "Scenarios EBIT (FY26)"),
     ]
-    for step, inp, logic, out in workflow:
+    for step, inp, without, with_applied, out in workflow:
         write(ws, f"A{rr[0]}", step, S.BLACK, bold=True, size=9, align=S.left_indent)
         write(ws, f"B{rr[0]}", inp, S.BLACK, size=8, align=S.left_indent)
-        write(ws, f"D{rr[0]}", logic, S.BLACK, italic=True, size=8, align=S.left_indent)
+        write(ws, f"C{rr[0]}", without, S.BLACK, size=8, align=S.left_indent)
+        write(ws, f"D{rr[0]}", with_applied, S.BLACK, size=8, align=S.left_indent)
         write(ws, f"F{rr[0]}", out, S.ACCENT, size=8, align=S.left_indent)
+        for col in (f"B{rr[0]}", f"C{rr[0]}", f"D{rr[0]}"):
+            ws[col].alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
         rr[0] += 1
 
+    write(ws, f"A{rr[0]}",
+          "FY26 DCF EBIT is built on Scenarios (13.2% + tariff). Phases 1–4 are FY25 documentation "
+          "or illustrative channel math — only Phase 5 tax and the tariff row change NOPAT vs a flat 30%.",
+          S.BLACK, italic=True, size=8, align=S.left_indent)
+    rr[0] += 1
     write(ws, f"A{rr[0]}",
           "Scenarios base-case NOPAT (col G) links to NORMALIZED NOPAT above. "
           "Bear/bull apply the same t_operating to their EBIT paths.",
