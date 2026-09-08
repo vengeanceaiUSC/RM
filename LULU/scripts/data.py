@@ -399,9 +399,24 @@ JUST = {
         "Not % of revenue — SBC add-back flag (1 = yes). UFCF uses diluted shares; "
         "add back non-cash SBC to EBIT. FY25 SBC $62,203k scaled with revenue in forecast."
     ),
-    "np_m_store": "18.6% EBIT margin on store-channel revenue. Calibrated so FY25 channel EBIT ≈ reported EBIT.",
-    "np_m_ecomm": "23.6% EBIT margin on e-commerce revenue. Higher than stores (no occupancy).",
-    "np_m_other": "9.1% EBIT margin on wholesale/license/outlets — lower-margin residual channel.",
+    "np_m_store": (
+        "18.6% of store-channel revenue (EBIT margin assumption).\n"
+        "EBIT_store = Rev_store × Margin_store\n"
+        "FY25 check: 5,049,744 × 18.6% ≈ 939,252 ($000).\n"
+        "Calibrated so Σ channel EBIT ≈ consolidated EBIT 2,210,615 (10-K)."
+    ),
+    "np_m_ecomm": (
+        "23.6% of e-commerce revenue (EBIT margin assumption).\n"
+        "EBIT_e-comm = Rev_e-comm × Margin_e-comm\n"
+        "FY25 check: 4,918,697 × 23.6% ≈ 1,160,812 ($000).\n"
+        "Higher than stores — no occupancy; fulfillment + digital marketing only."
+    ),
+    "np_m_other": (
+        "9.1% of other-channel revenue (EBIT margin assumption).\n"
+        "EBIT_other = Rev_other × Margin_other\n"
+        "FY25 check: 1,134,159 × 9.1% ≈ 103,209 ($000).\n"
+        "Wholesale/license/outlets — lower-margin residual channel."
+    ),
     "np_t_marg": "30% statutory marginal rate. t_operating transitions here over the 5-year forecast.",
     "np_rd_years": "Not % of revenue — amortization period (years) if R&D/software is capitalized. LULU: no separate R&D cap.",
     "np_ebit_rep": "FY25: reported operating income from 10-K. Forecast: Scenarios base-case EBIT (margin path).",
@@ -419,7 +434,25 @@ JUST = {
     "np_rev_store": "Not % of revenue — store-channel revenue from Revenue Drivers tab.",
     "np_rev_ecomm": "Not % of revenue — e-commerce revenue from Revenue Drivers tab.",
     "np_rev_other": "Not % of revenue — wholesale/license/outlet revenue from Revenue Drivers tab.",
-    "np_ebit_channel": "Phase 3 channel EBIT = Σ(Revenue_i × Margin_i). FY26 adds Scenarios tariff refund.",
+    "np_ebit_store": (
+        "18.6% of store-channel revenue.\n"
+        "EBIT_store,t = Rev_store,t × Margin_store\n"
+        "FY25: 5,049,744 × 18.6% ≈ 939,252 ($000).\n"
+        "Margin from driver assumptions row above; ties to 10-K store revenue."
+    ),
+    "np_ebit_ecomm": (
+        "23.6% of e-commerce revenue.\n"
+        "EBIT_e-comm,t = Rev_e-comm,t × Margin_e-comm\n"
+        "FY25: 4,918,697 × 23.6% ≈ 1,160,812 ($000).\n"
+        "Higher than stores — no brick-and-mortar occupancy drag."
+    ),
+    "np_ebit_other": (
+        "9.1% of other-channel revenue.\n"
+        "EBIT_other,t = Rev_other,t × Margin_other\n"
+        "FY25: 1,134,159 × 9.1% ≈ 103,209 ($000).\n"
+        "Wholesale/license/outlets — lowest channel margin."
+    ),
+    "np_ebit_channel": "Phase 3 channel EBIT = Σ sector EBIT_i. FY26 adds Scenarios tariff refund.",
     "np_ebit_p3": "Channel-mix EBIT output (Phase 3). Check row vs Scenarios shows channel vs margin-path gap.",
     "np_ebit_norm": (
         "FY25: Phases 1–2 walk-through. Forecast: Scenarios base EBIT — tax base for NOPAT."
@@ -562,9 +595,9 @@ ASSUMPTION_SRC = {
     "drv_store_aov": ("FY2025 10-K: average order value commentary", filing_url("FY2025")),
     # NOPAT Bridge
     "np_sbc": ("LULU CF statement (10-K): stock-based compensation", filing_url("FY2025")),
-    "np_m_store": ("NOPAT Bridge tab: channel margin calibration", None),
-    "np_m_ecomm": ("NOPAT Bridge tab: channel margin calibration", None),
-    "np_m_other": ("NOPAT Bridge tab: channel margin calibration", None),
+    "np_m_store": ("FY2025 10-K: company-operated stores net revenue", filing_url("FY2025")),
+    "np_m_ecomm": ("FY2025 10-K: e-commerce net revenue", filing_url("FY2025")),
+    "np_m_other": ("FY2025 10-K: other channels (residual)", filing_url("FY2025")),
     "np_t_marg": ("Q2 FY2026 outlook: tax rate ≈ 30%", SOURCES["earnings_sep2026"]),
     "np_rd_years": ("NOPAT Bridge: capitalization convention", None),
     "np_ebit_rep": ("LULU FY2025 10-K: Income from operations", filing_url("FY2025")),
@@ -579,7 +612,10 @@ ASSUMPTION_SRC = {
     "np_rev_store": ("Revenue Drivers tab: store-channel revenue", None),
     "np_rev_ecomm": ("Revenue Drivers tab: e-commerce revenue", None),
     "np_rev_other": ("Revenue Drivers tab: other channels revenue", None),
-    "np_ebit_channel": ("NOPAT Bridge tab: channel EBIT formula", None),
+    "np_ebit_store": ("FY2025 10-K: company-operated stores net revenue", filing_url("FY2025")),
+    "np_ebit_ecomm": ("FY2025 10-K: e-commerce net revenue", filing_url("FY2025")),
+    "np_ebit_other": ("FY2025 10-K: other channels (residual)", filing_url("FY2025")),
+    "np_ebit_channel": ("NOPAT Bridge tab: sector EBIT subtotal", None),
     "np_ebit_p3": ("NOPAT Bridge tab: Phase 3 subtotal", None),
     "np_ebit_norm": ("Scenarios tab: base-case EBIT (forecast)", None),
     "np_t_oper": ("LULU FY2025 10-K: income tax & interest expense", filing_url("FY2025")),
@@ -728,9 +764,21 @@ SOURCE_HINT = {
         'Ctrl+F "Stock-based compensation expense"\n'
         "→ 62,203 ($000). Flag = 1 adds back to EBIT (diluted-shares UFCF convention)."
     ),
-    "np_m_store": "Channel margin assumption — calibrated so FY25 store rev × 18.6% + e-comm × 23.6% + other × 9.1% ≈ reported EBIT.",
-    "np_m_ecomm": "E-commerce EBIT margin 23.6% — higher than stores (no occupancy drag).",
-    "np_m_other": "Other channels 9.1% — wholesale/license/outlets residual margin.",
+    "np_m_store": (
+        'Ctrl+F "Company-operated stores"\n'
+        "→ 5,049,744 ($000) net revenue\n"
+        "× 18.6% margin assumption → store EBIT ≈ 939,252 ($000)"
+    ),
+    "np_m_ecomm": (
+        'Ctrl+F "E-commerce"\n'
+        "→ 4,918,697 ($000) net revenue\n"
+        "× 23.6% margin assumption → e-comm EBIT ≈ 1,160,812 ($000)"
+    ),
+    "np_m_other": (
+        'Ctrl+F "Net revenue" → 11,102,600\n'
+        "Minus stores + e-comm → other channels ≈ 1,134,159 ($000)\n"
+        "× 9.1% margin assumption → other EBIT ≈ 103,209 ($000)"
+    ),
     "np_t_marg": 'Ctrl+F "a tax rate of approximately 30%" → terminal marginal rate for t_operating glide path.',
     "np_rd_years": "Amortization period if R&D capitalized (3–5 yr convention). LULU: no separate R&D capitalization.",
     "np_ebit_rep": 'Ctrl+F "Income from operations" → 2,210,615 ($000). Forecast links to Scenarios EBIT.',
@@ -748,7 +796,21 @@ SOURCE_HINT = {
     "np_rev_store": "Revenue Drivers tab → store-channel revenue row.",
     "np_rev_ecomm": "Revenue Drivers tab → e-commerce revenue row.",
     "np_rev_other": "Revenue Drivers tab → other channels revenue row.",
-    "np_ebit_channel": "Σ channel revenue × margin. FY26 adds Scenarios tariff refund cell.",
+    "np_ebit_store": (
+        'Ctrl+F "Company-operated stores"\n'
+        "→ 5,049,744 ($000)\n"
+        "EBIT = Rev × 18.6% → ≈ 939,252 ($000)"
+    ),
+    "np_ebit_ecomm": (
+        'Ctrl+F "E-commerce"\n'
+        "→ 4,918,697 ($000)\n"
+        "EBIT = Rev × 23.6% → ≈ 1,160,812 ($000)"
+    ),
+    "np_ebit_other": (
+        "Other rev = 11,102,600 − 5,049,744 − 4,918,697 ≈ 1,134,159 ($000)\n"
+        "EBIT = Rev × 9.1% → ≈ 103,209 ($000)"
+    ),
+    "np_ebit_channel": "Sum of sector EBIT rows. FY26 adds Scenarios tariff refund cell.",
     "np_ebit_p3": "Channel EBIT subtotal (Phase 3). Compare Check row vs Scenarios.",
     "np_ebit_norm": "FY25: Phase 1–2 formula. Forecast: Scenarios base EBIT (tax base).",
     "np_t_oper": (

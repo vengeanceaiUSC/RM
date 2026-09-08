@@ -149,10 +149,17 @@ def build_nopat_bridge(wb, scen_base_col, rev_rows, ebit_rows, drv, sc_tariff_ce
     line("rev_ot", "  Other channels revenue", NP["rev_other"],
          lambda c, y: f"='Revenue Drivers'!{c}{drv['other_rev']}", doc_key="np_rev_other",
          internal_location=f"'Revenue Drivers'!B{drv['other_rev']}")
-    line("ebit_ch", "  Channel EBIT (= Sum Rev_i x Margin_i)", None,
-         lambda c, y: (f"={c}{R['rev_st']}*{FY25_COL}${R['m_store']}"
-                       f"+{c}{R['rev_ec']}*{FY25_COL}${R['m_ecomm']}"
-                       f"+{c}{R['rev_ot']}*{FY25_COL}${R['m_other']}"
+    line("ebit_st", "  Store-channel EBIT (= Rev × store margin)", NP["rev_store"] * NP["margin_store"],
+         lambda c, y: f"={c}{R['rev_st']}*{FY25_COL}${R['m_store']}",
+         color_fy25=S.BLACK, doc_key="np_ebit_store")
+    line("ebit_ec", "  E-commerce EBIT (= Rev × e-comm margin)", NP["rev_ecomm"] * NP["margin_ecomm"],
+         lambda c, y: f"={c}{R['rev_ec']}*{FY25_COL}${R['m_ecomm']}",
+         color_fy25=S.BLACK, doc_key="np_ebit_ecomm")
+    line("ebit_ot", "  Other-channels EBIT (= Rev × other margin)", NP["rev_other"] * NP["margin_other"],
+         lambda c, y: f"={c}{R['rev_ot']}*{FY25_COL}${R['m_other']}",
+         color_fy25=S.BLACK, doc_key="np_ebit_other")
+    line("ebit_ch", "  Channel EBIT (sum of sector EBIT)", None,
+         lambda c, y: (f"={c}{R['ebit_st']}+{c}{R['ebit_ec']}+{c}{R['ebit_ot']}"
                        + (f"+{sc_tariff_cell}" if y == "FY2026E" else "")),
          bold=True, doc_key="np_ebit_channel")
     fy25_ch = (NP["rev_store"] * NP["margin_store"] + NP["rev_ecomm"] * NP["margin_ecomm"]
