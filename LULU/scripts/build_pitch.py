@@ -907,10 +907,11 @@ s = slide_base(
 _base_px = int(V["base_dcf"])
 _sotp_lo = SOTP.get("implied_px_lo", _base_px)
 _sotp_hi = SOTP.get("implied_px_hi", _base_px)
+_gordon_exit = SOTP.get("gordon_exit_multiple", DCF_BASE.get("exit_multiple", 7.36))
 ff_methods = [
     ("P / E (10\u201318x FY2026E)", round(FF["P / E"]["low"]), round(FF["P / E"]["high"])),
     ("EV / EBITDA (5.0\u20138.0x FY30E)", round(FF["EV / EBITDA"]["low"]), round(FF["EV / EBITDA"]["high"])),
-    ("Geographic SOTP (FY30E)", _sotp_lo, _sotp_hi),
+    ("Geographic SOTP (FY30E; Gordon anchor)", _sotp_lo, _sotp_hi),
     ("Unlevered DCF (base / Gordon g)", _base_px, _base_px),
     ("52-week range", 100, 226),
 ]
@@ -974,7 +975,7 @@ add_para(
 # =====================================================================
 s = slide_base(
     "Sum of the Parts",
-    "Geographic segments valued separately on FY30E base-case revenue \u2014 illustrative EV/EBITDA ranges",
+    f"Geographic segments on FY30E base revenue \u2014 EV/EBITDA spreads vs Gordon-implied exit ({_gordon_exit:.1f}x)",
     page=pg(),
     sources="Segment revenue: FY2025 10-K geography; FY30E scaled to base-case consolidated revenue (Scenarios col G)",
 )
@@ -992,8 +993,8 @@ seg_rows.append([
     "Total segment EV",
     f"{SOTP.get('fy30_rev_m', 0):,}",
     "",
-    "",
-    f"FF band {SOTP.get('ff_ev_ebitda_band', '5–8x')}",
+    f"{SOTP.get('fy30_ebitda_m', 0):,}",
+    f"{SOTP.get('consolidated_multiple_lo', _gordon_exit):.1f}x\u2013{SOTP.get('consolidated_multiple_hi', _gordon_exit):.1f}x",
     f"{SOTP.get('total_ev_lo_m', 0):,}\u2013{SOTP.get('total_ev_hi_m', 0):,}",
 ])
 seg_rows.append([
@@ -1021,9 +1022,9 @@ add_para(tf, "Methodology", 12, CARD, bold=True, first=True, space_after=3)
 for t in [
     "Single-brand retailer \u2014 geography is the cleanest SOTP cut (Americas / China / RoW per 10-K)",
     "FY30E segment revenue = FY25 geo mix \u00d7 base-case consolidated FY30 revenue (Scenarios col G)",
-    f"EV/EBITDA ranges anchor to DCF Comps football-field band ({SOTP.get('ff_ev_ebitda_band', '5–8x')} FY30E) with segment premium/discount \u2014 not separate peer prints",
-    "Americas 5.0\u20136.5x (mature / near trough); China 7.0\u20139.0x (growth); RoW 6.0\u20138.0x (mid-band)",
-    f"Consolidated base-case DCF {_d(_base_px)} is the primary anchor; SOTP triangulates geographic optionality",
+    f"Segment EV/EBITDA spreads anchor to Gordon-implied exit {_gordon_exit:.1f}x (selected DCF TV identity \u2014 not the 5\u20138x comps football-field band)",
+    "Americas: Gordon \u2212 1.0x to \u2212 0.25x (mature); China: +0.5x to +2.0x (growth); RoW: \u22120.25x to +0.75x",
+    f"Consolidated base-case DCF {_d(_base_px)} uses Gordon growth (g={DCF_BASE.get('terminal_g', 0.0225)*100:.2f}%); SOTP is terminal-year EBITDA triangulation only",
 ]:
     add_para(tf, t, 10.5, INK, bullet=True, space_after=3)
 
@@ -1033,7 +1034,7 @@ btf.word_wrap = True
 add_para(btf, "SOTP vs DCF", 12, CARD, bold=True, first=True, space_after=4)
 add_para(btf, f"SOTP range: ${_sotp_lo}\u2013${_sotp_hi}", 13, NAVY, bold=True, space_after=3)
 add_para(btf, f"Base-case DCF: {_d(_base_px)}", 13, NAVY, bold=True, space_after=3)
-add_para(btf, "Overlap is expected \u2014 SOTP uses terminal-year EBITDA; DCF discounts explicit FCF + Gordon TV.", 9.5, INK, space_after=0)
+add_para(btf, "Overlap is expected \u2014 SOTP applies FY30 EBITDA multiples; DCF discounts explicit FCF + Gordon growth TV.", 9.5, INK, space_after=0)
 
 # =====================================================================
 # 19. DCF VALUATION (BASE CASE)
@@ -1046,7 +1047,7 @@ _tv_pct = DCF_BASE.get("tv_pct_ev", 0.735)
 
 s = slide_base(
     "DCF Valuation",
-    f"Base-case unlevered DCF (Scenarios col G) \u2014 Gordon growth & exit-multiple terminal value reconcile to {_d(_base_px)}",
+    f"Base-case unlevered DCF (Scenarios col G) \u2014 Gordon growth terminal value; {_exit_m:.1f}x is implied exit identity",
     page=pg(),
     sources=f"Source: {DCF_MODEL} \u2192 Scenarios col G + DCF tab; bear/bull scenarios in appendix",
 )
@@ -1065,24 +1066,24 @@ arows = [
     ["Capex % of revenue", f"{DCF_BASE.get('capex_pct', 0.055) * 100:.1f}%"],
     ["WACC", _pct(V["wacc"])],
     ["Terminal growth (g)", f"{_tg * 100:.2f}%"],
-    ["Exit EV/EBITDA (Gordon implied)", f"{_exit_m:.1f}x"],
+    ["Gordon-implied exit EV/EBITDA (identity)", f"{_exit_m:.1f}x"],
 ]
 stmt_table(s, arows[1:], arows[0], col0w=3.5, top=1.38, height=2.85, left=0.5, width=6.15,
            font_size=9, header_font_size=9, bold_rows=())
 
 # --- Terminal value approaches (left bottom) ---
 tb, tf = textbox(s, Inches(0.5), Inches(4.32), Inches(6.15), Inches(0.25))
-add_para(tf, "TERMINAL VALUE \u2014 TWO APPROACHES (IDENTICAL IN MODEL)", 10, CARD, bold=True, first=True, space_after=0)
+add_para(tf, "TERMINAL VALUE \u2014 GORDON GROWTH (SELECTED)", 10, CARD, bold=True, first=True, space_after=0)
 tv_rows = [
     ["Method", "Formula / input", "FY30 TV ($M)"],
     [
-        "Gordon growth",
+        "Gordon growth (selected)",
         f"FCF\u2085 \u00d7 (1+g) / (WACC\u2212g); g={_tg*100:.2f}%",
         f"{DCF_BASE.get('gordon_tv_m', 0):,}",
     ],
     [
-        "Exit multiple",
-        f"FY30 EBITDA \u00d7 {_exit_m:.1f}x (Gordon identity, not peer avg)",
+        "Exit multiple (identity check)",
+        f"FY30 EBITDA \u00d7 {_exit_m:.1f}x = Gordon TV \u00f7 EBITDA (same number)",
         f"{DCF_BASE.get('exit_tv_m', 0):,}",
     ],
 ]
@@ -1122,12 +1123,12 @@ b2 = box2.text_frame
 b2.word_wrap = True
 add_para(
     b2,
-    f"TV = {_tv_pct * 100:.0f}% of EV  \u00b7  Exit {_exit_m:.1f}x = Gordon identity on FY30 EBITDA ${_m(DCF_BASE.get('fy30_ebitda_m', 0))}M",
+    f"TV = {_tv_pct * 100:.0f}% of EV  \u00b7  {_exit_m:.1f}x = Gordon TV \u00f7 FY30 EBITDA ${_m(DCF_BASE.get('fy30_ebitda_m', 0))}M (not a peer pick)",
     10.5, WHITE, bold=True, first=True, space_after=3,
 )
 add_para(
     b2,
-    "We do not average PitchBook comps for TV. Bear/bull WACC & g brackets are in the appendix.",
+    f"Selected TV is Gordon growth (g). The {_exit_m:.1f}x exit multiple is the identity check (TV \u00f7 FY30 EBITDA), not a peer average.",
     9, WHITE, space_after=0,
 )
 

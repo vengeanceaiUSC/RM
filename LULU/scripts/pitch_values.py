@@ -156,39 +156,73 @@ def _extract_dcf_base(dcf, sc):
     }
 
 
-def _extract_sotp(income_base, wacc_build, base_dcf):
-    """Geographic SOTP on FY30E base-case revenue mix (10-K segment geography)."""
+def _comps_ev_ebitda(comps, needle):
+    """Return PitchBook EV/EBITDA from Comps peer table (col E), or None."""
+    for r in range(1, 120):
+        lab = comps.cell(r, 1).value
+        if not lab or needle.lower() not in str(lab).lower():
+            continue
+        val = comps.cell(r, 5).value
+        if isinstance(val, (int, float)):
+            return round(val, 1)
+    return None
+
+
+def _extract_sotp(income_base, wacc_build, base_dcf, dcf_base, comps):
+    """Geographic SOTP on FY30E base-case revenue mix (10-K segment geography).
+
+    Segment EV/EBITDA spreads anchor to the Gordon-implied exit multiple from the
+    base-case DCF (TV / FY30 EBITDA identity) — the same ~7.4x selected in the model.
+    The 5.0–8.0x football-field band on the Comps tab is a separate triangulation check.
+    """
     fy25_m = D.IS["revenue"]["FY2025"] / 1000
     fy30_m = income_base["FY2030E"]["revenue"]
-    scale = fy30_m / fy25_m
+    rev_scale = fy30_m / fy25_m
     geo = {
         "Americas": CANONICAL["revenue_geo_americas"]["FY2025"] / 1000,
         "China Mainland": CANONICAL["revenue_geo_china"]["FY2025"] / 1000,
         "Rest of World": CANONICAL["revenue_geo_row"]["FY2025"] / 1000,
     }
-    # Segment EV/EBITDA ranges: anchored to Comps tab football-field band (5.0–8.0x
-    # on FY30E EBITDA) with geographic premium/discount — NOT live PitchBook prints.
-    # See LULU_DCF_Valuation_Model.xlsx → Comps → "EV / EBITDA (FY2030E terminal)".
-    _FF_EV_LO, _FF_EV_HI = 5.0, 8.0
+    gordon_exit = dcf_base["implied_exit_multiple"]
+    gordon_label = f"{gordon_exit:.1f}x"
+    fy30_ebitda_m = dcf_base["fy30_ebitda_m"]
+    lulu_ttm = _comps_ev_ebitda(comps, "lululemon")
+    nke_ttm = _comps_ev_ebitda(comps, "nike")
+    ads_ttm = _comps_ev_ebitda(comps, "adidas")
+    peer_bits = []
+    if lulu_ttm:
+        peer_bits.append(f"LULU ~{lulu_ttm:.1f}x TTM")
+    if nke_ttm and ads_ttm:
+        peer_bits.append(f"NKE ~{nke_ttm:.1f}x / adidas ~{ads_ttm:.1f}x TTM (PitchBook)")
+    peer_ref = "; ".join(peer_bits) if peer_bits else "PitchBook pubcomps (Comps tab)"
+
+    # Spreads vs Gordon-implied exit (selected TV identity on consolidated FY30E EBITDA).
     seg_cfg = [
         (
-            "Americas", 5.0, 6.5, 0.165,
-            f"Floor of consolidated FF ({_FF_EV_LO}–{_FF_EV_HI}x); mature segment near LULU trough ~4.7x TTM",
+            "Americas", -1.0, -0.25, 0.165,
+            f"Mature discount vs Gordon {gordon_label}; near {peer_ref.split(';')[0] if peer_bits else 'LULU trough'}",
         ),
         (
-            "China Mainland", 7.0, 9.0, 0.195,
-            f"Growth premium vs Americas; below NKE ~12.7x / adidas ~9.2x TTM (PitchBook comps)",
+            "China Mainland", 0.5, 2.0, 0.195,
+            f"Growth premium vs Americas; still below NKE/adidas TTM ({peer_ref.split(';')[-1].strip() if len(peer_bits) > 1 else 'PitchBook comps'})",
         ),
         (
-            "Rest of World", 6.0, 8.0, 0.180,
-            f"Mid-band of consolidated FF ({_FF_EV_LO}–{_FF_EV_HI}x); expansion markets",
+            "Rest of World", -0.25, 0.75, 0.180,
+            f"Near Gordon anchor ({gordon_label}); expansion markets between Americas and China",
         ),
     ]
+    raw_ebitda = {}
+    for name, _, _, ebitda_m, _ in seg_cfg:
+        raw_ebitda[name] = geo[name] * rev_scale * ebitda_m
+    ebitda_scale = fy30_ebitda_m / sum(raw_ebitda.values())
+
     segments = []
     ev_lo = ev_hi = 0.0
-    for name, mlo, mhi, ebitda_m, mult_note in seg_cfg:
-        rev30 = geo[name] * scale
-        ebitda = rev30 * ebitda_m
+    for name, lo_spread, hi_spread, ebitda_m, mult_note in seg_cfg:
+        rev30 = geo[name] * rev_scale
+        ebitda = raw_ebitda[name] * ebitda_scale
+        mlo = round(gordon_exit + lo_spread, 1)
+        mhi = round(gordon_exit + hi_spread, 1)
         seg_ev_lo = ebitda * mlo
         seg_ev_hi = ebitda * mhi
         ev_lo += seg_ev_lo
@@ -204,6 +238,8 @@ def _extract_sotp(income_base, wacc_build, base_dcf):
             "ev_hi_m": round(seg_ev_hi),
             "multiple_note": mult_note,
         })
+    wavg_lo = ev_lo / fy30_ebitda_m
+    wavg_hi = ev_hi / fy30_ebitda_m
     cash = wacc_build["cash_m"]
     debt = wacc_build["total_debt_m"]
     shares_m = D.MKT["shares_out"] / 1000
@@ -221,10 +257,16 @@ def _extract_sotp(income_base, wacc_build, base_dcf):
         "implied_px_hi": round(eq_hi / shares_m),
         "consolidated_dcf_px": round(base_dcf),
         "fy30_rev_m": round(fy30_m),
-        "ff_ev_ebitda_band": f"{_FF_EV_LO}–{_FF_EV_HI}x",
+        "fy30_ebitda_m": fy30_ebitda_m,
+        "gordon_exit_multiple": round(gordon_exit, 2),
+        "consolidated_multiple_lo": round(wavg_lo, 1),
+        "consolidated_multiple_hi": round(wavg_hi, 1),
+        "ff_ev_ebitda_band": "5.0–8.0x",
         "multiple_source": (
-            "Consolidated band from DCF Comps tab (5.0–8.0x FY30E EBITDA). "
-            "Segment ranges are illustrative geographic premiums/discounts — not separate peer prints."
+            f"Segment spreads vs Gordon-implied exit {gordon_label} "
+            f"(FCF₅×(1+g)/(WACC−g) ÷ FY30 EBITDA — selected TV in DCF). "
+            f"5.0–8.0x Comps football-field band is a separate check, not the SOTP anchor. "
+            f"Peer tape: {peer_ref}."
         ),
     }
 
@@ -266,7 +308,7 @@ def extract():
 
     wacc_build = _extract_wacc_build(wacc)
     dcf_base = _extract_dcf_base(dcf, sc)
-    sotp = _extract_sotp(income_base, wacc_build, round(base, 0))
+    sotp = _extract_sotp(income_base, wacc_build, round(base, 0), dcf_base, comps)
 
     return {
         "valuation": {
