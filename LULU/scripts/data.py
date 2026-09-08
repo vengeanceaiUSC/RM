@@ -396,8 +396,9 @@ JUST = {
     "drv_store_aov": "In-store average transaction $115–$122; supports SPSF and comp-sales bridge on the driver tab.",
     # NOPAT Bridge — 5-phase EBIT → normalized NOPAT pipeline
     "np_sbc": (
-        "Not % of revenue — SBC add-back flag (1 = yes). UFCF uses diluted shares; "
-        "add back non-cash SBC to EBIT. FY25 SBC $62,203k scaled with revenue in forecast."
+        "Not % of revenue — SBC add-back flag. Set to 0 (Convention A).\n"
+        "SBC stays inside Scenarios EBIT/NOPAT as a real economic cost; DCF uses basic shares (111.4M).\n"
+        "FY25 reference: $62,203k (10-K). Flag = 1 would add back (Convention B + diluted shares) — not used."
     ),
     "np_m_store": (
         "Not % of consolidated revenue — EBIT as % of store-channel revenue only "
@@ -429,7 +430,7 @@ JUST = {
     "np_impair": "Add back intangible amortization / impairments. FY25 = other operating expense amortization run-rate.",
     "np_restruct": "Add back restructuring (severance, store closures). LULU FY25: none identified.",
     "np_legal": "Strip one-off legal / M&A advisory fees. LULU FY25: none identified.",
-    "np_ebit_p1": "Phase 1 adjusted EBIT = reported + non-recurring add-backs + optional SBC.",
+    "np_ebit_p1": "Phase 1 adjusted EBIT = reported + non-recurring add-backs. SBC add-back = 0 when flag = 0.",
     "np_lease_int": (
         "Not % of revenue — implied lease interest ($1,028k FY25). "
         "Reclass from rent to unlevered EBIT; scales with revenue in forecast."
@@ -464,7 +465,8 @@ JUST = {
     "np_ebit_channel": "Phase 3 channel EBIT = Σ sector EBIT_i. FY26 adds Scenarios tariff refund.",
     "np_ebit_p3": "Channel-mix EBIT output (Phase 3). Check row vs Scenarios shows channel vs margin-path gap.",
     "np_ebit_norm": (
-        "FY25: Phases 1–2 walk-through. Forecast: Scenarios base EBIT — tax base for NOPAT."
+        "FY25: Phases 1–2 walk-through (SBC not added back; flag = 0). "
+        "Forecast: Scenarios base EBIT — tax base for NOPAT."
     ),
     "np_t_oper": (
         "Operating effective tax rate: (tax + interest shield) ÷ (EBT + interest). "
@@ -771,7 +773,8 @@ SOURCE_HINT = {
     # NOPAT Bridge
     "np_sbc": (
         'Ctrl+F "Stock-based compensation expense"\n'
-        "→ 62,203 ($000). Flag = 1 adds back to EBIT (diluted-shares UFCF convention)."
+        "→ 62,203 ($000) FY25 reference. Flag = 0: SBC stays in EBIT (Convention A); "
+        "DCF IV uses basic 111,380k shares."
     ),
     "np_m_store": (
         "Not consolidated EBIT margin — EBIT ÷ store revenue only (cf. Scenarios 13.2%–15.5%).\n"

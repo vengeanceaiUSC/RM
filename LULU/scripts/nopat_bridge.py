@@ -96,8 +96,14 @@ def build_nopat_bridge(wb, scen_base_col, rev_rows, ebit_rows, drv, sc_tariff_ce
     rr[0] += 2
 
     hdr("Driver assumptions")
-    assum("sbc_flag", "Phase 1: Add back SBC? (1 = yes; diluted-shares / UFCF convention)", 1, fmt="0",
-          doc_key="np_sbc")
+    assum("sbc_flag",
+          "Phase 1: Add back SBC? (0 = no — Convention A: expense stays in EBIT)",
+          0, fmt="0", doc_key="np_sbc")
+    write(ws, f"A{rr[0]}",
+          "Convention A: SBC is a real economic cost (captures shareholder dilution). "
+          "Forecast NOPAT uses Scenarios EBIT with SBC expensed. DCF implied value uses basic shares (111.4M).",
+          S.BLACK, italic=True, size=8, align=S.left_indent)
+    rr[0] += 1
     assum("m_store", "Phase 3: Store-channel EBIT margin %", NP["margin_store"], doc_key="np_m_store")
     assum("m_ecomm", "Phase 3: E-commerce EBIT margin %", NP["margin_ecomm"], doc_key="np_m_ecomm")
     assum("m_other", "Phase 3: Other-channels EBIT margin %", NP["margin_other"], doc_key="np_m_other")
@@ -115,10 +121,12 @@ def build_nopat_bridge(wb, scen_base_col, rev_rows, ebit_rows, drv, sc_tariff_ce
          lambda c, y: 0, doc_key="np_restruct")
     line("add_legal", "+ Legal / M&A one-offs (add-back)", NP["legal_ma"],
          lambda c, y: 0, doc_key="np_legal")
-    line("add_sbc", "+ Stock-based compensation (add-back if flag = 1)", NP["sbc"],
+    line("add_sbc", "+ Stock-based compensation (add-back only if flag = 1)", None,
          lambda c, y: (f"={scen_ref(rev_rows, y)}/{NP['revenue']}*"
                        f"{NP['sbc']}*${FY25_COL}${R['sbc_flag']}"),
          doc_key="np_sbc")
+    write(ws, f"{FY25_COL}{R['add_sbc']}",
+          f"={NP['sbc']}*${FY25_COL}${R['sbc_flag']}", S.BLACK, size=10, numfmt=NUM, align=S.right)
     line("ebit_p1", "= Adjusted EBIT (Phase 1)", None,
          lambda c, y: (f"={c}{R['ebit_rep']}+{c}{R['add_impair']}+{c}{R['add_restruct']}"
                        f"+{c}{R['add_legal']}+{c}{R['add_sbc']}"),
@@ -200,7 +208,7 @@ def build_nopat_bridge(wb, scen_base_col, rev_rows, ebit_rows, drv, sc_tariff_ce
     rr[0] += 1
     workflow = [
         ("1. Clean base", "SEC 10-K income statement",
-         "EBIT = 13.2% × rev + tariff; no add-backs.",
+         "EBIT = 13.2% × rev + tariff; SBC stays expensed (flag = 0).",
          "DCF unchanged.",
          "EBIT_adj (Phase 1)"),
         ("2. Capitalize R&D", "SG&A footnotes",

@@ -74,7 +74,7 @@ LABEL_OVERRIDES = {
     "sc_col": "Current operating liabilities (subtotal)",
     "sc_nwc": "Net working capital (balance)",
     "sc_dnwc": "ΔNWC (prior yr − current yr)",
-    "np_sbc": "SBC add-back flag (1 = yes)",
+    "np_sbc": "SBC add-back flag (0 = expense stays in EBIT)",
     "np_m_store": "Store-channel EBIT margin %",
     "np_m_ecomm": "E-commerce EBIT margin %",
     "np_m_other": "Other-channels EBIT margin %",
