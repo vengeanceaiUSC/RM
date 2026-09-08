@@ -777,91 +777,109 @@ def _pct_wb(v, d=2):
     return f"{v * 100:.{d}f}%"
 
 
+_CAP_SOURCES = [
+    ("Market equity", _wacc_ref("mkt_eq")),
+    ("ASC 842 operating leases", f"{_wacc_ref('lease_d')} (FY25 10-K)"),
+    ("Funded debt", _wacc_ref("fund_d")),
+    ("Total capital", _wacc_ref("debt_tot")),
+    ("Cash & equivalents", "10-K BS \u2014 Cash"),
+    ("Net debt", "DCF EV bridge"),
+]
+_WACC_SOURCES = [
+    ("Risk-free rate", _wacc_ref("rf")),
+    ("Equity risk premium", _wacc_ref("erp")),
+    ("Tax rate", _wacc_ref("tax")),
+    ("Beta (relevered)", _wacc_ref("beta")),
+    ("Cost of equity", _wacc_ref("coe")),
+    ("Pre-tax Kd", _wacc_ref("kd")),
+    ("After-tax Kd", _wacc_ref("kd_at")),
+    ("Equity / debt weights", f"{_wacc_ref('we')} / {_wacc_ref('wd')}"),
+    ("WACC", _wacc_ref("wacc")),
+]
+_cap_src_rows = [(line, src) for line, src in _CAP_SOURCES]
+_wacc_src_rows = [(line, src) for line, src in _WACC_SOURCES]
+
 s = slide_base(
     "Financials \u2014 Capital Structure",
-    "Cap stack and WACC build \u2014 lease-adjusted structure; no funded term debt (critical lens for levered businesses)",
+    "Cap stack and WACC build \u2014 lease-adjusted; no funded term debt",
     page=pg(),
-    sources=(
-        f"Cap stack & WACC: {DCF_MODEL} \u2192 WACC tab (col E). "
-        "Cash/leases: FY2025 10-K. Beta: Yahoo Finance Key Statistics."
-    ),
+    sources=f"Cap stack & WACC: {DCF_MODEL} \u2192 WACC tab (col E). Cash/leases: FY2025 10-K.",
 )
 
-# --- Cap stack (left) ---
-cap_headers = ["Component", "US$ M", "% of capital", "Model source"]
+# Section headers (GIS financial-slide style)
+tb, tf = textbox(s, Inches(0.5), Inches(1.1), Inches(6.0), Inches(0.28))
+add_para(tf, "CAPITAL STACK (US$ M)", 11, CARD, bold=True, first=True, space_after=0)
+tb, tf = textbox(s, Inches(6.7), Inches(1.1), Inches(6.15), Inches(0.28))
+add_para(tf, "WACC BUILD (CAPM)", 11, CARD, bold=True, first=True, space_after=0)
+
+# --- Cap stack table (left) — no sub-notes; sources in footer table ---
+cap_headers = ["Component", "US$ M", "% of capital"]
 cap_rows = [
-    ["Market equity (price \u00d7 shares)", f"{WB['mkt_eq_m']:,}", f"{WB['equity_pct']:.1f}%", _wacc_ref("mkt_eq")],
-    ["ASC 842 operating lease liabilities", f"{WB['lease_debt_m']:,}", f"{WB['debt_pct']:.1f}%", f"{_wacc_ref('lease_d')} (10-K)"],
-    ["Funded debt (term loans / bonds)", f"{WB['funded_debt_m']:,}", "0.0%", _wacc_ref("fund_d")],
-    ["Total capital (WACC basis)", f"{WB['total_cap_m']:,}", "100.0%", _wacc_ref("debt_tot")],
-    ["Cash & equivalents (EV offset)", f"{WB['cash_m']:,}", "\u2014", "10-K BS \u2014 Cash"],
-    ["Net debt (leases + funded \u2212 cash)", f"{WB['net_debt_m']:,}", "\u2014", "DCF EV bridge"],
-]
-cap_notes = [
-    "Price $100 \u00d7 111.4M shares (FY25 10-K)",
-    f"Current ${D.MKT['lease_cur']:,}k + non-current ${D.MKT['lease_noncur']:,}k",
-    "Undrawn revolver; no term borrowings per 10-K",
-    "Equity + lease debt equivalents",
-    "Net-cash on funded debt; leases are debt-equiv in WACC",
-    "Near-zero net debt \u2014 equity-funded with lease adj.",
+    ["Market equity (price \u00d7 shares)", f"{WB['mkt_eq_m']:,}", f"{WB['equity_pct']:.1f}%"],
+    ["ASC 842 operating lease liabilities", f"{WB['lease_debt_m']:,}", f"{WB['debt_pct']:.1f}%"],
+    ["Funded debt (term loans / bonds)", f"{WB['funded_debt_m']:,}", "0.0%"],
+    ["Total capital (WACC basis)", f"{WB['total_cap_m']:,}", "100.0%"],
+    ["Cash & equivalents (EV offset)", f"{WB['cash_m']:,}", "\u2014"],
+    ["Net debt (leases + funded \u2212 cash)", f"{WB['net_debt_m']:,}", "\u2014"],
 ]
 stmt_table(
-    s, cap_rows, cap_headers, col0w=2.55, top=1.15, height=2.85, left=0.5, width=6.05,
-    font_size=8.5, header_font_size=8.5, bold_rows=(3,),
-    row_notes=cap_notes, note_font_size=6.5,
+    s, cap_rows, cap_headers, col0w=2.85, top=1.38, height=2.05, left=0.5, width=6.05,
+    font_size=9, header_font_size=9, bold_rows=(3,),
 )
-tb, tf = textbox(s, Inches(0.5), Inches(4.05), Inches(6.05), Inches(0.55))
+tb, tf = textbox(s, Inches(0.5), Inches(3.52), Inches(6.05), Inches(0.72))
 add_para(
     tf,
-    "LULU has no funded bank debt; ASC 842 store leases are the only debt equivalent in our WACC (~14% weight). "
-    "Cash exceeds lease liabilities \u2192 effectively net-cash on a funded-debt basis.",
+    "No funded bank debt; ASC 842 store leases are the only debt equivalent (~14% WACC weight). "
+    f"Cash ${WB['cash_m']:,}M exceeds lease debt \u2192 net-cash on a funded-debt basis.",
     8.5, INK, italic=True, first=True, space_after=0,
 )
 
-# --- WACC build (right) ---
-wacc_headers = ["WACC input", "Value", "Model source"]
-wacc_rows = [
-    ["Risk-free rate (10-yr UST)", _pct_wb(WB["rf"]), _wacc_ref("rf")],
-    ["Equity risk premium", _pct_wb(WB["erp"]), _wacc_ref("erp")],
-    ["Tax rate", _pct_wb(WB["tax"]), _wacc_ref("tax")],
-    ["Observed \u03b2L (Yahoo 5Y monthly)", f"{WB['beta_obs']:.2f}", _wacc_ref("beta_obs")],
-    ["Unlevered \u03b2u (Hamada @ Yahoo D/E)", f"{WB['beta_unlev']:.2f}", _wacc_ref("beta_unlev")],
-    ["Relevered \u03b2 (FY25 lease D/E)", f"{WB['beta']:.2f}", _wacc_ref("beta")],
-    ["Cost of equity (CAPM)", _pct_wb(WB["coe"]), _wacc_ref("coe")],
-    ["Pre-tax Kd (lease-equivalent)", _pct_wb(WB["kd"]), _wacc_ref("kd")],
-    ["After-tax Kd", _pct_wb(WB["kd_at"]), _wacc_ref("kd_at")],
-    ["Equity weight", _pct_wb(WB["we"], 1), _wacc_ref("we")],
-    ["Debt weight (leases)", _pct_wb(WB["wd"], 1), _wacc_ref("wd")],
-    ["WACC", _pct_wb(WB["wacc"]), _wacc_ref("wacc")],
-]
-wacc_notes = [
-    "FRED DGS10 \u2192 4.8% in model",
-    "Conservative vs Damodaran implied ERP",
-    "FY2026 guidance ~30%",
-    "Yahoo Key Statistics",
-    f"D/E unlever = {WB['de_unlev']:.2f} (Yahoo mrq)",
-    f"D/E relever = {WB['de_relev']:.2f} (10-K leases / mkt cap)",
-    f"rf + \u03b2 \u00d7 ERP",
-    "Illustrative lease borrowing cost",
-    "Kd \u00d7 (1 \u2212 T)",
-    "Market equity / total capital",
-    "Lease debt / total capital",
-    "We \u00d7 CoE + Wd \u00d7 Kd(1\u2212T) \u2192 Scenarios col G",
+# --- WACC build (right) — template LGREY panel + compact 2-col table ---
+rect(s, Inches(6.7), Inches(1.35), Inches(6.15), Inches(4.0), fill=LGREY)
+wacc_compact = [
+    ["Risk-free rate (10-yr UST)", _pct_wb(WB["rf"])],
+    ["Equity risk premium", _pct_wb(WB["erp"])],
+    ["Tax rate", _pct_wb(WB["tax"])],
+    ["Beta (relevered; lease adj.)", f"{WB['beta']:.2f}"],
+    ["Cost of equity (CAPM)", _pct_wb(WB["coe"])],
+    ["Pre-tax Kd (lease-equivalent)", _pct_wb(WB["kd"])],
+    ["After-tax Kd", _pct_wb(WB["kd_at"])],
+    ["Equity / debt weight", f"{_pct_wb(WB['we'], 1)} / {_pct_wb(WB['wd'], 1)}"],
 ]
 stmt_table(
-    s, wacc_rows, wacc_headers, col0w=2.35, top=1.15, height=3.45, left=6.7, width=6.15,
-    font_size=8.5, header_font_size=8.5, bold_rows=(6, 11),
-    row_notes=wacc_notes, note_font_size=6.5,
+    s, wacc_compact,
+    ["Input", "Value"],
+    col0w=3.35, top=1.42, height=2.35, left=6.78, width=5.98,
+    font_size=9, header_font_size=9, bold_rows=(4,),
 )
-box = rect(s, Inches(6.7), Inches(4.72), Inches(6.15), Inches(0.55), fill=LGREY)
+tb, tf = textbox(s, Inches(6.85), Inches(3.92), Inches(5.85), Inches(0.42))
+add_para(
+    tf,
+    f"\u03b2: Yahoo \u03b2L {WB['beta_obs']:.2f} \u2192 unlevered {WB['beta_unlev']:.2f} "
+    f"@ D/E {WB['de_unlev']:.2f} \u2192 relever {WB['beta']:.2f} @ lease D/E {WB['de_relev']:.2f}",
+    8, INK, italic=True, first=True, space_after=0,
+)
+box = rect(s, Inches(6.7), Inches(4.42), Inches(6.15), Inches(0.88), fill=NAVY)
 btf = box.text_frame
 btf.word_wrap = True
-add_para(btf, f"BASE-CASE WACC = {_pct_wb(WB['wacc'])}", 14, NAVY, bold=True, first=True, space_after=2)
+btf.vertical_anchor = MSO_ANCHOR.MIDDLE
+add_para(btf, f"WACC = {_pct_wb(WB['wacc'])}", 17, WHITE, bold=True, first=True, space_after=2)
 add_para(
     btf,
-    f"Drives Scenarios col G discount rate and {_d(V['base_dcf'])} implied share price. "
-    "Bear/bull bracket WACC \u00b1100bps on Scenarios tab.",
-    8.5, INK, space_after=0,
+    f"Base-case discount rate \u2192 Scenarios col G \u00b7 implied price {_d(V['base_dcf'])}",
+    9, WHITE, space_after=0,
+)
+
+# --- Model source map (footer, matches other financial slides) ---
+_all_src_rows = _cap_src_rows + _wacc_src_rows
+tb, tf = textbox(s, Inches(0.5), Inches(5.78), Inches(12.35), Inches(0.2))
+add_para(tf, "MODEL SOURCE MAP", 9, CARD, bold=True, first=True, space_after=0)
+stmt_table(
+    s, [[a, b] for a, b in _all_src_rows],
+    ["Line item", "DCF model source (WACC tab, col E)"],
+    col0w=2.4, top=5.98, height=1.02, left=0.5, width=12.35,
+    font_size=7, header_font_size=7.5,
+    bold_rows=(len(_all_src_rows) - 1,),
 )
 
 # =====================================================================
