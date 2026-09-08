@@ -435,20 +435,55 @@ def _fin_headers():
     return hdr
 
 
-def _fin_explainer_boxes(slide, hist_title, hist_bullets, fcst_title, fcst_bullets):
+def _hist_line(label, detail):
+    """One explainer bullet: metric label + historical FY22→FY25 detail."""
+    return f"{label}: {detail}"
+
+
+def _fcst_line(label, base_26, base_30, bull_26, bull_30, fmt="num"):
+    """One explainer bullet: same metric, base vs bull FY26→FY30."""
+    if fmt == "pct":
+        return (
+            f"{label}: base FY26 {base_26} \u2192 FY30 {base_30}; "
+            f"bull FY26 {bull_26} \u2192 FY30 {bull_30}"
+        )
+    if fmt == "eps":
+        return (
+            f"{label}: base FY26 ${base_26:.2f} \u2192 FY30 ${base_30:.2f}; "
+            f"bull FY26 ${bull_26:.2f} \u2192 FY30 ${bull_30:.2f}"
+        )
+    if fmt == "outflow":
+        return (
+            f"{label}: base FY26 ({m(abs(base_26))}) \u2192 FY30 ({m(abs(base_30))}); "
+            f"bull FY26 ({m(abs(bull_26))}) \u2192 FY30 ({m(abs(bull_30))})"
+        )
+    return (
+        f"{label}: base FY26 {m(base_26)}M \u2192 FY30 {m(base_30)}M; "
+        f"bull FY26 {m(bull_26)}M \u2192 FY30 {m(bull_30)}M"
+    )
+
+
+def _aligned_explainers(pairs):
+    """Build hist/fcst bullet lists with one metric per line (same order)."""
+    hist = [_hist_line(label, h) for label, h, _ in pairs]
+    fcst = [f for _, _, f in pairs]
+    return hist, fcst
+
+
+def _fin_explainer_boxes(slide, hist_title, hist_bullets, fcst_title, fcst_bullets, box_height=1.85):
     """Side-by-side Historical vs forecast explainer panels above the financial table."""
     for x, title, bullets, fill in (
         (0.5, hist_title, hist_bullets, LGREY),
         (6.7, fcst_title, fcst_bullets, NAVY),
     ):
-        box = rect(slide, Inches(x), Inches(1.12), Inches(6.05), Inches(1.55), fill=fill)
+        box = rect(slide, Inches(x), Inches(1.12), Inches(6.05), Inches(box_height), fill=fill)
         btf = box.text_frame
         btf.word_wrap = True
         title_color = CARD if fill == LGREY else GOLD
         body_color = INK if fill == LGREY else WHITE
         add_para(btf, title, 11.5, title_color, bold=True, first=True, space_after=3)
         for i, bullet in enumerate(bullets):
-            add_para(btf, bullet, 10.5, body_color, bullet=True, first=(i == 0), space_after=2)
+            add_para(btf, bullet, 10, body_color, bullet=True, first=(i == 0), space_after=2)
 
 
 def _fmt_cell(v, fmt="num"):
@@ -484,13 +519,15 @@ def pitch_financial_slide(
     bold_rows=(),
     italic_note=None,
     col0w=2.35,
-    table_top=2.82,
-    table_height=3.55,
+    table_top=3.05,
+    table_height=3.35,
+    explainer_height=1.85,
 ):
     """Build one financial slide: historicals + 5yr base/bull forecast table."""
     hdr = _fin_headers()
     s = slide_base(title, subtitle, page=pg(), sources=FIN_FOOTNOTE)
-    _fin_explainer_boxes(s, hist_title, hist_bullets, fcst_title, fcst_bullets)
+    _fin_explainer_boxes(s, hist_title, hist_bullets, fcst_title, fcst_bullets,
+                         box_height=explainer_height)
     stmt_table(s, rows, hdr, col0w=col0w, top=table_top, height=table_height,
                bold_rows=bold_rows, font_size=8.5, header_font_size=8)
     if italic_note:
@@ -504,6 +541,89 @@ def pitch_financial_slide(
 # =====================================================================
 _IS26B, _IS30B = IS_BASE["FY2026E"], IS_BASE["FY2030E"]
 _IS26U, _IS30U = IS_BULL["FY2026E"], IS_BULL["FY2030E"]
+_OM22 = D.IS["operating_income"]["FY2022"] / D.IS["revenue"]["FY2022"] * 100
+_OM25 = D.IS["operating_income"]["FY2025"] / D.IS["revenue"]["FY2025"] * 100
+_OM24 = D.IS["operating_income"]["FY2024"] / D.IS["revenue"]["FY2024"] * 100
+
+_IS_HIST, _IS_FCST = _aligned_explainers([
+    (
+        "Net revenue",
+        "FY22 $8,111M \u2192 FY25 $11,103M",
+        _fcst_line("Net revenue", _IS26B["revenue"], _IS30B["revenue"],
+                   _IS26U["revenue"], _IS30U["revenue"]),
+    ),
+    (
+        "Operating margin %",
+        f"FY22 {_OM22:.1f}% \u2192 FY25 {_OM25:.1f}% (peak {_OM24:.1f}% FY24)",
+        _fcst_line("Operating margin %", _IS26B["operating_margin"], _IS30B["operating_margin"],
+                   _IS26U["operating_margin"], _IS30U["operating_margin"], fmt="pct"),
+    ),
+    (
+        "Net income",
+        f"FY22 {m(D.IS['net_income']['FY2022']/1000)}M \u2192 FY25 {m(D.IS['net_income']['FY2025']/1000)}M",
+        _fcst_line("Net income", _IS26B["net_income"], _IS30B["net_income"],
+                   _IS26U["net_income"], _IS30U["net_income"]),
+    ),
+    (
+        "Diluted EPS",
+        f"FY22 ${D.IS['diluted_eps']['FY2022']:.2f} \u2192 FY25 ${D.IS['diluted_eps']['FY2025']:.2f}",
+        _fcst_line("Diluted EPS", _IS26B["eps"], _IS30B["eps"],
+                   _IS26U["eps"], _IS30U["eps"], fmt="eps"),
+    ),
+])
+
+_BS_HIST, _BS_FCST = _aligned_explainers([
+    (
+        "Cash & equivalents",
+        f"FY22 {m(D.BS['cash']['FY2022']/1000)}M \u2192 FY25 {m(D.BS['cash']['FY2025']/1000)}M",
+        _fcst_line("Cash & equivalents", BS_BASE["cash"]["FY2026E"], BS_BASE["cash"]["FY2030E"],
+                   BS_BULL["cash"]["FY2026E"], BS_BULL["cash"]["FY2030E"]),
+    ),
+    (
+        "Total assets",
+        f"FY22 {m(D.BS['total_assets']['FY2022']/1000)}M \u2192 FY25 {m(D.BS['total_assets']['FY2025']/1000)}M",
+        _fcst_line("Total assets", BS_BASE["total_assets"]["FY2026E"], BS_BASE["total_assets"]["FY2030E"],
+                   BS_BULL["total_assets"]["FY2026E"], BS_BULL["total_assets"]["FY2030E"]),
+    ),
+    (
+        "Total equity",
+        f"FY22 {m(D.BS['total_equity']['FY2022']/1000)}M \u2192 FY25 {m(D.BS['total_equity']['FY2025']/1000)}M",
+        _fcst_line("Total equity", BS_BASE["total_equity"]["FY2026E"], BS_BASE["total_equity"]["FY2030E"],
+                   BS_BULL["total_equity"]["FY2026E"], BS_BULL["total_equity"]["FY2030E"]),
+    ),
+    (
+        "Funded debt",
+        "$0 across FY22\u2013FY25 (net-cash)",
+        "Funded debt: base $0; bull $0 (no term debt in model)",
+    ),
+])
+
+_CF_HIST, _CF_FCST = _aligned_explainers([
+    (
+        "Cash from operations",
+        f"FY22 {m(D.CF['cfo']['FY2022']/1000)}M \u2192 FY25 {m(D.CF['cfo']['FY2025']/1000)}M",
+        _fcst_line("Cash from operations", CF_BASE["cfo"]["FY2026E"], CF_BASE["cfo"]["FY2030E"],
+                   CF_BULL["cfo"]["FY2026E"], CF_BULL["cfo"]["FY2030E"]),
+    ),
+    (
+        "Capital expenditures",
+        f"FY25 ({m(D.CF['capex']['FY2025']/1000)}) outflow",
+        _fcst_line("Capital expenditures", CF_BASE["capex"]["FY2026E"], CF_BASE["capex"]["FY2030E"],
+                   CF_BULL["capex"]["FY2026E"], CF_BULL["capex"]["FY2030E"], fmt="outflow"),
+    ),
+    (
+        "Free cash flow",
+        f"FY25 {m((D.CF['cfo']['FY2025']-D.CF['capex']['FY2025'])/1000)}M (CFO \u2212 capex)",
+        _fcst_line("Free cash flow", CF_BASE["fcf"]["FY2026E"], CF_BASE["fcf"]["FY2030E"],
+                   CF_BULL["fcf"]["FY2026E"], CF_BULL["fcf"]["FY2030E"]),
+    ),
+    (
+        "Share repurchases (CFF)",
+        f"FY25 ({m(D.CF['buybacks']['FY2025']/1000)}) outflow",
+        _fcst_line("Share repurchases (CFF)", CF_BASE["buybacks"]["FY2026E"], CF_BASE["buybacks"]["FY2030E"],
+                   CF_BULL["buybacks"]["FY2026E"], CF_BULL["buybacks"]["FY2030E"], fmt="outflow"),
+    ),
+])
 
 pitch_financial_slide(
     "Financials \u2014 Income Statement",
@@ -517,17 +637,9 @@ pitch_financial_slide(
         ["Diluted EPS ($)"] + _hist_eps() + _dual_year_vals(IS_BASE, IS_BULL, "eps", fmt="eps"),
     ],
     hist_title="HISTORICALS (FY2022\u2013FY2025) \u2014 SEC 10-K",
-    hist_bullets=[
-        "Reported figures from Forms 10-K; FY2025 year ended February 1, 2026",
-        "Revenue $8,111M \u2192 $11,103M; OM peaked 23.7% (FY24); EPS $6.68 \u2192 $13.26",
-        "Share count 128.0M \u2192 119.1M via buybacks",
-    ],
+    hist_bullets=_IS_HIST,
     fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base (G) vs bull (H)",
-    fcst_bullets=[
-        f"Base: FY26 {m(_IS26B['revenue'])}M rev / {_IS26B['operating_margin']} OM \u2192 FY30 {m(_IS30B['revenue'])}M / {_IS30B['operating_margin']}",
-        f"Bull: FY26 {m(_IS26U['revenue'])}M (\u22124% guide) \u2192 FY30 {m(_IS30U['revenue'])}M; OM {_IS26U['operating_margin']} \u2192 {_IS30U['operating_margin']}",
-        f"Bull EPS ${_IS26U['eps']:.2f} \u2192 ${_IS30U['eps']:.2f} (DCF implied price {_d(V['bull'])})",
-    ],
+    fcst_bullets=_IS_FCST,
     bold_rows=(0, 2, 5),
     italic_note="22\u201325 = FY2022\u201325 historical; 26B/26U = FY2026 base (G) / bull (H); same for 27\u201330. Bear in Appendix.",
 )
@@ -544,17 +656,9 @@ pitch_financial_slide(
         ["Funded debt"] + ["0"] * 4 + ["0"] * (len(PROJ_YEARS) * 2),
     ],
     hist_title="HISTORICALS (FY2022\u2013FY2025) \u2014 SEC 10-K",
-    hist_bullets=[
-        "No funded debt; FY25 cash $1,807M; total assets $8,457M",
-        "Net-cash balance sheet underpins downside at ~10x earnings",
-        "Lease-backed ROU assets ~$1.6B \u2014 not traditional debt",
-    ],
-    fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base vs bull",
-    fcst_bullets=[
-        f"Base cash {m(BS_BASE['cash']['FY2026E'])}M \u2192 {m(BS_BASE['cash']['FY2030E'])}M ($500M/yr buybacks)",
-        f"Bull cash {m(BS_BULL['cash']['FY2026E'])}M \u2192 {m(BS_BULL['cash']['FY2030E'])}M (75% FCF to buybacks)",
-        "Bull BS scaled from base WC drivers at bull revenue; cash from FCF waterfall",
-    ],
+    hist_bullets=_BS_HIST,
+    fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base (G) vs bull (H)",
+    fcst_bullets=_BS_FCST,
     bold_rows=(2, 4, 5),
     italic_note="Same BS line items as 10-K. Bull cash = FY25 cash + cumulative (FCF + buybacks).",
 )
@@ -570,17 +674,9 @@ pitch_financial_slide(
         ["Share repurchases (CFF)"] + _hist_buybacks_out() + _dual_year_vals(CF_BASE, CF_BULL, "buybacks", by_year=False, fmt="neg_paren"),
     ],
     hist_title="HISTORICALS (FY2022\u2013FY2025) \u2014 SEC 10-K",
-    hist_bullets=[
-        "FY25 CFO $1,603M; capex ($681M) \u2192 ~$922M FCF",
-        "Buybacks ($1,178M) FY25 are CFF \u2014 reported on 10-K, not in DCF UFCF",
-        "FCF = CFO \u2212 capex; same operating definition as forecast rows above buybacks",
-    ],
-    fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base vs bull",
-    fcst_bullets=[
-        f"FCF (DCF input): base ${m(CF_BASE['fcf']['FY2026E'])}M \u2192 ${m(CF_BASE['fcf']['FY2030E'])}M",
-        f"Bull FCF ${m(CF_BULL['fcf']['FY2026E'])}M \u2192 ${m(CF_BULL['fcf']['FY2030E'])}M (Scenarios col H)",
-        "Buybacks below = 3-statement CFF only; DCF IV uses basic 111.4M shares (no retirements)",
-    ],
+    hist_bullets=_CF_HIST,
+    fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base (G) vs bull (H)",
+    fcst_bullets=_CF_FCST,
     bold_rows=(3,),
     italic_note=(
         "FCF rows tie to DCF unlevered FCF. Share repurchases are financing (CFF) \u2014 shown for 10-K / "
