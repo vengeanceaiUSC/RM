@@ -484,7 +484,8 @@
         "ev_ebitda_lo": 5.0,
         "ev_ebitda_hi": 6.5,
         "ev_lo_m": 6658,
-        "ev_hi_m": 8655
+        "ev_hi_m": 8655,
+        "multiple_note": "Floor of consolidated FF (5.0\u20138.0x); mature segment near LULU trough ~4.7x TTM"
       },
       {
         "segment": "China Mainland",
@@ -494,7 +495,8 @@
         "ev_ebitda_lo": 7.0,
         "ev_ebitda_hi": 9.0,
         "ev_lo_m": 2463,
-        "ev_hi_m": 3167
+        "ev_hi_m": 3167,
+        "multiple_note": "Growth premium vs Americas; below NKE ~12.7x / adidas ~9.2x TTM (PitchBook comps)"
       },
       {
         "segment": "Rest of World",
@@ -504,7 +506,8 @@
         "ev_ebitda_lo": 6.0,
         "ev_ebitda_hi": 8.0,
         "ev_lo_m": 1667,
-        "ev_hi_m": 2222
+        "ev_hi_m": 2222,
+        "multiple_note": "Mid-band of consolidated FF (5.0\u20138.0x); expansion markets"
       }
     ],
     "total_ev_lo_m": 10788,
@@ -516,7 +519,9 @@
     "implied_px_lo": 97,
     "implied_px_hi": 126,
     "consolidated_dcf_px": 134,
-    "fy30_rev_m": 11418
+    "fy30_rev_m": 11418,
+    "ff_ev_ebitda_band": "5.0\u20138.0x",
+    "multiple_source": "Consolidated band from DCF Comps tab (5.0\u20138.0x FY30E EBITDA). Segment ranges are illustrative geographic premiums/discounts \u2014 not separate peer prints."
   },
   "source": "LULU_DCF_Valuation_Model.xlsx \u2192 Scenarios cols G (base) & H (bull)"
 }

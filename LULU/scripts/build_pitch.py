@@ -815,21 +815,30 @@ add_para(tf, "CAPITAL STACK (US$ M)", 11, CARD, bold=True, first=True, space_aft
 tb, tf = textbox(s, Inches(6.7), Inches(1.1), Inches(6.15), Inches(0.28))
 add_para(tf, "WACC BUILD (CAPM)", 11, CARD, bold=True, first=True, space_after=0)
 
-# --- Cap stack table (left) — no sub-notes; sources in footer table ---
-cap_headers = ["Component", "US$ M", "% of capital"]
+# --- Cap stack table (left) — WACC weights only on equity + lease debt ---
+cap_headers = ["Component", "US$ M", "WACC weight"]
 cap_rows = [
     ["Market equity (price \u00d7 shares)", f"{WB['mkt_eq_m']:,}", f"{WB['equity_pct']:.1f}%"],
     ["ASC 842 operating lease liabilities", f"{WB['lease_debt_m']:,}", f"{WB['debt_pct']:.1f}%"],
     ["Funded debt (term loans / bonds)", f"{WB['funded_debt_m']:,}", "0.0%"],
     ["Total capital (WACC basis)", f"{WB['total_cap_m']:,}", "100.0%"],
-    ["Cash & equivalents (EV offset)", f"{WB['cash_m']:,}", "\u2014"],
-    ["Net debt (leases + funded \u2212 cash)", f"{WB['net_debt_m']:,}", "\u2014"],
 ]
 stmt_table(
-    s, cap_rows, cap_headers, col0w=2.85, top=1.38, height=2.05, left=0.5, width=6.05,
+    s, cap_rows, cap_headers, col0w=2.85, top=1.38, height=1.45, left=0.5, width=6.05,
     font_size=9, header_font_size=9, bold_rows=(3,),
 )
-tb, tf = textbox(s, Inches(0.5), Inches(3.52), Inches(6.05), Inches(0.72))
+tb, tf = textbox(s, Inches(0.5), Inches(2.9), Inches(6.05), Inches(0.28))
+add_para(tf, "EV BRIDGE (NOT IN WACC WEIGHTS)", 9, CARD, bold=True, first=True, space_after=0)
+bridge_rows = [
+    ["Cash & equivalents", f"{WB['cash_m']:,}", "Added back in EV \u2192 equity bridge"],
+    ["Net debt (leases \u2212 cash)", f"{WB['net_debt_m']:,}", "Near net-cash; leases in WACC above"],
+]
+stmt_table(
+    s, bridge_rows, ["Component", "US$ M", "Note"],
+    col0w=2.85, top=3.12, height=0.62, left=0.5, width=6.05,
+    font_size=8.5, header_font_size=8.5,
+)
+tb, tf = textbox(s, Inches(0.5), Inches(3.82), Inches(6.05), Inches(0.42))
 add_para(
     tf,
     "No funded bank debt; ASC 842 store leases are the only debt equivalent (~14% WACC weight). "
@@ -982,23 +991,23 @@ for seg in SOTP.get("segments", []):
 seg_rows.append([
     "Total segment EV",
     f"{SOTP.get('fy30_rev_m', 0):,}",
-    "\u2014",
-    "\u2014",
-    "\u2014",
+    "",
+    "",
+    f"FF band {SOTP.get('ff_ev_ebitda_band', '5–8x')}",
     f"{SOTP.get('total_ev_lo_m', 0):,}\u2013{SOTP.get('total_ev_hi_m', 0):,}",
 ])
 seg_rows.append([
     "Corporate / HQ (no separate carve-out)",
-    "\u2014", "\u2014", "\u2014", "\u2014", "$0",
+    "", "", "", "n/a", "$0",
 ])
 seg_rows.append([
     "+ Cash / \u2212 lease debt (EV bridge)",
-    "\u2014", "\u2014", "\u2014", "\u2014",
+    "", "", "", "n/a",
     f"+{SOTP.get('cash_m', 0):,} / \u2212{SOTP.get('debt_m', 0):,}",
 ])
 seg_rows.append([
     "Implied equity value / share",
-    "\u2014", "\u2014", "\u2014", "\u2014",
+    "", "", "", "n/a",
     f"${SOTP.get('implied_px_lo', 0)}\u2013${SOTP.get('implied_px_hi', 0)}",
 ])
 stmt_table(
@@ -1012,8 +1021,9 @@ add_para(tf, "Methodology", 12, CARD, bold=True, first=True, space_after=3)
 for t in [
     "Single-brand retailer \u2014 geography is the cleanest SOTP cut (Americas / China / RoW per 10-K)",
     "FY30E segment revenue = FY25 geo mix \u00d7 base-case consolidated FY30 revenue (Scenarios col G)",
-    "Segment EBITDA margins are illustrative (mature Americas vs growth China); multiples are range checks, not peer averages",
-    f"Consolidated base-case DCF {_d(_base_px)} is the primary valuation anchor; SOTP triangulates geographic optionality",
+    f"EV/EBITDA ranges anchor to DCF Comps football-field band ({SOTP.get('ff_ev_ebitda_band', '5–8x')} FY30E) with segment premium/discount \u2014 not separate peer prints",
+    "Americas 5.0\u20136.5x (mature / near trough); China 7.0\u20139.0x (growth); RoW 6.0\u20138.0x (mid-band)",
+    f"Consolidated base-case DCF {_d(_base_px)} is the primary anchor; SOTP triangulates geographic optionality",
 ]:
     add_para(tf, t, 10.5, INK, bullet=True, space_after=3)
 

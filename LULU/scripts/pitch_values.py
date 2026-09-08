@@ -166,15 +166,27 @@ def _extract_sotp(income_base, wacc_build, base_dcf):
         "China Mainland": CANONICAL["revenue_geo_china"]["FY2025"] / 1000,
         "Rest of World": CANONICAL["revenue_geo_row"]["FY2025"] / 1000,
     }
-    # FY30E EBITDA margin by geography (illustrative; scales to ~consolidated FY30 EBITDA)
+    # Segment EV/EBITDA ranges: anchored to Comps tab football-field band (5.0–8.0x
+    # on FY30E EBITDA) with geographic premium/discount — NOT live PitchBook prints.
+    # See LULU_DCF_Valuation_Model.xlsx → Comps → "EV / EBITDA (FY2030E terminal)".
+    _FF_EV_LO, _FF_EV_HI = 5.0, 8.0
     seg_cfg = [
-        ("Americas", 5.0, 6.5, 0.165),
-        ("China Mainland", 7.0, 9.0, 0.195),
-        ("Rest of World", 6.0, 8.0, 0.180),
+        (
+            "Americas", 5.0, 6.5, 0.165,
+            f"Floor of consolidated FF ({_FF_EV_LO}–{_FF_EV_HI}x); mature segment near LULU trough ~4.7x TTM",
+        ),
+        (
+            "China Mainland", 7.0, 9.0, 0.195,
+            f"Growth premium vs Americas; below NKE ~12.7x / adidas ~9.2x TTM (PitchBook comps)",
+        ),
+        (
+            "Rest of World", 6.0, 8.0, 0.180,
+            f"Mid-band of consolidated FF ({_FF_EV_LO}–{_FF_EV_HI}x); expansion markets",
+        ),
     ]
     segments = []
     ev_lo = ev_hi = 0.0
-    for name, mlo, mhi, ebitda_m in seg_cfg:
+    for name, mlo, mhi, ebitda_m, mult_note in seg_cfg:
         rev30 = geo[name] * scale
         ebitda = rev30 * ebitda_m
         seg_ev_lo = ebitda * mlo
@@ -190,6 +202,7 @@ def _extract_sotp(income_base, wacc_build, base_dcf):
             "ev_ebitda_hi": mhi,
             "ev_lo_m": round(seg_ev_lo),
             "ev_hi_m": round(seg_ev_hi),
+            "multiple_note": mult_note,
         })
     cash = wacc_build["cash_m"]
     debt = wacc_build["total_debt_m"]
@@ -208,6 +221,11 @@ def _extract_sotp(income_base, wacc_build, base_dcf):
         "implied_px_hi": round(eq_hi / shares_m),
         "consolidated_dcf_px": round(base_dcf),
         "fy30_rev_m": round(fy30_m),
+        "ff_ev_ebitda_band": f"{_FF_EV_LO}–{_FF_EV_HI}x",
+        "multiple_source": (
+            "Consolidated band from DCF Comps tab (5.0–8.0x FY30E EBITDA). "
+            "Segment ranges are illustrative geographic premiums/discounts — not separate peer prints."
+        ),
     }
 
 
