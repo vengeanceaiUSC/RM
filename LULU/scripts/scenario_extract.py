@@ -132,3 +132,44 @@ def extract_paths(sc, col):
         fy: {**income[fy], **{k: balance[k][fy] for k in balance}, **{k: cash_flow[k][fy] for k in cash_flow}}
         for fy in PROJ_YEARS
     }
+
+
+_REF_KEYS = {
+    "revenue": "revenue",
+    "gross_margin": "gross margin %",
+    "ebit": "ebit",
+    "net_income": "net income",
+    "cfo": "cash from operations",
+    "fcf": "free cash flow (cfs)",
+    "buybacks": "share repurchases",
+    "cash": "cash & equivalents",
+    "inventories": "inventories",
+    "total_assets": "total assets",
+    "total_liab": "total liabilities",
+    "total_equity": "total equity",
+    "dna": "d&a",
+    "capex": "capex",
+    "eps": "diluted eps",
+}
+
+
+def discover_model_refs(sc):
+    """Map pitch line items to Scenarios tab row ranges (cols F/G/H)."""
+    refs = {}
+    for key, needle in _REF_KEYS.items():
+        rows = _year_rows(sc, needle)
+        if len(rows) < 5:
+            continue
+        label = str(sc.cell(rows[1], 1).value or "").strip()
+        refs[key] = {
+            "r1": rows[1],
+            "r5": rows[5],
+            "label": label,
+        }
+    return refs
+
+
+def scen_range(refs, key, col="G"):
+    """Excel-style range for base-case column G."""
+    r = refs[key]
+    return f"Scenarios!{col}{r['r1']}:{col}{r['r5']}"

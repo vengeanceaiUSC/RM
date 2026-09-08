@@ -279,6 +279,8 @@ class PitchDeck:
         bold_rows=(),
         font_size=10.5,
         header_font_size=None,
+        row_notes=(),
+        note_font_size=None,
     ):
         ncol = len(headers)
         hdr_fs = header_font_size if header_font_size is not None else (8 if ncol > 12 else 11)
@@ -300,19 +302,29 @@ class PitchDeck:
             r.text = htxt
             _set_font(r, hdr_fs, WHITE, bold=True)
             cell.vertical_anchor = MSO_ANCHOR.MIDDLE
+        note_fs = note_font_size if note_font_size is not None else max(6.5, font_size - 2)
         for ri, row in enumerate(rows, start=1):
             is_red = ri - 1 in red_rows
             is_bold = ri - 1 in bold_rows
+            note = row_notes[ri - 1] if ri - 1 < len(row_notes) else None
             for c, val in enumerate(row):
                 cell = table.cell(ri, c)
                 cell.fill.solid()
                 cell.fill.fore_color.rgb = WHITE if ri % 2 else LGREY
-                p = cell.text_frame.paragraphs[0]
+                tf = cell.text_frame
+                tf.clear()
+                p = tf.paragraphs[0]
                 p.alignment = PP_ALIGN.LEFT if c == 0 else PP_ALIGN.RIGHT
                 r = p.add_run()
                 r.text = val
                 color = CARD if (is_red and c > 0) else (NAVY if is_bold else INK)
                 _set_font(r, font_size, color, bold=is_bold)
+                if c == 0 and note:
+                    np = tf.add_paragraph()
+                    np.alignment = PP_ALIGN.LEFT
+                    nr = np.add_run()
+                    nr.text = note
+                    _set_font(nr, note_fs, GREY, italic=True)
                 cell.vertical_anchor = MSO_ANCHOR.MIDDLE
                 cell.margin_top = Pt(1)
                 cell.margin_bottom = Pt(1)

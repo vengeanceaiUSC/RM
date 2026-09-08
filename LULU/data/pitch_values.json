@@ -335,5 +335,82 @@
     "FY2029E",
     "FY2030E"
   ],
+  "model_refs": {
+    "revenue": {
+      "r1": 25,
+      "r5": 29,
+      "label": "Revenue \u2013 year 1"
+    },
+    "gross_margin": {
+      "r1": 30,
+      "r5": 34,
+      "label": "Gross margin % \u2013 year 1"
+    },
+    "ebit": {
+      "r1": 45,
+      "r5": 49,
+      "label": "EBIT \u2013 year 1"
+    },
+    "net_income": {
+      "r1": 143,
+      "r5": 147,
+      "label": "Net income \u2013 year 1"
+    },
+    "cfo": {
+      "r1": 148,
+      "r5": 152,
+      "label": "Cash from operations \u2013 year 1"
+    },
+    "fcf": {
+      "r1": 153,
+      "r5": 157,
+      "label": "Free cash flow (CFS) \u2013 year 1"
+    },
+    "buybacks": {
+      "r1": 158,
+      "r5": 162,
+      "label": "Share repurchases \u2013 year 1"
+    },
+    "cash": {
+      "r1": 163,
+      "r5": 167,
+      "label": "Cash & equivalents \u2013 year 1"
+    },
+    "inventories": {
+      "r1": 80,
+      "r5": 84,
+      "label": "Inventories \u2013 year 1"
+    },
+    "total_assets": {
+      "r1": 168,
+      "r5": 172,
+      "label": "Total assets \u2013 year 1"
+    },
+    "total_liab": {
+      "r1": 173,
+      "r5": 177,
+      "label": "Total liabilities \u2013 year 1"
+    },
+    "total_equity": {
+      "r1": 178,
+      "r5": 182,
+      "label": "Total equity \u2013 year 1"
+    },
+    "dna": {
+      "r1": 55,
+      "r5": 59,
+      "label": "D&A \u2013 year 1"
+    },
+    "capex": {
+      "r1": 60,
+      "r5": 64,
+      "label": "Capex \u2013 year 1"
+    },
+    "eps": {
+      "r1": 183,
+      "r5": 187,
+      "label": "Diluted EPS ($) \u2013 year 1"
+    }
+  },
   "source": "LULU_DCF_Valuation_Model.xlsx \u2192 Scenarios cols G (base) & H (bull)"
 }

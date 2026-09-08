@@ -8,7 +8,7 @@ import os
 
 import openpyxl
 
-from scenario_extract import extract_scenario, COL_BASE, COL_BULL, PROJ_YEARS
+from scenario_extract import extract_scenario, discover_model_refs, COL_BASE, COL_BULL, PROJ_YEARS
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 DCF_PATH = os.path.join(ROOT, "LULU_DCF_Valuation_Model.xlsx")
@@ -86,6 +86,7 @@ def extract():
         "balance_sheet": {"base": balance_base, "bull": balance_bull},
         "cash_flow": {"base": cash_base, "bull": cash_bull},
         "proj_years": list(PROJ_YEARS),
+        "model_refs": discover_model_refs(sc),
         "source": "LULU_DCF_Valuation_Model.xlsx → Scenarios cols G (base) & H (bull)",
     }
 
