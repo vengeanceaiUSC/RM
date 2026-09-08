@@ -3,7 +3,7 @@
 **Recommendation:** OVERWEIGHT / LONG  
 **Price:** ~$100 (NASDAQ, Sep 2026)  
 **12-month target:** $140 (+40%)  
-**Base-case DCF:** ~$124 | **Bear:** ~$66 | **Bull:** ~$227  
+**Base-case DCF:** ~$134 | **Bear:** ~$56 | **Bull:** ~$202  
 
 *Prepared for the Global Investment Society IR selection process. Maps 1:1 to the GIS pitch deck structure. Macro/micro context verified via Firecrawl ingestion of the Sep 3, 2026 earnings release, FY2025 10-K, and FRED GDPC1 (Sep 2026).*
 
@@ -15,7 +15,7 @@
 
 **One-liner (descriptor):** A net-cash, high-margin brand priced for terminal decline — we see a cyclical trough, not a broken business
 
-**What you say in the room:** LULU is down ~55% from highs after guiding its first annual revenue decline. We think the market confused a macro-driven Americas air pocket with structural impairment. At ~3.5x EV/EBITDA and ~10x FY2026E EPS, with $1.8B of cash and no funded debt, the risk/reward is asymmetric — base DCF ~$124, target $140 on a partial re-rating.
+**What you say in the room:** LULU is down ~55% from highs after guiding its first annual revenue decline. We think the market confused a macro-driven Americas air pocket with structural impairment. At ~3.5x EV/EBITDA and ~10x FY2026E EPS, with $1.8B of cash and no funded debt, the risk/reward is asymmetric — base DCF ~$134, target $140 on a partial re-rating.
 
 ---
 
@@ -58,7 +58,7 @@ China Mainland comped **+20%** in FY2025 (+19% constant currency). Rest of World
 **3. Elite economics + accretive buybacks**  
 FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelerating year. Repurchases were **$1,178.3M** in FY2025; diluted shares fell **128.0M → 119.1M** (FY2022–FY2025). At $100 every dollar of buyback retires **~2×** the shares it would at prior highs.
 
-**Payoff framing:** Base DCF **$124**; bear **$66** (−34%); bull **$227** (+127%). Downside is cushioned by net cash and an **~8–9% FCF yield**.
+**Payoff framing:** Base DCF **$134**; bear **$56** (−44%); bull **$202** (+102%). Downside is cushioned by net cash and an **~8–9% FCF yield**.
 
 ---
 
@@ -218,11 +218,11 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 
 - **~3.5x EV/EBITDA**, **~10.4x FY2026E EPS** vs **20–30x** history
 - **$1.8B cash**, **$0 funded debt** — EV mostly operating value at depressed multiple
-- Base DCF **~$124** (WACC **~10.5%**, terminal g **2.25%**, terminal EBIT margin **15.5%**)
-- Bear **$66** still brackets downside; bull **$227** shows convexity
+- Base DCF **~$134** (WACC **~9.0%**, terminal g **2.25%**, terminal EBIT margin **15.5%**)
+- Bear **$56** still brackets downside; bull **$202** shows convexity
 - To justify $100: perpetual revenue/margin decline — **inconsistent** with China/RoW growth + tariff tailwind
 
-**Valuation snapshot:** EV/EBITDA 3.5x | FY26 P/E 10.4x | FCF yield ~8–9% | Net cash $1.8B | DCF base $124
+**Valuation snapshot:** EV/EBITDA 3.5x | FY26 P/E 10.4x | FCF yield ~8–9% | Net cash $1.8B | DCF base $134
 
 ---
 
@@ -237,7 +237,7 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 - Model: **−6.1%** FY26 → **+2.3%** FY27–30 (Street 3Y **2.26%**)
 - Men's (**~24%** of revenue, growing) + digital add optionality market ignores
 
-**Revenue path (model):** FY25 $11,103M → FY26 $10,425M → FY30 $11,730M
+**Revenue path (model):** FY25 $11,103M → FY26 $10,425M → FY30 $11,452M
 
 ---
 
@@ -249,7 +249,7 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 
 - FY25 OM **19.9%** — far above branded apparel peers
 - **$1.6B** buybacks FY24, **$1.2B** FY25; shares **128.0M → 119.1M**
-- Repurchase schedule (DCF tab): **75%** of UFCF to buybacks at **10.5%** CoE price path — **EPS accretion** without changing intrinsic IV share count (basic **111.4M** guardrail)
+- Repurchase schedule (DCF tab): **75%** of UFCF to buybacks at **~9.9%** CoE price path — **EPS accretion** without changing intrinsic IV share count (basic **111.4M** guardrail)
 - At $100, buybacks are **highly accretive** vs $168–$199 paid in FY25 10-K
 
 ---
@@ -292,8 +292,8 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 ## Slide 18 — Capital Structure & WACC
 
 - **No funded debt**; **ASC 842 leases ~$1.8B** treated as debt equivalent in WACC only
-- **CAPM:** rf **4.8%** (FRED DGS10) + relevered β **~0.84–1.06** × ERP **6.0%** → CoE **~10.5%**
-- **WACC ~10.5%** base case (Scenarios); sensitivity **9.5%–11.5%**
+- **CAPM:** rf **4.8%** (FRED DGS10) + relevered β **~0.84** (Yahoo 5Y β unlevered/relevered at lease D/E) × ERP **6.0%** → CoE **~9.9%**
+- **WACC ~9.0%** base case (Scenarios); sensitivity **9.5%–11.5%**
 - Capital return = **buybacks only** (no dividend)
 
 ---
@@ -303,19 +303,19 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 | Method | Low | High |
 |--------|-----|------|
 | P/E (10–18x FY26E) | $96 | $173 |
-| EV/EBITDA (4.5–7.5x) | $126 | $199 |
-| DCF (bear–bull) | $91 | $239 |
+| EV/EBITDA (4.5–7.5x) | $119 | $180 |
+| DCF (bear–bull) | $56 | $202 |
 | 52-week range | $100 | $226 |
 
-**Target $140** = above conservative DCF **$124**, below historical multiples — **partial** re-rating, not bull case.
+**Target $140** = above conservative DCF **$134**, below historical multiples — **partial** re-rating, not bull case.
 
 ---
 
 ## Slide 20 — DCF Valuation
 
-**Base assumptions:** Rev **−6.1%** FY26 → **+2.3%** | EBIT **13.2% → 15.5%** (+$134.5M FY26) | Tax **30%** | Capex blend **5.5%** | WACC **10.5%** | g **2.25%**
+**Base assumptions:** Rev **−6.1%** FY26 → **+2.3%** | EBIT **13.2% → 15.5%** (+$134.5M FY26) | Tax **30%** | Capex blend **5.5%** | WACC **~9.0%** | g **2.25%**
 
-**Output:** EV **~$12.0B** + cash → equity **~$13.9B** ÷ **111.4M basic shares** = **~$124/sh**
+**Output:** EV **~$14.9B** + cash → equity **~$14.9B** ÷ **111.4M basic shares** = **~$134/sh**
 
 **NOPAT bridge:** Unlevered tax via **t_operating** (not flat 30%); SBC **expensed** (Convention A).
 
@@ -331,14 +331,14 @@ Alo: **no EV/EBITDA** — implied **5.0x EV/Sales** on unclosed $10B ask (Reuter
 
 ## Slide 22 — Bull / Bear Appendix
 
-| | Bear $66 | Base $124 | Bull $227 |
+| | Bear $56 | Base $134 | Bull $202 |
 |---|---------|-----------|-----------|
 | FY26 rev | −9% | −6.1% | −4% |
 | Terminal OM | 12.0% | 15.5% | 19.0% |
-| WACC | 11.5% | 10.5% | 9.5% |
+| WACC | 11.0% | 9.0% | 9.5% |
 | g | 1.5% | 2.25% | 3.0% |
 
-**Probability-weighted (25/50/25): ~$155** — skew to upside.
+**Probability-weighted (25/50/25): ~$131** — skew to upside.
 
 ---
 
