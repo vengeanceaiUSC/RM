@@ -1004,11 +1004,11 @@ write(comps, f'A{rr[0]}', "Rationale for selected exit (Gordon identity, not a p
 rr[0] += 1
 for bullet in [
     "\u2022  Selected exit = Gordon TV / FY30 EBITDA. Identity: (UFCF/EBITDA)\u00d7(1+g)/(WACC\u2212g). Live formula, not a typed 8.0x",
-    "\u2022  At base WACC 10.5% and g 2.25% that identity is ~6.0x \u2014 the stale \u201cGordon ~7x / pick Deckers 8.0x\u201d overlay is gone",
+    "\u2022  At base WACC ~9.0% and g 2.25% that identity is ~7.4x FY30 EBITDA \u2014 not a peer average",
     "\u2022  PitchBook pubcomps (04-Sep-2026) are the current tape: each multiple is daily EV / TTM EBITDA",
     "\u2022  That tape is a check, not the exit. A 2.25% g / 15.5% OM year is not today\u2019s NKE/WSM multiple",
     "\u2022  Alo has no EV/EBITDA print. Implied 5.0x is EV/Sales (unclosed $10bn ask / ~$2bn parent sales) \u2014 not the FY30 exit",
-    "\u2022  PitchBook LULU is ~4.7x TTM. Gordon 6.0x is a partial recovery, not a re-rate to WSM ~15x",
+    "\u2022  PitchBook LULU is ~4.7x TTM. Gordon ~7.4x is a partial recovery, not a re-rate to WSM ~15x",
 ]:
     write(comps, f'A{rr[0]}', bullet, S.BLACK, size=9, align=S.left_indent)
     rr[0] += 1

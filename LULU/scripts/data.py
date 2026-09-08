@@ -332,7 +332,7 @@ JUST = {
     "comps_ff_pe_hi": "18x P/E high on FY2026E EPS; modest recovery case still below historical premium LULU multiples.",
     # Sensitivity axes (summary)
     "sens_axes": "Red WACC and g grid values bracket base case ±100bps discount rate and ±75bps terminal growth for sensitivity.",
-    "sens_wacc": "WACC axis 9.0–11.0% brackets 10.0% base from CAPM (rf + β×ERP) on WACC tab; ±100bps sensitivity band.",
+    "sens_wacc": "WACC axis 9.5–11.5% brackets ~9.0% base from lease-adjusted CAPM on WACC tab; ±100bps sensitivity band.",
     "sens_g": "Terminal-g axis 1.5–3.0% brackets 2.25% base; bounded by long-run real GDP and inflation benchmarks.",
     # 3-statement Assumptions tab
     "3s_rev_growth": "FY26 −6.1% is guidance midpoint. FY27 +2.6% then +2.3% tracks StockAnalysis next-year +2.64% and 3Y forecast 2.26%.",
@@ -855,7 +855,7 @@ SOURCE_HINT = {
     "comps_ff_pe_lo": 'Ctrl+F "Forward PE" → LULU ~12.3x; low-case multiple assumption 10.0x',
     "comps_ff_pe_hi": 'Ctrl+F "Forward PE" → NKE peer benchmark; high-case assumption 18.0x',
     "sens_axes": 'Scenarios tab → Ctrl+F "WACC" and "Terminal growth" rows (base-case inputs)',
-    "sens_wacc": 'Ctrl+F "4.23%" (2025 implied ERP). Sensitivity WACC axis brackets the 10.5% base.',
+    "sens_wacc": 'WACC tab → green WACC cell ~9.0%. Sensitivity WACC axis brackets base ±100bps.',
     "sens_g": 'Ctrl+F "GDPC1" → bounds terminal-g sensitivity grid 1.5%–3.0%',
     # 3-statement
     "3s_rev_growth": 'FY26: earnings release Ctrl+F "decline of 5% to 7%". FY27–30: this page Ctrl+F "Revenue Growth Forecast (3Y)" → 2.26%. Model 2.3%.',

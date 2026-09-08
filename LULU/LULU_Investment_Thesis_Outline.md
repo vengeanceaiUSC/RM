@@ -127,7 +127,7 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 
 4. **Valuation absorbs overlap:** At ~10x FY26 EPS the stock no longer requires a macro boom **or** positive Americas comps to work — it requires **stabilization**.
 
-5. **Our edge:** Separate **run-rate** (13.2% clean EBIT margin) from **reported** (14.5% FY26 with refund) from **peak** (19.9% FY25). The DCF underwrites trough economics, not recovery to peak.
+5. **Our edge:** Separate **run-rate** (13.2% clean EBIT margin) from **reported** (15.2% FY26 in our IS, incl. refund) from **peak** (19.9% FY25). The DCF underwrites trough economics, not recovery to peak.
 
 **GIS talking point:** *"We're not pitching a return to 30x earnings. We're pitching that terminal decline is wrong."*
 
@@ -219,7 +219,7 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 - **~3.5x EV/EBITDA**, **~10.4x FY2026E EPS** vs **20–30x** history
 - **$1.8B cash**, **$0 funded debt** — EV mostly operating value at depressed multiple
 - Base DCF **~$134** (WACC **~9.0%**, terminal g **2.25%**, terminal EBIT margin **15.5%**)
-- Bear **$56** still brackets downside; bull **$202** shows convexity
+- Bear **$56** is a real impairment case (−44% vs $100); bull **$202** shows convexity
 - To justify $100: perpetual revenue/margin decline — **inconsistent** with China/RoW growth + tariff tailwind
 
 **Valuation snapshot:** EV/EBITDA 3.5x | FY26 P/E 10.4x | FCF yield ~8–9% | Net cash $1.8B | DCF base $134
@@ -249,7 +249,7 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 
 - FY25 OM **19.9%** — far above branded apparel peers
 - **$1.6B** buybacks FY24, **$1.2B** FY25; shares **128.0M → 119.1M**
-- Repurchase schedule (DCF tab): **75%** of UFCF to buybacks at **~9.9%** CoE price path — **EPS accretion** without changing intrinsic IV share count (basic **111.4M** guardrail)
+- Repurchase schedule (DCF tab): **75%** of UFCF to buybacks at **10.5%** CoE price-path assumption (WACC tab CoE is **~9.9%** — see `NUMBER_AUDIT.md`) — **EPS accretion** without changing intrinsic IV share count (basic **111.4M** guardrail)
 - At $100, buybacks are **highly accretive** vs $168–$199 paid in FY25 10-K
 
 ---
@@ -315,7 +315,7 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 
 **Base assumptions:** Rev **−6.1%** FY26 → **+2.3%** | EBIT **13.2% → 15.5%** (+$134.5M FY26) | Tax **30%** | Capex blend **5.5%** | WACC **~9.0%** | g **2.25%**
 
-**Output:** EV **~$14.9B** + cash → equity **~$14.9B** ÷ **111.4M basic shares** = **~$134/sh**
+**Output:** EV **~$14.9B** + cash **$1.8B** − lease debt **$1.8B** → equity **~$14.9B** ÷ **111.4M basic shares** = **~$134/sh**
 
 **NOPAT bridge:** Unlevered tax via **t_operating** (not flat 30%); SBC **expensed** (Convention A).
 
@@ -324,7 +324,7 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 ## Slide 21 — Comps
 
 PitchBook set **04-Sep-2026** — LULU **4.7x** EV/EBITDA vs NKE **12.7x**, DECK **7.9x**.  
-**Selected TV = Gordon identity (~6.0x)** — not peer average.  
+**Selected TV = Gordon identity (~7.4x FY30 EBITDA)** — not peer average.  
 Alo: **no EV/EBITDA** — implied **5.0x EV/Sales** on unclosed $10B ask (Reuters/Forbes).
 
 ---

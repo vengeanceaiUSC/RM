@@ -118,7 +118,7 @@ tb, tf = textbox(s, Inches(0.5), Inches(2.95), Inches(12.35), Inches(4.0))
 add_para(tf, "Three reasons to be long", 15, CARD, bold=True, first=True, space_after=6)
 add_para(tf, "1.  Priced for terminal decline \u2014 at ~3.5x EV/EBITDA and ~10x FY2026E EPS with a net-cash balance sheet, the stock embeds a permanent impairment that the business does not support", 13.5, INK, bold=False, space_after=7)
 add_para(tf, "2.  International is a multi-year growth engine \u2014 China Mainland and Rest-of-World more than offset a maturing Americas and can return total revenue to mid-single-digit growth", 13.5, INK, space_after=7)
-add_para(tf, "3.  Elite economics + accretive buybacks \u2014 FY2025 operating margin was 19.9% (last full year, not the trough); we model a 13.2% clean FY2026 run-rate (Q2 18.8% minus 560bps of tariff refunds), then add the $134.5M refund once (~14.5% reported). Diluted shares are down ~7% (128.0M \u2192 119.1M)", 13.5, INK, space_after=7)
+add_para(tf, "3.  Elite economics + accretive buybacks \u2014 FY2025 operating margin was 19.9% (last full year, not the trough); we model a 13.2% clean FY2026 run-rate (Q2 18.8% minus 560bps of tariff refunds), then add the $134.5M refund once (~15.2% reported in our IS). Diluted shares are down ~7% (128.0M \u2192 119.1M)", 13.5, INK, space_after=7)
 add_para(tf, f"Base-case DCF {_d(V['base_dcf'])}; bear {_d(V['bear'])} ({_up(V['bear'])}) vs bull {_d(V['bull'])} ({_up(V['bull'])}) \u2014 downside is protected by net cash and an ~8\u20139% FCF yield", 13, NAVY, bold=True, italic=True, space_after=0)
 
 # =====================================================================
@@ -297,7 +297,7 @@ thesis_slide(
     [
         "At ~$100 the stock trades at ~3.5x EV/EBITDA and ~10.4x FY2026E EPS \u2014 versus a 5-year history of ~20\u201330x earnings",
         "The balance sheet holds $1.8B of cash and no funded debt, so nearly the entire enterprise value is covered by the operating business at a very low multiple",
-        f"Our base-case DCF (WACC {_pct(V['wacc'])}, terminal growth 2.25%, terminal EBIT margin 15.5%) is in the model \u2014 bear case still brackets the current price",
+        f"Our base-case DCF (WACC {_pct(V['wacc'])}, terminal growth 2.25%, terminal EBIT margin 15.5%) is in the model \u2014 bear is ~{_d(V['bear'])}; downside is cushioned by net cash and FCF yield, not because bear brackets $100",
         "To justify $100 you must assume revenue and margins fall in perpetuity; that is inconsistent with international growth and the FY2026 tariff-refund tailwind",
     ],
     "VALUATION SNAPSHOT",
@@ -448,8 +448,8 @@ add_para(tf, "Capital structure", 14.5, CARD, bold=True, first=True, space_after
 for t in [
     "No funded debt; an undrawn revolving credit facility provides liquidity",
     "$1,807.2M cash and equivalents \u2014 a net-cash position",
-    "Enterprise value \u2248 equity value less cash; ~$9.3B EV at ~$100 per share",
-    "We relever Yahoo 5Y β (0.86) at FY25 ASC 842 lease debt ÷ market cap (~0.16 D/E) → β used ≈ 0.84. Damodaran Retail β (0.95) is shown for reference only.",
+    "Market EV at ~$100 is ~$9.3B (~3.5\u00d7 FY25 EBITDA); intrinsic DCF enterprise value is ~$15B",
+    "We relever Yahoo 5Y \u03b2 (0.86) at FY25 ASC 842 lease debt \u00f7 market cap (~0.16 D/E) \u2192 \u03b2 used \u2248 0.84. Damodaran Retail \u03b2 (0.95) is shown for reference only.",
     "Capital returned via buybacks (no dividend); FY2025 repurchases $1,178.3M",
 ]:
     add_para(tf, t, 13, INK, bullet=True, space_after=6)
@@ -593,7 +593,7 @@ stmt_table(s, rows, hdr, col0w=3.4, top=1.20, height=3.90, bold_rows=(0,))
 tb, tf = textbox(s, Inches(0.5), Inches(5.20), Inches(12.35), Inches(1.75))
 add_para(tf, "Read-through \u2014 we do not average these for terminal value", 13.5, CARD, bold=True, first=True, space_after=3)
 add_para(tf, "PitchBook core mean (ex-UAA, ex-WSM/MOV/LZB) is the current athletic/apparel tape. UAA has negative EBITDA so it is out of the average", 12.5, INK, bullet=True, space_after=3)
-add_para(tf, "Selected TV is the Gordon identity (~6.0x). A 2.25% g year is not today\u2019s NKE 12.7x or WSM 15.4x", 12.5, INK, bullet=True, space_after=3)
+add_para(tf, "Selected TV is the Gordon identity (~7.4x FY30 EBITDA at base WACC/g). A 2.25% g year is not today\u2019s NKE 12.7x or WSM 15.4x", 12.5, INK, bullet=True, space_after=3)
 add_para(tf, "Alo EV/EBITDA is still n.a. Implied 5.0x is EV/Sales on an unclosed $10bn ask \u2014 not in this PitchBook set and not the TV", 12.5, INK, bullet=True, space_after=0)
 
 # =====================================================================
