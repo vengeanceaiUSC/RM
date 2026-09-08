@@ -1246,42 +1246,44 @@ s = slide_base(
     "Precedent Transactions",
     "Private-market context for athleisure M&A \u2014 not used to imply a control premium on LULU",
     page=pg(),
-    sources="Source: Reuters (Oct-2023 Moelis process; Jun-2026 update); Forbes Color Image sales est.",
+    sources="Source: Wolverine IR/SEC (Sweaty Betty); Bloomberg (Gymshark); BusinessWire/Reuters (Vuori); Reuters/Forbes (Alo)",
 )
 _prec_deals = PREC.get("deals", [])
 _lulu_es = PREC.get("lulu_ev_sales", 0)
-prec_hdr = ["Target", "Year", "EV ($M)", "EV/Revenue", "EV/EBITDA", "Status"]
+prec_hdr = ["Target", "Year", "Type", "EV ($M)", "EV/Rev", "EV/EBITDA", "Status"]
 prec_rows = []
 for d in _prec_deals:
     prec_rows.append([
         d.get("target", ""),
         d.get("year", ""),
-        f"{d.get('ev_usd_m', 0):,}",
+        d.get("deal_type", ""),
+        f"{d.get('ev_usd_m', 0):,}" if d.get("ev_usd_m") else "\u2014",
         f"{d.get('ev_sales', 0):.1f}x" if d.get("ev_sales") else "\u2014",
-        "\u2014" if d.get("ev_ebitda") is None else f"{d['ev_ebitda']:.1f}x",
-        d.get("status", ""),
+        f"{d.get('ev_ebitda', 0):.1f}x" if d.get("ev_ebitda") else "\u2014",
+        (d.get("status", "") or "")[:72],
     ])
 prec_rows.append([
     "LULU (public @ $100)",
     "\u2014",
+    "Public equity",
     f"{PREC.get('lulu_ev_m', _lulu_t.get('ev_m', 0)):,}",
     f"{_lulu_es:.2f}x",
     f"{_lulu_t.get('ev_ebitda', 0):.1f}x",
     "Trading comps only \u2014 not a premium benchmark",
 ])
 stmt_table(
-    s, prec_rows, prec_hdr, col0w=2.0, top=1.2, height=1.45, left=0.5, width=12.35,
-    font_size=9, header_font_size=9, bold_rows=(len(prec_rows) - 1,),
+    s, prec_rows, prec_hdr, col0w=1.75, top=1.15, height=2.05, left=0.5, width=12.35,
+    font_size=8, header_font_size=8, bold_rows=(len(prec_rows) - 1,),
 )
 
-tb, tf = textbox(s, Inches(0.5), Inches(2.85), Inches(12.35), Inches(3.5))
+tb, tf = textbox(s, Inches(0.5), Inches(3.35), Inches(12.35), Inches(3.2))
 add_para(tf, "How we use (and do not use) private precedents", 12, CARD, bold=True, first=True, space_after=4)
 for t in [
     PREC.get("note", ""),
-    "Alo Yoga (Color Image): 2023 Moelis sale process at ~$10bn ask on ~$2bn Forbes-est. parent sales \u2192 ~5.0x EV/Revenue. No EBITDA print; process unclosed (Reuters Jun-2026)",
-    "Valid use: shows strategics/PE will pay up for high-growth private athleisure at scale \u2014 supports the competitive-threat and category-consolidation narrative",
-    "Not valid use: we do not apply Alo\u2019s 5.0x ask as a control premium on LULU\u2019s 1.07x public EV/Revenue \u2014 different liquidity, scale, profitability, and an unclosed ask vs a traded stock",
-    "No closed take-private precedent at LULU\u2019s scale; implied valuation and $140 target come from DCF + public comps (slide 20), not private ask multiples",
+    "Closed M&A: Sweaty Betty (2021) — Wolverine paid $410M (~16x FY21E EBITDA, ~1.6x sales) for premium women's DTC activewear; closest operating-company precedent",
+    "Private growth rounds: Gymshark ($1.3bn implied EV, 2020 minority stake) and Vuori ($4bn post-money, 2021) show strategics/PE pay up for high-growth DTC athleisure — minority/valuation markers, not LULU control comps",
+    "Unclosed process: Alo ~$10bn ask (~5.0x EV/Sales on Forbes ~$2bn sales) — illustrates private-brand heat; we do not apply as a control premium on LULU's public multiple",
+    "Valuation anchors remain DCF + public comps (slide 20); precedents support the category-consolidation narrative only",
 ]:
     add_para(tf, t, 10.5, INK, bullet=True, space_after=4)
 

@@ -271,11 +271,51 @@ PEER_FINANCIALS = {
     },
 }
 
-# Private-market precedent (context for athleisure M&A — not used for control-premium math)
+# Private-market / strategic precedents (context for athleisure M&A — not control-premium math)
 PRECEDENT_TRANSACTIONS = [
+    {
+        "target": "Sweaty Betty",
+        "year": "2021",
+        "deal_type": "Closed acquisition",
+        "acquirer": "Wolverine Worldwide (WWW)",
+        "ev_usd_m": 410,
+        "revenue_usd_m": 250,
+        "ev_sales": 1.64,
+        "ev_ebitda": 16.0,
+        "status": "Closed Aug-2021 — ~16x FY21E EBITDA; women's premium activewear",
+        "source": "Wolverine IR / SEC investor deck (Aug-2021)",
+        "use": "Closed strategic comp — premium DTC activewear at scale",
+    },
+    {
+        "target": "Gymshark",
+        "year": "2020",
+        "deal_type": "Minority growth round",
+        "acquirer": "General Atlantic (21% stake)",
+        "ev_usd_m": 1300,
+        "revenue_usd_m": 258,
+        "ev_sales": 5.0,
+        "ev_ebitda": None,
+        "status": "Closed Aug-2020 — $1.3bn implied EV; minority stake, not control",
+        "source": "Bloomberg Aug-2020; ~£258M FY20 sales cited",
+        "use": "Private growth valuation marker — UK DTC fitness apparel",
+    },
+    {
+        "target": "Vuori",
+        "year": "2021",
+        "deal_type": "Growth investment",
+        "acquirer": "SoftBank Vision Fund 2",
+        "ev_usd_m": 4000,
+        "revenue_usd_m": None,
+        "ev_sales": None,
+        "ev_ebitda": None,
+        "status": "Closed Oct-2021 — $4bn post-money; revenue not disclosed (~140% YoY growth)",
+        "source": "BusinessWire / Reuters Oct-2021",
+        "use": "Private athleisure unicorn valuation — profitable DTC since 2017",
+    },
     {
         "target": "Alo Yoga (Color Image)",
         "year": "2023",
+        "deal_type": "Unclosed sale process",
         "acquirer": "Strategic / PE (Moelis sale process)",
         "ev_usd_m": 10000,
         "revenue_usd_m": 2000,
@@ -283,7 +323,7 @@ PRECEDENT_TRANSACTIONS = [
         "ev_ebitda": None,
         "status": "Unclosed — Reuters Jun-2026: no deal announced; IPO or sale still explored",
         "source": "Reuters Oct-2023 Moelis ask; Forbes parent sales ~$2bn",
-        "use": "Private precedent only — illustrates private athleisure pricing; not a premium to LULU stock",
+        "use": "Private precedent only — unclosed ask; not a premium to LULU stock",
     },
 ]
 
