@@ -21,8 +21,11 @@ partial multiple recovery).
 | `LULU_3_Statement_Model.xlsx` | Integrated three-statement operating model (Income Statement, Balance Sheet, Cash Flow) with FY2022–FY2025 reported history and a linked FY2026E–FY2030E forecast. The balance sheet ties every year (cash is the plug from the cash-flow statement). |
 | `LULU_DCF_Valuation_Model.xlsx` | Unlevered DCF: WACC build, **Revenue Drivers** (bottom-up store / DTC / category schedule), five-year FCF forecast, Gordon-growth and exit-multiple terminal value, EV→equity bridge, WACC×g sensitivity grid, bull/base/bear scenarios, and a comps football field. |
 | `LULU_Assumptions_Memo.pdf` | **Full assumptions guide (PDF):** every red assumption on every tab — justification, clickable source links, and Ctrl+F proof. Linked on Cover and DCF tabs. |
-| `LULU_Investment_Pitch_Deck.pptx` | 22-slide investment pitch following the GIS template structure and formatting rules. |
+| `LULU_Investment_Pitch_Deck.pptx` | 23-slide investment pitch (GIS template + Macro × micro slide). Built via `GIS/gis_pitch.py`. |
 | `LULU_Investment_Pitch_Deck.pdf` | PDF export of the pitch deck (submission format). |
+| `LULU_Investment_Thesis_Outline.md` | Slide-by-slide written thesis outline — talking points, macro/micro overlap, model map (for prep and script). |
+| `data/pitch_context.json` | Firecrawl-sourced macro/micro/overlap context (10-K, Sep 2026 earnings, FRED GDPC1). |
+| `../GIS/` | **Shared GIS pitch deck template** — blank PPTX, `gis_pitch.py` engine, reference PDF. |
 | `scripts/` | Reproducible Python build scripts and the sourced data module. |
 
 ## Font / color convention (per the assignment)

@@ -1,181 +1,58 @@
-"""Builds LULU_Investment_Pitch_Deck.pptx from scratch, following the GIS
-Investment Research pitch template (structure + formatting conventions):
-Garamond throughout, 0.3" header rectangles at 15pt, a one-sentence descriptor
-per slide (no trailing periods), theme colors only, and cited sources.
+"""Builds LULU_Investment_Pitch_Deck.pptx using the shared GIS pitch template.
 
 Recommendation: LONG / OVERWEIGHT on lululemon athletica (NASDAQ: LULU).
 """
 import os
-from pptx import Presentation
-from pptx.util import Inches, Pt, Emu
-from pptx.dml.color import RGBColor
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "GIS"))
+from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
-from pptx.enum.shapes import MSO_SHAPE
-from pptx.oxml.ns import qn
+from gis_pitch import (
+    PitchDeck,
+    add_para,
+    textbox,
+    rect,
+    _set_font,
+    NAVY,
+    CARD,
+    GOLD,
+    INK,
+    GREY,
+    LGREY,
+    WHITE,
+    GREEN,
+)
 import data as D
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "LULU_Investment_Pitch_Deck.pptx")
 
-# ---- Theme colors (used consistently throughout) ----
-NAVY = RGBColor(0x1F, 0x2A, 0x44)
-CARD = RGBColor(0x99, 0x00, 0x00)   # USC cardinal
-GOLD = RGBColor(0xFF, 0xC7, 0x2C)   # USC gold
-INK = RGBColor(0x26, 0x26, 0x26)
-GREY = RGBColor(0x8C, 0x8C, 0x8C)
-LGREY = RGBColor(0xF0, 0xF1, 0xF3)
-WHITE = RGBColor(0xFF, 0xFF, 0xFF)
-GREEN = RGBColor(0x1E, 0x7A, 0x3C)
-FONT = "Garamond"
+deck = PitchDeck(company_header="lululemon athletica (NASDAQ: LULU)")
+deck.default_source = "Source: company SEC filings (Form 10-K, CIK 0001397187)"
+prs = deck.prs
 
-prs = Presentation()
-prs.slide_width = Inches(13.333)
-prs.slide_height = Inches(7.5)
-BLANK = prs.slide_layouts[6]
-SW, SH = prs.slide_width, prs.slide_height
-
-
-def _set_font(run, size, color=INK, bold=False, italic=False, name=FONT):
-    run.font.name = name
-    run.font.size = Pt(size)
-    run.font.bold = bold
-    run.font.italic = italic
-    run.font.color.rgb = color
-    # ensure east-asian/complex also Garamond
-    rPr = run._r.get_or_add_rPr()
-    for tag in ('a:latin', 'a:cs'):
-        el = rPr.find(qn(tag))
-        if el is None:
-            el = rPr.makeelement(qn(tag), {})
-            rPr.append(el)
-        el.set('typeface', name)
-
-
-def textbox(slide, l, t, w, h, anchor=MSO_ANCHOR.TOP):
-    tb = slide.shapes.add_textbox(l, t, w, h)
-    tf = tb.text_frame
-    tf.word_wrap = True
-    tf.vertical_anchor = anchor
-    tf.margin_left = Pt(2); tf.margin_right = Pt(2)
-    tf.margin_top = Pt(1); tf.margin_bottom = Pt(1)
-    return tb, tf
-
-
-def add_para(tf, text, size=14, color=INK, bold=False, italic=False, align=PP_ALIGN.LEFT,
-             bullet=False, level=0, space_after=4, first=False):
-    p = tf.paragraphs[0] if first and not tf.paragraphs[0].runs else tf.add_paragraph()
-    p.alignment = align
-    p.level = level
-    p.space_after = Pt(space_after)
-    p.space_before = Pt(0)
-    r = p.add_run()
-    r.text = text
-    _set_font(r, size, color, bold, italic)
-    if bullet:
-        _add_bullet(p, color)
-    else:
-        _no_bullet(p)
-    return p
-
-
-def _no_bullet(p):
-    pPr = p._pPr
-    if pPr is None:
-        pPr = p._p.get_or_add_pPr()
-    for tag in ('a:buChar', 'a:buAutoNum'):
-        e = pPr.find(qn(tag))
-        if e is not None:
-            pPr.remove(e)
-    none = pPr.makeelement(qn('a:buNone'), {})
-    pPr.append(none)
-
-
-def _add_bullet(p, color):
-    pPr = p._p.get_or_add_pPr()
-    pPr.set('indent', str(Pt(-12)))
-    pPr.set('marL', str(Pt(14)))
-    buFont = pPr.makeelement(qn('a:buFont'), {'typeface': FONT})
-    pPr.append(buFont)
-    buChar = pPr.makeelement(qn('a:buChar'), {'char': '\u2022'})
-    pPr.append(buChar)
-
-
-def rect(slide, l, t, w, h, fill=NAVY, line=None):
-    sp = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, l, t, w, h)
-    sp.fill.solid()
-    sp.fill.fore_color.rgb = fill
-    if line is None:
-        sp.line.fill.background()
-    else:
-        sp.line.color.rgb = line
-        sp.line.width = Pt(0.75)
-    sp.shadow.inherit = False
-    return sp
-
-
-def slide_base(title, descriptor, sources=None, page=None):
-    """Standard content slide chrome: running header, 0.3in title rectangle at
-    15pt, one-sentence descriptor (no trailing period), footer + source."""
-    s = prs.slides.add_slide(BLANK)
-    # running header (left)
-    tb, tf = textbox(s, Inches(0.45), Inches(0.18), Inches(6.5), Inches(0.55))
-    add_para(tf, "Investment Research Division", 11, CARD, bold=True, first=True, space_after=0)
-    add_para(tf, "lululemon athletica (NASDAQ: LULU)", 12.5, NAVY, bold=True, space_after=0)
-    # header rectangle (height 0.3in), title 15pt
-    hr = rect(s, Inches(6.0), Inches(0.22), Inches(6.9), Inches(0.3), fill=NAVY)
-    htf = hr.text_frame
-    htf.word_wrap = True
-    htf.margin_top = Pt(0); htf.margin_bottom = Pt(0); htf.margin_right = Pt(6)
-    hp = htf.paragraphs[0]
-    hp.alignment = PP_ALIGN.RIGHT
-    hr_run = hp.add_run(); hr_run.text = title
-    _set_font(hr_run, 15, WHITE, bold=True)
-    # descriptor sentence (no period)
-    tb2, tf2 = textbox(s, Inches(0.45), Inches(0.62), Inches(12.45), Inches(0.34))
-    add_para(tf2, descriptor, 12.5, GREY, italic=True, first=True, space_after=0)
-    # thin divider
-    rect(s, Inches(0.45), Inches(0.98), Inches(12.45), Pt(1.6), fill=GOLD)
-    # footer
-    ftb, ftf = textbox(s, Inches(0.45), Inches(7.12), Inches(12.45), Inches(0.3))
-    src = sources or "Source: company SEC filings (Form 10-K, CIK 0001397187)"
-    add_para(ftf, src, 8.5, GREY, first=True, space_after=0)
-    if page is not None:
-        ptb, ptf = textbox(s, Inches(12.3), Inches(7.12), Inches(0.9), Inches(0.3))
-        add_para(ptf, str(page), 9, GREY, align=PP_ALIGN.RIGHT, first=True, space_after=0)
-    return s
-
-
-def body_box(slide, l=Inches(0.5), t=Inches(1.12), w=Inches(12.35), h=Inches(5.9)):
-    return textbox(slide, l, t, w, h)
-
-
-PAGE = [0]
-def pg():
-    PAGE[0] += 1
-    return PAGE[0]
+slide_base = deck.slide_base
+body_box = deck.body_box
+pg = deck.pg
+stmt_table = deck.stmt_table
 
 # =====================================================================
 # 1. TITLE
 # =====================================================================
-s = prs.slides.add_slide(BLANK)
-rect(s, 0, 0, SW, SH, fill=NAVY)
-rect(s, 0, Inches(2.55), SW, Inches(0.06), fill=GOLD)
-rect(s, 0, Inches(4.35), SW, Inches(0.06), fill=CARD)
-tb, tf = textbox(s, Inches(0.9), Inches(0.7), Inches(11.5), Inches(1.4))
-add_para(tf, "GLOBAL INVESTMENT SOCIETY", 20, GOLD, bold=True, first=True, space_after=2)
-add_para(tf, "Investment Research Division", 15, WHITE, space_after=0)
-tb, tf = textbox(s, Inches(0.9), Inches(2.7), Inches(11.5), Inches(1.6))
-add_para(tf, "lululemon athletica inc.", 40, WHITE, bold=True, first=True, space_after=0)
-add_para(tf, "NASDAQ: LULU", 20, GOLD, bold=True, space_after=0)
-tb, tf = textbox(s, Inches(0.9), Inches(4.6), Inches(11.6), Inches(2.2))
-add_para(tf, "Recommendation:  OVERWEIGHT / LONG", 22, GOLD, bold=True, first=True, space_after=8)
-add_para(tf, "Current price:  $100.00        Price target:  $140  (+40% upside)", 17, WHITE, space_after=6)
-add_para(tf, "A net-cash, high-margin brand priced for terminal decline \u2014 we see a cyclical trough, not a broken business", 13.5, RGBColor(0xCF,0xD6,0xE4), italic=True, space_after=10)
-add_para(tf, "September 2026        Prepared for the GIS IR selection process", 11, GREY, space_after=0)
+deck.title_slide(
+    company_name="lululemon athletica inc.",
+    ticker_line="NASDAQ: LULU",
+    recommendation="OVERWEIGHT / LONG",
+    current_price="$100.00",
+    target_price="$140",
+    upside_pct="+40% upside",
+    descriptor="A net-cash, high-margin brand priced for terminal decline \u2014 we see a cyclical trough, not a broken business",
+)
 
 # =====================================================================
-# 2. TABLE OF CONTENTS
+# 2. TABLE OF CONTENTS (standard GIS + optional macro slide)
 # =====================================================================
-toc = [
+LULU_TOC = [
     "1.  Investment thesis summary", "2.  Situation overview", "3.  Macro \u00d7 micro overlap",
     "4.  Market narrative", "5.  Company overview", "6.  Business model & unit economics",
     "7.  Industry overview", "8.  Thesis I \u2014 Priced for terminal decline",
@@ -185,13 +62,7 @@ toc = [
     "16. Capital structure & WACC", "17. Valuation summary (football field)",
     "18. DCF valuation", "19. Comparable companies", "20. Appendix \u2014 bull / bear scenarios",
 ]
-s = slide_base("Table of Contents", "What this pitch will cover", page=pg())
-tb, tf = textbox(s, Inches(0.6), Inches(1.2), Inches(6.0), Inches(5.8))
-for i, item in enumerate(toc[:10]):
-    add_para(tf, item, 14.5, NAVY, bold=True, first=(i == 0), space_after=8)
-tb2, tf2 = textbox(s, Inches(6.9), Inches(1.2), Inches(6.0), Inches(5.8))
-for j, item in enumerate(toc[10:]):
-    add_para(tf2, item, 14.5, NAVY, bold=True, first=(j == 0), space_after=8)
+deck.toc_slide(LULU_TOC)
 
 # =====================================================================
 # 3. INVESTMENT THESIS SUMMARY
@@ -481,44 +352,6 @@ for i, (when, what) in enumerate(cats):
     add_para(bt2, what, 13, INK, first=True, space_after=0)
     top += 1.25
 
-# =====================================================================
-# Financial statement table helper
-# =====================================================================
-def stmt_table(slide, rows, headers, col0w=3.6, top=1.35, height=5.4, red_rows=(), bold_rows=()):
-    ncol = len(headers)
-    left = Inches(0.5)
-    width = Inches(12.35)
-    tbl_shape = slide.shapes.add_table(len(rows)+1, ncol, left, Inches(top), width, Inches(height))
-    table = tbl_shape.table
-    table.columns[0].width = Inches(col0w)
-    restw = (12.35 - col0w) / (ncol - 1)
-    for c in range(1, ncol):
-        table.columns[c].width = Inches(restw)
-    # style header
-    for c, htxt in enumerate(headers):
-        cell = table.cell(0, c)
-        cell.fill.solid(); cell.fill.fore_color.rgb = NAVY
-        p = cell.text_frame.paragraphs[0]
-        p.alignment = PP_ALIGN.LEFT if c == 0 else PP_ALIGN.RIGHT
-        r = p.add_run(); r.text = htxt
-        _set_font(r, 11, WHITE, bold=True)
-        cell.vertical_anchor = MSO_ANCHOR.MIDDLE
-    for ri, row in enumerate(rows, start=1):
-        is_red = ri-1 in red_rows
-        is_bold = ri-1 in bold_rows
-        for c, val in enumerate(row):
-            cell = table.cell(ri, c)
-            cell.fill.solid()
-            cell.fill.fore_color.rgb = WHITE if ri % 2 else LGREY
-            p = cell.text_frame.paragraphs[0]
-            p.alignment = PP_ALIGN.LEFT if c == 0 else PP_ALIGN.RIGHT
-            r = p.add_run(); r.text = val
-            color = CARD if (is_red and c > 0) else (NAVY if is_bold else INK)
-            _set_font(r, 10.5, color, bold=is_bold)
-            cell.vertical_anchor = MSO_ANCHOR.MIDDLE
-            cell.margin_top = Pt(1); cell.margin_bottom = Pt(1)
-    return table
-
 def m(v):
     return f"{v:,.0f}"
 
@@ -793,5 +626,5 @@ for t in [
 add_para(tf, "Disclaimer", 14, CARD, bold=True, space_after=5)
 add_para(tf, "This presentation is prepared for educational purposes as part of the Global Investment Society selection process and does not constitute investment advice or a recommendation to buy or sell any security", 12, GREY, italic=True, space_after=0)
 
-prs.save(OUT)
-print("Saved", os.path.abspath(OUT), "with", len(prs.slides._sldIdLst), "slides")
+n = deck.save(OUT)
+print("Saved", os.path.abspath(OUT), "with", n, "slides")
