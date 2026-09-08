@@ -119,7 +119,7 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 
 ### The overlap (why the stock is at $100)
 
-1. **Macro weakness concentrated in micro geography:** Americas is ~**71%** of FY25 revenue — the macro consumer tape hits LULU harder than a globally diversified peer because of **where** the dollars are earned.
+1. **Macro weakness concentrated in micro geography:** Americas is **~71%** of FY25 revenue (**70.7%** per 10-K segment) — the macro consumer tape hits LULU harder than a globally diversified peer because of **where** the dollars are earned.
 
 2. **Tariff is both macro and micro:** Policy risk sits in the macro bucket; the **$134.5M refund** sits in the micro P&L. Investors who miss the 560 bps Q2-only boost overstate sustainable margin.
 
@@ -169,7 +169,7 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 
 ### Growth architecture (FY25 mix)
 
-- **Americas ~71%** — mature, high productivity; negative comps = market fear
+- **Americas ~71%** (10-K: **70.7%**) — mature, high productivity; negative comps = market fear
 - **China ~16%** — fastest growth; store + brand awareness runway
 - **RoW ~14%** — early-stage; men's + international whitespace
 
@@ -230,7 +230,7 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 
 **Descriptor:** China and Rest-of-World offset a maturing Americas and restore growth
 
-**Headline:** Geographic mix shift is the bridge back to mid-single-digit revenue growth
+**Headline:** Geographic mix shift is the bridge back to **low-single-digit** revenue growth (~2.3% FY27–30)
 
 - China **+20%** comp FY25; long store + awareness runway vs Americas base
 - RoW **+9%** — Europe/APAC early innings
@@ -283,7 +283,7 @@ FY2025 CFO **$1,602.5M** less capex **$680.8M** → **~$0.9B FCF** in a decelera
 
 **Balance sheet headline:** **Net cash** grows in our model — no funded debt; cash funds buybacks + China/RoW stores.
 
-**Cash flow headline:** **~$1B+ FCF** even in FY26 reset; **$500M/yr** buybacks in projections.
+**Cash flow headline:** **~$1B+ FCF** even in FY26 reset; **$500M/yr** buybacks in the **3-statement** (DCF repurchase schedule uses 75% of UFCF — see `NUMBER_AUDIT.md`)
 
 *All projections: GIS operating model (3-statement + DCF), not company guidance beyond FY26.*
 

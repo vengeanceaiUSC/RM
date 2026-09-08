@@ -6,7 +6,7 @@
 
 ## TL;DR — what I'd say in the room
 
-We fixed the headline valuation drift ($124 → **$134**, bear/bull, WACC). **Good.** But if a PM Ctrl+F's the deck against the model, they'll still catch **margin definition mixing**, **a bear case that doesn't bracket $100**, **Gordon exit still printed at ~6x when the model is ~7.4x**, and **P/E on guide EPS vs our own EPS**. None of these kill the thesis — they're credibility leaks. Clean them before GIS.
+We fixed the headline valuation drift ($124 → **$134**, bear/bull, WACC). **Good.** Round 3 found **structural** issues: **3-statement vs DCF forecast drift**, **$500M vs 75%-UFCF buybacks**, a **bogus $167 "DCF exit" football-field row**, **two EV/EBITDA tapes (3.5x vs 4.7x)**, and a **broken earnings scrape** in `ingested_kpis.json`. See items 11–22 below.
 
 ---
 
@@ -157,3 +157,142 @@ Then Ctrl+F the deck for: **124, 66, 227, 155, 10.5%, 6.0x, 14.5% reported, bear
 ---
 
 *Last checked against recalculated workbooks — Sep 2026.*
+
+---
+
+## Round 3 — deeper cuts (the stuff that only shows up if you open both workbooks)
+
+### 11. **3-statement and DCF diverge after FY26 — and the pitch uses both**
+
+FY26 ties (`$10,425M`). After that, the **Income Statement** and **DCF / Scenarios** paths **do not match**:
+
+| Year | 3-statement revenue | DCF / Scenarios revenue | Gap |
+|------|----------------------:|------------------------:|----:|
+| FY2027E | $10,696M | $10,665M | ~$31M |
+| FY2028E | $10,942M | $10,909M | ~$32M |
+| FY2029E | $11,194M | $11,161M | ~$33M |
+| FY2030E | $11,452M | $11,418M | ~$33M |
+
+**Why it matters:** `pitch_values.json` pulls **financial tables from the 3-statement** but **valuation from DCF / Scenarios**. A PM comparing slide 13 revenue to slide 18 FCF build is comparing **two different forecast engines**.
+
+**What I'd say:** *"IS tables are the operating model. DCF revenue is the Scenarios column G path — they share FY26, then drift ~30M/yr. Either link them or footnote the split."*
+
+---
+
+### 12. **FY27 growth: 2.6% in the 3-statement, 2.3% in Scenarios**
+
+- **3-statement:** FY27 revenue growth = **+2.6%** (tracks StockAnalysis next-year **+2.64%**)
+- **Scenarios / DCF FY27–30:** flat **+2.3%** every year (3Y forecast **2.26%**)
+
+We say "2.3% FY27–30" in the pitch. The **IS table on slide 13 contradicts that** in the first recovery year.
+
+---
+
+### 13. **EBIT FY26: $1,587M (3-statement) vs $1,511M (DCF)**
+
+Same year, two EBIT numbers (~$76M gap). DCF uses the Scenarios EBIT build (clean margin path + refund); the 3-statement has its own GM / SG&A stack.
+
+Pitch **IS slide shows $1,587M**. DCF **values off $1,511M**. Nobody will catch this unless they reconcile tabs — but it's real.
+
+---
+
+### 14. **Buybacks: $500M (3-statement) vs ~$796M (DCF repurchase schedule)**
+
+| Source | FY26 buyback assumption |
+|--------|-------------------------|
+| **3-statement CF** | **$500M** fixed annual |
+| **DCF repurchase block** | **75% × UFCF ≈ $796M** |
+
+Thesis says *"$500M/yr buybacks in projections."* DCF repurchase schedule says **75% of ~$1.06B UFCF**. Those are **different capital-return stories**.
+
+Convention A (IV on 111.4M basic) is fine — but **don't cite both numbers without explaining which model you're in**.
+
+---
+
+### 15. **Football field has a hidden $167 "DCF exit" row that is NOT the DCF**
+
+Comps tab includes **"DCF exit method (Gordon-implied on FY2030E EBITDA)" → ~$167/sh**.
+
+That row uses `(FY30 EBITDA × 7.4x + cash) ÷ shares` — **no discounting, no explicit-period FCF, no lease bridge**. It's a **terminal capitalization shortcut**, not the unlevered DCF output (**$134**).
+
+**We don't show $167 on the pitch football field** (good), but it's in the workbook. If a judge opens Comps, they'll ask why DCF says $134 and "DCF exit" says $167.
+
+**What I'd say:** *"Full DCF is $134. The $167 row is an undiscounted terminal check — ignore it or relabel it."*
+
+---
+
+### 16. **Two "current" EV/EBITDA prints: 3.5x vs 4.7x**
+
+| Source | Multiple | Denominator |
+|--------|----------|-------------|
+| **Comps memo** (trading @ $100) | **~3.45x** | FY25 EBITDA ($2.71B) |
+| **PitchBook LULU comp row** | **~4.7x** | TTM EBITDA (daily tape) |
+
+Pitch uses **~3.5x** on valuation slides. Comps slide shows **LULU at 4.7x**. Both are in the model — **different EBITDA bases**.
+
+**What I'd say:** *"3.5x is our FY25 EBITDA at $100. 4.7x is PitchBook TTM. Use 3.5x for the trough narrative; cite 4.7x only when talking about the pubcomp tape."*
+
+---
+
+### 17. **Americas is 70.7%, not 71%**
+
+10-K segment: **$7,847M / $11,103M = 70.7%**. Pitch and thesis say **~71%**. Revenue Drivers comp formula hardcodes **71% / 16% / 13%** — weights don't match geo (**70.7% / 15.8% / 13.5%**).
+
+Rounding is fine in the room; **don't defend 71% as sourced** when the model says 70.7%.
+
+---
+
+### 18. **Channel mix ≠ geo mix (easy to talk past each other)**
+
+| Lens | FY25 split |
+|------|------------|
+| **Channel** | Stores 45.5% · E-comm 44.3% · Other 10.2% |
+| **Geography** | Americas 70.7% · China 15.8% · RoW 13.5% |
+
+Thesis channel table ($5.05B stores / $4.92B e-comm) is **not** Americas 71%. Macro overlap slide is **geo**. Fine — but **don't imply Americas = stores**.
+
+---
+
+### 19. **`ingested_kpis.json` has a bad earnings scrape**
+
+```json
+"fy2026_rev_guide": { "low": 2290000, "high": 2320000 }
+```
+
+That's **~$2.3B** — looks like **Q3 quarterly revenue** misparsed as FY guide. The `-10% to -11%` block next to it is **Q3**, not FY26.
+
+FY guide is **$10.35–$10.50B**. Fix `parse_earnings()` in `ingest_kpis.py` or this JSON will poison any automation that reads it.
+
+---
+
+### 20. **"Mid-single-digit" recovery vs model +2.3%**
+
+Pitch Thesis II says international restores **"mid-single-digit"** growth. Model is **+2.3%** FY27–30 — that's **low-single-digit**, not mid (4–6%).
+
+Industry TAM at mid-single-digit is fine. **LULU revenue recovery is not.**
+
+---
+
+### 21. **Live `LULU_DCF_Valuation_Model.xlsx` still has stale Comps commentary**
+
+Rows 49 and 53 on the Comps tab still say **"WACC 10.5% … ~6.0x"** even though `build_dcf.py` was patched. **Workbook not rebuilt.**
+
+Run `python3 build_dcf.py` or the Assumptions Memo PDF will keep printing wrong exit language.
+
+---
+
+### 22. **DCF reported EBIT margin row shows 14.5%; 3-statement shows 15.2%**
+
+DCF tab "Reported EBIT margin % (incl. FY26 refund)" = **14.49%**. 3-statement OM row = **15.22%**. Different numerators (DCF EBIT build vs IS COGS/SG&A stack).
+
+Another instance of **same label, different number**.
+
+---
+
+## Updated Ctrl+F before GIS
+
+`124, 66, 227, 155, 10.5%, 6.0x, 14.5% reported, bear brackets, mid-single-digit, 71%, 500M buyback, 167`
+
+---
+
+*Round 3 added Sep 2026.*

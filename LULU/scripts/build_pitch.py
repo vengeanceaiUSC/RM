@@ -117,7 +117,7 @@ add_para(b3, "Shares \u201355% off highs; ~18% single-day drop after Q2 FY2026 p
 tb, tf = textbox(s, Inches(0.5), Inches(2.95), Inches(12.35), Inches(4.0))
 add_para(tf, "Three reasons to be long", 15, CARD, bold=True, first=True, space_after=6)
 add_para(tf, "1.  Priced for terminal decline \u2014 at ~3.5x EV/EBITDA and ~10x FY2026E EPS with a net-cash balance sheet, the stock embeds a permanent impairment that the business does not support", 13.5, INK, bold=False, space_after=7)
-add_para(tf, "2.  International is a multi-year growth engine \u2014 China Mainland and Rest-of-World more than offset a maturing Americas and can return total revenue to mid-single-digit growth", 13.5, INK, space_after=7)
+add_para(tf, "2.  International is a multi-year growth engine \u2014 China Mainland and Rest-of-World more than offset a maturing Americas and can return total revenue to low-single-digit growth (~2.3% FY27\u201330 in our model)", 13.5, INK, space_after=7)
 add_para(tf, "3.  Elite economics + accretive buybacks \u2014 FY2025 operating margin was 19.9% (last full year, not the trough); we model a 13.2% clean FY2026 run-rate (Q2 18.8% minus 560bps of tariff refunds), then add the $134.5M refund once (~15.2% reported in our IS). Diluted shares are down ~7% (128.0M \u2192 119.1M)", 13.5, INK, space_after=7)
 add_para(tf, f"Base-case DCF {_d(V['base_dcf'])}; bear {_d(V['bear'])} ({_up(V['bear'])}) vs bull {_d(V['bull'])} ({_up(V['bull'])}) \u2014 downside is protected by net cash and an ~8\u20139% FCF yield", 13, NAVY, bold=True, italic=True, space_after=0)
 
@@ -169,7 +169,7 @@ box = rect(s, Inches(6.85), Inches(1.15), Inches(6.0), Inches(5.5), fill=NAVY)
 btf = box.text_frame; btf.word_wrap = True
 add_para(btf, "OVERLAP \u2014 WHY $100", 12.5, GOLD, bold=True, first=True, space_after=8)
 for t in [
-    "Macro weakness maps onto LULU\u2019s largest profit pool: Americas ~71% of FY25 revenue",
+    "Macro weakness maps onto LULU\u2019s largest profit pool: Americas ~71% of FY25 revenue (10-K: 70.7%)",
     "Tariff is simultaneously macro policy and micro P&L \u2014 Q2 optics mask run-rate margin",
     "The de-rating blends macro fear with a micro guide miss; both are largely in the price at ~10x FY26E EPS",
     "Our edge: underwrite trough economics (13.2% \u2192 15.5% OM), not a return to 30x earnings",
@@ -307,7 +307,7 @@ thesis_slide(
 thesis_slide(
     "II", "International growth engine",
     "China and Rest-of-World offset a maturing Americas and restore growth",
-    "Geographic mix shift is the bridge back to mid-single-digit revenue growth",
+    "Geographic mix shift is the bridge back to low-single-digit revenue growth (~2.3% FY27\u201330)",
     [
         "China Mainland has been compounding at ~20%+ with a long runway in store count and brand awareness relative to the Americas base",
         "Rest of World (Europe, APAC) is early-stage and under-penetrated versus global peers \u2014 an incremental multi-year contributor",

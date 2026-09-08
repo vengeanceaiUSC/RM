@@ -213,9 +213,27 @@ def parse_earnings(md: str) -> dict:
     if m:
         lo, hi = int(m.group(1)), int(m.group(2))
         out["fy2026_rev_growth_guide"] = {"low": -hi / 100, "high": -lo / 100, "mid": -(lo + hi) / 200}
-    m = re.search(r"\$\s*([\d.]+)\s*billion.*?\$\s*([\d.]+)\s*billion", md, re.I)
+    # Full-year FY2026 revenue guide ($10.35B–$10.50B) — require both values ≥ 9B
+    m = re.search(
+        r"net revenue.*?\$\s*([\d.]+)\s*billion.*?\$\s*([\d.]+)\s*billion",
+        md,
+        re.I | re.S,
+    )
     if m:
-        out["fy2026_rev_guide"] = {
+        lo_b, hi_b = float(m.group(1)), float(m.group(2))
+        if lo_b >= 9:
+            out["fy2026_rev_guide"] = {
+                "low": int(lo_b * 1_000_000),
+                "high": int(hi_b * 1_000_000),
+            }
+    # Q3 FY2026 revenue guide (quarterly $ billions) — separate key
+    m = re.search(
+        r"third quarter.*?\$\s*([\d.]+)\s*billion.*?\$\s*([\d.]+)\s*billion",
+        md,
+        re.I | re.S,
+    )
+    if m:
+        out["q3_fy2026_rev_guide"] = {
             "low": int(float(m.group(1)) * 1_000_000),
             "high": int(float(m.group(2)) * 1_000_000),
         }
