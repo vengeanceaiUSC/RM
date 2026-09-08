@@ -435,6 +435,10 @@ def _fin_headers():
     return hdr
 
 
+def _hist_range(section, key, y0="FY2022", y1="FY2025"):
+    return f"FY22 {m(section[key][y0] / 1000)}M \u2192 FY25 {m(section[key][y1] / 1000)}M"
+
+
 def _hist_line(label, detail):
     """One explainer bullet: metric label + historical FY22→FY25 detail."""
     return f"{label}: {detail}"
@@ -470,8 +474,9 @@ def _aligned_explainers(pairs):
     return hist, fcst
 
 
-def _fin_explainer_boxes(slide, hist_title, hist_bullets, fcst_title, fcst_bullets, box_height=1.85):
+def _fin_explainer_boxes(slide, hist_title, hist_bullets, fcst_title, fcst_bullets, box_height=2.45):
     """Side-by-side Historical vs forecast explainer panels above the financial table."""
+    bullet_fs = 9 if len(hist_bullets) > 5 else 10
     for x, title, bullets, fill in (
         (0.5, hist_title, hist_bullets, LGREY),
         (6.7, fcst_title, fcst_bullets, NAVY),
@@ -481,9 +486,9 @@ def _fin_explainer_boxes(slide, hist_title, hist_bullets, fcst_title, fcst_bulle
         btf.word_wrap = True
         title_color = CARD if fill == LGREY else GOLD
         body_color = INK if fill == LGREY else WHITE
-        add_para(btf, title, 11.5, title_color, bold=True, first=True, space_after=3)
+        add_para(btf, title, 11, title_color, bold=True, first=True, space_after=2)
         for i, bullet in enumerate(bullets):
-            add_para(btf, bullet, 10, body_color, bullet=True, first=(i == 0), space_after=2)
+            add_para(btf, bullet, bullet_fs, body_color, bullet=True, first=(i == 0), space_after=1)
 
 
 def _fmt_cell(v, fmt="num"):
@@ -519,9 +524,9 @@ def pitch_financial_slide(
     bold_rows=(),
     italic_note=None,
     col0w=2.35,
-    table_top=3.05,
-    table_height=3.35,
-    explainer_height=1.85,
+    table_top=3.68,
+    table_height=2.95,
+    explainer_height=2.45,
 ):
     """Build one financial slide: historicals + 5yr base/bull forecast table."""
     hdr = _fin_headers()
@@ -548,9 +553,21 @@ _OM24 = D.IS["operating_income"]["FY2024"] / D.IS["revenue"]["FY2024"] * 100
 _IS_HIST, _IS_FCST = _aligned_explainers([
     (
         "Net revenue",
-        "FY22 $8,111M \u2192 FY25 $11,103M",
+        f"FY22 ${m(D.IS['revenue']['FY2022']/1000)}M \u2192 FY25 ${m(D.IS['revenue']['FY2025']/1000)}M",
         _fcst_line("Net revenue", _IS26B["revenue"], _IS30B["revenue"],
                    _IS26U["revenue"], _IS30U["revenue"]),
+    ),
+    (
+        "Gross profit",
+        _hist_range(D.IS, "gross_profit"),
+        _fcst_line("Gross profit", _IS26B["gross_profit"], _IS30B["gross_profit"],
+                   _IS26U["gross_profit"], _IS30U["gross_profit"]),
+    ),
+    (
+        "Operating income",
+        _hist_range(D.IS, "operating_income"),
+        _fcst_line("Operating income", _IS26B["operating_income"], _IS30B["operating_income"],
+                   _IS26U["operating_income"], _IS30U["operating_income"]),
     ),
     (
         "Operating margin %",
@@ -560,7 +577,7 @@ _IS_HIST, _IS_FCST = _aligned_explainers([
     ),
     (
         "Net income",
-        f"FY22 {m(D.IS['net_income']['FY2022']/1000)}M \u2192 FY25 {m(D.IS['net_income']['FY2025']/1000)}M",
+        _hist_range(D.IS, "net_income"),
         _fcst_line("Net income", _IS26B["net_income"], _IS30B["net_income"],
                    _IS26U["net_income"], _IS30U["net_income"]),
     ),
@@ -575,19 +592,31 @@ _IS_HIST, _IS_FCST = _aligned_explainers([
 _BS_HIST, _BS_FCST = _aligned_explainers([
     (
         "Cash & equivalents",
-        f"FY22 {m(D.BS['cash']['FY2022']/1000)}M \u2192 FY25 {m(D.BS['cash']['FY2025']/1000)}M",
+        _hist_range(D.BS, "cash"),
         _fcst_line("Cash & equivalents", BS_BASE["cash"]["FY2026E"], BS_BASE["cash"]["FY2030E"],
                    BS_BULL["cash"]["FY2026E"], BS_BULL["cash"]["FY2030E"]),
     ),
     (
+        "Inventories",
+        _hist_range(D.BS, "inventories"),
+        _fcst_line("Inventories", BS_BASE["inventories"]["FY2026E"], BS_BASE["inventories"]["FY2030E"],
+                   BS_BULL["inventories"]["FY2026E"], BS_BULL["inventories"]["FY2030E"]),
+    ),
+    (
         "Total assets",
-        f"FY22 {m(D.BS['total_assets']['FY2022']/1000)}M \u2192 FY25 {m(D.BS['total_assets']['FY2025']/1000)}M",
+        _hist_range(D.BS, "total_assets"),
         _fcst_line("Total assets", BS_BASE["total_assets"]["FY2026E"], BS_BASE["total_assets"]["FY2030E"],
                    BS_BULL["total_assets"]["FY2026E"], BS_BULL["total_assets"]["FY2030E"]),
     ),
     (
+        "Total liabilities",
+        _hist_range(D.BS, "total_liab"),
+        _fcst_line("Total liabilities", BS_BASE["total_liab"]["FY2026E"], BS_BASE["total_liab"]["FY2030E"],
+                   BS_BULL["total_liab"]["FY2026E"], BS_BULL["total_liab"]["FY2030E"]),
+    ),
+    (
         "Total equity",
-        f"FY22 {m(D.BS['total_equity']['FY2022']/1000)}M \u2192 FY25 {m(D.BS['total_equity']['FY2025']/1000)}M",
+        _hist_range(D.BS, "total_equity"),
         _fcst_line("Total equity", BS_BASE["total_equity"]["FY2026E"], BS_BASE["total_equity"]["FY2030E"],
                    BS_BULL["total_equity"]["FY2026E"], BS_BULL["total_equity"]["FY2030E"]),
     ),
@@ -601,9 +630,15 @@ _BS_HIST, _BS_FCST = _aligned_explainers([
 _CF_HIST, _CF_FCST = _aligned_explainers([
     (
         "Cash from operations",
-        f"FY22 {m(D.CF['cfo']['FY2022']/1000)}M \u2192 FY25 {m(D.CF['cfo']['FY2025']/1000)}M",
+        _hist_range(D.CF, "cfo"),
         _fcst_line("Cash from operations", CF_BASE["cfo"]["FY2026E"], CF_BASE["cfo"]["FY2030E"],
                    CF_BULL["cfo"]["FY2026E"], CF_BULL["cfo"]["FY2030E"]),
+    ),
+    (
+        "D&A (add-back)",
+        _hist_range(D.CF, "d_and_a"),
+        _fcst_line("D&A (add-back)", CF_BASE["dna"]["FY2026E"], CF_BASE["dna"]["FY2030E"],
+                   CF_BULL["dna"]["FY2026E"], CF_BULL["dna"]["FY2030E"]),
     ),
     (
         "Capital expenditures",
