@@ -474,6 +474,192 @@
     "gordon_tv_m": 16804,
     "exit_tv_m": 16804
   },
+  "comps_analysis": {
+    "peers": [
+      {
+        "name": "lululemon (LULU)",
+        "core": true,
+        "ev_m": 11890,
+        "ev_rev": 1.07,
+        "ev_ebitda": 4.7,
+        "ev_ebit": 5.4,
+        "pe_fwd": 8.3
+      },
+      {
+        "name": "Under Armour (UAA)",
+        "core": false,
+        "ev_m": 3208,
+        "ev_rev": 0.62,
+        "ev_ebitda": null,
+        "ev_ebit": null,
+        "pe_fwd": null
+      },
+      {
+        "name": "adidas (ADS)",
+        "core": true,
+        "ev_m": 35662,
+        "ev_rev": 1.51,
+        "ev_ebitda": 9.2,
+        "ev_ebit": 18.6,
+        "pe_fwd": 19.1
+      },
+      {
+        "name": "Nike (NKE)",
+        "core": true,
+        "ev_m": 58972,
+        "ev_rev": 1.27,
+        "ev_ebitda": 12.7,
+        "ev_ebit": 15.9,
+        "pe_fwd": 18.3
+      },
+      {
+        "name": "Deckers (DECK)",
+        "core": true,
+        "ev_m": 10556,
+        "ev_rev": 2.47,
+        "ev_ebitda": 7.9,
+        "ev_ebit": 9.8,
+        "pe_fwd": 12.1
+      },
+      {
+        "name": "Williams-Sonoma (WSM)",
+        "core": false,
+        "ev_m": 27284,
+        "ev_rev": 3.5,
+        "ev_ebitda": 15.4,
+        "ev_ebit": 18.8,
+        "pe_fwd": 15.4
+      },
+      {
+        "name": "Crocs (CROX)",
+        "core": true,
+        "ev_m": 7154,
+        "ev_rev": 1.74,
+        "ev_ebitda": 7.8,
+        "ev_ebit": 7.8,
+        "pe_fwd": 10.3
+      },
+      {
+        "name": "Levi Strauss (LEVI)",
+        "core": true,
+        "ev_m": 9423,
+        "ev_rev": 1.52,
+        "ev_ebitda": 9.6,
+        "ev_ebit": 18.1,
+        "pe_fwd": 15.0
+      },
+      {
+        "name": "Kontoor (KTB)",
+        "core": true,
+        "ev_m": 5236,
+        "ev_rev": 2.01,
+        "ev_ebitda": 12.8,
+        "ev_ebit": 15.4,
+        "pe_fwd": 18.0
+      }
+    ],
+    "core_stats": {
+      "ev_rev": {
+        "median": 1.63,
+        "low": 1.27,
+        "high": 2.47
+      },
+      "ev_ebitda": {
+        "median": 9.4,
+        "low": 7.8,
+        "high": 12.8
+      },
+      "ev_ebit": {
+        "median": 15.7,
+        "low": 7.8,
+        "high": 18.6
+      },
+      "pe_fwd": {
+        "median": 16.5,
+        "low": 10.3,
+        "high": 19.1
+      }
+    },
+    "implied": [
+      {
+        "metric": "EV / Revenue",
+        "lulu_base": 10425.0,
+        "lulu_base_label": "FY2026E revenue ($M)",
+        "peer_median": 1.63,
+        "peer_low": 1.27,
+        "peer_high": 2.47,
+        "implied_ev_m": 16993,
+        "implied_px_median": 153,
+        "implied_px_low": 119,
+        "implied_px_high": 231
+      },
+      {
+        "metric": "EV / EBITDA",
+        "lulu_base": 2707,
+        "lulu_base_label": "FY2025 EBITDA ($M, TTM anchor)",
+        "peer_median": 9.4,
+        "peer_low": 7.8,
+        "peer_high": 12.8,
+        "implied_ev_m": 25444,
+        "implied_px_median": 229,
+        "implied_px_low": 190,
+        "implied_px_high": 311
+      },
+      {
+        "metric": "EV / EBIT",
+        "lulu_base": 2211,
+        "lulu_base_label": "FY2025 EBIT ($M)",
+        "peer_median": 15.7,
+        "peer_low": 7.8,
+        "peer_high": 18.6,
+        "implied_ev_m": 34596,
+        "implied_px_median": 311,
+        "implied_px_low": 155,
+        "implied_px_high": 369
+      },
+      {
+        "metric": "P / E",
+        "lulu_base": 9.61,
+        "lulu_base_label": "FY2026E EPS ($)",
+        "peer_median": 16.5,
+        "peer_low": 10.3,
+        "peer_high": 19.1,
+        "implied_ev_m": null,
+        "implied_px_median": 158,
+        "implied_px_low": 99,
+        "implied_px_high": 183
+      }
+    ],
+    "lulu_trading": {
+      "price": 100.0,
+      "ev_rev": 1.07,
+      "ev_ebitda": 4.7,
+      "ev_ebit": 5.0,
+      "pe_fwd": 10.4,
+      "ev_m": 11129
+    },
+    "source": "PitchBook Comps Set 04-Sep-2026 (EV, TTM EBITDA); revenue/EBIT from company filings; forward P/E from consensus"
+  },
+  "precedent": {
+    "deals": [
+      {
+        "target": "Alo Yoga (Color Image)",
+        "year": "2023",
+        "acquirer": "Strategic / PE (Moelis sale process)",
+        "ev_usd_m": 10000,
+        "revenue_usd_m": 2000,
+        "ev_sales": 5.0,
+        "ev_ebitda": null,
+        "premium_vs_lulu": null,
+        "status": "Unclosed \u2014 Reuters Jun-2026: no deal announced; IPO or sale still explored",
+        "source": "Reuters Oct-2023 Moelis ask; Forbes parent sales ~$2bn",
+        "premium_vs_lulu_ev_sales": 367.0
+      }
+    ],
+    "lulu_ev_sales": 1.07,
+    "lulu_price": 100.0,
+    "note": "No directly comparable public take-private of LULU-scale athletic apparel. Alo is the best private-market reference; premium is EV/Sales vs LULU at current price."
+  },
   "sotp": {
     "segments": [
       {
@@ -496,7 +682,7 @@
         "ev_ebitda_hi": 9.4,
         "ev_lo_m": 3238,
         "ev_hi_m": 3852,
-        "multiple_note": "Growth premium vs Americas; still below  NKE ~12.7x / adidas ~9.2x TTM (PitchBook)"
+        "multiple_note": "Growth premium vs Americas; still below NKE/adidas TTM (NKE ~12.7x / adidas ~9.2x TTM (PitchBook))"
       },
       {
         "segment": "Rest of World",

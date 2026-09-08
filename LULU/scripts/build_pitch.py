@@ -43,6 +43,8 @@ WB = PV.get("wacc_build", {})
 WR = WB.get("rows", {})
 DCF_BASE = PV.get("dcf_base", {})
 SOTP = PV.get("sotp", {})
+COMPS = PV.get("comps_analysis", {})
+PREC = PV.get("precedent", {})
 
 
 def _d(v):
@@ -96,7 +98,8 @@ LULU_TOC = [
     "14. Financials \u2014 balance sheet", "15. Financials \u2014 cash flow",
     "16. Financials \u2014 capital structure", "17. Valuation summary (football field)",
     "18. Sum of the parts", "19. DCF valuation (base case)",
-    "20. Comparable companies", "21. Appendix \u2014 bull / bear scenarios",
+    "20. Comps analysis", "21. Precedent transactions",
+    "22. Appendix \u2014 bull / bear scenarios",
 ]
 deck.toc_slide(LULU_TOC)
 
@@ -1158,30 +1161,147 @@ add_para(
 )
 
 # =====================================================================
-# 20. COMPS
+# 20. COMPS ANALYSIS
 # =====================================================================
-s = slide_base("Comparable Companies", "PitchBook pubcomps are the current tape; Alo still has no EV/EBITDA", page=pg(),
-               sources="Source: PitchBook Comps Set 04-Sep-2026 (EV/EBITDA = daily EV / TTM EBITDA); Alo ask $10bn / Forbes ~$2bn")
-hdr = ["Company", "EV/EBITDA", "P/E", "EV ($000)", "EBITDA ($000)"]
-rows = [
-    ["lululemon (LULU)", "4.7x", "8.3x", "11,890,440", "2,548,084"],
-    ["Nike (NKE)", "12.7x", "18.3x", "58,972,350", "4,647,000"],
-    ["adidas (ADS)", "9.2x", "19.1x", "35,661,944", "3,857,684"],
-    ["Deckers (DECK)", "7.9x", "12.1x", "10,555,510", "1,329,439"],
-    ["Crocs (CROX)", "7.8x", "10.3x", "7,153,911", "922,278"],
-    ["Levi Strauss (LEVI)", "9.6x", "15.0x", "9,422,753", "976,700"],
-    ["Kontoor (KTB)", "12.9x", "18.0x", "5,236,269", "407,521"],
-    ["Alo Yoga (private)", "n.a.", "n.m.", "\u2014", "\u2014"],
-]
-stmt_table(s, rows, hdr, col0w=3.4, top=1.20, height=3.90, bold_rows=(0,))
-tb, tf = textbox(s, Inches(0.5), Inches(5.20), Inches(12.35), Inches(1.75))
-add_para(tf, "Read-through \u2014 we do not average these for terminal value", 13.5, CARD, bold=True, first=True, space_after=3)
-add_para(tf, "PitchBook core mean (ex-UAA, ex-WSM/MOV/LZB) is the current athletic/apparel tape. UAA has negative EBITDA so it is out of the average", 12.5, INK, bullet=True, space_after=3)
-add_para(tf, "Selected TV is the Gordon identity (~7.4x FY30 EBITDA at base WACC/g). A 2.25% g year is not today\u2019s NKE 12.7x or WSM 15.4x", 12.5, INK, bullet=True, space_after=3)
-add_para(tf, "Alo EV/EBITDA is still n.a. Implied 5.0x is EV/Sales on an unclosed $10bn ask \u2014 not in this PitchBook set and not the TV", 12.5, INK, bullet=True, space_after=0)
+_ca = COMPS
+_core = _ca.get("core_stats", {})
+_lulu_t = _ca.get("lulu_trading", {})
+s = slide_base(
+    "Comps Analysis",
+    "Implied LULU valuation from PitchBook core athletic / apparel set (04-Sep-2026)",
+    page=pg(),
+    sources=_ca.get("source", "PitchBook Comps Set 04-Sep-2026"),
+)
+# --- Peer multiples (left) ---
+tb, tf = textbox(s, Inches(0.5), Inches(1.1), Inches(7.2), Inches(0.25))
+add_para(tf, "COMPARABLE COMPANIES \u2014 TRADING MULTIPLES", 10, CARD, bold=True, first=True, space_after=0)
+peer_hdr = ["Company", "EV/Rev", "EV/EBITDA", "EV/EBIT", "P/E"]
+peer_rows = []
+for p in _ca.get("peers", []):
+    if not p.get("core"):
+        continue
+    short = p["name"].split("(")[0].strip()
+    peer_rows.append([
+        short,
+        f"{p['ev_rev']:.2f}x" if p.get("ev_rev") else "\u2014",
+        f"{p['ev_ebitda']:.1f}x" if p.get("ev_ebitda") else "\u2014",
+        f"{p['ev_ebit']:.1f}x" if p.get("ev_ebit") else "\u2014",
+        f"{p['pe_fwd']:.1f}x" if p.get("pe_fwd") else "\u2014",
+    ])
+med = _core
+if med:
+    peer_rows.append([
+        "Core median (ex-LULU)",
+        f"{med.get('ev_rev', {}).get('median', 0):.2f}x",
+        f"{med.get('ev_ebitda', {}).get('median', 0):.1f}x",
+        f"{med.get('ev_ebit', {}).get('median', 0):.1f}x",
+        f"{med.get('pe_fwd', {}).get('median', 0):.1f}x",
+    ])
+peer_rows.append([
+    "LULU @ $100 (current)",
+    f"{_lulu_t.get('ev_rev', 0):.2f}x",
+    f"{_lulu_t.get('ev_ebitda', 0):.1f}x" if _lulu_t.get("ev_ebitda") else "\u2014",
+    f"{_lulu_t.get('ev_ebit', 0):.1f}x",
+    f"{_lulu_t.get('pe_fwd', 0):.1f}x",
+])
+stmt_table(
+    s, peer_rows, peer_hdr, col0w=2.0, top=1.32, height=2.55, left=0.5, width=7.25,
+    font_size=8.5, header_font_size=8.5, bold_rows=(len(peer_rows) - 1,),
+)
+
+# --- Implied valuation (right) ---
+tb, tf = textbox(s, Inches(7.95), Inches(1.1), Inches(5.0), Inches(0.25))
+add_para(tf, "IMPLIED LULU VALUATION (CORE PEER MEDIAN)", 10, CARD, bold=True, first=True, space_after=0)
+imp_hdr = ["Metric", "Peer med.", "LULU base", "Implied px"]
+imp_rows = []
+for row in _ca.get("implied", []):
+    base = row["lulu_base"]
+    base_s = f"${base:.2f}" if row["metric"] == "P / E" else f"${int(base):,}M"
+    imp_rows.append([
+        row["metric"],
+        f"{row['peer_median']:.1f}x" if row["metric"] != "EV / Revenue" else f"{row['peer_median']:.2f}x",
+        base_s,
+        f"${row['implied_px_low']}\u2013${row['implied_px_high']} (med ${row['implied_px_median']})",
+    ])
+stmt_table(
+    s, imp_rows, imp_hdr, col0w=1.35, top=1.32, height=2.55, left=7.95, width=5.05,
+    font_size=8, header_font_size=8, bold_rows=(),
+)
+
+tb, tf = textbox(s, Inches(0.5), Inches(4.0), Inches(12.35), Inches(2.35))
+add_para(tf, "Methodology & read-through", 12, CARD, bold=True, first=True, space_after=4)
+for t in [
+    "Core set: LULU, NKE, ADS, DECK, CROX, LEVI, KTB \u2014 PitchBook daily EV / TTM EBITDA (04-Sep-2026); revenue & EBIT from latest company filings",
+    "EV/Revenue on FY2026E revenue; EV/EBITDA & EV/EBIT on FY2025 (TTM anchor); P/E on FY2026E EPS ($9.61 mid-guide) \u2014 then EV \u2192 equity via cash & ASC 842 leases",
+    f"LULU trades at {_lulu_t.get('ev_rev', 0):.2f}x EV/Revenue and {_lulu_t.get('pe_fwd', 0):.1f}x forward P/E vs core medians {_core.get('ev_rev', {}).get('median', 0):.2f}x / {_core.get('pe_fwd', {}).get('median', 0):.1f}x",
+    "DCF terminal value uses Gordon growth (g = 2.25%) \u2014 the ~7.4x exit multiple is FY30 EBITDA \u00d7 identity check only, not the peer median (~9x EV/EBITDA)",
+    f"Base-case DCF {_d(_base_px)} sits between comps-implied ranges; target $140 = partial re-rating toward peer medians, not full NKE multiple",
+]:
+    add_para(tf, t, 10, INK, bullet=True, space_after=3)
 
 # =====================================================================
-# 21. APPENDIX: SCENARIOS
+# 21. PRECEDENT TRANSACTIONS
+# =====================================================================
+s = slide_base(
+    "Precedent Transactions",
+    "Private-market reference for athleisure M&A / take-private angle (no closed LULU-scale precedent)",
+    page=pg(),
+    sources="Source: Reuters (Oct-2023 Moelis process; Jun-2026 update); Forbes Color Image sales est.",
+)
+_prec_deals = PREC.get("deals", [])
+_lulu_es = PREC.get("lulu_ev_sales", 0)
+prec_hdr = ["Target", "Year", "EV ($M)", "EV/Revenue", "EV/EBITDA", "Status / premium"]
+prec_rows = []
+for d in _prec_deals:
+    prem = d.get("premium_vs_lulu_ev_sales")
+    prem_s = f"+{int(prem)}% vs LULU EV/Sales" if prem is not None else "\u2014"
+    prec_rows.append([
+        d.get("target", ""),
+        d.get("year", ""),
+        f"{d.get('ev_usd_m', 0):,}",
+        f"{d.get('ev_sales', 0):.1f}x" if d.get("ev_sales") else "\u2014",
+        "\u2014" if d.get("ev_ebitda") is None else f"{d['ev_ebitda']:.1f}x",
+        f"{d.get('status', '')[:55]}; {prem_s}",
+    ])
+prec_rows.append([
+    "LULU (current @ $100)",
+    "\u2014",
+    f"{_lulu_t.get('ev_m', 0):,}",
+    f"{_lulu_es:.2f}x",
+    f"{_lulu_t.get('ev_ebitda', 0):.1f}x",
+    "Public \u2014 trough multiple vs private ask",
+])
+stmt_table(
+    s, prec_rows, prec_hdr, col0w=2.0, top=1.2, height=1.45, left=0.5, width=12.35,
+    font_size=9, header_font_size=9, bold_rows=(len(prec_rows) - 1,),
+)
+
+tb, tf = textbox(s, Inches(0.5), Inches(2.85), Inches(12.35), Inches(3.5))
+add_para(tf, "M&A / take-private read-through", 12, CARD, bold=True, first=True, space_after=4)
+for t in [
+    PREC.get("note", ""),
+    "Alo Yoga (Color Image): 2023 Moelis process at ~$10bn EV on ~$2bn Forbes-est. parent sales \u2192 ~5.0x EV/Revenue. No EBITDA print; deal never closed (Reuters Jun-2026 still exploring IPO/sale)",
+    f"At $100, LULU trades ~{_lulu_es:.1f}x EV/Revenue on FY2026E revenue \u2014 ~{int((5.0/_lulu_es - 1)*100) if _lulu_es else 0}% below the Alo ask multiple on a like-for-like sales basis",
+    "Implied control premium: if a strategic paid Alo-like ~5x EV/Sales on LULU FY26E revenue, equity value would be ~$52bn vs ~$11bn today \u2014 illustrative only; LULU is already public with liquid float",
+    "No directly comparable precedent for a $10bn+ athletic-apparel take-private; comps analysis (prior slide) and DCF remain primary valuation anchors",
+]:
+    add_para(tf, t, 10.5, INK, bullet=True, space_after=4)
+
+box = rect(s, Inches(8.5), Inches(5.55), Inches(4.35), Inches(1.35), fill=LGREY)
+btf = box.text_frame
+btf.word_wrap = True
+add_para(btf, "Valuation stack", 11, CARD, bold=True, first=True, space_after=4)
+add_para(btf, f"DCF base: {_d(_base_px)}  |  Target: $140", 12, NAVY, bold=True, space_after=3)
+_cs = _core.get("ev_ebitda", {})
+_ebitda_imp = next((r for r in _ca.get("implied", []) if r.get("metric") == "EV / EBITDA"), {})
+add_para(
+    btf,
+    f"Comps median EV/EBITDA {_cs.get('median', 0):.1f}x \u2192 ~${_ebitda_imp.get('implied_px_median', _base_px)}/sh",
+    10, INK, space_after=0,
+)
+
+# =====================================================================
+# 22. APPENDIX: SCENARIOS
 # =====================================================================
 s = slide_base("Appendix \u2014 Bull / Bear Scenarios", "Asymmetric payoff: limited downside, substantial upside", page=pg(),
                sources="Source: GIS DCF model (scenario tab)")
@@ -1220,7 +1340,7 @@ tb, tf = textbox(s, Inches(0.5), Inches(6.2), Inches(12.35), Inches(0.8))
 add_para(tf, f"Probability-weighted value (25% / 50% / 25%) \u2248 {_d(V['prob_weighted'])} \u2014 the risk/reward skews decisively to the upside", 13.5, NAVY, bold=True, italic=True, first=True, space_after=0)
 
 # =====================================================================
-# 22. DISCLAIMER / SOURCES
+# 23. DISCLAIMER / SOURCES
 # =====================================================================
 s = slide_base("Sources & Disclaimer", "Data provenance and standard research disclaimer", page=pg())
 tb, tf = body_box(s)

@@ -168,6 +168,166 @@ def _comps_ev_ebitda(comps, needle):
     return None
 
 
+def _median(vals):
+    s = sorted(vals)
+    n = len(s)
+    if not n:
+        return None
+    mid = n // 2
+    return s[mid] if n % 2 else (s[mid - 1] + s[mid]) / 2
+
+
+def _extract_comps_analysis(comps, wacc_build, income_base):
+    """Multivariate comps: peer multiples and implied LULU equity value ($/sh)."""
+    peers = []
+    for r in range(1, 150):
+        name = comps.cell(r, 1).value
+        if not name or name not in D.PEER_FINANCIALS:
+            continue
+        ev = comps.cell(r, 9).value
+        ebitda_pb = comps.cell(r, 10).value
+        if not isinstance(ev, (int, float)):
+            continue
+        fin = D.PEER_FINANCIALS[name]
+        rev = fin["revenue"]
+        ebit = fin["ebit"]
+        ebitda = ebitda_pb if isinstance(ebitda_pb, (int, float)) and ebitda_pb > 0 else fin["ebitda"]
+        pe_fwd = fin.get("pe_fwd")
+        peer = {
+            "name": name,
+            "core": fin["core"],
+            "ev_m": round(ev / 1000),
+            "ev_rev": round(ev / rev, 2) if rev > 0 else None,
+            "ev_ebitda": round(ev / ebitda, 1) if ebitda and ebitda > 0 else None,
+            "ev_ebit": round(ev / ebit, 1) if ebit and ebit > 0 else None,
+            "pe_fwd": pe_fwd,
+        }
+        peers.append(peer)
+
+    rev26_k = (D.GUIDANCE["fy2026_rev_low"] + D.GUIDANCE["fy2026_rev_high"]) / 2
+    eps26 = (D.GUIDANCE["fy2026_eps_low"] + D.GUIDANCE["fy2026_eps_high"]) / 2
+    ebitda25_k = D.IS["operating_income"]["FY2025"] + D.CF["d_and_a"]["FY2025"]
+    ebit25_k = D.IS["operating_income"]["FY2025"]
+    cash_m = wacc_build["cash_m"]
+    debt_m = wacc_build["total_debt_m"]
+    shares_m = D.MKT["shares_out"] / 1000
+    mkt_ev_m = (D.MKT["price"] * D.MKT["shares_out"]) / 1000 - cash_m + debt_m
+
+    lulu_bases = [
+        ("ev_rev", "EV / Revenue", rev26_k / 1000, "FY2026E revenue ($M)"),
+        ("ev_ebitda", "EV / EBITDA", ebitda25_k / 1000, "FY2025 EBITDA ($M, TTM anchor)"),
+        ("ev_ebit", "EV / EBIT", ebit25_k / 1000, "FY2025 EBIT ($M)"),
+        ("pe_fwd", "P / E", eps26, "FY2026E EPS ($)"),
+    ]
+
+    core = [p for p in peers if p["core"] and p["name"] != "lululemon (LULU)"]
+    implied = []
+    for key, label, denom, denom_label in lulu_bases:
+        mults = [p[key] for p in core if p.get(key) is not None]
+        if not mults:
+            continue
+        med = _median(mults)
+        lo_m, hi_m = min(mults), max(mults)
+        if key == "pe_fwd":
+            px_med = med * denom
+            px_lo = lo_m * denom
+            px_hi = hi_m * denom
+            implied.append({
+                "metric": label,
+                "lulu_base": round(denom, 2),
+                "lulu_base_label": denom_label,
+                "peer_median": round(med, 1),
+                "peer_low": round(lo_m, 1),
+                "peer_high": round(hi_m, 1),
+                "implied_ev_m": None,
+                "implied_px_median": round(px_med),
+                "implied_px_low": round(px_lo),
+                "implied_px_high": round(px_hi),
+            })
+            continue
+        ev_med = med * denom
+        ev_lo = lo_m * denom
+        ev_hi = hi_m * denom
+        eq_med = ev_med + cash_m - debt_m
+        eq_lo = ev_lo + cash_m - debt_m
+        eq_hi = ev_hi + cash_m - debt_m
+        implied.append({
+            "metric": label,
+            "lulu_base": round(denom, 2) if key == "ev_rev" else round(denom),
+            "lulu_base_label": denom_label,
+            "peer_median": round(med, 1) if key != "ev_rev" else round(med, 2),
+            "peer_low": round(lo_m, 1) if key != "ev_rev" else round(lo_m, 2),
+            "peer_high": round(hi_m, 1) if key != "ev_rev" else round(hi_m, 2),
+            "implied_ev_m": round(ev_med),
+            "implied_px_median": round(eq_med / shares_m),
+            "implied_px_low": round(eq_lo / shares_m),
+            "implied_px_high": round(eq_hi / shares_m),
+        })
+
+    core_stats = {}
+    for key in ("ev_rev", "ev_ebitda", "ev_ebit", "pe_fwd"):
+        vals = [p[key] for p in core if p.get(key) is not None]
+        if vals:
+            core_stats[key] = {
+                "median": round(_median(vals), 2 if key == "ev_rev" else 1),
+                "low": round(min(vals), 2 if key == "ev_rev" else 1),
+                "high": round(max(vals), 2 if key == "ev_rev" else 1),
+            }
+
+    lulu_row = next((p for p in peers if p["name"] == "lululemon (LULU)"), None)
+    return {
+        "peers": peers,
+        "core_stats": core_stats,
+        "implied": implied,
+        "lulu_trading": {
+            "price": D.MKT["price"],
+            "ev_rev": round(mkt_ev_m / (rev26_k / 1000), 2),
+            "ev_ebitda": lulu_row["ev_ebitda"] if lulu_row else None,
+            "ev_ebit": round(mkt_ev_m / (ebit25_k / 1000), 1),
+            "pe_fwd": round(D.MKT["price"] / eps26, 1),
+            "ev_m": round(mkt_ev_m),
+        },
+        "source": "PitchBook Comps Set 04-Sep-2026 (EV, TTM EBITDA); revenue/EBIT from company filings; forward P/E from consensus",
+    }
+
+
+def _extract_precedent(wacc_build):
+    """Precedent / private-market references with LULU trading comparison."""
+    rev26_m = (D.GUIDANCE["fy2026_rev_low"] + D.GUIDANCE["fy2026_rev_high"]) / 2 / 1000
+    cash_m = wacc_build["cash_m"]
+    debt_m = wacc_build["total_debt_m"]
+    mkt_ev_m = (D.MKT["price"] * D.MKT["shares_out"]) / 1000 - cash_m + debt_m
+    lulu_ev_sales = round(mkt_ev_m / rev26_m, 2)
+    deals = []
+    for d in D.PRECEDENT_TRANSACTIONS:
+        row = dict(d)
+        if row.get("ev_sales") and lulu_ev_sales:
+            row["premium_vs_lulu_ev_sales"] = round(
+                (row["ev_sales"] / lulu_ev_sales - 1) * 100, 0
+            )
+        deals.append(row)
+    return {
+        "deals": deals,
+        "lulu_ev_sales": lulu_ev_sales,
+        "lulu_price": D.MKT["price"],
+        "note": (
+            "No directly comparable public take-private of LULU-scale athletic apparel. "
+            "Alo is the best private-market reference; premium is EV/Sales vs LULU at current price."
+        ),
+    }
+
+
+    """Return PitchBook EV/EBITDA from Comps peer table (col E), or None."""
+    for r in range(1, 120):
+        lab = comps.cell(r, 1).value
+        if not lab or needle.lower() not in str(lab).lower():
+            continue
+        val = comps.cell(r, 5).value
+        if isinstance(val, (int, float)):
+            return round(val, 1)
+    return None
+
+
 def _extract_sotp(income_base, wacc_build, base_dcf, dcf_base, comps):
     """Geographic SOTP on FY30E base-case revenue mix (10-K segment geography).
 
@@ -308,6 +468,8 @@ def extract():
 
     wacc_build = _extract_wacc_build(wacc)
     dcf_base = _extract_dcf_base(dcf, sc)
+    comps_analysis = _extract_comps_analysis(comps, wacc_build, income_base)
+    precedent = _extract_precedent(wacc_build)
     sotp = _extract_sotp(income_base, wacc_build, round(base, 0), dcf_base, comps)
 
     return {
@@ -337,6 +499,8 @@ def extract():
         "model_refs": discover_model_refs(sc),
         "wacc_build": wacc_build,
         "dcf_base": dcf_base,
+        "comps_analysis": comps_analysis,
+        "precedent": precedent,
         "sotp": sotp,
         "source": "LULU_DCF_Valuation_Model.xlsx → Scenarios cols G (base) & H (bull)",
     }

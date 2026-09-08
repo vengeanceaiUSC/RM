@@ -202,6 +202,91 @@ MKT = {
     "total_debt_sa": 2141000,
 }
 
+# PitchBook pubcomps (04-Sep-2026) — supplemental TTM / latest-fiscal revenue, EBIT, and
+# forward P/E for multivariate comps. EV from PitchBook; revenue/EBIT from company filings
+# ($000 unless noted). Forward P/E aligns with StockAnalysis / consensus as of Sep-2026.
+PEER_FINANCIALS = {
+    "lululemon (LULU)": {
+        "revenue": IS["revenue"]["FY2025"],
+        "ebit": IS["operating_income"]["FY2025"],
+        "ebitda": IS["operating_income"]["FY2025"] + CF["d_and_a"]["FY2025"],
+        "pe_fwd": 8.3,
+        "core": True,
+    },
+    "Nike (NKE)": {
+        "revenue": 46300000,
+        "ebit": 3700000,
+        "ebitda": 4647000,
+        "pe_fwd": 18.3,
+        "core": True,
+    },
+    "adidas (ADS)": {
+        "revenue": 23686000,
+        "ebit": 1920000,
+        "ebitda": 3857684,
+        "pe_fwd": 19.1,
+        "core": True,
+    },
+    "Deckers (DECK)": {
+        "revenue": 4280000,
+        "ebit": 1080000,
+        "ebitda": 1329439,
+        "pe_fwd": 12.1,
+        "core": True,
+    },
+    "Crocs (CROX)": {
+        "revenue": 4100000,
+        "ebit": 920000,
+        "ebitda": 922278,
+        "pe_fwd": 10.3,
+        "core": True,
+    },
+    "Levi Strauss (LEVI)": {
+        "revenue": 6200000,
+        "ebit": 520000,
+        "ebitda": 976700,
+        "pe_fwd": 15.0,
+        "core": True,
+    },
+    "Kontoor (KTB)": {
+        "revenue": 2600000,
+        "ebit": 340000,
+        "ebitda": 407521,
+        "pe_fwd": 18.0,
+        "core": True,
+    },
+    "Under Armour (UAA)": {
+        "revenue": 5200000,
+        "ebit": -50000,
+        "ebitda": -23230,
+        "pe_fwd": None,
+        "core": False,
+    },
+    "Williams-Sonoma (WSM)": {
+        "revenue": 7800000,
+        "ebit": 1450000,
+        "ebitda": 1768400,
+        "pe_fwd": 15.4,
+        "core": False,
+    },
+}
+
+# Precedent / private-market references (not closed LULU M&A — illustrative for take-private angle)
+PRECEDENT_TRANSACTIONS = [
+    {
+        "target": "Alo Yoga (Color Image)",
+        "year": "2023",
+        "acquirer": "Strategic / PE (Moelis sale process)",
+        "ev_usd_m": 10000,
+        "revenue_usd_m": 2000,
+        "ev_sales": 5.0,
+        "ev_ebitda": None,
+        "premium_vs_lulu": None,
+        "status": "Unclosed — Reuters Jun-2026: no deal announced; IPO or sale still explored",
+        "source": "Reuters Oct-2023 Moelis ask; Forbes parent sales ~$2bn",
+    },
+]
+
 # ---------------------------------------------------------------------------
 # Source links for blue-font (reported) figures — click value or header link
 # ---------------------------------------------------------------------------
