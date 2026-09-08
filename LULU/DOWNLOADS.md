@@ -10,7 +10,8 @@
 | 3-statement model | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/LULU_3_Statement_Model.xlsx |
 | Pitch deck (PPTX) | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/LULU_Investment_Pitch_Deck.pptx |
 | Pitch deck (PDF) | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/LULU_Investment_Pitch_Deck.pdf |
-| GIS blank template (PDF) | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/GIS/GIS_Investment_Pitch_Template.pdf |
+| GIS example template (PDF) | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/GIS/GIS_Investment_Pitch_Template.pdf |
+| GIS Summit reference (PDF) | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/GIS/GIS_Investment_Pitch_Template_Reference_Summit.pdf |
 | GIS reference pitch (PDF) | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/GIS/GIS_Investment_Pitch_Template_Reference_LULU.pdf |
 | Thesis outline (MD) | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/LULU_Investment_Thesis_Outline.md |
 

@@ -8,9 +8,12 @@ Reusable **python-pptx** template for Global Investment Society IR selection pit
 |------|---------|
 | `gis_pitch.py` | Shared engine — colors, fonts, slide chrome, `PitchDeck` class |
 | `build_blank_template.py` | Generates `GIS_Investment_Pitch_Template.pptx` with placeholders |
-| `GIS_Investment_Pitch_Template.pptx` | Blank template (run builder) |
-| `GIS_Investment_Pitch_Template.pdf` | Blank template PDF export |
-| `GIS_Investment_Pitch_Template_Reference_LULU.pdf` | Filled example — LULU OVERWEIGHT pitch (23 slides, Sep 2026) |
+| `GIS_Investment_Pitch_Template.pptx` | **Full example deck** — Summit Outdoor Co. (NYSE: SUMM) with charts, tables, football field, DCF |
+| `GIS_Investment_Pitch_Template.pdf` | PDF export of the example template |
+| `GIS_Investment_Pitch_Template_Reference_Summit.pdf` | Same as template PDF — fictional worked example |
+| `GIS_Investment_Pitch_Template_Reference_LULU.pdf` | Real filled pitch — LULU OVERWEIGHT (23 slides) |
+| `template_data.py` | Sample numbers for Summit Outdoor — edit or replace for your company |
+| `slide_layouts.py` | Reusable slide builders (charts, KPI boxes, football field, DCF grid) |
 
 ## Formatting rules (enforced by `gis_pitch.py`)
 
@@ -44,7 +47,26 @@ Reusable **python-pptx** template for Global Investment Society IR selection pit
 
 Optional slides (e.g. **Macro × micro overlap**) can be inserted after Situation — see `LULU/scripts/build_pitch.py`.
 
-## Quick start — blank template
+## What you get
+
+The template is **not** a list of `[placeholder]` bullets. It ships as a complete **fictional example** (Summit Outdoor Co., NYSE: SUMM) with:
+
+- KPI boxes on the thesis slide (price target / rating / why now)
+- **Revenue bar chart** and segment architecture box (company overview)
+- **Operating margin line chart** + margin profile panel (unit economics)
+- **Category mix pie chart** (industry)
+- Thesis slides with side metric panels
+- Risk ↔ mitigant dual-column layout
+- Catalyst timeline with navy date blocks
+- Full **IS / BS / CF tables** with historical + forecast columns
+- WACC build panel
+- **Football field** valuation chart with current/target markers
+- DCF assumptions table + output bridge + **sensitivity grid**
+- Comps table + bull/base/bear scenario columns
+
+Replace `template_data.py` values and narrative strings — keep layouts via `slide_layouts.py`.
+
+## Quick start — regenerate template
 
 ```bash
 pip install python-pptx
