@@ -561,28 +561,31 @@ pitch_financial_slide(
 
 pitch_financial_slide(
     "Financials \u2014 Cash Flow",
-    "Historical return of capital vs base & bull FCF \u2014 all FY26\u201330 (US$ M)",
+    "Operating FCF (DCF input) vs financing \u2014 historical 10-K vs base & bull (US$ M)",
     [
         ["Cash from operations"] + _hist_m(D.CF, "cfo") + _dual_year_vals(CF_BASE, CF_BULL, "cfo", by_year=False),
+        ["D&A (add-back)"] + _hist_m(D.CF, "d_and_a") + _dual_year_vals(CF_BASE, CF_BULL, "dna", by_year=False),
         ["Capital expenditures"] + _hist_capex_out() + _dual_year_vals(CF_BASE, CF_BULL, "capex", by_year=False, fmt="neg_paren"),
         ["Free cash flow"] + _hist_fcf() + _dual_year_vals(CF_BASE, CF_BULL, "fcf", by_year=False),
-        ["Share repurchases"] + _hist_buybacks_out() + _dual_year_vals(CF_BASE, CF_BULL, "buybacks", by_year=False, fmt="neg_paren"),
-        ["D&A"] + _hist_m(D.CF, "d_and_a") + _dual_year_vals(CF_BASE, CF_BULL, "dna", by_year=False),
+        ["Share repurchases (CFF)"] + _hist_buybacks_out() + _dual_year_vals(CF_BASE, CF_BULL, "buybacks", by_year=False, fmt="neg_paren"),
     ],
     hist_title="HISTORICALS (FY2022\u2013FY2025) \u2014 SEC 10-K",
     hist_bullets=[
         "FY25 CFO $1,603M; capex ($681M) \u2192 ~$922M FCF",
-        "Buybacks ($1,637M) FY24, ($1,178M) FY25",
-        "FCF = CFO \u2212 capex; same definition as forecast rows",
+        "Buybacks ($1,178M) FY25 are CFF \u2014 reported on 10-K, not in DCF UFCF",
+        "FCF = CFO \u2212 capex; same operating definition as forecast rows above buybacks",
     ],
     fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base vs bull",
     fcst_bullets=[
-        f"Base FCF ${m(CF_BASE['fcf']['FY2026E'])}M \u2192 ${m(CF_BASE['fcf']['FY2030E'])}M (3-statement)",
+        f"FCF (DCF input): base ${m(CF_BASE['fcf']['FY2026E'])}M \u2192 ${m(CF_BASE['fcf']['FY2030E'])}M",
         f"Bull FCF ${m(CF_BULL['fcf']['FY2026E'])}M \u2192 ${m(CF_BULL['fcf']['FY2030E'])}M (Scenarios col H)",
-        "Bull CFO = net income + D&A + \u0394NWC; buybacks = 75% of FCF; base buybacks = $500M/yr",
+        "Buybacks below = 3-statement CFF only; DCF IV uses basic 111.4M shares (no retirements)",
     ],
-    bold_rows=(2,),
-    italic_note="FCF = CFO + capex (capex shown as outflow). Bull uses same CFS line definitions as base and 10-K.",
+    bold_rows=(3,),
+    italic_note=(
+        "FCF rows tie to DCF unlevered FCF. Share repurchases are financing (CFF) \u2014 shown for 10-K / "
+        "3-statement comparability and cash bridge; they do not change DCF implied price (basic share count)."
+    ),
 )
 
 # =====================================================================
