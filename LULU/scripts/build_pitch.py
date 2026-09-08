@@ -1244,32 +1244,30 @@ for t in [
 # =====================================================================
 s = slide_base(
     "Precedent Transactions",
-    "Private-market reference for athleisure M&A / take-private angle (no closed LULU-scale precedent)",
+    "Private-market context for athleisure M&A \u2014 not used to imply a control premium on LULU",
     page=pg(),
     sources="Source: Reuters (Oct-2023 Moelis process; Jun-2026 update); Forbes Color Image sales est.",
 )
 _prec_deals = PREC.get("deals", [])
 _lulu_es = PREC.get("lulu_ev_sales", 0)
-prec_hdr = ["Target", "Year", "EV ($M)", "EV/Revenue", "EV/EBITDA", "Status / premium"]
+prec_hdr = ["Target", "Year", "EV ($M)", "EV/Revenue", "EV/EBITDA", "Status"]
 prec_rows = []
 for d in _prec_deals:
-    prem = d.get("premium_vs_lulu_ev_sales")
-    prem_s = f"+{int(prem)}% vs LULU EV/Sales" if prem is not None else "\u2014"
     prec_rows.append([
         d.get("target", ""),
         d.get("year", ""),
         f"{d.get('ev_usd_m', 0):,}",
         f"{d.get('ev_sales', 0):.1f}x" if d.get("ev_sales") else "\u2014",
         "\u2014" if d.get("ev_ebitda") is None else f"{d['ev_ebitda']:.1f}x",
-        f"{d.get('status', '')[:55]}; {prem_s}",
+        d.get("status", ""),
     ])
 prec_rows.append([
-    "LULU (current @ $100)",
+    "LULU (public @ $100)",
     "\u2014",
-    f"{_lulu_t.get('ev_m', 0):,}",
+    f"{PREC.get('lulu_ev_m', _lulu_t.get('ev_m', 0)):,}",
     f"{_lulu_es:.2f}x",
     f"{_lulu_t.get('ev_ebitda', 0):.1f}x",
-    "Public \u2014 trough multiple vs private ask",
+    "Trading comps only \u2014 not a premium benchmark",
 ])
 stmt_table(
     s, prec_rows, prec_hdr, col0w=2.0, top=1.2, height=1.45, left=0.5, width=12.35,
@@ -1277,13 +1275,13 @@ stmt_table(
 )
 
 tb, tf = textbox(s, Inches(0.5), Inches(2.85), Inches(12.35), Inches(3.5))
-add_para(tf, "M&A / take-private read-through", 12, CARD, bold=True, first=True, space_after=4)
+add_para(tf, "How we use (and do not use) private precedents", 12, CARD, bold=True, first=True, space_after=4)
 for t in [
     PREC.get("note", ""),
-    "Alo Yoga (Color Image): 2023 Moelis process at ~$10bn EV on ~$2bn Forbes-est. parent sales \u2192 ~5.0x EV/Revenue. No EBITDA print; deal never closed (Reuters Jun-2026 still exploring IPO/sale)",
-    f"At $100, LULU trades ~{_lulu_es:.1f}x EV/Revenue on FY2026E revenue \u2014 ~{int((5.0/_lulu_es - 1)*100) if _lulu_es else 0}% below the Alo ask multiple on a like-for-like sales basis",
-    "Implied control premium: if a strategic paid Alo-like ~5x EV/Sales on LULU FY26E revenue, equity value would be ~$52bn vs ~$11bn today \u2014 illustrative only; LULU is already public with liquid float",
-    "No directly comparable precedent for a $10bn+ athletic-apparel take-private; comps analysis (prior slide) and DCF remain primary valuation anchors",
+    "Alo Yoga (Color Image): 2023 Moelis sale process at ~$10bn ask on ~$2bn Forbes-est. parent sales \u2192 ~5.0x EV/Revenue. No EBITDA print; process unclosed (Reuters Jun-2026)",
+    "Valid use: shows strategics/PE will pay up for high-growth private athleisure at scale \u2014 supports the competitive-threat and category-consolidation narrative",
+    "Not valid use: we do not apply Alo\u2019s 5.0x ask as a control premium on LULU\u2019s 1.07x public EV/Revenue \u2014 different liquidity, scale, profitability, and an unclosed ask vs a traded stock",
+    "No closed take-private precedent at LULU\u2019s scale; implied valuation and $140 target come from DCF + public comps (slide 20), not private ask multiples",
 ]:
     add_para(tf, t, 10.5, INK, bullet=True, space_after=4)
 

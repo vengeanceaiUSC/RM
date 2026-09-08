@@ -650,15 +650,15 @@
         "revenue_usd_m": 2000,
         "ev_sales": 5.0,
         "ev_ebitda": null,
-        "premium_vs_lulu": null,
         "status": "Unclosed \u2014 Reuters Jun-2026: no deal announced; IPO or sale still explored",
         "source": "Reuters Oct-2023 Moelis ask; Forbes parent sales ~$2bn",
-        "premium_vs_lulu_ev_sales": 367.0
+        "use": "Private precedent only \u2014 illustrates private athleisure pricing; not a premium to LULU stock"
       }
     ],
     "lulu_ev_sales": 1.07,
     "lulu_price": 100.0,
-    "note": "No directly comparable public take-private of LULU-scale athletic apparel. Alo is the best private-market reference; premium is EV/Sales vs LULU at current price."
+    "lulu_ev_m": 11129,
+    "note": "Private precedents inform what strategics/PE may pay for premium athleisure assets. We do not derive a control premium from an unclosed ask vs LULU's public trading multiple. Valuation anchors remain DCF and public comps (prior slide)."
   },
   "sotp": {
     "segments": [

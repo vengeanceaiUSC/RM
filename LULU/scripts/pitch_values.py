@@ -292,40 +292,23 @@ def _extract_comps_analysis(comps, wacc_build, income_base):
 
 
 def _extract_precedent(wacc_build):
-    """Precedent / private-market references with LULU trading comparison."""
+    """Private-market precedent references — context only, not control-premium math."""
     rev26_m = (D.GUIDANCE["fy2026_rev_low"] + D.GUIDANCE["fy2026_rev_high"]) / 2 / 1000
     cash_m = wacc_build["cash_m"]
     debt_m = wacc_build["total_debt_m"]
     mkt_ev_m = (D.MKT["price"] * D.MKT["shares_out"]) / 1000 - cash_m + debt_m
     lulu_ev_sales = round(mkt_ev_m / rev26_m, 2)
-    deals = []
-    for d in D.PRECEDENT_TRANSACTIONS:
-        row = dict(d)
-        if row.get("ev_sales") and lulu_ev_sales:
-            row["premium_vs_lulu_ev_sales"] = round(
-                (row["ev_sales"] / lulu_ev_sales - 1) * 100, 0
-            )
-        deals.append(row)
     return {
-        "deals": deals,
+        "deals": [dict(d) for d in D.PRECEDENT_TRANSACTIONS],
         "lulu_ev_sales": lulu_ev_sales,
         "lulu_price": D.MKT["price"],
+        "lulu_ev_m": round(mkt_ev_m),
         "note": (
-            "No directly comparable public take-private of LULU-scale athletic apparel. "
-            "Alo is the best private-market reference; premium is EV/Sales vs LULU at current price."
+            "Private precedents inform what strategics/PE may pay for premium athleisure assets. "
+            "We do not derive a control premium from an unclosed ask vs LULU's public trading multiple. "
+            "Valuation anchors remain DCF and public comps (prior slide)."
         ),
     }
-
-
-    """Return PitchBook EV/EBITDA from Comps peer table (col E), or None."""
-    for r in range(1, 120):
-        lab = comps.cell(r, 1).value
-        if not lab or needle.lower() not in str(lab).lower():
-            continue
-        val = comps.cell(r, 5).value
-        if isinstance(val, (int, float)):
-            return round(val, 1)
-    return None
 
 
 def _extract_sotp(income_base, wacc_build, base_dcf, dcf_base, comps):

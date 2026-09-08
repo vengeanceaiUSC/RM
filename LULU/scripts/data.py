@@ -271,7 +271,7 @@ PEER_FINANCIALS = {
     },
 }
 
-# Precedent / private-market references (not closed LULU M&A — illustrative for take-private angle)
+# Private-market precedent (context for athleisure M&A — not used for control-premium math)
 PRECEDENT_TRANSACTIONS = [
     {
         "target": "Alo Yoga (Color Image)",
@@ -281,9 +281,9 @@ PRECEDENT_TRANSACTIONS = [
         "revenue_usd_m": 2000,
         "ev_sales": 5.0,
         "ev_ebitda": None,
-        "premium_vs_lulu": None,
         "status": "Unclosed — Reuters Jun-2026: no deal announced; IPO or sale still explored",
         "source": "Reuters Oct-2023 Moelis ask; Forbes parent sales ~$2bn",
+        "use": "Private precedent only — illustrates private athleisure pricing; not a premium to LULU stock",
     },
 ]
 
