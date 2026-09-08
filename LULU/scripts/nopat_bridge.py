@@ -200,28 +200,28 @@ def build_nopat_bridge(wb, scen_base_col, rev_rows, ebit_rows, drv, sc_tariff_ce
     rr[0] += 1
     workflow = [
         ("1. Clean base", "SEC 10-K income statement",
-         "FY26 EBIT = Rev × 13.2% + tariff. No impairment/SBC/restructuring add-backs in forecast.",
-         "Would lift EBIT by adding back one-offs + SBC — runs on FY25 history only; FY26 DCF unchanged.",
+         "EBIT = 13.2% × rev + tariff; no add-backs.",
+         "DCF unchanged.",
          "EBIT_adj (Phase 1)"),
         ("2. Capitalize R&D", "SG&A footnotes",
-         "R&D/software expensed in full each year. LULU = $0 cap; no FY26 EBIT change.",
-         "Would spread expense over 4 yrs (cap + amort) — higher near-term EBIT; not wired to FY26 DCF.",
+         "R&D/software expensed in full each year ($0 for LULU).",
+         "DCF unchanged.",
          "EBIT_capitalized (Phase 2)"),
         ("3. Lease shift", "ASC 842 lease footnote",
-         "Rent stays in operating costs; no lease-interest add-back. FY26 DCF EBIT unchanged.",
-         "Would add implied lease interest to EBIT (unlevered) — FY25 bridge only; FY26 DCF same.",
+         "Rent in opex; no implied lease-interest add-back.",
+         "DCF unchanged.",
          "EBIT_lease-adj (Phase 2)"),
         ("4. Segment mix", "Revenue Drivers tab",
-         "DCF uses consolidated 13.2% on total revenue (+ tariff). Channel EBIT not used.",
-         "Channel EBIT = Σ(Rev_i × margin_i) — higher illustrative EBIT; check row shows gap vs Scenarios.",
+         "DCF uses consolidated 13.2% on total revenue (+ tariff).",
+         "DCF unchanged.",
          "Forecast EBIT (Phase 3)"),
         ("5. NOPAT bridge", "Normalized EBIT & t_operating",
-         "NOPAT = EBIT × (1 − 30%) flat sc_tax. Same EBIT as Scenarios.",
-         "NOPAT = EBIT × (1 − t_operating). Same EBIT; ~29.6% FY26 tax → slightly higher NOPAT.",
+         "NOPAT = EBIT × (1 − 30%) flat sc_tax.",
+         "NOPAT = EBIT × (1 − t_operating) — same EBIT, slightly higher NOPAT.",
          "Normalized NOPAT"),
         ("6. Tariff refund (Scenarios)", "Q2 FY2026 earnings release",
-         "EBIT = Rev × 13.2% only — run-rate margin, no IEEPA refund.",
-         "+ $134,500k in FY26 only — DCF uses this; EBIT and NOPAT both higher vs without.",
+         "EBIT = Rev × 13.2% only (no refund).",
+         "+ $134,500k in FY26 — DCF uses this.",
          "Scenarios EBIT (FY26)"),
     ]
     for step, inp, without, with_applied, out in workflow:
@@ -235,8 +235,7 @@ def build_nopat_bridge(wb, scen_base_col, rev_rows, ebit_rows, drv, sc_tariff_ce
         rr[0] += 1
 
     write(ws, f"A{rr[0]}",
-          "FY26 DCF EBIT is built on Scenarios (13.2% + tariff). Phases 1–4 are FY25 documentation "
-          "or illustrative channel math — only Phase 5 tax and the tariff row change NOPAT vs a flat 30%.",
+          "Steps 1–4: DCF unchanged on FY26. Step 5 changes NOPAT only (tax). Step 6 changes FY26 EBIT (+ tariff).",
           S.BLACK, italic=True, size=8, align=S.left_indent)
     rr[0] += 1
     write(ws, f"A{rr[0]}",
