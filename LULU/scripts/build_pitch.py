@@ -390,9 +390,19 @@ def m(v):
 
 
 HY = ["FY2022", "FY2023", "FY2024", "FY2025"]
+DCF_MODEL = "LULU_DCF_Valuation_Model.xlsx"
+THREE_STMT = "LULU_3_Statement_Model.xlsx"
+SCEN_G = f"{DCF_MODEL} \u2192 Scenarios, col G"
+SCEN_H = f"{DCF_MODEL} \u2192 Scenarios, col H"
+THREE_IS = f"{THREE_STMT} \u2192 Income Statement"
+THREE_BS = f"{THREE_STMT} \u2192 Balance Sheet"
+THREE_CF = f"{THREE_STMT} \u2192 Cash Flow"
+THREE_ASM = f"{THREE_STMT} \u2192 Assumptions (linked to Scenarios G)"
+HIST_10K = "SEC Form 10-K (FY2022\u2013FY2025)"
+BULL_BS_NOTE = "Pitch build: base BS \u00d7 (bull rev / base rev); cash = FY25 + bull FCF + buybacks"
 FIN_FOOTNOTE = (
-    "Forecast: base = Scenarios col G (3-statement); bull = Scenarios col H. "
-    "Historicals per FY2025 10-K. Each row uses the same metric definition across periods."
+    "Hist = 10-K. Base (26B) = 3-Statement Model + Scenarios G. Bull (26U) = DCF Scenarios H "
+    "(BS bull lines approximated \u2014 see model-source table)."
 )
 
 
@@ -513,6 +523,16 @@ def _dual_year_vals(base_sec, bull_sec, key, by_year=True, fmt="num"):
     return vals
 
 
+def _fin_source_table(slide, source_rows, top=6.15, col0w=1.85):
+    """Per-line model source: Hist | Base (26B) | Bull (26U)."""
+    headers = ["Line item", "Hist (22\u201325)", "Base 26B\u201330B", "Bull 26U\u201330U"]
+    rows = [[line, hist, base, bull] for line, hist, base, bull in source_rows]
+    stmt_table(
+        slide, rows, headers, col0w=col0w, top=top, height=1.12,
+        font_size=7, header_font_size=7.5, bold_rows=(),
+    )
+
+
 def pitch_financial_slide(
     title,
     subtitle,
@@ -521,11 +541,12 @@ def pitch_financial_slide(
     hist_bullets,
     fcst_title,
     fcst_bullets,
+    source_rows,
     bold_rows=(),
     italic_note=None,
     col0w=2.35,
     table_top=3.68,
-    table_height=2.95,
+    table_height=2.38,
     explainer_height=2.45,
 ):
     """Build one financial slide: historicals + 5yr base/bull forecast table."""
@@ -535,9 +556,10 @@ def pitch_financial_slide(
                          box_height=explainer_height)
     stmt_table(s, rows, hdr, col0w=col0w, top=table_top, height=table_height,
                bold_rows=bold_rows, font_size=8.5, header_font_size=8)
+    _fin_source_table(s, source_rows)
     if italic_note:
-        tb, tf = textbox(s, Inches(0.5), Inches(6.45), Inches(12.35), Inches(0.55))
-        add_para(tf, italic_note, 10, GREY, italic=True, first=True, space_after=0)
+        tb, tf = textbox(s, Inches(0.5), Inches(7.28), Inches(12.35), Inches(0.22))
+        add_para(tf, italic_note, 8.5, GREY, italic=True, first=True, space_after=0)
     return s
 
 
@@ -660,6 +682,32 @@ _CF_HIST, _CF_FCST = _aligned_explainers([
     ),
 ])
 
+_IS_SOURCES = [
+    ("Net revenue", HIST_10K, THREE_IS, f"{SCEN_H} year revenue"),
+    ("Gross profit", HIST_10K, THREE_IS, f"{SCEN_H} GM% \u00d7 revenue"),
+    ("Operating income", HIST_10K, THREE_IS, f"{SCEN_H} EBIT rows"),
+    ("Operating margin %", f"{HIST_10K} (OI/rev)", f"{THREE_IS} (OI/rev)", f"{SCEN_H} (EBIT/rev)"),
+    ("Net income", HIST_10K, THREE_IS, f"{SCEN_H} EBIT + other inc \u2212 tax"),
+    ("Diluted EPS", HIST_10K, THREE_IS, f"{SCEN_H} NI \u00f7 {THREE_STMT} share schedule"),
+]
+
+_BS_SOURCES = [
+    ("Cash & equivalents", HIST_10K, f"{THREE_BS} (CFS plug)", f"FY25 cash + {SCEN_H} FCF + buybacks"),
+    ("Inventories", HIST_10K, THREE_BS, BULL_BS_NOTE),
+    ("Total assets", HIST_10K, THREE_BS, BULL_BS_NOTE),
+    ("Total liabilities", HIST_10K, THREE_BS, BULL_BS_NOTE),
+    ("Total equity", HIST_10K, THREE_BS, BULL_BS_NOTE),
+    ("Funded debt", f"{HIST_10K} ($0)", f"{THREE_BS} ($0)", "$0 (no term debt)"),
+]
+
+_CF_SOURCES = [
+    ("Cash from operations", HIST_10K, THREE_CF, f"{SCEN_H} NI + D&A + \u0394NWC"),
+    ("D&A (add-back)", HIST_10K, THREE_CF, f"{SCEN_H} D&A rows"),
+    ("Capital expenditures", HIST_10K, f"{THREE_CF} (rev \u00d7 capex%; {SCEN_G})", f"{SCEN_H} capex rows"),
+    ("Free cash flow", f"{HIST_10K} (CFO \u2212 capex)", THREE_CF, f"{SCEN_H} CFO \u2212 capex"),
+    ("Share repurchases", HIST_10K, f"{THREE_ASM} $500M/yr buyback", f"{SCEN_H} 75% of bull FCF"),
+]
+
 pitch_financial_slide(
     "Financials \u2014 Income Statement",
     "Reported history (10-K) vs base & bull operating forecast \u2014 all FY26\u201330 (US$ M)",
@@ -675,8 +723,9 @@ pitch_financial_slide(
     hist_bullets=_IS_HIST,
     fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base (G) vs bull (H)",
     fcst_bullets=_IS_FCST,
+    source_rows=_IS_SOURCES,
     bold_rows=(0, 2, 5),
-    italic_note="22\u201325 = FY2022\u201325 historical; 26B/26U = FY2026 base (G) / bull (H); same for 27\u201330. Bear in Appendix.",
+    italic_note=f"Base drivers: {THREE_ASM}. Open both workbooks for live Scenarios G links.",
 )
 
 pitch_financial_slide(
@@ -694,8 +743,9 @@ pitch_financial_slide(
     hist_bullets=_BS_HIST,
     fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base (G) vs bull (H)",
     fcst_bullets=_BS_FCST,
+    source_rows=_BS_SOURCES,
     bold_rows=(2, 4, 5),
-    italic_note="Same BS line items as 10-K. Bull cash = FY25 cash + cumulative (FCF + buybacks).",
+    italic_note=f"Base BS only in {THREE_STMT}. Bull BS is illustrative (not a separate workbook tab).",
 )
 
 pitch_financial_slide(
@@ -712,11 +762,9 @@ pitch_financial_slide(
     hist_bullets=_CF_HIST,
     fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base (G) vs bull (H)",
     fcst_bullets=_CF_FCST,
+    source_rows=_CF_SOURCES,
     bold_rows=(3,),
-    italic_note=(
-        "FCF rows tie to DCF unlevered FCF. Share repurchases are financing (CFF) \u2014 shown for 10-K / "
-        "3-statement comparability and cash bridge; they do not change DCF implied price (basic share count)."
-    ),
+    italic_note=f"Base CF in {THREE_CF}; bull CF from {SCEN_H}. Buybacks are CFF (not in DCF FCFF).",
 )
 
 # =====================================================================
