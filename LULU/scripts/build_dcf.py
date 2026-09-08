@@ -225,6 +225,8 @@ s_assum('prepaid_pct', "Prepaid expenses (% of revenue)", _NWC['prepaid_pct'], _
         _NWC['prepaid_pct'], doc_key='sc_prepaid')
 s_assum('accrued_pct', "Accrued liabilities (% of revenue)", _NWC['accrued_pct'], _NWC['accrued_pct'],
         _NWC['accrued_pct'], doc_key='sc_accrued')
+s_assum('bb_fixed', "Pitch CFF: fixed buyback ($k/yr) bear/base", 500000, 500000, 0, fmt=NUM)
+s_assum('bb_pct', "Pitch CFF: % of FCF to buybacks (bull)", 0, 0, 0.75, fmt=PCT)
 
 rr[0] += 1
 write(scn, f'A{rr[0]}', "5-year forecast paths (by scenario)", S.ACCENT, bold=True, size=10)
@@ -417,6 +419,94 @@ for col in SCEN_COLS:
 cur += 2
 write(scn, f'A{cur}', "Current price $%.2f; cash $%s k; lease debt $%s k; funded debt $0; net cash $%s k." % (
       D.MKT['price'], f"{D.MKT['cash']:,}", f"{D.MKT['debt']:,}", f"{D.MKT['cash'] - D.MKT['debt']:,}"),
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+cur += 2
+write(scn, f'A{cur}', "Pitch deck bridge (IS / CFS / BS)", S.ACCENT, bold=True, size=10)
+cur += 1
+FY25_REV = D.IS['revenue']['FY2025']
+FY25_TA = D.BS['total_assets']['FY2025']
+FY25_TL = D.BS['total_liab']['FY2025']
+FY25_TE = D.BS['total_equity']['FY2025']
+PITCH_OTHER_INC = [45000, 40000, 35000, 30000, 25000]
+other_rows, ni_rows, cfo_rows, fcf_cfs_rows, buy_rows, cash_bs_rows = {}, {}, {}, {}, {}, {}
+ta_rows, tl_rows, te_rows, eps_rows = {}, {}, {}, {}
+for t in range(1, 6):
+    other_rows[t] = cur
+    put(cur, f"  Other income \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', PITCH_OTHER_INC[t - 1], S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    ni_rows[t] = cur
+    put(cur, f"  Net income \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"=({col}{ebit_rows[t]}+{col}{other_rows[t]})*(1-{col}{SC['tax']})"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    cfo_rows[t] = cur
+    put(cur, f"  Cash from operations \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={col}{ni_rows[t]}+{col}{da_rows[t]}+{col}{dnwc_rows[t]}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    fcf_cfs_rows[t] = cur
+    put(cur, f"  Free cash flow (CFS) \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={col}{cfo_rows[t]}-{col}{capex_rows[t]}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    buy_rows[t] = cur
+    put(cur, f"  Share repurchases \u2013 year {t}")
+    for col in SCEN_COLS:
+        if col == "H":
+            f = f"=-ROUND({col}{SC['bb_pct']}*{col}{fcf_cfs_rows[t]},0)"
+        else:
+            f = f"=-{col}{SC['bb_fixed']}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    cash_bs_rows[t] = cur
+    put(cur, f"  Cash & equivalents \u2013 year {t}")
+    for col in SCEN_COLS:
+        if t == 1:
+            f = f"={D.MKT['cash']}+{col}{fcf_cfs_rows[t]}+{col}{buy_rows[t]}"
+        else:
+            f = f"={col}{cash_bs_rows[t-1]}+{col}{fcf_cfs_rows[t]}+{col}{buy_rows[t]}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    ta_rows[t] = cur
+    put(cur, f"  Total assets \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={FY25_TA}*{col}{rev_rows[t]}/{FY25_REV}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    tl_rows[t] = cur
+    put(cur, f"  Total liabilities \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={FY25_TL}*{col}{rev_rows[t]}/{FY25_REV}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    te_rows[t] = cur
+    put(cur, f"  Total equity \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={FY25_TE}*{col}{rev_rows[t]}/{FY25_REV}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    eps_rows[t] = cur
+    put(cur, f"  Diluted EPS ($) \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={col}{ni_rows[t]}*1000/{D.MKT['shares_out']}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=EPSFMT, align=S.right)
+    cur += 1
+write(scn, f'A{cur}',
+      "  memo: pitch deck pulls cols G (base) & H (bull) from this block via pitch_values.py",
       S.BLACK, italic=True, size=8, align=S.left_indent)
 group_columns(scn, DJ, DC)
 

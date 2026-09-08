@@ -391,18 +391,11 @@ def m(v):
 
 HY = ["FY2022", "FY2023", "FY2024", "FY2025"]
 DCF_MODEL = "LULU_DCF_Valuation_Model.xlsx"
-THREE_STMT = "LULU_3_Statement_Model.xlsx"
 SCEN_G = f"{DCF_MODEL} \u2192 Scenarios, col G"
 SCEN_H = f"{DCF_MODEL} \u2192 Scenarios, col H"
-THREE_IS = f"{THREE_STMT} \u2192 Income Statement"
-THREE_BS = f"{THREE_STMT} \u2192 Balance Sheet"
-THREE_CF = f"{THREE_STMT} \u2192 Cash Flow"
-THREE_ASM = f"{THREE_STMT} \u2192 Assumptions (linked to Scenarios G)"
 HIST_10K = "SEC Form 10-K (FY2022\u2013FY2025)"
-BULL_BS_NOTE = "Pitch build: base BS \u00d7 (bull rev / base rev); cash = FY25 + bull FCF + buybacks"
 FIN_FOOTNOTE = (
-    "Hist = 10-K. Base (26B) = 3-Statement Model + Scenarios G. Bull (26U) = DCF Scenarios H "
-    "(BS bull lines approximated \u2014 see model-source table)."
+    "Hist = 10-K. Base (26B) & bull (26U) = DCF Scenarios pitch-bridge block, cols G & H."
 )
 
 
@@ -683,29 +676,29 @@ _CF_HIST, _CF_FCST = _aligned_explainers([
 ])
 
 _IS_SOURCES = [
-    ("Net revenue", HIST_10K, THREE_IS, f"{SCEN_H} year revenue"),
-    ("Gross profit", HIST_10K, THREE_IS, f"{SCEN_H} GM% \u00d7 revenue"),
-    ("Operating income", HIST_10K, THREE_IS, f"{SCEN_H} EBIT rows"),
-    ("Operating margin %", f"{HIST_10K} (OI/rev)", f"{THREE_IS} (OI/rev)", f"{SCEN_H} (EBIT/rev)"),
-    ("Net income", HIST_10K, THREE_IS, f"{SCEN_H} EBIT + other inc \u2212 tax"),
-    ("Diluted EPS", HIST_10K, THREE_IS, f"{SCEN_H} NI \u00f7 {THREE_STMT} share schedule"),
+    ("Net revenue", HIST_10K, f"{SCEN_G} revenue", f"{SCEN_H} revenue"),
+    ("Gross profit", HIST_10K, f"{SCEN_G} GM% \u00d7 revenue", f"{SCEN_H} GM% \u00d7 revenue"),
+    ("Operating income", HIST_10K, f"{SCEN_G} EBIT", f"{SCEN_H} EBIT"),
+    ("Operating margin %", f"{HIST_10K} (OI/rev)", f"{SCEN_G} EBIT/rev", f"{SCEN_H} EBIT/rev"),
+    ("Net income", HIST_10K, f"{SCEN_G} pitch bridge NI", f"{SCEN_H} pitch bridge NI"),
+    ("Diluted EPS", HIST_10K, f"{SCEN_G} pitch bridge EPS", f"{SCEN_H} pitch bridge EPS"),
 ]
 
 _BS_SOURCES = [
-    ("Cash & equivalents", HIST_10K, f"{THREE_BS} (CFS plug)", f"FY25 cash + {SCEN_H} FCF + buybacks"),
-    ("Inventories", HIST_10K, THREE_BS, BULL_BS_NOTE),
-    ("Total assets", HIST_10K, THREE_BS, BULL_BS_NOTE),
-    ("Total liabilities", HIST_10K, THREE_BS, BULL_BS_NOTE),
-    ("Total equity", HIST_10K, THREE_BS, BULL_BS_NOTE),
-    ("Funded debt", f"{HIST_10K} ($0)", f"{THREE_BS} ($0)", "$0 (no term debt)"),
+    ("Cash & equivalents", HIST_10K, f"{SCEN_G} pitch bridge cash", f"{SCEN_H} pitch bridge cash"),
+    ("Inventories", HIST_10K, f"{SCEN_G} inventories (NWC)", f"{SCEN_H} inventories (NWC)"),
+    ("Total assets", HIST_10K, f"{SCEN_G} pitch bridge TA", f"{SCEN_H} pitch bridge TA"),
+    ("Total liabilities", HIST_10K, f"{SCEN_G} pitch bridge TL", f"{SCEN_H} pitch bridge TL"),
+    ("Total equity", HIST_10K, f"{SCEN_G} pitch bridge equity", f"{SCEN_H} pitch bridge equity"),
+    ("Funded debt", f"{HIST_10K} ($0)", "$0", "$0"),
 ]
 
 _CF_SOURCES = [
-    ("Cash from operations", HIST_10K, THREE_CF, f"{SCEN_H} NI + D&A + \u0394NWC"),
-    ("D&A (add-back)", HIST_10K, THREE_CF, f"{SCEN_H} D&A rows"),
-    ("Capital expenditures", HIST_10K, f"{THREE_CF} (rev \u00d7 capex%; {SCEN_G})", f"{SCEN_H} capex rows"),
-    ("Free cash flow", f"{HIST_10K} (CFO \u2212 capex)", THREE_CF, f"{SCEN_H} CFO \u2212 capex"),
-    ("Share repurchases", HIST_10K, f"{THREE_ASM} $500M/yr buyback", f"{SCEN_H} 75% of bull FCF"),
+    ("Cash from operations", HIST_10K, f"{SCEN_G} pitch bridge CFO", f"{SCEN_H} pitch bridge CFO"),
+    ("D&A (add-back)", HIST_10K, f"{SCEN_G} D&A rows", f"{SCEN_H} D&A rows"),
+    ("Capital expenditures", HIST_10K, f"{SCEN_G} capex rows", f"{SCEN_H} capex rows"),
+    ("Free cash flow", f"{HIST_10K} (CFO \u2212 capex)", f"{SCEN_G} pitch bridge FCF (CFS)", f"{SCEN_H} pitch bridge FCF (CFS)"),
+    ("Share repurchases", HIST_10K, f"{SCEN_G} fixed buyback ($500M)", f"{SCEN_H} 75% FCF buyback"),
 ]
 
 pitch_financial_slide(
@@ -725,7 +718,7 @@ pitch_financial_slide(
     fcst_bullets=_IS_FCST,
     source_rows=_IS_SOURCES,
     bold_rows=(0, 2, 5),
-    italic_note=f"Base drivers: {THREE_ASM}. Open both workbooks for live Scenarios G links.",
+    italic_note=f"All forecast lines: {DCF_MODEL} \u2192 Scenarios tab \u2192 pitch deck bridge block.",
 )
 
 pitch_financial_slide(
@@ -745,7 +738,7 @@ pitch_financial_slide(
     fcst_bullets=_BS_FCST,
     source_rows=_BS_SOURCES,
     bold_rows=(2, 4, 5),
-    italic_note=f"Base BS only in {THREE_STMT}. Bull BS is illustrative (not a separate workbook tab).",
+    italic_note=f"BS forecast: Scenarios pitch bridge (cash waterfall + FY25 BS \u00d7 revenue growth).",
 )
 
 pitch_financial_slide(
@@ -764,7 +757,7 @@ pitch_financial_slide(
     fcst_bullets=_CF_FCST,
     source_rows=_CF_SOURCES,
     bold_rows=(3,),
-    italic_note=f"Base CF in {THREE_CF}; bull CF from {SCEN_H}. Buybacks are CFF (not in DCF FCFF).",
+    italic_note=f"Buybacks: col G = $500M/yr fixed; col H = 75% FCF (Scenarios assumptions).",
 )
 
 # =====================================================================
