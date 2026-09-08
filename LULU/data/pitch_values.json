@@ -93,81 +93,124 @@
   "income_statement": {
     "FY2026E": {
       "revenue": 10425,
-      "gross_profit": 6025,
-      "operating_income": 1587,
-      "operating_margin": "15.2%",
-      "net_income": 1142,
-      "eps": 10.02
+      "gross_profit": 6035,
+      "operating_income": 1511,
+      "operating_margin": "14.5%",
+      "net_income": 1089,
+      "eps": 9.55
+    },
+    "FY2027E": {
+      "revenue": 10665,
+      "gross_profit": 6036,
+      "operating_income": 1469,
+      "operating_margin": "13.8%",
+      "net_income": 1056,
+      "eps": 9.65
     },
     "FY2028E": {
-      "revenue": 10942,
-      "gross_profit": 6292,
-      "operating_income": 1853,
-      "operating_margin": "16.9%",
-      "net_income": 1322,
-      "eps": 12.58
+      "revenue": 10910,
+      "gross_profit": 6175,
+      "operating_income": 1566,
+      "operating_margin": "14.3%",
+      "net_income": 1120,
+      "eps": 10.66
+    },
+    "FY2029E": {
+      "revenue": 11161,
+      "gross_profit": 6317,
+      "operating_income": 1666,
+      "operating_margin": "14.9%",
+      "net_income": 1187,
+      "eps": 11.75
     },
     "FY2030E": {
-      "revenue": 11452,
-      "gross_profit": 6642,
-      "operating_income": 2112,
-      "operating_margin": "18.4%",
-      "net_income": 1496,
-      "eps": 15.4
+      "revenue": 11418,
+      "gross_profit": 6463,
+      "operating_income": 1770,
+      "operating_margin": "15.5%",
+      "net_income": 1256,
+      "eps": 12.93
     }
   },
   "balance_sheet": {
     "cash": {
-      "FY2026E": 2375,
-      "FY2028E": 3778,
-      "FY2030E": 5648
+      "FY2026E": 2470,
+      "FY2027E": 2985,
+      "FY2028E": 3562,
+      "FY2029E": 4180,
+      "FY2030E": 4864
     },
     "inventories": {
-      "FY2026E": 1542,
-      "FY2028E": 1535,
-      "FY2030E": 1587
+      "FY2026E": 1538,
+      "FY2027E": 1551,
+      "FY2028E": 1563,
+      "FY2029E": 1599,
+      "FY2030E": 1635
     },
     "total_assets": {
-      "FY2026E": 8946,
-      "FY2028E": 10728,
-      "FY2030E": 12888
+      "FY2026E": 8892,
+      "FY2027E": 9584,
+      "FY2028E": 10343,
+      "FY2029E": 11170,
+      "FY2030E": 12067
     },
     "total_liab": {
-      "FY2026E": 3280,
-      "FY2028E": 3432,
+      "FY2026E": 3279,
+      "FY2027E": 3353,
+      "FY2028E": 3429,
+      "FY2029E": 3507,
       "FY2030E": 3586
     },
     "total_equity": {
-      "FY2026E": 5666,
-      "FY2028E": 7296,
-      "FY2030E": 9303
+      "FY2026E": 5613,
+      "FY2027E": 6231,
+      "FY2028E": 6914,
+      "FY2029E": 7663,
+      "FY2030E": 8481
     }
   },
   "cash_flow": {
     "cfo": {
-      "FY2026E": 1797,
-      "FY2028E": 1894,
-      "FY2030E": 2068
+      "FY2026E": 1736,
+      "FY2027E": 1602,
+      "FY2028E": 1677,
+      "FY2029E": 1732,
+      "FY2030E": 1812
     },
     "capex": {
-      "FY2026E": -730,
-      "FY2028E": -602,
-      "FY2030E": -573
+      "FY2026E": -573,
+      "FY2027E": -587,
+      "FY2028E": -600,
+      "FY2029E": -614,
+      "FY2030E": -628
     },
     "buybacks": {
       "FY2026E": -500,
+      "FY2027E": -500,
       "FY2028E": -500,
+      "FY2029E": -500,
       "FY2030E": -500
     },
     "dna": {
-      "FY2026E": 480,
-      "FY2028E": 492,
-      "FY2030E": 515
+      "FY2026E": 469,
+      "FY2027E": 480,
+      "FY2028E": 491,
+      "FY2029E": 502,
+      "FY2030E": 514
     },
     "fcf": {
-      "FY2026E": 1067,
-      "FY2028E": 1292,
-      "FY2030E": 1495
+      "FY2026E": 1163,
+      "FY2027E": 1015,
+      "FY2028E": 1077,
+      "FY2029E": 1118,
+      "FY2030E": 1184
     }
-  }
+  },
+  "proj_years": [
+    "FY2026E",
+    "FY2027E",
+    "FY2028E",
+    "FY2029E",
+    "FY2030E"
+  ]
 }

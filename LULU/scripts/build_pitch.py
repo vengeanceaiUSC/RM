@@ -385,59 +385,104 @@ def m(v):
     return f"{v:,.0f}"
 
 HY = ["FY2022", "FY2023", "FY2024", "FY2025"]
+PROJ_DISPLAY = ("FY2026E", "FY2028E", "FY2030E")
+FIN_FOOTNOTE = "Projections = GIS base case (Scenarios column G); historicals per FY2025 10-K"
+
+
+def pitch_financial_slide(title, subtitle, rows, bold_rows=(), italic_note=None, col0w=3.2):
+    """Build one historical + projection financial table slide from pitch_values.json."""
+    hdr = ["US$ M"] + HY + list(PROJ_DISPLAY)
+    s = slide_base(title, subtitle, page=pg(), sources=FIN_FOOTNOTE)
+    stmt_table(s, rows, hdr, col0w=col0w, bold_rows=bold_rows)
+    if italic_note:
+        tb, tf = textbox(s, Inches(0.5), Inches(6.75), Inches(12.35), Inches(0.35))
+        add_para(tf, italic_note, 11, GREY, italic=True, first=True, space_after=0)
+    return s
+
+
+def _proj_vals_by_year(section, key, years=PROJ_DISPLAY, fmt="num"):
+    """Section shape: {FY2026E: {key: val, ...}, ...} (income statement)."""
+    vals = []
+    for fy in years:
+        v = section[fy][key]
+        if fmt == "pct":
+            vals.append(v)
+        elif fmt == "eps":
+            vals.append(f"{v:.2f}")
+        elif fmt == "neg_paren":
+            vals.append(f"({abs(v):,})")
+        else:
+            vals.append(_m(v))
+    return vals
+
+
+def _proj_vals_by_key(section, key, years=PROJ_DISPLAY, fmt="num"):
+    """Section shape: {key: {FY2026E: val, ...}, ...} (balance sheet, cash flow)."""
+    vals = []
+    for fy in years:
+        v = section[key][fy]
+        if fmt == "pct":
+            vals.append(v)
+        elif fmt == "eps":
+            vals.append(f"{v:.2f}")
+        elif fmt == "neg_paren":
+            vals.append(f"({abs(v):,})")
+        else:
+            vals.append(_m(v))
+    return vals
 
 # =====================================================================
 # 14. INCOME STATEMENT
 # =====================================================================
-s = slide_base("Financials \u2014 Income Statement", "Historical results with our base-case forecast (US$ M)", page=pg(),
-               sources="Source: company 10-K filings; projections per GIS operating model")
-hdr = ["US$ M"] + HY + ["FY2026E", "FY2028E", "FY2030E"]
-rows = [
-    ["Net revenue"] + [m(D.IS['revenue'][y]/1000) for y in HY] + [_m(IS_P[fy]["revenue"]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Gross profit"] + [m(D.IS['gross_profit'][y]/1000) for y in HY] + [_m(IS_P[fy]["gross_profit"]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Operating income"] + [m(D.IS['operating_income'][y]/1000) for y in HY] + [_m(IS_P[fy]["operating_income"]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Operating margin %"] + [f"{D.IS['operating_income'][y]/D.IS['revenue'][y]*100:.1f}%" for y in HY] + [IS_P[fy]["operating_margin"] for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Net income"] + [m(D.IS['net_income'][y]/1000) for y in HY] + [_m(IS_P[fy]["net_income"]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Diluted EPS ($)"] + [f"{D.IS['diluted_eps'][y]:.2f}" for y in HY] + [f"{IS_P[fy]['eps']:.2f}" for fy in ("FY2026E", "FY2028E", "FY2030E")],
-]
-stmt_table(s, rows, hdr, col0w=3.2, bold_rows=(0, 2, 5))
-tb, tf = textbox(s, Inches(0.5), Inches(6.75), Inches(12.35), Inches(0.35))
-add_para(tf, "FY2026E reported OM 15.2% = clean ~13.9% (56.5% GM \u2212 42.5% SG&A) plus $134.5M IEEPA refund (~+1.3 ppt). DCF uses the Q2 clean 13.2% run-rate as its trough.", 11, GREY, italic=True, first=True, space_after=0)
+pitch_financial_slide(
+    "Financials \u2014 Income Statement",
+    "Historical results with our base-case forecast (US$ M)",
+    [
+        ["Net revenue"] + [m(D.IS['revenue'][y]/1000) for y in HY] + _proj_vals_by_year(IS_P, "revenue"),
+        ["Gross profit"] + [m(D.IS['gross_profit'][y]/1000) for y in HY] + _proj_vals_by_year(IS_P, "gross_profit"),
+        ["Operating income"] + [m(D.IS['operating_income'][y]/1000) for y in HY] + _proj_vals_by_year(IS_P, "operating_income"),
+        ["Operating margin %"] + [f"{D.IS['operating_income'][y]/D.IS['revenue'][y]*100:.1f}%" for y in HY] + _proj_vals_by_year(IS_P, "operating_margin", fmt="pct"),
+        ["Net income"] + [m(D.IS['net_income'][y]/1000) for y in HY] + _proj_vals_by_year(IS_P, "net_income"),
+        ["Diluted EPS ($)"] + [f"{D.IS['diluted_eps'][y]:.2f}" for y in HY] + _proj_vals_by_year(IS_P, "eps", fmt="eps"),
+    ],
+    bold_rows=(0, 2, 5),
+    italic_note="FY2026E reported OM 15.2% = clean ~13.9% (56.5% GM \u2212 42.5% SG&A) plus $134.5M IEEPA refund (~+1.3 ppt). DCF uses the Q2 clean 13.2% run-rate as its trough.",
+)
 
 # =====================================================================
 # 15. BALANCE SHEET
 # =====================================================================
-s = slide_base("Financials \u2014 Balance Sheet", "A net-cash balance sheet underpins downside protection (US$ M)", page=pg(),
-               sources="Source: company 10-K filings; projections per GIS operating model")
-hdr = ["US$ M"] + HY + ["FY2026E", "FY2028E", "FY2030E"]
-rows = [
-    ["Cash & equivalents"] + [m(D.BS['cash'][y]/1000) for y in HY] + [_m(BS_P["cash"][fy]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Inventories"] + [m(D.BS['inventories'][y]/1000) for y in HY] + [_m(BS_P["inventories"][fy]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Total assets"] + [m(D.BS['total_assets'][y]/1000) for y in HY] + [_m(BS_P["total_assets"][fy]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Total liabilities"] + [m(D.BS['total_liab'][y]/1000) for y in HY] + [_m(BS_P["total_liab"][fy]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Total equity"] + [m(D.BS['total_equity'][y]/1000) for y in HY] + [_m(BS_P["total_equity"][fy]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Funded debt"] + ["0", "0", "0", "0"] + ["0", "0", "0"],
-]
-stmt_table(s, rows, hdr, col0w=3.2, bold_rows=(2, 4, 5))
-tb, tf = textbox(s, Inches(0.5), Inches(6.75), Inches(12.35), Inches(0.35))
-add_para(tf, "No funded debt and a growing cash balance fund buybacks and international expansion \u2014 the core of our margin of safety", 11, GREY, italic=True, first=True, space_after=0)
+pitch_financial_slide(
+    "Financials \u2014 Balance Sheet",
+    "A net-cash balance sheet underpins downside protection (US$ M)",
+    [
+        ["Cash & equivalents"] + [m(D.BS['cash'][y]/1000) for y in HY] + _proj_vals_by_key(BS_P, "cash"),
+        ["Inventories"] + [m(D.BS['inventories'][y]/1000) for y in HY] + _proj_vals_by_key(BS_P, "inventories"),
+        ["Total assets"] + [m(D.BS['total_assets'][y]/1000) for y in HY] + _proj_vals_by_key(BS_P, "total_assets"),
+        ["Total liabilities"] + [m(D.BS['total_liab'][y]/1000) for y in HY] + _proj_vals_by_key(BS_P, "total_liab"),
+        ["Total equity"] + [m(D.BS['total_equity'][y]/1000) for y in HY] + _proj_vals_by_key(BS_P, "total_equity"),
+        ["Funded debt"] + ["0", "0", "0", "0"] + ["0", "0", "0"],
+    ],
+    bold_rows=(2, 4, 5),
+    italic_note="No funded debt and a growing cash balance fund buybacks and international expansion \u2014 the core of our margin of safety",
+)
 
 # =====================================================================
 # 16. CASH FLOW
 # =====================================================================
-s = slide_base("Financials \u2014 Cash Flow", "Durable free cash flow through the trough (US$ M)", page=pg(),
-               sources="Source: company 10-K filings; projections per GIS operating model")
-hdr = ["US$ M"] + HY + ["FY2026E", "FY2028E", "FY2030E"]
-rows = [
-    ["Cash from operations"] + [m(D.CF['cfo'][y]/1000) for y in HY] + [_m(CF_P["cfo"][fy]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Capital expenditures"] + [f"({m(D.CF['capex'][y]/1000)})" for y in HY] + [f"({abs(CF_P['capex'][fy]):,})" for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Free cash flow"] + [m((D.CF['cfo'][y]-D.CF['capex'][y])/1000) for y in HY] + [_m(CF_P["fcf"][fy]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["Share repurchases"] + [f"({m(D.CF['buybacks'][y]/1000)})" for y in HY] + [f"({abs(CF_P['buybacks'][fy]):,})" for fy in ("FY2026E", "FY2028E", "FY2030E")],
-    ["D&A"] + [m(D.CF['d_and_a'][y]/1000) for y in HY] + [_m(CF_P["dna"][fy]) for fy in ("FY2026E", "FY2028E", "FY2030E")],
-]
-stmt_table(s, rows, hdr, col0w=3.2, bold_rows=(2,))
-tb, tf = textbox(s, Inches(0.5), Inches(6.75), Inches(12.35), Inches(0.35))
-add_para(tf, "Free cash flow stays around $1B+ even in the FY2026 reset year, comfortably funding continued repurchases", 11, GREY, italic=True, first=True, space_after=0)
+pitch_financial_slide(
+    "Financials \u2014 Cash Flow",
+    "Durable free cash flow through the trough (US$ M)",
+    [
+        ["Cash from operations"] + [m(D.CF['cfo'][y]/1000) for y in HY] + _proj_vals_by_key(CF_P, "cfo"),
+        ["Capital expenditures"] + [f"({m(D.CF['capex'][y]/1000)})" for y in HY] + _proj_vals_by_key(CF_P, "capex", fmt="neg_paren"),
+        ["Free cash flow"] + [m((D.CF['cfo'][y]-D.CF['capex'][y])/1000) for y in HY] + _proj_vals_by_key(CF_P, "fcf"),
+        ["Share repurchases"] + [f"({m(D.CF['buybacks'][y]/1000)})" for y in HY] + _proj_vals_by_key(CF_P, "buybacks", fmt="neg_paren"),
+        ["D&A"] + [m(D.CF['d_and_a'][y]/1000) for y in HY] + _proj_vals_by_key(CF_P, "dna"),
+    ],
+    bold_rows=(2,),
+    italic_note="Free cash flow stays around $1B+ even in the FY2026 reset year, comfortably funding continued repurchases",
+)
 
 # =====================================================================
 # 17. CAPITAL STRUCTURE & WACC

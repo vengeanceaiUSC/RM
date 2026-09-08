@@ -9,31 +9,66 @@ import subprocess
 
 import openpyxl
 
+import data as D
+from scenario_links import sync_mirror_sheet
+
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 DCF_PATH = os.path.join(ROOT, "LULU_DCF_Valuation_Model.xlsx")
 IS_PATH = os.path.join(ROOT, "LULU_3_Statement_Model.xlsx")
 OUT_JSON = os.path.join(ROOT, "data", "pitch_values.json")
+PROJ_YEARS = D.PROJ_YEARS
+PROJ_COL = {fy: 9 + i for i, fy in enumerate(PROJ_YEARS)}
 
 
 def _recalc(path):
-    subprocess.run(
-        ["soffice", "--headless", "--calc", "--convert-to", "xlsx", "--outdir", "/tmp", path],
-        check=True,
-        capture_output=True,
-    )
-    return openpyxl.load_workbook(f"/tmp/{os.path.basename(path)}", data_only=True)
+    import shutil
+    from recalc_workbook import recalc_workbook
+
+    tmp = "/tmp/lulu_models"
+    os.makedirs(tmp, exist_ok=True)
+    base = os.path.basename(path)
+    dest = os.path.join(tmp, base)
+    shutil.copy2(path, dest)
+    if "3_Statement" in base:
+        dcf_dest = os.path.join(tmp, os.path.basename(DCF_PATH))
+        shutil.copy2(DCF_PATH, dcf_dest)
+        dcf_wb = recalc_workbook(dcf_dest)
+        dcf_wb = openpyxl.load_workbook(dcf_dest, data_only=True)
+        sync_mirror_sheet(dest, dcf_wb)
+        recalc_workbook(dest)
+    else:
+        recalc_workbook(dest)
+    return openpyxl.load_workbook(dest, data_only=True)
 
 
 def _m(v):
     if v is None:
         return None
     if isinstance(v, str):
+        if v.startswith("#"):
+            raise ValueError(f"Unrecalculated model value: {v}")
         return v
     return round(v / 1000)
 
 
 def _pct(v, d=1):
-    return f"{v * 100:.{d}f}%" if v is not None else None
+    if v is None or (isinstance(v, str) and v.startswith("#")):
+        return None
+    if isinstance(v, str):
+        return v
+    return f"{v * 100:.{d}f}%"
+
+
+def _num(v):
+    if v is None or (isinstance(v, str) and v.startswith("#")):
+        return None
+    if isinstance(v, str):
+        return v
+    return v
+
+
+def _year_slice(ws, row, years=PROJ_YEARS):
+    return {fy: ws.cell(row, PROJ_COL[fy]).value for fy in years}
 
 
 def extract():
@@ -60,9 +95,15 @@ def extract():
 
     def bs_row(label):
         for r in range(1, 60):
-            if is_ws.cell(r, 1).value == label:
+            if bs.cell(r, 1).value == label:
                 return r
-        return None
+        raise KeyError(label)
+
+    def cf_row(label):
+        for r in range(1, 60):
+            if cf.cell(r, 1).value == label:
+                return r
+        raise KeyError(label)
 
     r_rev = is_row("Net revenue")
     r_gp = is_row("Gross profit")
@@ -70,8 +111,6 @@ def extract():
     r_om = is_row("Operating margin % (reported, incl. FY26 refund)")
     r_ni = is_row("Net income")
     r_eps = is_row("Diluted EPS ($)")
-
-    col = {"FY2026E": 9, "FY2028E": 11, "FY2030E": 13}
 
     sens = []
     for r in range(98, 103):
@@ -93,7 +132,46 @@ def extract():
                 "high": comps.cell(r, 8).value,
             }
 
-    data = {
+    income_statement = {}
+    for fy in PROJ_YEARS:
+        col = PROJ_COL[fy]
+        eps_val = is_ws.cell(r_eps, col).value
+        income_statement[fy] = {
+            "revenue": _m(is_ws.cell(r_rev, col).value),
+            "gross_profit": _m(is_ws.cell(r_gp, col).value),
+            "operating_income": _m(is_ws.cell(r_oi, col).value),
+            "operating_margin": _pct(is_ws.cell(r_om, col).value),
+            "net_income": _m(is_ws.cell(r_ni, col).value),
+            "eps": round(eps_val, 2) if isinstance(eps_val, (int, float)) else None,
+        }
+
+    balance_sheet = {}
+    for label, key in [
+        ("Cash & cash equivalents", "cash"),
+        ("Inventories", "inventories"),
+        ("TOTAL ASSETS", "total_assets"),
+        ("TOTAL LIABILITIES", "total_liab"),
+        ("TOTAL SHAREHOLDERS' EQUITY", "total_equity"),
+    ]:
+        row = bs_row(label)
+        balance_sheet[key] = {fy: _m(bs.cell(row, PROJ_COL[fy]).value) for fy in PROJ_YEARS}
+
+    cash_flow = {}
+    for label, key in [
+        ("Net cash from operating activities", "cfo"),
+        ("Capital expenditures", "capex"),
+        ("Repurchase of common stock", "buybacks"),
+        ("Depreciation & amortization", "dna"),
+    ]:
+        row = cf_row(label)
+        cash_flow[key] = {fy: _m(cf.cell(row, PROJ_COL[fy]).value) for fy in PROJ_YEARS}
+
+    cash_flow["fcf"] = {
+        fy: (cash_flow["cfo"][fy] or 0) + (cash_flow["capex"][fy] or 0)
+        for fy in PROJ_YEARS
+    }
+
+    return {
         "valuation": {
             "base_dcf": round(base, 0),
             "bear": round(bear, 0),
@@ -113,73 +191,11 @@ def extract():
         },
         "sensitivity": sens,
         "football_field": ff,
-        "income_statement": {
-            "FY2026E": {
-                "revenue": _m(is_ws.cell(r_rev, col["FY2026E"]).value),
-                "gross_profit": _m(is_ws.cell(r_gp, col["FY2026E"]).value),
-                "operating_income": _m(is_ws.cell(r_oi, col["FY2026E"]).value),
-                "operating_margin": _pct(is_ws.cell(r_om, col["FY2026E"]).value),
-                "net_income": _m(is_ws.cell(r_ni, col["FY2026E"]).value),
-                "eps": round(is_ws.cell(r_eps, col["FY2026E"]).value, 2),
-            },
-            "FY2028E": {
-                "revenue": _m(is_ws.cell(r_rev, col["FY2028E"]).value),
-                "gross_profit": _m(is_ws.cell(r_gp, col["FY2028E"]).value),
-                "operating_income": _m(is_ws.cell(r_oi, col["FY2028E"]).value),
-                "operating_margin": _pct(is_ws.cell(r_om, col["FY2028E"]).value),
-                "net_income": _m(is_ws.cell(r_ni, col["FY2028E"]).value),
-                "eps": round(is_ws.cell(r_eps, col["FY2028E"]).value, 2),
-            },
-            "FY2030E": {
-                "revenue": _m(is_ws.cell(r_rev, col["FY2030E"]).value),
-                "gross_profit": _m(is_ws.cell(r_gp, col["FY2030E"]).value),
-                "operating_income": _m(is_ws.cell(r_oi, col["FY2030E"]).value),
-                "operating_margin": _pct(is_ws.cell(r_om, col["FY2030E"]).value),
-                "net_income": _m(is_ws.cell(r_ni, col["FY2030E"]).value),
-                "eps": round(is_ws.cell(r_eps, col["FY2030E"]).value, 2),
-            },
-        },
-        "balance_sheet": {},
-        "cash_flow": {},
+        "income_statement": income_statement,
+        "balance_sheet": balance_sheet,
+        "cash_flow": cash_flow,
+        "proj_years": list(PROJ_YEARS),
     }
-
-    for label, key in [
-        ("Cash & cash equivalents", "cash"),
-        ("Inventories", "inventories"),
-        ("TOTAL ASSETS", "total_assets"),
-        ("TOTAL LIABILITIES", "total_liab"),
-        ("TOTAL SHAREHOLDERS' EQUITY", "total_equity"),
-    ]:
-        for r in range(1, 60):
-            if bs.cell(r, 1).value == label:
-                data["balance_sheet"][key] = {
-                    "FY2026E": _m(bs.cell(r, 9).value),
-                    "FY2028E": _m(bs.cell(r, 11).value),
-                    "FY2030E": _m(bs.cell(r, 13).value),
-                }
-                break
-
-    for label, key in [
-        ("Net cash from operating activities", "cfo"),
-        ("Capital expenditures", "capex"),
-        ("Repurchase of common stock", "buybacks"),
-        ("Depreciation & amortization", "dna"),
-    ]:
-        for r in range(1, 60):
-            if cf.cell(r, 1).value == label:
-                data["cash_flow"][key] = {
-                    "FY2026E": _m(cf.cell(r, 9).value),
-                    "FY2028E": _m(cf.cell(r, 11).value),
-                    "FY2030E": _m(cf.cell(r, 13).value),
-                }
-                break
-
-    # FCF = CFO + capex (capex negative)
-    data["cash_flow"]["fcf"] = {
-        fy: data["cash_flow"]["cfo"][fy] + data["cash_flow"]["capex"][fy]
-        for fy in ("FY2026E", "FY2028E", "FY2030E")
-    }
-    return data
 
 
 if __name__ == "__main__":

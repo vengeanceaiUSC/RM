@@ -11,6 +11,7 @@ from openpyxl import Workbook
 import styles as S
 from styles import write, write_link, write_reported, write_assumption_docs, write_ctrl_f, append_assumption_docs, NUM, PCT, MONEY, EPSFMT
 import data as D
+from scenario_links import scen_base, clean_ebit_margin_path, mirror_ref, MIRROR_SHEET, ROWS, MIRROR_ROW
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "LULU_3_Statement_Model.xlsx")
 
@@ -89,6 +90,19 @@ write_link(cov, 'B23', "LULU_Assumptions_Memo.pdf — full guide: every red assu
            hint="Open for justification, clickable source links, and Ctrl+F proof for every assumption.")
 write(cov, 'B25', "Built from scratch for the GIS IR selection assignment. Units: US$ thousands unless noted.", S.BLACK, italic=True, size=9)
 
+# ---------------------------------------------------------------- SCENARIOS BASE (mirror of DCF Scenarios column G)
+mir = wb.create_sheet(MIRROR_SHEET)
+mir.sheet_view.showGridLines = False
+S.set_col_widths(mir, {'A': 28, 'B': 18, 'C': 48})
+write(mir, 'A1', "Key", S.WHITE, bold=True, size=10, fillc=S.DARK)
+write(mir, 'B1', "Base case (Scenarios col G)", S.WHITE, bold=True, size=10, fillc=S.DARK)
+write(mir, 'C1', "Source link", S.WHITE, bold=True, size=10, fillc=S.DARK)
+for key, row in MIRROR_ROW.items():
+    write(mir, f'A{row}', key, S.BLACK, size=10)
+    write(mir, f'B{row}', scen_base(key), S.RED, size=10, align=S.right)
+    write(mir, f'C{row}', f"Scenarios!G{ROWS[key]}", S.BLACK, italic=True, size=9)
+write(mir, 'A18', "Assumptions tab pulls from column B (live link when DCF workbook is open).", S.BLACK, italic=True, size=9)
+
 # ---------------------------------------------------------------- ASSUMPTIONS
 asum = wb.create_sheet(A)
 asum.sheet_view.showGridLines = False
@@ -106,42 +120,53 @@ def a_section(title):
         asum[f'{c}{r[0]}'].fill = S.fill(S.GREY)
     r[0] += 1
 
-def a_row(key, label, hist_vals, proj_vals, fmt=PCT, justify_key="", extra_key=""):
+def a_row(key, label, hist_vals, proj_vals, fmt=PCT, justify_key="", extra_key="", derived=False):
     AR[key] = r[0]
     write(asum, f'A{r[0]}', label, S.BLACK, size=10, align=S.left_indent)
     for i, y in enumerate(HIST):
         if hist_vals[i] is not None:
             write(asum, f'{COL[y]}{r[0]}', hist_vals[i], S.BLACK, size=10, numfmt=fmt, align=S.right)
+    proj_color = S.BLACK if derived else S.RED
     for i, y in enumerate(PROJ):
-        write(asum, f'{COL[y]}{r[0]}', proj_vals[i], S.RED, size=10, numfmt=fmt, align=S.right)
+        write(asum, f'{COL[y]}{r[0]}', proj_vals[i], proj_color, size=10, numfmt=fmt, align=S.right)
     if justify_key:
         write_row_docs(asum, r[0], justify_key, extra_key or None)
     r[0] += 1
+
+IS_REV_ROW = 4  # Income Statement net revenue row (set before IS tab is built)
+
+def is_rev_ref(col):
+    return f"'{ISN}'!{col}{IS_REV_ROW}"
 
 rev, cogs = D.IS['revenue'], D.IS['cogs']
 asum.freeze_panes = 'E4'
 a_section("GROWTH & MARGINS")
 a_row('rev_growth', "Revenue growth %",
       [None, rev['FY2023']/rev['FY2022']-1, rev['FY2024']/rev['FY2023']-1, rev['FY2025']/rev['FY2024']-1],
-      [-0.061, 0.026, 0.023, 0.023, 0.023], justify_key="3s_rev_growth")
+      [mirror_ref('g1')] + [mirror_ref('gterm')] * 4, justify_key="3s_rev_growth")
 a_row('gm', "Gross margin % (clean, ex-refunds)", [D.IS['gross_profit'][y]/rev[y] for y in HIST],
-      [0.565, 0.570, 0.575, 0.575, 0.580], justify_key="3s_gm")
+      [mirror_ref('gm_pct')] * 5, justify_key="3s_gm")
 a_row('tariff', "IEEPA tariff refunds ($k, FY26 only)", [0, 0, 0, 0],
-      [D.GUIDANCE['tariff_refund'], 0, 0, 0, 0], fmt=NUM, justify_key="3s_tariff")
-a_row('sga_pct', "SG&A % of revenue", [D.IS['sga'][y]/rev[y] for y in HIST],
-      [0.425, 0.415, 0.405, 0.400, 0.395], justify_key="3s_sga_pct")
+      [mirror_ref('tariff'), 0, 0, 0, 0], fmt=NUM, justify_key="3s_tariff")
 a_row('other_opex', "Amortization / other opex ($)", [D.IS['other_opex'][y] for y in HIST], [7000]*5, fmt=NUM,
       justify_key="3s_other_opex")
+a_row('clean_om', "Clean EBIT margin % (ex-refunds)",
+      [D.IS['operating_income'][y]/rev[y] for y in HIST],
+      [clean_ebit_margin_path(i) for i in range(5)],
+      justify_key="sc_m1", extra_key="sc_mterm")
+a_row('sga_pct', "SG&A % of revenue", [D.IS['sga'][y]/rev[y] for y in HIST],
+      [f"='{A}'!{c}{AR['gm']}-'{A}'!{c}{AR['clean_om']}-'{A}'!{c}{AR['other_opex']}/{is_rev_ref(c)}" for c in PCOLS],
+      derived=True, justify_key="3s_sga_pct")
 a_row('other_inc', "Other income, net ($)", [D.IS['other_income'][y] for y in HIST],
       [45000, 40000, 35000, 30000, 25000], fmt=NUM, justify_key="3s_other_inc")
-a_row('tax_rate', "Effective tax rate %", [D.IS['tax'][y]/D.IS['pretax_income'][y] for y in HIST], [0.300]*5,
-      justify_key="3s_tax_rate")
+a_row('tax_rate', "Effective tax rate %", [D.IS['tax'][y]/D.IS['pretax_income'][y] for y in HIST],
+      [mirror_ref('tax')] * 5, justify_key="3s_tax_rate")
 
 a_section("CAPITAL & NON-CASH ITEMS")
-a_row('da_pct', "D&A % of revenue", [D.CF['d_and_a'][y]/rev[y] for y in HIST], [0.046, 0.046, 0.045, 0.045, 0.045],
-      justify_key="3s_da_pct")
-a_row('capex_pct', "Capex % of revenue", [D.CF['capex'][y]/rev[y] for y in HIST], [0.070, 0.060, 0.055, 0.050, 0.050],
-      justify_key="3s_capex_pct", extra_key="sc_capex_sales")
+a_row('da_pct', "D&A % of revenue", [D.CF['d_and_a'][y]/rev[y] for y in HIST],
+      [mirror_ref('da_pct')] * 5, justify_key="3s_da_pct")
+a_row('capex_pct', "Capex % of revenue", [D.CF['capex'][y]/rev[y] for y in HIST],
+      [mirror_ref('capex_pct')] * 5, justify_key="3s_capex_pct", extra_key="sc_capex_sales")
 a_row('sbc', "Stock-based compensation ($)", [D.CF['sbc'][y] for y in HIST], [62000]*5, fmt=NUM,
       justify_key="3s_sbc")
 
