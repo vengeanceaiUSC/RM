@@ -392,15 +392,11 @@ HY = ["FY2022", "FY2023", "FY2024", "FY2025"]
 FIN_FOOTNOTE = "Forecast: base = Scenarios col G (3-statement); bull = Scenarios col H. Historicals per FY2025 10-K."
 
 
-def _fy_hdr(fy):
-    return fy[5:7] + "E"
-
-
 def _fin_headers():
     hdr = ["US$ M"] + HY
     for fy in PROJ_YEARS:
-        short = _fy_hdr(fy)
-        hdr.extend([f"{short} base", f"{short} bull"])
+        yr = fy[5:7]
+        hdr.extend([f"{yr}B", f"{yr}U"])
     return hdr
 
 
@@ -498,7 +494,7 @@ pitch_financial_slide(
         f"Bull EPS ${_IS26U['eps']:.2f} \u2192 ${_IS30U['eps']:.2f} (DCF implied price ${_d(V['bull'])})",
     ],
     bold_rows=(0, 2, 5),
-    italic_note="Base = 3-statement model (Scenarios col G). Bull = Scenarios col H (\u22124% FY26, +6% avg FY27\u201330, 19% terminal EBIT margin). Bear case in Appendix.",
+    italic_note="26B/26U = FY2026 base (Scenarios G) / bull (Scenarios H); same for 27\u201330. Bear case in Appendix.",
 )
 
 pitch_financial_slide(
