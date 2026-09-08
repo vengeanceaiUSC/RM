@@ -11,6 +11,7 @@ import openpyxl
 
 import data as D
 from scenario_links import sync_mirror_sheet
+from scenario_extract import extract_paths, bull_balance_sheet, add_eps, COL_BULL, PROJ_YEARS
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 DCF_PATH = os.path.join(ROOT, "LULU_DCF_Valuation_Model.xlsx")
@@ -112,6 +113,8 @@ def extract():
     r_ni = is_row("Net income")
     r_eps = is_row("Diluted EPS ($)")
 
+    r_sh = is_row("Diluted weighted-avg shares (000)")
+
     sens = []
     for r in range(98, 103):
         w = dcf.cell(r, 1).value
@@ -132,11 +135,11 @@ def extract():
                 "high": comps.cell(r, 8).value,
             }
 
-    income_statement = {}
+    income_base = {}
     for fy in PROJ_YEARS:
         col = PROJ_COL[fy]
         eps_val = is_ws.cell(r_eps, col).value
-        income_statement[fy] = {
+        income_base[fy] = {
             "revenue": _m(is_ws.cell(r_rev, col).value),
             "gross_profit": _m(is_ws.cell(r_gp, col).value),
             "operating_income": _m(is_ws.cell(r_oi, col).value),
@@ -145,7 +148,7 @@ def extract():
             "eps": round(eps_val, 2) if isinstance(eps_val, (int, float)) else None,
         }
 
-    balance_sheet = {}
+    balance_base = {}
     for label, key in [
         ("Cash & cash equivalents", "cash"),
         ("Inventories", "inventories"),
@@ -154,9 +157,9 @@ def extract():
         ("TOTAL SHAREHOLDERS' EQUITY", "total_equity"),
     ]:
         row = bs_row(label)
-        balance_sheet[key] = {fy: _m(bs.cell(row, PROJ_COL[fy]).value) for fy in PROJ_YEARS}
+        balance_base[key] = {fy: _m(bs.cell(row, PROJ_COL[fy]).value) for fy in PROJ_YEARS}
 
-    cash_flow = {}
+    cash_base = {}
     for label, key in [
         ("Net cash from operating activities", "cfo"),
         ("Capital expenditures", "capex"),
@@ -164,12 +167,35 @@ def extract():
         ("Depreciation & amortization", "dna"),
     ]:
         row = cf_row(label)
-        cash_flow[key] = {fy: _m(cf.cell(row, PROJ_COL[fy]).value) for fy in PROJ_YEARS}
+        cash_base[key] = {fy: _m(cf.cell(row, PROJ_COL[fy]).value) for fy in PROJ_YEARS}
 
-    cash_flow["fcf"] = {
-        fy: (cash_flow["cfo"][fy] or 0) + (cash_flow["capex"][fy] or 0)
+    cash_base["fcf"] = {
+        fy: (cash_base["cfo"][fy] or 0) + (cash_base["capex"][fy] or 0)
         for fy in PROJ_YEARS
     }
+
+    scen_bull = extract_paths(sc, COL_BULL)
+    shares = {fy: is_ws.cell(r_sh, PROJ_COL[fy]).value for fy in PROJ_YEARS}
+    income_bull = {
+        fy: {
+            "revenue": scen_bull[fy]["revenue"],
+            "gross_profit": scen_bull[fy]["gross_profit"],
+            "operating_income": scen_bull[fy]["operating_income"],
+            "operating_margin": scen_bull[fy]["operating_margin"],
+            "net_income": scen_bull[fy]["net_income"],
+        }
+        for fy in PROJ_YEARS
+    }
+    add_eps(income_bull, shares)
+
+    cash_bull = {
+        "cfo": {fy: scen_bull[fy]["cfo"] for fy in PROJ_YEARS},
+        "capex": {fy: scen_bull[fy]["capex"] for fy in PROJ_YEARS},
+        "fcf": {fy: scen_bull[fy]["fcf"] for fy in PROJ_YEARS},
+        "buybacks": {fy: scen_bull[fy]["buybacks"] for fy in PROJ_YEARS},
+        "dna": {fy: scen_bull[fy]["dna"] for fy in PROJ_YEARS},
+    }
+    balance_bull = bull_balance_sheet(balance_base, income_base, income_bull)
 
     return {
         "valuation": {
@@ -191,9 +217,9 @@ def extract():
         },
         "sensitivity": sens,
         "football_field": ff,
-        "income_statement": income_statement,
-        "balance_sheet": balance_sheet,
-        "cash_flow": cash_flow,
+        "income_statement": {"base": income_base, "bull": income_bull},
+        "balance_sheet": {"base": balance_base, "bull": balance_bull},
+        "cash_flow": {"base": cash_base, "bull": cash_bull},
         "proj_years": list(PROJ_YEARS),
     }
 

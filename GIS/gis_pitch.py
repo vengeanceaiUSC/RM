@@ -277,6 +277,7 @@ class PitchDeck:
         height=5.4,
         red_rows=(),
         bold_rows=(),
+        font_size=10.5,
     ):
         ncol = len(headers)
         left = Inches(0.5)
@@ -309,7 +310,7 @@ class PitchDeck:
                 r = p.add_run()
                 r.text = val
                 color = CARD if (is_red and c > 0) else (NAVY if is_bold else INK)
-                _set_font(r, 10.5, color, bold=is_bold)
+                _set_font(r, font_size, color, bold=is_bold)
                 cell.vertical_anchor = MSO_ANCHOR.MIDDLE
                 cell.margin_top = Pt(1)
                 cell.margin_bottom = Pt(1)
