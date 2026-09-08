@@ -176,14 +176,14 @@ add_para(tf, "September 2026        Prepared for the GIS IR selection process", 
 # 2. TABLE OF CONTENTS
 # =====================================================================
 toc = [
-    "1.  Investment thesis summary", "2.  Situation overview", "3.  Market narrative",
-    "4.  Company overview", "5.  Business model & unit economics", "6.  Industry overview",
-    "7.  Thesis I \u2014 Priced for terminal decline", "8.  Thesis II \u2014 International growth engine",
-    "9.  Thesis III \u2014 Elite economics & capital return", "10. Risks & mitigants",
-    "11. Catalyst timeline", "12. Financials \u2014 income statement",
-    "13. Financials \u2014 balance sheet", "14. Financials \u2014 cash flow",
-    "15. Capital structure & WACC", "16. Valuation summary (football field)",
-    "17. DCF valuation", "18. Comparable companies", "19. Appendix \u2014 bull / bear scenarios",
+    "1.  Investment thesis summary", "2.  Situation overview", "3.  Macro \u00d7 micro overlap",
+    "4.  Market narrative", "5.  Company overview", "6.  Business model & unit economics",
+    "7.  Industry overview", "8.  Thesis I \u2014 Priced for terminal decline",
+    "9.  Thesis II \u2014 International growth engine", "10. Thesis III \u2014 Elite economics & capital return",
+    "11. Risks & mitigants", "12. Catalyst timeline", "13. Financials \u2014 income statement",
+    "14. Financials \u2014 balance sheet", "15. Financials \u2014 cash flow",
+    "16. Capital structure & WACC", "17. Valuation summary (football field)",
+    "18. DCF valuation", "19. Comparable companies", "20. Appendix \u2014 bull / bear scenarios",
 ]
 s = slide_base("Table of Contents", "What this pitch will cover", page=pg())
 tb, tf = textbox(s, Inches(0.6), Inches(1.2), Inches(6.0), Inches(5.8))
@@ -244,7 +244,41 @@ for t in [
     add_para(tf, t, 13, INK, bullet=True, space_after=5)
 
 # =====================================================================
-# 5. MARKET NARRATIVE
+# 5. MACRO × MICRO OVERLAP (Firecrawl-sourced context)
+# =====================================================================
+s = slide_base("Macro \u00d7 Micro Overlap", "A discretionary macro air pocket collided with an Americas-specific slowdown \u2014 the stock prices both at once", page=pg(),
+               sources="Source: FY2025 10-K (SEC EDGAR); Q2 FY2026 release (Sep 3, 2026); FRED GDPC1 (Aug 2026)")
+tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(6.1), Inches(5.9))
+add_para(tf, "Macro (external)", 14.5, CARD, bold=True, first=True, space_after=5)
+for t in [
+    "Real GDP still grows ~2.1% y/y (FRED GDPC1 Q2\u201926 vs Q2\u201925) \u2014 not recession, but selective spending away from premium discretionary",
+    "Inflation and economic uncertainty weighed on Americas store traffic (10-K) \u2014 macro consumer caution shows up in micro footfall",
+    "Tariff regime: Q2 recognized $134.5M IEEPA refunds (+560 bps GM) while new tariff layers remain an overhang on sourcing costs",
+    "Athleisure competition intensifying at macro category level (Nike/adidas incumbents + Alo/Vuori/On challengers)",
+]:
+    add_para(tf, t, 12.8, INK, bullet=True, space_after=5)
+add_para(tf, "Micro (company-specific)", 14.5, CARD, bold=True, space_after=5)
+for t in [
+    "Americas comps: \u22123% FY2025 \u2192 \u221212% in Q2 FY2026; China +20% FY2025 but \u22126% in Q2 as the base scales",
+    "811 stores (+44 net FY2025) at ~$1,426/sq ft \u2014 still opening doors while mature-region comps turn negative",
+    "FY2026 guide: first annual revenue decline (\u22125% to \u22127%) and EPS $9.48\u2013$9.73; Q3 guide \u221210% to \u221211%",
+    "Clean run-rate EBIT margin ~13.2% (Q2 18.8% OM minus 560 bps tariff boost) \u2014 investors who miss this overstate sustainable margin",
+]:
+    add_para(tf, t, 12.8, INK, bullet=True, space_after=5)
+box = rect(s, Inches(6.85), Inches(1.15), Inches(6.0), Inches(5.5), fill=NAVY)
+btf = box.text_frame; btf.word_wrap = True
+add_para(btf, "OVERLAP \u2014 WHY $100", 12.5, GOLD, bold=True, first=True, space_after=8)
+for t in [
+    "Macro weakness maps onto LULU\u2019s largest profit pool: Americas ~71% of FY25 revenue",
+    "Tariff is simultaneously macro policy and micro P&L \u2014 Q2 optics mask run-rate margin",
+    "The de-rating blends macro fear with a micro guide miss; both are largely in the price at ~10x FY26E EPS",
+    "Our edge: underwrite trough economics (13.2% \u2192 15.5% OM), not a return to 30x earnings",
+    "International micro growth (China/RoW) is the bridge \u2014 but needs macro stability, not a free option",
+]:
+    add_para(btf, t, 12.5, WHITE, bullet=True, space_after=6)
+
+# =====================================================================
+# 6. MARKET NARRATIVE
 # =====================================================================
 s = slide_base("Market Narrative", "Sentiment has capitulated \u2014 the sell-side is cutting targets into the print", page=pg(),
                sources="Source: sell-side research notes (Sep 2026); company guidance")

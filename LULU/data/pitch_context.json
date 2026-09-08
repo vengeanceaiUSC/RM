@@ -1,0 +1,59 @@
+{
+  "ingested_at": "2026-09-08T01:30:00+00:00",
+  "sources": {
+    "earnings_sep2026": "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
+    "10k_fy2025": "https://www.sec.gov/Archives/edgar/data/1397187/000139718726000020/lulu-20260201.htm",
+    "fred_gdpc1": "https://fred.stlouisfed.org/series/GDPC1"
+  },
+  "macro": {
+    "real_gdp_yoy_q2_2026": 0.021,
+    "real_gdp_q2_2026": 24269.613,
+    "real_gdp_q2_2025": 23770.976,
+    "themes": [
+      "Discretionary consumer under pressure — inflation and economic uncertainty weighing on premium apparel traffic (10-K)",
+      "Tariff regime: IEEPA refunds recognized in Q2 FY2026 ($134.5M + $4.1M interest) while new tariff layers remain an overhang",
+      "Macro growth is positive but uneven — spending rotating away from mature U.S. premium discretionary toward value and experiences"
+    ]
+  },
+  "micro": {
+    "q2_fy2026": {
+      "comps_total": -0.09,
+      "comps_americas": -0.12,
+      "comps_china": -0.06,
+      "gross_margin_q2_reported": 0.605,
+      "tariff_refund_bps_q2": 560,
+      "tariff_refund_m": 134.5
+    },
+    "fy2025": {
+      "revenue_m": 11102.6,
+      "op_margin": 0.199,
+      "comps_americas": -0.03,
+      "comps_china": 0.20,
+      "comps_row": 0.09,
+      "stores_total": 811,
+      "stores_added_net": 44,
+      "cash_m": 1807.2,
+      "cfo_m": 1602.5,
+      "capex_m": 680.8
+    },
+    "fy2026_guide": {
+      "revenue_decline": "-5% to -7%",
+      "revenue_m_range": [10350, 10500],
+      "eps_range": [9.48, 9.73],
+      "q3_revenue_decline": "-10% to -11%"
+    },
+    "operational_drivers": [
+      "Lower Americas store traffic, conversion, and AOV (10-K) — micro execution on a mature fleet",
+      "Promotional intensity and inventory normalization — margin mix pressure ex-tariff refund",
+      "China/RoW store-led growth (+20% China comp FY25) — micro growth engine offsetting Americas",
+      "Competitive share drift to Alo, Vuori, On — micro brand risk inside a macro 'trade down' tape"
+    ]
+  },
+  "overlap_thesis": [
+    "Macro discretionary slowdown maps directly onto LULU's largest profit pool (Americas ~71% of FY25 revenue)",
+    "Tariff policy is simultaneously macro (trade) and micro (COGS/refunds) — Q2 optics (+560 bps GM) mask run-rate margin (~13.2% clean)",
+    "The stock's −55% de-rating blends macro fear (consumer) with micro miss (first-ever annual revenue decline guide) — both are now in the price",
+    "International micro growth is the bridge, but it needs macro stability in China consumption and FX — not a free option",
+    "Net-cash balance sheet is a micro advantage in a macro tightening cycle — buybacks accelerate at $100"
+  ]
+}

@@ -1,6 +1,6 @@
 """Share Repurchase & EPS Accretion Schedule — below core DCF valuation (no IV linkage)."""
 import styles as S
-from styles import write, write_reported, NUM, PCT, MONEY, EPSFMT
+from styles import write, NUM, PCT, MONEY, EPSFMT
 import data as D
 
 FY25_COL = "E"
