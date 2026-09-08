@@ -389,14 +389,44 @@ PROJ_DISPLAY = ("FY2026E", "FY2028E", "FY2030E")
 FIN_FOOTNOTE = "Projections = GIS base case (Scenarios column G); historicals per FY2025 10-K"
 
 
-def pitch_financial_slide(title, subtitle, rows, bold_rows=(), italic_note=None, col0w=3.2):
-    """Build one historical + projection financial table slide from pitch_values.json."""
+def _fin_explainer_boxes(slide, hist_title, hist_bullets, fcst_title, fcst_bullets):
+    """Side-by-side Historical vs base-case panels above the financial table."""
+    for x, title, bullets, fill in (
+        (0.5, hist_title, hist_bullets, LGREY),
+        (6.7, fcst_title, fcst_bullets, NAVY),
+    ):
+        box = rect(slide, Inches(x), Inches(1.12), Inches(6.05), Inches(1.55), fill=fill)
+        btf = box.text_frame
+        btf.word_wrap = True
+        title_color = CARD if fill == LGREY else GOLD
+        body_color = INK if fill == LGREY else WHITE
+        add_para(btf, title, 11.5, title_color, bold=True, first=True, space_after=3)
+        for i, bullet in enumerate(bullets):
+            add_para(btf, bullet, 10.5, body_color, bullet=True, first=(i == 0), space_after=2)
+
+
+def pitch_financial_slide(
+    title,
+    subtitle,
+    rows,
+    hist_title,
+    hist_bullets,
+    fcst_title,
+    fcst_bullets,
+    bold_rows=(),
+    italic_note=None,
+    col0w=3.0,
+    table_top=2.82,
+    table_height=3.72,
+):
+    """Build one financial slide: Historical vs base-case explainer + data table."""
     hdr = ["US$ M"] + HY + list(PROJ_DISPLAY)
     s = slide_base(title, subtitle, page=pg(), sources=FIN_FOOTNOTE)
-    stmt_table(s, rows, hdr, col0w=col0w, bold_rows=bold_rows)
+    _fin_explainer_boxes(s, hist_title, hist_bullets, fcst_title, fcst_bullets)
+    stmt_table(s, rows, hdr, col0w=col0w, top=table_top, height=table_height, bold_rows=bold_rows)
     if italic_note:
-        tb, tf = textbox(s, Inches(0.5), Inches(6.75), Inches(12.35), Inches(0.35))
-        add_para(tf, italic_note, 11, GREY, italic=True, first=True, space_after=0)
+        tb, tf = textbox(s, Inches(0.5), Inches(6.62), Inches(12.35), Inches(0.45))
+        add_para(tf, italic_note, 10.5, GREY, italic=True, first=True, space_after=0)
     return s
 
 
@@ -432,11 +462,15 @@ def _proj_vals_by_key(section, key, years=PROJ_DISPLAY, fmt="num"):
     return vals
 
 # =====================================================================
-# 14. INCOME STATEMENT
+# 13–15. FINANCIALS (historicals + base-case forecast)
 # =====================================================================
+_IS26, _IS28, _IS30 = IS_P["FY2026E"], IS_P["FY2028E"], IS_P["FY2030E"]
+_BS26, _BS30 = BS_P["cash"]["FY2026E"], BS_P["cash"]["FY2030E"]
+_CF26, _CF30 = CF_P["fcf"]["FY2026E"], CF_P["fcf"]["FY2030E"]
+
 pitch_financial_slide(
     "Financials \u2014 Income Statement",
-    "Historical results with our base-case forecast (US$ M)",
+    "Reported history (10-K) vs GIS base-case operating forecast (US$ M)",
     [
         ["Net revenue"] + [m(D.IS['revenue'][y]/1000) for y in HY] + _proj_vals_by_year(IS_P, "revenue"),
         ["Gross profit"] + [m(D.IS['gross_profit'][y]/1000) for y in HY] + _proj_vals_by_year(IS_P, "gross_profit"),
@@ -445,16 +479,25 @@ pitch_financial_slide(
         ["Net income"] + [m(D.IS['net_income'][y]/1000) for y in HY] + _proj_vals_by_year(IS_P, "net_income"),
         ["Diluted EPS ($)"] + [f"{D.IS['diluted_eps'][y]:.2f}" for y in HY] + _proj_vals_by_year(IS_P, "eps", fmt="eps"),
     ],
+    hist_title="HISTORICALS (FY2022\u2013FY2025) \u2014 SEC 10-K",
+    hist_bullets=[
+        "Reported figures from Forms 10-K; FY2025 year ended February 1, 2026",
+        f"Revenue grew $8,111M \u2192 $11,103M; operating margin peaked 23.7% (FY24), still 19.9% in FY25",
+        "Diluted EPS rose $6.68 \u2192 $13.26; share count fell 128.0M \u2192 119.1M via buybacks",
+    ],
+    fcst_title="BASE-CASE FORECAST (FY2026E\u2013FY2030E) \u2014 Scenarios col G",
+    fcst_bullets=[
+        f"FY26 revenue {_m(_IS26['revenue'])}M (\u22126.1% guide); then +2.3%/yr \u2014 same path as DCF",
+        f"Clean EBIT margin 13.2% \u2192 15.5%; FY26 includes $134.5M IEEPA refund (reported OM {_IS26['operating_margin']})",
+        f"EPS trough ${_IS26['eps']:.2f} (FY26E) \u2192 ${_IS30['eps']:.2f} (FY30E); not bull/bear \u2014 GIS base only",
+    ],
     bold_rows=(0, 2, 5),
-    italic_note="FY2026E reported OM 15.2% = clean ~13.9% (56.5% GM \u2212 42.5% SG&A) plus $134.5M IEEPA refund (~+1.3 ppt). DCF uses the Q2 clean 13.2% run-rate as its trough.",
+    italic_note="Table shows FY26 / FY28 / FY30; full five-year path in LULU_3_Statement_Model.xlsx. Bull ($202) and bear ($56) scenarios are in the Appendix only.",
 )
 
-# =====================================================================
-# 15. BALANCE SHEET
-# =====================================================================
 pitch_financial_slide(
     "Financials \u2014 Balance Sheet",
-    "A net-cash balance sheet underpins downside protection (US$ M)",
+    "Net-cash reported history vs base-case funded growth (US$ M)",
     [
         ["Cash & equivalents"] + [m(D.BS['cash'][y]/1000) for y in HY] + _proj_vals_by_key(BS_P, "cash"),
         ["Inventories"] + [m(D.BS['inventories'][y]/1000) for y in HY] + _proj_vals_by_key(BS_P, "inventories"),
@@ -463,16 +506,25 @@ pitch_financial_slide(
         ["Total equity"] + [m(D.BS['total_equity'][y]/1000) for y in HY] + _proj_vals_by_key(BS_P, "total_equity"),
         ["Funded debt"] + ["0", "0", "0", "0"] + ["0", "0", "0"],
     ],
+    hist_title="HISTORICALS (FY2022\u2013FY2025) \u2014 SEC 10-K",
+    hist_bullets=[
+        "No funded debt in any historical year; FY25 cash $1,807M",
+        f"Total assets $6,841M; shareholders\u2019 equity $3,896M at FY25",
+        "Lease-backed retail footprint (ROU assets) \u2014 balance sheet already a downside cushion at ~10x earnings",
+    ],
+    fcst_title="BASE-CASE FORECAST (FY2026E\u2013FY2030E) \u2014 3-statement model",
+    fcst_bullets=[
+        f"Cash grows {_m(_BS26)}M \u2192 {_m(_BS30)}M while funding $500M/yr buybacks; debt stays $0",
+        "WC drivers (% of revenue / COGS) roll forward; cash is the balancing plug on the CFS",
+        f"Total assets reach {_m(BS_P['total_assets']['FY2030E'])}M; equity {_m(BS_P['total_equity']['FY2030E'])}M \u2014 leverage-free compounding",
+    ],
     bold_rows=(2, 4, 5),
-    italic_note="No funded debt and a growing cash balance fund buybacks and international expansion \u2014 the core of our margin of safety",
+    italic_note="Projections tie to Scenarios col G for rev / margin / capex; BS detail per integrated 3-statement workbook (not DCF exit multiples).",
 )
 
-# =====================================================================
-# 16. CASH FLOW
-# =====================================================================
 pitch_financial_slide(
     "Financials \u2014 Cash Flow",
-    "Durable free cash flow through the trough (US$ M)",
+    "Historical capital return vs base-case trough FCF (US$ M)",
     [
         ["Cash from operations"] + [m(D.CF['cfo'][y]/1000) for y in HY] + _proj_vals_by_key(CF_P, "cfo"),
         ["Capital expenditures"] + [f"({m(D.CF['capex'][y]/1000)})" for y in HY] + _proj_vals_by_key(CF_P, "capex", fmt="neg_paren"),
@@ -480,8 +532,20 @@ pitch_financial_slide(
         ["Share repurchases"] + [f"({m(D.CF['buybacks'][y]/1000)})" for y in HY] + _proj_vals_by_key(CF_P, "buybacks", fmt="neg_paren"),
         ["D&A"] + [m(D.CF['d_and_a'][y]/1000) for y in HY] + _proj_vals_by_key(CF_P, "dna"),
     ],
+    hist_title="HISTORICALS (FY2022\u2013FY2025) \u2014 SEC 10-K",
+    hist_bullets=[
+        "FY25 CFO $1,603M; capex ($681M) \u2192 ~$922M FCF despite revenue deceleration",
+        "Aggressive buybacks: ($1,637M) FY24, ($1,178M) FY25 \u2014 returned most excess cash",
+        "Historicals = reported CFS lines; no model overlay",
+    ],
+    fcst_title="BASE-CASE FORECAST (FY2026E\u2013FY2030E) \u2014 Scenarios col G",
+    fcst_bullets=[
+        f"FCF holds >$1B in the reset year: ${_m(_CF26)}M FY26E \u2192 ${_m(_CF30)}M FY30E",
+        "Capex 5.5% blend (Scenarios); D&A ~4.5% of revenue \u2014 same drivers as DCF UFCF build",
+        "Buybacks ($500M)/yr in model \u2014 conservative vs FY24\u201325; SBC flows through equity, not CFS cash",
+    ],
     bold_rows=(2,),
-    italic_note="Free cash flow stays around $1B+ even in the FY2026 reset year, comfortably funding continued repurchases",
+    italic_note="Free cash flow = CFO + capex (capex shown negative). DCF repurchase schedule uses 75% of UFCF \u2014 deck uses 3-statement $500M/yr assumption.",
 )
 
 # =====================================================================
