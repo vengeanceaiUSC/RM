@@ -8,6 +8,7 @@ import os
 
 import openpyxl
 
+import data as D
 from scenario_extract import extract_scenario, discover_model_refs, COL_BASE, COL_BULL, PROJ_YEARS
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
@@ -25,6 +26,78 @@ def _recalc_dcf():
     shutil.copy2(DCF_PATH, dest)
     recalc_workbook(dest)
     return openpyxl.load_workbook(dest, data_only=True)
+
+
+def _wacc_cell(wacc, needle, exact=False):
+    """Return (row, value in col E) for first label match on WACC tab."""
+    for r in range(1, 60):
+        lab = wacc.cell(r, 1).value
+        if not lab:
+            continue
+        s = str(lab).strip().lower()
+        if exact:
+            if s == needle.lower():
+                return r, wacc.cell(r, 5).value
+        elif needle.lower() in s:
+            return r, wacc.cell(r, 5).value
+    raise KeyError(f"WACC row not found: {needle}")
+
+
+def _extract_wacc_build(wacc):
+    """Pull live cap-stack and WACC inputs from the DCF WACC tab."""
+    r_mkt, mkt_eq = _wacc_cell(wacc, "market value of equity")
+    r_lease, lease_d = _wacc_cell(wacc, "operating lease liabilities")
+    r_fund, fund_d = _wacc_cell(wacc, "funded debt")
+    r_debt, debt_tot = _wacc_cell(wacc, "total debt equivalents")
+    r_bobs, beta_obs = _wacc_cell(wacc, "observed beta")
+    r_bun, beta_unlev = _wacc_cell(wacc, "unlevered \u03b2")
+    r_buse, beta_used = _wacc_cell(wacc, "beta used")
+    r_deu, de_unlev = _wacc_cell(wacc, "d/e for unlever")
+    r_der, de_relev = _wacc_cell(wacc, "d/e for relever")
+    r_coe, coe = _wacc_cell(wacc, "cost of equity =")
+    r_kd, kd = _wacc_cell(wacc, "pre-tax cost of debt")
+    r_kdat, kdat = _wacc_cell(wacc, "after-tax cost of debt")
+    r_we, we = _wacc_cell(wacc, "equity weight")
+    r_wd, wd = _wacc_cell(wacc, "debt weight")
+    r_wacc, wacc_val = _wacc_cell(wacc, "wacc", exact=True)
+    r_rf, rf = _wacc_cell(wacc, "risk-free rate")
+    r_erp, erp = _wacc_cell(wacc, "equity risk premium")
+    r_tax, tax = _wacc_cell(wacc, "tax rate")
+    cash_k = D.MKT["cash"]
+    total_cap = mkt_eq + debt_tot
+    return {
+        "mkt_eq_m": round(mkt_eq / 1000),
+        "lease_debt_m": round(lease_d / 1000),
+        "funded_debt_m": round(fund_d / 1000),
+        "total_debt_m": round(debt_tot / 1000),
+        "cash_m": round(cash_k / 1000),
+        "net_debt_m": round((debt_tot - cash_k) / 1000),
+        "total_cap_m": round(total_cap / 1000),
+        "equity_pct": round(we * 100, 1),
+        "debt_pct": round(wd * 100, 1),
+        "rf": rf,
+        "erp": erp,
+        "tax": tax,
+        "beta_obs": beta_obs,
+        "beta_unlev": beta_unlev,
+        "beta": beta_used,
+        "de_unlev": de_unlev,
+        "de_relev": de_relev,
+        "coe": coe,
+        "kd": kd,
+        "kd_at": kdat,
+        "we": we,
+        "wd": wd,
+        "wacc": wacc_val,
+        "rows": {
+            "rf": r_rf, "erp": r_erp, "tax": r_tax,
+            "mkt_eq": r_mkt, "lease_d": r_lease, "fund_d": r_fund, "debt_tot": r_debt,
+            "beta_obs": r_bobs, "beta_unlev": r_bun, "beta": r_buse,
+            "de_unlev": r_deu, "de_relev": r_der,
+            "coe": r_coe, "kd": r_kd, "kd_at": r_kdat,
+            "we": r_we, "wd": r_wd, "wacc": r_wacc,
+        },
+    }
 
 
 def extract():
@@ -87,6 +160,7 @@ def extract():
         "cash_flow": {"base": cash_base, "bull": cash_bull},
         "proj_years": list(PROJ_YEARS),
         "model_refs": discover_model_refs(sc),
+        "wacc_build": _extract_wacc_build(wacc),
         "source": "LULU_DCF_Valuation_Model.xlsx → Scenarios cols G (base) & H (bull)",
     }
 

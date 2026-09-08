@@ -275,6 +275,8 @@ class PitchDeck:
         col0w=3.6,
         top=1.35,
         height=5.4,
+        left=0.5,
+        width=12.35,
         red_rows=(),
         bold_rows=(),
         font_size=10.5,
@@ -284,12 +286,12 @@ class PitchDeck:
     ):
         ncol = len(headers)
         hdr_fs = header_font_size if header_font_size is not None else (8 if ncol > 12 else 11)
-        left = Inches(0.5)
-        width = Inches(12.35)
-        tbl_shape = slide.shapes.add_table(len(rows) + 1, ncol, left, Inches(top), width, Inches(height))
+        left_in = Inches(left)
+        width_in = Inches(width)
+        tbl_shape = slide.shapes.add_table(len(rows) + 1, ncol, left_in, Inches(top), width_in, Inches(height))
         table = tbl_shape.table
         table.columns[0].width = Inches(col0w)
-        restw = (12.35 - col0w) / (ncol - 1)
+        restw = (width - col0w) / (ncol - 1)
         for c in range(1, ncol):
             table.columns[c].width = Inches(restw)
         for c, htxt in enumerate(headers):

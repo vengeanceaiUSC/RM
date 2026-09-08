@@ -39,6 +39,8 @@ CF_BASE = PV["cash_flow"]["base"]
 PROJ_YEARS = PV["proj_years"]
 FF = PV["football_field"]
 MR = PV.get("model_refs", {})
+WB = PV.get("wacc_build", {})
+WR = WB.get("rows", {})
 
 
 def _d(v):
@@ -90,7 +92,7 @@ LULU_TOC = [
     "9.  Thesis II \u2014 International growth engine", "10. Thesis III \u2014 Elite economics & capital return",
     "11. Risks & mitigants", "12. Catalyst timeline", "13. Financials \u2014 income statement",
     "14. Financials \u2014 balance sheet", "15. Financials \u2014 cash flow",
-    "16. Capital structure & WACC", "17. Valuation summary (football field)",
+    "16. Financials \u2014 capital structure", "17. Valuation summary (football field)",
     "18. DCF valuation", "19. Comparable companies", "20. Appendix \u2014 bull / bear scenarios",
 ]
 deck.toc_slide(LULU_TOC)
@@ -764,38 +766,106 @@ pitch_financial_slide(
 )
 
 # =====================================================================
-# 17. CAPITAL STRUCTURE & WACC
+# 16. FINANCIALS — CAPITAL STRUCTURE & WACC
 # =====================================================================
-s = slide_base("Capital Structure & WACC", f"A lease-adjusted capital structure drives a ~{_pct(V['wacc'])} discount rate", page=pg())
-tb, tf = textbox(s, Inches(0.5), Inches(1.2), Inches(6.2), Inches(5.6))
-add_para(tf, "Capital structure", 14.5, CARD, bold=True, first=True, space_after=5)
-for t in [
-    "No funded debt; an undrawn revolving credit facility provides liquidity",
-    "$1,807.2M cash and equivalents \u2014 a net-cash position",
-    "Market EV at ~$100 is ~$9.3B (~3.5\u00d7 FY25 EBITDA); intrinsic DCF enterprise value is ~$15B",
-    "We relever Yahoo 5Y \u03b2 (0.86) at FY25 ASC 842 lease debt \u00f7 market cap (~0.16 D/E) \u2192 \u03b2 used \u2248 0.84. Damodaran Retail \u03b2 (0.95) is shown for reference only.",
-    "Capital returned via buybacks (no dividend); FY2025 repurchases $1,178.3M",
-]:
-    add_para(tf, t, 13, INK, bullet=True, space_after=6)
-box = rect(s, Inches(7.0), Inches(1.2), Inches(5.85), Inches(4.6), fill=LGREY)
-btf = box.text_frame; btf.word_wrap = True
-add_para(btf, "WACC BUILD (CAPM)", 13, CARD, bold=True, first=True, space_after=8)
-for t, v in [
-    ("Risk-free rate (10-yr UST)", _pct(V["rf"])),
-    ("Equity risk premium", _pct(V["erp"])),
-    ("Beta (relevered; lease adj.)", f"{V['beta']:.2f}"),
-    ("Cost of equity", _pct(V["coe"])),
-    ("Lease-debt weight", "14%"),
-    ("Equity weight", "86%"),
-]:
-    p = btf.add_paragraph(); p.space_after = Pt(6)
-    r = p.add_run(); r.text = f"{t}"; _set_font(r, 13, INK, bold=(t in ("Cost of equity",)))
-    r2 = p.add_run(); r2.text = f"      {v}"; _set_font(r2, 13, NAVY, bold=True)
-p = btf.add_paragraph(); p.space_before = Pt(4)
-r = p.add_run(); r.text = f"WACC = {_pct(V['wacc'])}"; _set_font(r, 16, GREEN, bold=True)
+def _wacc_ref(key):
+    r = WR.get(key)
+    return f"WACC!E{r}" if r else f"{DCF_MODEL} \u2192 WACC tab"
+
+
+def _pct_wb(v, d=2):
+    return f"{v * 100:.{d}f}%"
+
+
+s = slide_base(
+    "Financials \u2014 Capital Structure",
+    "Cap stack and WACC build \u2014 lease-adjusted structure; no funded term debt (critical lens for levered businesses)",
+    page=pg(),
+    sources=(
+        f"Cap stack & WACC: {DCF_MODEL} \u2192 WACC tab (col E). "
+        "Cash/leases: FY2025 10-K. Beta: Yahoo Finance Key Statistics."
+    ),
+)
+
+# --- Cap stack (left) ---
+cap_headers = ["Component", "US$ M", "% of capital", "Model source"]
+cap_rows = [
+    ["Market equity (price \u00d7 shares)", f"{WB['mkt_eq_m']:,}", f"{WB['equity_pct']:.1f}%", _wacc_ref("mkt_eq")],
+    ["ASC 842 operating lease liabilities", f"{WB['lease_debt_m']:,}", f"{WB['debt_pct']:.1f}%", f"{_wacc_ref('lease_d')} (10-K)"],
+    ["Funded debt (term loans / bonds)", f"{WB['funded_debt_m']:,}", "0.0%", _wacc_ref("fund_d")],
+    ["Total capital (WACC basis)", f"{WB['total_cap_m']:,}", "100.0%", _wacc_ref("debt_tot")],
+    ["Cash & equivalents (EV offset)", f"{WB['cash_m']:,}", "\u2014", "10-K BS \u2014 Cash"],
+    ["Net debt (leases + funded \u2212 cash)", f"{WB['net_debt_m']:,}", "\u2014", "DCF EV bridge"],
+]
+cap_notes = [
+    "Price $100 \u00d7 111.4M shares (FY25 10-K)",
+    f"Current ${D.MKT['lease_cur']:,}k + non-current ${D.MKT['lease_noncur']:,}k",
+    "Undrawn revolver; no term borrowings per 10-K",
+    "Equity + lease debt equivalents",
+    "Net-cash on funded debt; leases are debt-equiv in WACC",
+    "Near-zero net debt \u2014 equity-funded with lease adj.",
+]
+stmt_table(
+    s, cap_rows, cap_headers, col0w=2.55, top=1.15, height=2.85, left=0.5, width=6.05,
+    font_size=8.5, header_font_size=8.5, bold_rows=(3,),
+    row_notes=cap_notes, note_font_size=6.5,
+)
+tb, tf = textbox(s, Inches(0.5), Inches(4.05), Inches(6.05), Inches(0.55))
+add_para(
+    tf,
+    "LULU has no funded bank debt; ASC 842 store leases are the only debt equivalent in our WACC (~14% weight). "
+    "Cash exceeds lease liabilities \u2192 effectively net-cash on a funded-debt basis.",
+    8.5, INK, italic=True, first=True, space_after=0,
+)
+
+# --- WACC build (right) ---
+wacc_headers = ["WACC input", "Value", "Model source"]
+wacc_rows = [
+    ["Risk-free rate (10-yr UST)", _pct_wb(WB["rf"]), _wacc_ref("rf")],
+    ["Equity risk premium", _pct_wb(WB["erp"]), _wacc_ref("erp")],
+    ["Tax rate", _pct_wb(WB["tax"]), _wacc_ref("tax")],
+    ["Observed \u03b2L (Yahoo 5Y monthly)", f"{WB['beta_obs']:.2f}", _wacc_ref("beta_obs")],
+    ["Unlevered \u03b2u (Hamada @ Yahoo D/E)", f"{WB['beta_unlev']:.2f}", _wacc_ref("beta_unlev")],
+    ["Relevered \u03b2 (FY25 lease D/E)", f"{WB['beta']:.2f}", _wacc_ref("beta")],
+    ["Cost of equity (CAPM)", _pct_wb(WB["coe"]), _wacc_ref("coe")],
+    ["Pre-tax Kd (lease-equivalent)", _pct_wb(WB["kd"]), _wacc_ref("kd")],
+    ["After-tax Kd", _pct_wb(WB["kd_at"]), _wacc_ref("kd_at")],
+    ["Equity weight", _pct_wb(WB["we"], 1), _wacc_ref("we")],
+    ["Debt weight (leases)", _pct_wb(WB["wd"], 1), _wacc_ref("wd")],
+    ["WACC", _pct_wb(WB["wacc"]), _wacc_ref("wacc")],
+]
+wacc_notes = [
+    "FRED DGS10 \u2192 4.8% in model",
+    "Conservative vs Damodaran implied ERP",
+    "FY2026 guidance ~30%",
+    "Yahoo Key Statistics",
+    f"D/E unlever = {WB['de_unlev']:.2f} (Yahoo mrq)",
+    f"D/E relever = {WB['de_relev']:.2f} (10-K leases / mkt cap)",
+    f"rf + \u03b2 \u00d7 ERP",
+    "Illustrative lease borrowing cost",
+    "Kd \u00d7 (1 \u2212 T)",
+    "Market equity / total capital",
+    "Lease debt / total capital",
+    "We \u00d7 CoE + Wd \u00d7 Kd(1\u2212T) \u2192 Scenarios col G",
+]
+stmt_table(
+    s, wacc_rows, wacc_headers, col0w=2.35, top=1.15, height=3.45, left=6.7, width=6.15,
+    font_size=8.5, header_font_size=8.5, bold_rows=(6, 11),
+    row_notes=wacc_notes, note_font_size=6.5,
+)
+box = rect(s, Inches(6.7), Inches(4.72), Inches(6.15), Inches(0.55), fill=LGREY)
+btf = box.text_frame
+btf.word_wrap = True
+add_para(btf, f"BASE-CASE WACC = {_pct_wb(WB['wacc'])}", 14, NAVY, bold=True, first=True, space_after=2)
+add_para(
+    btf,
+    f"Drives Scenarios col G discount rate and {_d(V['base_dcf'])} implied share price. "
+    "Bear/bull bracket WACC \u00b1100bps on Scenarios tab.",
+    8.5, INK, space_after=0,
+)
 
 # =====================================================================
-# 18. VALUATION SUMMARY (FOOTBALL FIELD)
+# 17. VALUATION SUMMARY (FOOTBALL FIELD)
 # =====================================================================
 s = slide_base("Valuation Summary", "Multiple methods converge above the current price \u2014 target $140", page=pg(),
                sources="Source: GIS DCF and comps models; multiples are analyst ranges")
