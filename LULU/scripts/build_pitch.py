@@ -628,3 +628,9 @@ add_para(tf, "This presentation is prepared for educational purposes as part of 
 
 n = deck.save(OUT)
 print("Saved", os.path.abspath(OUT), "with", n, "slides")
+try:
+    from gis_pitch import export_pdf
+    pdf = export_pdf(OUT)
+    print("Saved", pdf)
+except Exception as e:
+    print("PDF export skipped:", e)

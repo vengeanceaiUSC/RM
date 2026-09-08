@@ -11,6 +11,8 @@ Follows GIS formatting rules:
 """
 from __future__ import annotations
 
+import os
+
 from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
@@ -316,3 +318,21 @@ class PitchDeck:
     def save(self, path: str) -> int:
         self.prs.save(path)
         return len(self.prs.slides._sldIdLst)
+
+
+def export_pdf(pptx_path: str, out_dir: str | None = None) -> str:
+    """Export PPTX to PDF via LibreOffice (soffice). Returns PDF path."""
+    import subprocess
+
+    pptx_path = os.path.abspath(pptx_path)
+    out_dir = os.path.abspath(out_dir or os.path.dirname(pptx_path))
+    pdf_name = os.path.splitext(os.path.basename(pptx_path))[0] + ".pdf"
+    pdf_path = os.path.join(out_dir, pdf_name)
+    subprocess.run(
+        ["soffice", "--headless", "--convert-to", "pdf", pptx_path, "--outdir", out_dir],
+        check=True,
+        capture_output=True,
+    )
+    if not os.path.isfile(pdf_path):
+        raise RuntimeError(f"PDF export failed: {pdf_path} not created")
+    return pdf_path

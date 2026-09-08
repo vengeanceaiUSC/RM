@@ -9,7 +9,8 @@ Reusable **python-pptx** template for Global Investment Society IR selection pit
 | `gis_pitch.py` | Shared engine — colors, fonts, slide chrome, `PitchDeck` class |
 | `build_blank_template.py` | Generates `GIS_Investment_Pitch_Template.pptx` with placeholders |
 | `GIS_Investment_Pitch_Template.pptx` | Blank template (run builder) |
-| `GIS_Investment_Pitch_Template_Reference_LULU.pdf` | Filled example — LULU OVERWEIGHT pitch (Sep 2026) |
+| `GIS_Investment_Pitch_Template.pdf` | Blank template PDF export |
+| `GIS_Investment_Pitch_Template_Reference_LULU.pdf` | Filled example — LULU OVERWEIGHT pitch (23 slides, Sep 2026) |
 
 ## Formatting rules (enforced by `gis_pitch.py`)
 

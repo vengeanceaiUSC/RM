@@ -184,6 +184,12 @@ def main():
 
     n = deck.save(OUT)
     print(f"Saved {os.path.abspath(OUT)} with {n} slides")
+    try:
+        from gis_pitch import export_pdf
+        pdf = export_pdf(OUT)
+        print(f"Saved {pdf}")
+    except Exception as e:
+        print(f"PDF export skipped ({e})")
 
 
 if __name__ == "__main__":
