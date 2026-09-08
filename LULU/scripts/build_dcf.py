@@ -51,9 +51,9 @@ write(cov, 'B10', "Blue font  =  figures reported by the company (click value or
 write(cov, 'B11', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
 write(cov, 'B12', "Red font  =  analyst assumptions — cols B/C/D on every tab: Justification | Source | Ctrl+F", S.RED, bold=True, size=11)
 write(cov, 'B14', "TABS", S.DARK, bold=True, size=12)
-write(cov, 'B15', "WACC  \u2022  Revenue Drivers  \u2022  Scenarios  \u2022  DCF  \u2022  Comps / Football Field", S.BLACK, size=10)
+write(cov, 'B15', "WACC  \u2022  Revenue Drivers  \u2022  NOPAT Bridge  \u2022  Scenarios  \u2022  DCF  \u2022  Comps / Football Field", S.BLACK, size=10)
 write(cov, 'B16', "ASSUMPTIONS GUIDE (PDF — every tab)", S.DARK, bold=True, size=12)
-write_link(cov, 'B17', "LULU_Assumptions_Memo.pdf — full guide: every red assumption on WACC, Scenarios, Revenue Drivers, DCF, Comps & 3-Statement",
+write_link(cov, 'B17', "LULU_Assumptions_Memo.pdf — full guide: every red assumption on WACC, Scenarios, Revenue Drivers, NOPAT Bridge, DCF, Comps & 3-Statement",
            "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=10,
            hint="Open for justification, clickable source links, and Ctrl+F proof for every assumption.")
 write(cov, 'B19', "SOURCES", S.DARK, bold=True, size=12)
@@ -282,9 +282,6 @@ for t in range(1, 6):
 for t in range(1, 6):
     nopat_rows[t] = cur
     put(cur, f"  NOPAT \u2013 year {t}")
-    for col in SCEN_COLS:
-        f = f"={col}{ebit_rows[t]}*(1-{col}{SC['tax']})"
-        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
     cur += 1
 for t in range(1, 6):
     da_rows[t] = cur
@@ -429,6 +426,22 @@ rev_row_map = {fy: rev_rows[t] for t, fy in enumerate(FY, start=1)}
 rev_row_map["FY2025"] = None
 drv_ws, DRV = build_revenue_drivers(wb, SCEN_BASE, rev_row_map)
 
+from nopat_bridge import build_nopat_bridge
+_, NP_R = build_nopat_bridge(
+    wb, SCEN_BASE, rev_rows, ebit_rows, DRV,
+    f"Scenarios!{SCEN_BASE}{SC['tariff']}",
+    f"Scenarios!{SCEN_BASE}{SC['tax']}",
+)
+for t in range(1, 6):
+    row = nopat_rows[t]
+    bc = FCOLS[t - 1]
+    for col in SCEN_COLS:
+        if col == SCEN_BASE:
+            f = f"='NOPAT Bridge'!{bc}{NP_R['nopat']}"
+        else:
+            f = (f"={col}{ebit_rows[t]}*(1-'NOPAT Bridge'!{bc}${NP_R['t_oper']})")
+        write(scn, f'{col}{row}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+
 def bref(key):
     return f"Scenarios!${SCEN_BASE}${SC[key]}"
 
@@ -449,7 +462,9 @@ for y in FY:
 write(dcf, 'A3', "Forecast drivers linked to Scenarios tab \u2192 Base case (column G)", S.GREY, italic=True, size=9, align=S.left_indent)
 write_link(dcf, 'A4', "Full Assumptions Guide (PDF)", "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=9, italic=True,
            hint="Every red assumption on every tab — justification, source link, Ctrl+F proof.")
-write_internal_link(dcf, 'C4', 'Revenue Drivers tab', "'Revenue Drivers'!A1",
+write_internal_link(dcf, 'C4', 'NOPAT Bridge tab', "'NOPAT Bridge'!A1",
+                    hint="5-phase EBIT normalization → normalized NOPAT (base case).")
+write_internal_link(dcf, 'D4', 'Revenue Drivers tab', "'Revenue Drivers'!A1",
                     hint="Bottom-up store / DTC / category schedule (FY26–30).")
 write(dcf, f'{CHK_COL}2', "\u0394 vs Scenarios", S.ACCENT, bold=True, size=8, align=S.center)
 write(dcf, f'{DJ}2', "Justification (~20 words)  [cols B\u2013D: click + to expand]", S.ACCENT, bold=True, size=8, align=S.left_indent)
@@ -529,8 +544,8 @@ d_row('ebit', "EBIT (incl. FY26 refund)", D.IS['operating_income']['FY2025'],
 d_row('rep_margin', "Reported EBIT margin % (incl. FY26 refund)",
       D.IS['operating_income']['FY2025'] / BASE_REV,
       lambda c: f"={c}{DR['ebit']}/{c}{DR['rev']}", fmt=PCT, color_c=S.BLUE)
-d_row('taxes', "Less: cash taxes on EBIT", None,
-      lambda c: f"=-Scenarios!{SCEN_BASE}{ebit_rows[YEAR_MAP[c]]}*{bref('tax')}")
+d_row('taxes', "Less: unlevered tax (t_operating from NOPAT Bridge)", None,
+      lambda c: f"=-'NOPAT Bridge'!{c}{NP_R['tax_exp']}")
 d_row('nopat', "NOPAT", None,
       lambda c: f"=Scenarios!{SCEN_BASE}{nopat_rows[YEAR_MAP[c]]}", bold=True, top=True, sc_rows=nopat_rows)
 d_row('da_pct', "  D&A % of revenue", None, lambda c: f"={bref('da_pct')}", fmt=PCT, red=True,

@@ -148,6 +148,42 @@ NWC_FY25 = {
     "nwc": (_NWC_AR + _NWC_INV + _NWC_PREPAID) - (_NWC_AP + _NWC_ACCR),
 }
 
+# FY25 NOPAT normalization anchors (Phase 1–4 pipeline; $000 unless noted)
+FY25 = "FY2025"
+_NOPAT_EBIT = IS["operating_income"][FY25]
+_NOPAT_EBT = IS["pretax_income"][FY25]
+_NOPAT_TAX = IS["tax"][FY25]
+_NOPAT_SBC = CF["sbc"][FY25]
+_NOPAT_INT_AMORT = IS["other_opex"][FY25]  # amortization of intangible assets
+_NOPAT_LEASE_INTEREST = 1028  # FY25 supplemental: interest paid on lease liabilities (10-K)
+_NOPAT_REV_STORE = 5049744
+_NOPAT_REV_ECOMM = 4918697
+_NOPAT_REV_OTHER = 1134159
+_NOPAT_REV = IS["revenue"][FY25]
+
+NOPAT_FY25 = {
+    "ebit_reported": _NOPAT_EBIT,
+    "impairment_amort": _NOPAT_INT_AMORT,
+    "restructuring": 0,
+    "legal_ma": 0,
+    "sbc": _NOPAT_SBC,
+    "lease_interest": _NOPAT_LEASE_INTEREST,
+    "rd_expense_cap": 0,
+    "intangible_amort": _NOPAT_INT_AMORT,
+    "rev_store": _NOPAT_REV_STORE,
+    "rev_ecomm": _NOPAT_REV_ECOMM,
+    "rev_other": _NOPAT_REV_OTHER,
+    "revenue": _NOPAT_REV,
+    "tax_reported": _NOPAT_TAX,
+    "ebt": _NOPAT_EBT,
+    "interest_total": _NOPAT_LEASE_INTEREST,
+    # Channel EBIT margins calibrated to sum ≈ reported EBIT (FY25)
+    "margin_store": 0.186,
+    "margin_ecomm": 0.236,
+    "margin_other": 0.091,
+    "t_operating": (_NOPAT_TAX + _NOPAT_LEASE_INTEREST * 0.30) / (_NOPAT_EBT + _NOPAT_LEASE_INTEREST),
+}
+
 MKT = {
     "price": 100.00,          # ~ price after -18% post-earnings reaction
     "shares_out": 111380,     # thousands (FY2025 10-K)
@@ -358,6 +394,42 @@ JUST = {
     "drv_store_traffic": "Fleet traffic memo line — not a separate FCF item. Calibrated to FY25 store productivity commentary.",
     "drv_store_conv": "In-store conversion memo — 10-K cites lower conversion in Americas; FY26 27% improving to 29%.",
     "drv_store_aov": "In-store average transaction $115–$122; supports SPSF and comp-sales bridge on the driver tab.",
+    # NOPAT Bridge — 5-phase EBIT → normalized NOPAT pipeline
+    "np_sbc": (
+        "Not % of revenue — SBC add-back flag (1 = yes). UFCF uses diluted shares; "
+        "add back non-cash SBC to EBIT. FY25 SBC $62,203k scaled with revenue in forecast."
+    ),
+    "np_m_store": "18.6% EBIT margin on store-channel revenue. Calibrated so FY25 channel EBIT ≈ reported EBIT.",
+    "np_m_ecomm": "23.6% EBIT margin on e-commerce revenue. Higher than stores (no occupancy).",
+    "np_m_other": "9.1% EBIT margin on wholesale/license/outlets — lower-margin residual channel.",
+    "np_t_marg": "30% statutory marginal rate. t_operating transitions here over the 5-year forecast.",
+    "np_rd_years": "Not % of revenue — amortization period (years) if R&D/software is capitalized. LULU: no separate R&D cap.",
+    "np_ebit_rep": "FY25: reported operating income from 10-K. Forecast: Scenarios base-case EBIT (margin path).",
+    "np_impair": "Add back intangible amortization / impairments. FY25 = other operating expense amortization run-rate.",
+    "np_restruct": "Add back restructuring (severance, store closures). LULU FY25: none identified.",
+    "np_legal": "Strip one-off legal / M&A advisory fees. LULU FY25: none identified.",
+    "np_ebit_p1": "Phase 1 adjusted EBIT = reported + non-recurring add-backs + optional SBC.",
+    "np_lease_int": (
+        "Not % of revenue — implied lease interest ($1,028k FY25). "
+        "Reclass from rent to unlevered EBIT; scales with revenue in forecast."
+    ),
+    "np_rd_cap": "Capitalize multi-year software/R&D. LULU: immaterial separate R&D line — held at $0.",
+    "np_rd_amort": "Amortization of prior capitalized intangibles. LULU: flows through existing D&A.",
+    "np_ebit_p2": "Phase 2 EBIT = Phase 1 + lease interest reclass + R&D cap − amortization.",
+    "np_rev_store": "Not % of revenue — store-channel revenue from Revenue Drivers tab.",
+    "np_rev_ecomm": "Not % of revenue — e-commerce revenue from Revenue Drivers tab.",
+    "np_rev_other": "Not % of revenue — wholesale/license/outlet revenue from Revenue Drivers tab.",
+    "np_ebit_channel": "Phase 3 channel EBIT = Σ(Revenue_i × Margin_i). FY26 adds Scenarios tariff refund.",
+    "np_ebit_p3": "Channel-mix EBIT output (Phase 3). Check row vs Scenarios shows channel vs margin-path gap.",
+    "np_ebit_norm": (
+        "FY25: Phases 1–2 walk-through. Forecast: Scenarios base EBIT — tax base for NOPAT."
+    ),
+    "np_t_oper": (
+        "Operating effective tax rate: (tax + interest shield) ÷ (EBT + interest). "
+        "Transitions from FY25 t_operating toward 30% marginal over 5 years."
+    ),
+    "np_tax_exp": "Unlevered tax = normalized EBIT × t_operating. Strips debt-interest tax shield from GAAP rate.",
+    "np_nopat": "NORMALIZED NOPAT = EBIT_norm × (1 − t_operating). Scenarios base case links here.",
 }
 
 # Clickable source links for red assumptions (label, URL)
@@ -488,6 +560,31 @@ ASSUMPTION_SRC = {
     "drv_store_traffic": ("FY2025 10-K: store traffic commentary", filing_url("FY2025")),
     "drv_store_conv": ("FY2025 10-K: conversion rate commentary", filing_url("FY2025")),
     "drv_store_aov": ("FY2025 10-K: average order value commentary", filing_url("FY2025")),
+    # NOPAT Bridge
+    "np_sbc": ("LULU CF statement (10-K): stock-based compensation", filing_url("FY2025")),
+    "np_m_store": ("NOPAT Bridge tab: channel margin calibration", None),
+    "np_m_ecomm": ("NOPAT Bridge tab: channel margin calibration", None),
+    "np_m_other": ("NOPAT Bridge tab: channel margin calibration", None),
+    "np_t_marg": ("Q2 FY2026 outlook: tax rate ≈ 30%", SOURCES["earnings_sep2026"]),
+    "np_rd_years": ("NOPAT Bridge: capitalization convention", None),
+    "np_ebit_rep": ("LULU FY2025 10-K: Income from operations", filing_url("FY2025")),
+    "np_impair": ("LULU FY2025 10-K: amortization of intangible assets", filing_url("FY2025")),
+    "np_restruct": ("LULU FY2025 10-K: restructuring charges", filing_url("FY2025")),
+    "np_legal": ("LULU FY2025 10-K: SG&A one-offs", filing_url("FY2025")),
+    "np_ebit_p1": ("NOPAT Bridge tab: Phase 1 subtotal", None),
+    "np_lease_int": ("LULU FY2025 10-K: interest on lease liabilities (supplemental)", filing_url("FY2025")),
+    "np_rd_cap": ("LULU FY2025 10-K: R&D / software expense", filing_url("FY2025")),
+    "np_rd_amort": ("LULU FY2025 10-K: intangible amortization", filing_url("FY2025")),
+    "np_ebit_p2": ("NOPAT Bridge tab: Phase 2 subtotal", None),
+    "np_rev_store": ("Revenue Drivers tab: store-channel revenue", None),
+    "np_rev_ecomm": ("Revenue Drivers tab: e-commerce revenue", None),
+    "np_rev_other": ("Revenue Drivers tab: other channels revenue", None),
+    "np_ebit_channel": ("NOPAT Bridge tab: channel EBIT formula", None),
+    "np_ebit_p3": ("NOPAT Bridge tab: Phase 3 subtotal", None),
+    "np_ebit_norm": ("Scenarios tab: base-case EBIT (forecast)", None),
+    "np_t_oper": ("LULU FY2025 10-K: income tax & interest expense", filing_url("FY2025")),
+    "np_tax_exp": ("NOPAT Bridge tab: unlevered tax expense", None),
+    "np_nopat": ("NOPAT Bridge tab: normalized NOPAT", None),
 }
 
 # Exact Ctrl+F strings — every quoted phrase appears verbatim in the linked source.
@@ -626,6 +723,42 @@ SOURCE_HINT = {
         "FY26: revenue −6.1% + DIO −1 day → NWC falls → ΔNWC positive (WC release).\n"
         "FY27–30: revenue +2.3%/yr → AR & inventory rebuild → ΔNWC negative (WC build)."
     ),
+    # NOPAT Bridge
+    "np_sbc": (
+        'Ctrl+F "Stock-based compensation expense"\n'
+        "→ 62,203 ($000). Flag = 1 adds back to EBIT (diluted-shares UFCF convention)."
+    ),
+    "np_m_store": "Channel margin assumption — calibrated so FY25 store rev × 18.6% + e-comm × 23.6% + other × 9.1% ≈ reported EBIT.",
+    "np_m_ecomm": "E-commerce EBIT margin 23.6% — higher than stores (no occupancy drag).",
+    "np_m_other": "Other channels 9.1% — wholesale/license/outlets residual margin.",
+    "np_t_marg": 'Ctrl+F "a tax rate of approximately 30%" → terminal marginal rate for t_operating glide path.',
+    "np_rd_years": "Amortization period if R&D capitalized (3–5 yr convention). LULU: no separate R&D capitalization.",
+    "np_ebit_rep": 'Ctrl+F "Income from operations" → 2,210,615 ($000). Forecast links to Scenarios EBIT.',
+    "np_impair": 'Ctrl+F "Amortization of intangible assets" → other operating expense run-rate (add-back).',
+    "np_restruct": 'Ctrl+F "restructuring" → none material in FY25 10-K.',
+    "np_legal": "One-off legal/M&A fees in SG&A — none identified FY25.",
+    "np_ebit_p1": "Sum of reported EBIT + Phase 1 add-backs on this tab.",
+    "np_lease_int": (
+        'Ctrl+F "Interest paid on lease liabilities"\n'
+        "→ 1,028 ($000) supplemental cash-flow disclosure. Reclass to unlevered EBIT."
+    ),
+    "np_rd_cap": "R&D / software capitalization — LULU immaterial; held at $0.",
+    "np_rd_amort": "Amortization of prior capitalized intangibles — netted in D&A line.",
+    "np_ebit_p2": "Phase 1 + lease interest + R&D cap − amortization.",
+    "np_rev_store": "Revenue Drivers tab → store-channel revenue row.",
+    "np_rev_ecomm": "Revenue Drivers tab → e-commerce revenue row.",
+    "np_rev_other": "Revenue Drivers tab → other channels revenue row.",
+    "np_ebit_channel": "Σ channel revenue × margin. FY26 adds Scenarios tariff refund cell.",
+    "np_ebit_p3": "Channel EBIT subtotal (Phase 3). Compare Check row vs Scenarios.",
+    "np_ebit_norm": "FY25: Phase 1–2 formula. Forecast: Scenarios base EBIT (tax base).",
+    "np_t_oper": (
+        "t_operating = (tax + interest×30%) ÷ (EBT + interest).\n"
+        'Ctrl+F "Income tax expense" → 659,784\n'
+        'Ctrl+F "Income before income tax expense" → 2,238,967\n'
+        'Ctrl+F "Interest paid on lease liabilities" → 1,028'
+    ),
+    "np_tax_exp": "Normalized EBIT × t_operating — unlevered tax (no debt shield).",
+    "np_nopat": "EBIT_norm − unlevered tax. Scenarios base-case NOPAT links to this row.",
     # DCF / comps
     "dcf_exitm": "No peer Ctrl+F. This cell = Gordon TV / FY30 EBITDA = (UFCF/EBITDA)×(1+g)/(WACC−g). WACC and g are sourced on those rows.",
     "comps_nke": "No public HTML. PitchBook Comps Set 04-Sep-2026. Prove daily EV and TTM EBITDA on that screen; E = I/J.",

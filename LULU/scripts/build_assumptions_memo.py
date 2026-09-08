@@ -22,6 +22,7 @@ TAB_SECTIONS = [
     ("WACC", "DCF workbook — WACC tab", "wacc_"),
     ("Scenarios", "DCF workbook — Scenarios tab", "sc_"),
     ("Revenue Drivers", "DCF workbook — Revenue Drivers tab", "drv_"),
+    ("NOPAT Bridge", "DCF workbook — NOPAT Bridge tab (5-phase EBIT → NOPAT)", "np_"),
     ("DCF", "DCF workbook — DCF tab (valuation & sensitivity)", ("dcf_", "sens_")),
     ("Comps", "DCF workbook — Comps / Football Field tab", "comps_"),
     ("3-Statement", "LULU_3_Statement_Model — Assumptions tab", "3s_"),
@@ -73,6 +74,30 @@ LABEL_OVERRIDES = {
     "sc_col": "Current operating liabilities (subtotal)",
     "sc_nwc": "Net working capital (balance)",
     "sc_dnwc": "ΔNWC (prior yr − current yr)",
+    "np_sbc": "SBC add-back flag (1 = yes)",
+    "np_m_store": "Store-channel EBIT margin %",
+    "np_m_ecomm": "E-commerce EBIT margin %",
+    "np_m_other": "Other-channels EBIT margin %",
+    "np_t_marg": "Terminal marginal tax rate",
+    "np_rd_years": "R&D / software amortization (years)",
+    "np_ebit_rep": "Reported / Scenarios EBIT",
+    "np_impair": "Impairment / intangible amortization add-back",
+    "np_restruct": "Restructuring add-back",
+    "np_legal": "Legal / M&A one-offs add-back",
+    "np_ebit_p1": "Adjusted EBIT (Phase 1)",
+    "np_lease_int": "Implied lease interest reclass",
+    "np_rd_cap": "R&D / software capitalization",
+    "np_rd_amort": "Amortization of capitalized intangibles",
+    "np_ebit_p2": "EBIT after lease & cap (Phase 2)",
+    "np_rev_store": "Store-channel revenue",
+    "np_rev_ecomm": "E-commerce revenue",
+    "np_rev_other": "Other channels revenue",
+    "np_ebit_channel": "Channel EBIT (Σ Rev × Margin)",
+    "np_ebit_p3": "EBIT after channel mix (Phase 3)",
+    "np_ebit_norm": "Normalized EBIT (tax base)",
+    "np_t_oper": "Operating effective tax rate (t_operating)",
+    "np_tax_exp": "Unlevered tax expense",
+    "np_nopat": "Normalized NOPAT",
     "dcf_exitm": "Selected exit EV/EBITDA (Gordon implied)",
     "dcf_debt_bridge": "EV bridge: debt & operating leases",
     "sens_axes": "Sensitivity grid axes",
@@ -87,7 +112,7 @@ def _label(key):
     if key in LABEL_OVERRIDES:
         return LABEL_OVERRIDES[key]
     s = key
-    for prefix in ("wacc_", "sc_", "dcf_", "sens_", "comps_", "drv_f_", "drv_", "3s_"):
+    for prefix in ("wacc_", "sc_", "dcf_", "sens_", "comps_", "drv_f_", "drv_", "np_", "3s_"):
         if s.startswith(prefix):
             s = s[len(prefix):]
             break
