@@ -688,6 +688,9 @@ v_row('upside', "Implied upside / (downside)", f"=E{VR['pt']}/E{VR['px']}-1", fm
 dcf[f"E{VR['upside']}"].font = S.font(color=S.GREEN, bold=True, size=11)
 v_row('tvpct', "  memo: % of EV from terminal value", f"=E{VR['pvtv']}/E{VR['ev']}", fmt=PCT)
 
+from repurchase_schedule import build_repurchase_schedule
+RR = build_repurchase_schedule(dcf, r, DR, NP_R, VR)
+
 r[0] += 1
 write(dcf, f'A{r[0]}', "CROSS-CHECK \u2014 EXIT MULTIPLE METHOD", S.WHITE, bold=True, size=10, fillc=S.DARK)
 for c in ['B', 'C']:
