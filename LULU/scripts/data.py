@@ -400,19 +400,25 @@ JUST = {
         "add back non-cash SBC to EBIT. FY25 SBC $62,203k scaled with revenue in forecast."
     ),
     "np_m_store": (
-        "18.6% of store-channel revenue (EBIT margin assumption).\n"
+        "Not % of consolidated revenue — EBIT as % of store-channel revenue only "
+        "(not the Scenarios 13.2%–15.5% consolidated margin).\n"
+        "18.6% margin assumption.\n"
         "EBIT_store = Rev_store × Margin_store\n"
         "FY25 check: 5,049,744 × 18.6% ≈ 939,252 ($000).\n"
         "Calibrated so Σ channel EBIT ≈ consolidated EBIT 2,210,615 (10-K)."
     ),
     "np_m_ecomm": (
-        "23.6% of e-commerce revenue (EBIT margin assumption).\n"
+        "Not % of consolidated revenue — EBIT as % of e-commerce revenue only "
+        "(not the Scenarios 13.2%–15.5% consolidated margin).\n"
+        "23.6% margin assumption.\n"
         "EBIT_e-comm = Rev_e-comm × Margin_e-comm\n"
         "FY25 check: 4,918,697 × 23.6% ≈ 1,160,812 ($000).\n"
         "Higher than stores — no occupancy; fulfillment + digital marketing only."
     ),
     "np_m_other": (
-        "9.1% of other-channel revenue (EBIT margin assumption).\n"
+        "Not % of consolidated revenue — EBIT as % of other-channel revenue only "
+        "(not the Scenarios 13.2%–15.5% consolidated margin).\n"
+        "9.1% margin assumption.\n"
         "EBIT_other = Rev_other × Margin_other\n"
         "FY25 check: 1,134,159 × 9.1% ≈ 103,209 ($000).\n"
         "Wholesale/license/outlets — lower-margin residual channel."
@@ -435,20 +441,23 @@ JUST = {
     "np_rev_ecomm": "Not % of revenue — e-commerce revenue from Revenue Drivers tab.",
     "np_rev_other": "Not % of revenue — wholesale/license/outlet revenue from Revenue Drivers tab.",
     "np_ebit_store": (
-        "18.6% of store-channel revenue.\n"
-        "EBIT_store,t = Rev_store,t × Margin_store\n"
+        "Not % of consolidated revenue — store EBIT ÷ store revenue only "
+        "(not Scenarios consolidated EBIT margin).\n"
+        "EBIT_store,t = Rev_store,t × 18.6%\n"
         "FY25: 5,049,744 × 18.6% ≈ 939,252 ($000).\n"
         "Margin from driver assumptions row above; ties to 10-K store revenue."
     ),
     "np_ebit_ecomm": (
-        "23.6% of e-commerce revenue.\n"
-        "EBIT_e-comm,t = Rev_e-comm,t × Margin_e-comm\n"
+        "Not % of consolidated revenue — e-commerce EBIT ÷ e-commerce revenue only "
+        "(not Scenarios consolidated EBIT margin).\n"
+        "EBIT_e-comm,t = Rev_e-comm,t × 23.6%\n"
         "FY25: 4,918,697 × 23.6% ≈ 1,160,812 ($000).\n"
         "Higher than stores — no brick-and-mortar occupancy drag."
     ),
     "np_ebit_other": (
-        "9.1% of other-channel revenue.\n"
-        "EBIT_other,t = Rev_other,t × Margin_other\n"
+        "Not % of consolidated revenue — other-channel EBIT ÷ other revenue only "
+        "(not Scenarios consolidated EBIT margin).\n"
+        "EBIT_other,t = Rev_other,t × 9.1%\n"
         "FY25: 1,134,159 × 9.1% ≈ 103,209 ($000).\n"
         "Wholesale/license/outlets — lowest channel margin."
     ),
@@ -765,16 +774,19 @@ SOURCE_HINT = {
         "→ 62,203 ($000). Flag = 1 adds back to EBIT (diluted-shares UFCF convention)."
     ),
     "np_m_store": (
+        "Not consolidated EBIT margin — EBIT ÷ store revenue only (cf. Scenarios 13.2%–15.5%).\n"
         'Ctrl+F "Company-operated stores"\n'
         "→ 5,049,744 ($000) net revenue\n"
         "× 18.6% margin assumption → store EBIT ≈ 939,252 ($000)"
     ),
     "np_m_ecomm": (
+        "Not consolidated EBIT margin — EBIT ÷ e-commerce revenue only (cf. Scenarios 13.2%–15.5%).\n"
         'Ctrl+F "E-commerce"\n'
         "→ 4,918,697 ($000) net revenue\n"
         "× 23.6% margin assumption → e-comm EBIT ≈ 1,160,812 ($000)"
     ),
     "np_m_other": (
+        "Not consolidated EBIT margin — EBIT ÷ other-channel revenue only (cf. Scenarios 13.2%–15.5%).\n"
         'Ctrl+F "Net revenue" → 11,102,600\n'
         "Minus stores + e-comm → other channels ≈ 1,134,159 ($000)\n"
         "× 9.1% margin assumption → other EBIT ≈ 103,209 ($000)"
@@ -797,16 +809,19 @@ SOURCE_HINT = {
     "np_rev_ecomm": "Revenue Drivers tab → e-commerce revenue row.",
     "np_rev_other": "Revenue Drivers tab → other channels revenue row.",
     "np_ebit_store": (
+        "Not consolidated EBIT margin — store EBIT ÷ store revenue only.\n"
         'Ctrl+F "Company-operated stores"\n'
         "→ 5,049,744 ($000)\n"
         "EBIT = Rev × 18.6% → ≈ 939,252 ($000)"
     ),
     "np_ebit_ecomm": (
+        "Not consolidated EBIT margin — e-commerce EBIT ÷ e-commerce revenue only.\n"
         'Ctrl+F "E-commerce"\n'
         "→ 4,918,697 ($000)\n"
         "EBIT = Rev × 23.6% → ≈ 1,160,812 ($000)"
     ),
     "np_ebit_other": (
+        "Not consolidated EBIT margin — other-channel EBIT ÷ other revenue only.\n"
         "Other rev = 11,102,600 − 5,049,744 − 4,918,697 ≈ 1,134,159 ($000)\n"
         "EBIT = Rev × 9.1% → ≈ 103,209 ($000)"
     ),
