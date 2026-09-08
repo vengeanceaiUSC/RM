@@ -11,7 +11,15 @@ import openpyxl
 
 import data as D
 from scenario_links import sync_mirror_sheet
-from scenario_extract import extract_paths, bull_balance_sheet, add_eps, COL_BULL, PROJ_YEARS
+from scenario_extract import (
+    extract_paths,
+    bull_balance_sheet,
+    add_eps,
+    align_income_statement,
+    align_cash_flow,
+    COL_BULL,
+    PROJ_YEARS,
+)
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 DCF_PATH = os.path.join(ROOT, "LULU_DCF_Valuation_Model.xlsx")
@@ -139,14 +147,17 @@ def extract():
     for fy in PROJ_YEARS:
         col = PROJ_COL[fy]
         eps_val = is_ws.cell(r_eps, col).value
+        oi_m = _m(is_ws.cell(r_oi, col).value)
+        rev_m = _m(is_ws.cell(r_rev, col).value)
         income_base[fy] = {
-            "revenue": _m(is_ws.cell(r_rev, col).value),
+            "revenue": rev_m,
             "gross_profit": _m(is_ws.cell(r_gp, col).value),
-            "operating_income": _m(is_ws.cell(r_oi, col).value),
-            "operating_margin": _pct(is_ws.cell(r_om, col).value),
+            "operating_income": oi_m,
+            "operating_margin": f"{oi_m / rev_m * 100:.1f}%" if oi_m and rev_m else None,
             "net_income": _m(is_ws.cell(r_ni, col).value),
             "eps": round(eps_val, 2) if isinstance(eps_val, (int, float)) else None,
         }
+    align_income_statement(income_base)
 
     balance_base = {}
     for label, key in [
@@ -173,20 +184,18 @@ def extract():
         fy: (cash_base["cfo"][fy] or 0) + (cash_base["capex"][fy] or 0)
         for fy in PROJ_YEARS
     }
+    align_cash_flow(cash_base)
 
     scen_bull = extract_paths(sc, COL_BULL)
     shares = {fy: is_ws.cell(r_sh, PROJ_COL[fy]).value for fy in PROJ_YEARS}
     income_bull = {
-        fy: {
-            "revenue": scen_bull[fy]["revenue"],
-            "gross_profit": scen_bull[fy]["gross_profit"],
-            "operating_income": scen_bull[fy]["operating_income"],
-            "operating_margin": scen_bull[fy]["operating_margin"],
-            "net_income": scen_bull[fy]["net_income"],
-        }
+        fy: {k: scen_bull[fy][k] for k in (
+            "revenue", "gross_profit", "operating_income", "operating_margin", "net_income"
+        )}
         for fy in PROJ_YEARS
     }
     add_eps(income_bull, shares)
+    align_income_statement(income_bull)
 
     cash_bull = {
         "cfo": {fy: scen_bull[fy]["cfo"] for fy in PROJ_YEARS},
@@ -195,7 +204,8 @@ def extract():
         "buybacks": {fy: scen_bull[fy]["buybacks"] for fy in PROJ_YEARS},
         "dna": {fy: scen_bull[fy]["dna"] for fy in PROJ_YEARS},
     }
-    balance_bull = bull_balance_sheet(balance_base, income_base, income_bull)
+    align_cash_flow(cash_bull)
+    balance_bull = bull_balance_sheet(balance_base, income_base, income_bull, cash_bull)
 
     return {
         "valuation": {

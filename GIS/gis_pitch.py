@@ -278,8 +278,10 @@ class PitchDeck:
         red_rows=(),
         bold_rows=(),
         font_size=10.5,
+        header_font_size=None,
     ):
         ncol = len(headers)
+        hdr_fs = header_font_size if header_font_size is not None else (8 if ncol > 12 else 11)
         left = Inches(0.5)
         width = Inches(12.35)
         tbl_shape = slide.shapes.add_table(len(rows) + 1, ncol, left, Inches(top), width, Inches(height))
@@ -296,7 +298,7 @@ class PitchDeck:
             p.alignment = PP_ALIGN.LEFT if c == 0 else PP_ALIGN.RIGHT
             r = p.add_run()
             r.text = htxt
-            _set_font(r, 11, WHITE, bold=True)
+            _set_font(r, hdr_fs, WHITE, bold=True)
             cell.vertical_anchor = MSO_ANCHOR.MIDDLE
         for ri, row in enumerate(rows, start=1):
             is_red = ri - 1 in red_rows
