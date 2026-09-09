@@ -216,11 +216,12 @@ def _extract_comps_analysis(comps, wacc_build, income_base):
     ebit25_m = ebit25_k / 1000
     rev26_m = rev26_k / 1000
 
-    # LULU row: all multiples @ model price ($100) — not stale consensus P/E prints
+    # LULU row: EV/EBITDA from PitchBook tape; other multiples @ model price ($100)
+    pb_ev_ebitda = _comps_ev_ebitda(comps, "lululemon")
     for p in peers:
         if p["name"] == "lululemon (LULU)":
             p["ev_rev"] = round(mkt_ev_m / rev26_m, 2)
-            p["ev_ebitda"] = round(mkt_ev_m / ebitda25_m, 1)
+            p["ev_ebitda"] = pb_ev_ebitda if pb_ev_ebitda else round(mkt_ev_m / ebitda25_m, 1)
             p["ev_ebit"] = round(mkt_ev_m / ebit25_m, 1)
             p["pe_fwd"] = round(D.MKT["price"] / eps26, 1)
             p["ev_m"] = round(mkt_ev_m)

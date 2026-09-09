@@ -481,7 +481,7 @@
         "core": true,
         "ev_m": 11129,
         "ev_rev": 1.07,
-        "ev_ebitda": 4.1,
+        "ev_ebitda": 4.7,
         "ev_ebit": 5.0,
         "pe_fwd": 10.4
       },
@@ -633,11 +633,11 @@
     "lulu_trading": {
       "price": 100.0,
       "ev_rev": 1.07,
-      "ev_ebitda": 4.1,
+      "ev_ebitda": 4.7,
       "ev_ebit": 5.0,
       "pe_fwd": 10.4,
       "ev_m": 11129,
-      "ebitda_discount_vs_median_pct": 56
+      "ebitda_discount_vs_median_pct": 50
     },
     "source": "PitchBook Comps Set 04-Sep-2026 (EV, TTM EBITDA); revenue/EBIT from company filings; forward P/E from consensus"
   },

@@ -1237,7 +1237,7 @@ for t in [
     f"Point of the slide: LULU trades at a deep discount \u2014 {_lulu_ebitda:.1f}x EV/EBITDA @ ${_lulu_t.get('price', 100):.0f} vs {_ebitda_med:.1f}x core median (~{_ebitda_disc}% below peers on TTM EBITDA)",
     "We apply peer-medians to LULU bases for implied price ranges (right table) \u2014 triangulating partial re-rating to $140, not DCF terminal value or M&A premium",
     "Core set: NKE, ADS, DECK, CROX, LEVI, KTB (+ LULU benchmark row) \u2014 PitchBook EV / TTM EBITDA (04-Sep-2026); LULU multiples @ model price $100 / FY26E EPS $9.61",
-    "EV/Revenue on FY2026E; EV/EBITDA & EV/EBIT on FY2025 EBITDA/EBIT \u2014 then EV \u2192 equity via cash & ASC 842 leases",
+    "EV/Revenue on FY2026E; EV/EBITDA 4.7x = PitchBook TTM tape (Sep-2026); EV/EBIT & P/E @ model price $100 / FY26E EPS $9.61",
     f"Also cheap on P/E: {_lulu_t.get('pe_fwd', 0):.1f}x vs {_core.get('pe_fwd', {}).get('median', 0):.1f}x median; DCF base {_d(_base_px)} uses Gordon growth TV (~7.4x FY30 identity, not this ~9x peer tape)",
 ]:
     add_para(tf, t, 10, INK, bullet=True, space_after=3)
