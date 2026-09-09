@@ -453,7 +453,7 @@ def m(v):
 HY = ["FY2022", "FY2023", "FY2024", "FY2025"]
 DCF_MODEL = "LULU_DCF_Valuation_Model.xlsx"
 SCEN_TAB = "Scenarios"
-SCEN_G = f"{DCF_MODEL} → {SCEN_TAB}, col G (base)"
+SCEN_G = f"{DCF_MODEL}: {SCEN_TAB}, col G (base)"
 HIST_10K = "SEC Form 10-K (FY2022-FY2025)"
 FIN_FOOTNOTE = (
     "Hist = 10-K. Forecast (26-30) = DCF Scenarios pitch-bridge block, col G (base case only). "
@@ -510,23 +510,23 @@ def _fin_headers():
 
 
 def _hist_range(section, key, y0="FY2022", y1="FY2025"):
-    return f"FY22 {m(section[key][y0] / 1000)}M \u2192 FY25 {m(section[key][y1] / 1000)}M"
+    return f"FY22 {m(section[key][y0] / 1000)}M to FY25 {m(section[key][y1] / 1000)}M"
 
 
 def _hist_line(label, detail):
-    """One explainer bullet: metric label + historical FY22→FY25 detail."""
+    """One explainer bullet: metric label + historical FY22 to FY25 detail."""
     return f"{label}: {detail}"
 
 
 def _base_fcst_line(label, v26, v30, fmt="num"):
-    """One explainer bullet: base case FY26→FY30 (Scenarios col G)."""
+    """One explainer bullet: base case FY26 to FY30 (Scenarios col G)."""
     if fmt == "pct":
-        return f"{label}: FY26 {v26} \u2192 FY30 {v30}"
+        return f"{label}: FY26 {v26} to FY30 {v30}"
     if fmt == "eps":
-        return f"{label}: FY26 ${v26:.2f} \u2192 FY30 ${v30:.2f}"
+        return f"{label}: FY26 ${v26:.2f} to FY30 ${v30:.2f}"
     if fmt == "outflow":
-        return f"{label}: FY26 ({m(abs(v26))}) \u2192 FY30 ({m(abs(v30))})"
-    return f"{label}: FY26 {m(v26)}M \u2192 FY30 {m(v30)}M"
+        return f"{label}: FY26 ({m(abs(v26))}) to FY30 ({m(abs(v30))})"
+    return f"{label}: FY26 {m(v26)}M to FY30 {m(v30)}M"
 
 
 def _base_year_vals(sec, key, by_year=True, fmt="num"):
@@ -623,7 +623,7 @@ _OM24 = D.IS["operating_income"]["FY2024"] / D.IS["revenue"]["FY2024"] * 100
 _IS_HIST, _IS_FCST = _aligned_explainers([
     (
         "Net revenue",
-        f"FY22 ${m(D.IS['revenue']['FY2022']/1000)}M \u2192 FY25 ${m(D.IS['revenue']['FY2025']/1000)}M",
+        f"FY22 ${m(D.IS['revenue']['FY2022']/1000)}M to FY25 ${m(D.IS['revenue']['FY2025']/1000)}M",
         _base_fcst_line("Net revenue", _IS26B["revenue"], _IS30B["revenue"]),
     ),
     (
@@ -638,7 +638,7 @@ _IS_HIST, _IS_FCST = _aligned_explainers([
     ),
     (
         "Operating margin %",
-        f"FY22 {_OM22:.1f}% \u2192 FY25 {_OM25:.1f}% (peak {_OM24:.1f}% FY24)",
+        f"FY22 {_OM22:.1f}% to FY25 {_OM25:.1f}% (peak {_OM24:.1f}% FY24)",
         _base_fcst_line("Operating margin %", _IS26B["operating_margin"], _IS30B["operating_margin"], fmt="pct"),
     ),
     (
@@ -648,7 +648,7 @@ _IS_HIST, _IS_FCST = _aligned_explainers([
     ),
     (
         "Diluted EPS",
-        f"FY22 ${D.IS['diluted_eps']['FY2022']:.2f} \u2192 FY25 ${D.IS['diluted_eps']['FY2025']:.2f}",
+        f"FY22 ${D.IS['diluted_eps']['FY2022']:.2f} to FY25 ${D.IS['diluted_eps']['FY2025']:.2f}",
         _base_fcst_line("Diluted EPS", _IS26B["eps"], _IS30B["eps"], fmt="eps"),
     ),
 ])
@@ -782,7 +782,7 @@ pitch_financial_slide(
     source_rows=_IS_SOURCES,
     bold_rows=(0, 2, 5),
     italic_note=(
-        f"Forecast: {DCF_MODEL} \u2192 Scenarios col G. EPS = NI \u00f7 diluted shares after "
+        f"Forecast: {DCF_MODEL}, Scenarios col G. EPS = NI \u00f7 diluted shares after "
         "$500M/yr repurchases (DCF $134 still uses 111.4M day-one basic shares)."
     ),
 )
@@ -838,7 +838,7 @@ pitch_financial_slide(
 # =====================================================================
 def _wacc_ref(key):
     r = WR.get(key)
-    return f"WACC!E{r}" if r else f"{DCF_MODEL} \u2192 WACC tab"
+    return f"WACC!E{r}" if r else f"{DCF_MODEL}: WACC tab"
 
 
 def _pct_wb(v, d=2):
@@ -871,7 +871,7 @@ s = slide_base(
     "Financials | Capital Structure",
     "Cap stack and WACC build: lease-adjusted; no funded term debt",
     page=pg(),
-    sources=f"Cap stack & WACC: {DCF_MODEL} \u2192 WACC tab (col E). Cash/leases: FY2025 10-K.",
+    sources=f"Cap stack & WACC: {DCF_MODEL}, WACC tab (col E). Cash/leases: FY2025 10-K.",
 )
 
 # Section headers (GIS financial-slide style)
@@ -895,7 +895,7 @@ stmt_table(
 tb, tf = textbox(s, Inches(0.5), Inches(2.86), Inches(6.05), Inches(0.20))
 add_para(tf, "EV BRIDGE (NOT IN WACC WEIGHTS)", 9, CARD, bold=True, first=True, space_after=0)
 bridge_rows = [
-    ["Cash & equivalents", f"{WB['cash_m']:,}", "Added back in EV \u2192 equity bridge"],
+    ["Cash & equivalents", f"{WB['cash_m']:,}", "Added back in EV, equity bridge"],
     ["Net debt (leases \u2212 cash)", f"{WB['net_debt_m']:,}", "Near net-cash; leases in WACC above"],
 ]
 stmt_table(
@@ -907,7 +907,7 @@ tb, tf = textbox(s, Inches(0.5), Inches(4.0), Inches(6.05), Inches(0.5))
 add_para(
     tf,
     "No funded bank debt; ASC 842 store leases are the only debt equivalent (~14% WACC weight). "
-    f"Cash ${WB['cash_m']:,}M exceeds lease debt \u2192 net-cash on a funded-debt basis.",
+    f"Cash ${WB['cash_m']:,}M exceeds lease debt, net-cash on a funded-debt basis.",
     8.5, INK, italic=True, first=True, space_after=0,
 )
 
@@ -932,8 +932,8 @@ stmt_table(
 tb, tf = textbox(s, Inches(6.85), Inches(3.88), Inches(5.85), Inches(0.42))
 add_para(
     tf,
-    f"\u03b2: Yahoo \u03b2L {WB['beta_obs']:.2f} \u2192 unlevered {WB['beta_unlev']:.2f} "
-    f"@ D/E {WB['de_unlev']:.2f} \u2192 relever {WB['beta']:.2f} @ lease D/E {WB['de_relev']:.2f}",
+    f"\u03b2: Yahoo \u03b2L {WB['beta_obs']:.2f} to unlevered {WB['beta_unlev']:.2f} "
+    f"@ D/E {WB['de_unlev']:.2f} to relever {WB['beta']:.2f} @ lease D/E {WB['de_relev']:.2f}",
     8, INK, italic=True, first=True, space_after=0,
 )
 box = rect(s, Inches(6.7), Inches(4.42), Inches(6.15), Inches(0.88), fill=NAVY)
@@ -943,7 +943,7 @@ btf.vertical_anchor = MSO_ANCHOR.MIDDLE
 add_para(btf, f"WACC = {_pct_wb(WB['wacc'])}", 17, WHITE, bold=True, first=True, space_after=2)
 add_para(
     btf,
-    f"Base-case discount rate \u2192 Scenarios col G \u00b7 implied price {_d(V['base_dcf'])}",
+    f"Base-case discount rate: Scenarios col G \u00b7 implied price {_d(V['base_dcf'])}",
     9, WHITE, space_after=0,
 )
 
@@ -966,7 +966,7 @@ s = slide_base(
     "Valuation Summary",
     "Football field: implied share-price ranges by methodology (base case DCF)",
     page=pg(),
-    sources=f"Source: {DCF_MODEL} \u2192 Comps / football field tab; geographic SOTP on FY30E base revenue mix",
+    sources=f"Source: {DCF_MODEL}, Comps / football field tab; geographic SOTP on FY30E base revenue mix",
 )
 
 _base_px = int(V["base_dcf"])
@@ -1117,7 +1117,7 @@ s = slide_base(
     "DCF Valuation",
     f"Base-case unlevered DCF (Scenarios col G): Gordon growth terminal value; {_exit_m:.1f}x is implied exit identity",
     page=pg(),
-    sources=f"Source: {DCF_MODEL} \u2192 Scenarios col G + DCF tab",
+    sources=f"Source: {DCF_MODEL}, Scenarios col G + DCF tab",
 )
 
 # --- Assumptions (left) ---
@@ -1221,7 +1221,7 @@ tb, tf = textbox(s, Inches(8.1), Inches(5.60), Inches(4.75), Inches(1.08))
 add_para(tf, "Base-case cell", 9, CARD, bold=True, first=True, space_after=2)
 add_para(
     tf,
-    f"WACC {_pct(V['wacc'])} \u00d7 g {_tg*100:.2f}% \u2192 {_d(_base_px)}. Grid brackets \u00b1100bps WACC and 1.5-3.0% g.",
+    f"WACC {_pct(V['wacc'])} \u00d7 g {_tg*100:.2f}% gives {_d(_base_px)}. Grid brackets \u00b1100bps WACC and 1.5-3.0% g.",
     9, INK, space_after=0,
 )
 
@@ -1311,7 +1311,7 @@ for title, body in [
     (
         "Peer benchmark methodology",
         "Core peer set (NKE, ADS, DECK, CROX, LEVI, KTB) evaluates relative valuation using PitchBook data "
-        "(04-Sep-2026). Implied equity = peer median \u00d7 LULU base \u2192 EV, then + cash \u2212 ASC 842 lease debt \u00f7 shares.",
+        "(04-Sep-2026). Implied equity = peer median \u00d7 LULU base, EV, then + cash \u2212 ASC 842 lease debt \u00f7 shares.",
     ),
     (
         "Multiples confirm severe undervaluation",
@@ -1409,7 +1409,7 @@ _ebitda_imp = next((r for r in _ca.get("implied", []) if r.get("metric") == "EV 
 _ebitda_px = int(_ebitda_imp.get("implied_px_median", _base_px))
 add_para(
     btf,
-    f"Comps median EV/EBITDA {_cs.get('median', 0):.1f}x \u2192 ~${_ebitda_px}/sh",
+    f"Comps median EV/EBITDA {_cs.get('median', 0):.1f}x implies ~${_ebitda_px}/sh",
     10, INK, bold=True, space_after=2,
 )
 add_para(

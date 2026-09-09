@@ -3,7 +3,7 @@
 Reusable slide chrome, theme colors, and layout helpers for python-pptx decks.
 Follows GIS formatting rules:
   - Garamond throughout
-  - 0.3" navy header rectangle, title 15pt right-aligned
+  - Navy title bar starts at 6.05in (left header ends 5.85in); long titles wrap
   - One-sentence descriptor per slide (no trailing period)
   - USC cardinal / gold / navy palette
   - Running header: Investment Research Division + company line
@@ -315,6 +315,10 @@ class PitchDeck:
             r.text = htxt
             _set_font(r, hdr_fs, WHITE, bold=True)
             cell.vertical_anchor = MSO_ANCHOR.MIDDLE
+            cell.margin_left = Pt(6)
+            cell.margin_right = Pt(6)
+            cell.margin_top = Pt(2)
+            cell.margin_bottom = Pt(2)
         note_fs = note_font_size if note_font_size is not None else max(6.5, font_size - 2)
         for ri, row in enumerate(rows, start=1):
             is_red = ri - 1 in red_rows
@@ -340,8 +344,10 @@ class PitchDeck:
                     nr.text = note
                     _set_font(nr, note_fs, GREY, italic=True)
                 cell.vertical_anchor = MSO_ANCHOR.MIDDLE
-                cell.margin_top = Pt(1)
-                cell.margin_bottom = Pt(1)
+                cell.margin_left = Pt(6)
+                cell.margin_right = Pt(6)
+                cell.margin_top = Pt(2)
+                cell.margin_bottom = Pt(2)
         return table
 
     def save(self, path: str) -> int:
