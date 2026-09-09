@@ -370,10 +370,10 @@ _narrative_slide(
 
 # Slide 13 — Timeline of recovery
 _timeline_links = [
-    (1, f"{_MODEL} — Scenarios & revenue drivers"),
-    (2, f"{_MODEL} — NOPAT bridge & scenarios"),
-    (3, f"{_MODEL} — UFCF schedule"),
-    (4, f"{_MODEL} — DCF valuation summary"),
+    (1, f"{_MODEL}, Scenarios & Revenue Drivers / {_LULU_PR}"),
+    (2, f"{_MODEL}, NOPAT Bridge & Scenarios / {_LULU_PR}"),
+    (3, f"{_MODEL}, Scenarios & Unlevered Free Cash Flow Schedule / {_LULU_PR}"),
+    (4, f"{_MODEL}, Revenue Drivers & DCF Valuation Summary / https://stockanalysis.com/stocks/lulu/forecast/"),
 ]
 _timeline_top = 1.28
 _timeline_rows = 4
@@ -385,43 +385,44 @@ _timeline_row_h = (
 _timeline_step = _timeline_row_h + _timeline_row_gap
 
 s = slide_base(
-    "Recovery Timeline",
-    "Q3 FY26 trough through FY28 re-rating: margin repair, buybacks, and international comp recovery",
+    "Timeline of Recovery",
+    "Recovery milestones from Q3 FY2026 trough through FY2027\u2013FY2028 multiple re-rating",
     page=pg(),
     sources=" ",
 )
 cats = [
     (
-        "Q3 FY26 Trough",
-        "Revenue laps guidance trough; China Double 11 confirms holiday traffic floor [1]",
+        "2026 (Q3 FY2026 Trough)",
+        "Q3 FY2026 revenue laps guidance trough while China Double 11 sales confirm holiday store traffic floor stabilization across key markets [1]",
     ),
     (
-        "FY26 Year-End",
-        "**$134.5M** tariff refunds + SG&A actions protect EPS through reset year [2]",
+        "2027 (FY2026 Year-End)",
+        "First full-year reset absorbs steep prior declines while $134.5M tariff refunds and targeted SG&A cost actions protect earnings per share [2]",
     ),
     (
-        "FY27 Inflection",
-        "Operating margin to **13.8%** (+60 bps); **$500M/yr** buybacks compound diluted EPS to **$12.93** by FY30 [3]",
+        "2027 (FY2027 Margin Inflection)",
+        "Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while 75% UFCF buybacks compound EPS to boost sentiment [3]",
     ),
     (
-        "FY28 Re-Rating",
-        "China comps **+12%** offset Americas **-4%**; valuation converges on **$133.64** [4]",
+        "2028 (FY2027\u2013FY2028 Multiple Re-Rating)",
+        "Accelerating international store scaling (+12% China comps) offsets Americas softness (-4%), driving overall revenue recovery and valuation re-rating toward $133.64 [4]",
     ),
 ]
+_timeline_label_w = 3.55
+_timeline_body_l = 4.2
+_timeline_body_w = 8.65
 top = _timeline_top
 for when, what in cats:
-    b = rect(s, Inches(0.5), Inches(top), Inches(3.2), Inches(_timeline_row_h), fill=NAVY)
+    b = rect(s, Inches(0.5), Inches(top), Inches(_timeline_label_w), Inches(_timeline_row_h), fill=NAVY)
     bt = b.text_frame
     bt.word_wrap = True
     bt.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt, when, 10, GOLD, bold=True, first=True, space_after=0)
-    b2 = rect(s, Inches(3.85), Inches(top), Inches(9.0), Inches(_timeline_row_h), fill=LGREY)
+    add_para(bt, when, 9, GOLD, bold=True, first=True, space_after=0)
+    b2 = rect(s, Inches(_timeline_body_l), Inches(top), Inches(_timeline_body_w), Inches(_timeline_row_h), fill=LGREY)
     bt2 = b2.text_frame
     bt2.word_wrap = True
     bt2.vertical_anchor = MSO_ANCHOR.MIDDLE
-    p = bt2.paragraphs[0]
-    p.space_after = Pt(0)
-    _add_rich_runs(p, what, size=10.5, color=INK)
+    add_para(bt2, what, 9.5, INK, first=True, space_after=0)
     top += _timeline_step
 _add_links_box(s, _timeline_links)
 
