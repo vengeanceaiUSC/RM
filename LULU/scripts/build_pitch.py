@@ -1305,18 +1305,38 @@ stmt_table(
     font_size=8, header_font_size=8, bold_rows=(len(prec_rows) - 1,),
 )
 
-tb, tf = textbox(s, Inches(0.5), Inches(3.35), Inches(12.35), Inches(3.2))
-add_para(tf, "How we use (and do not use) private precedents", 12, CARD, bold=True, first=True, space_after=4)
-for t in [
-    PREC.get("note", ""),
-    "Closed M&A: Sweaty Betty (2021) — Wolverine paid $410M (~16x FY21E EBITDA, ~1.6x sales) for premium women's DTC activewear; closest operating-company precedent",
-    "Private growth rounds: Gymshark ($1.3bn implied EV, 2020 minority stake) and Vuori ($4bn post-money, 2021) show strategics/PE pay up for high-growth DTC athleisure — minority/valuation markers, not LULU control comps",
-    "Unclosed process: Alo ~$10bn ask (~5.0x EV/Sales on Forbes ~$2bn sales) — illustrates private-brand heat; we do not apply as a control premium on LULU's public multiple",
-    "Valuation anchors remain DCF + public comps (slide 20); precedents support the category-consolidation narrative only",
+tb, tf = textbox(s, Inches(0.5), Inches(3.3), Inches(12.35), Inches(2.9))
+for title, body in [
+    (
+        "Private precedent framework",
+        "Non-Alo private transactions establish a contextual floor of what strategics and PE pay for premium athleisure "
+        "\u2014 not a control premium on LULU\u2019s public stock.",
+    ),
+    (
+        "Closed M&A benchmark",
+        "Wolverine paid $410M (~16x EBITDA, ~1.6x sales) for Sweaty Betty (2021) \u2014 concrete operating-company "
+        "precedent for women\u2019s DTC activewear.",
+    ),
+    (
+        "Growth capital rounds",
+        "Gymshark ($1.3B implied EV, 2020 minority stake) and Vuori ($4B post-money, 2021) show institutional demand "
+        "and realistic baselines for premium DTC brands.",
+    ),
+    (
+        "Excluded unclosed process",
+        "Alo\u2019s ~$10B ask (~5.0x EV/Sales) is LULU\u2019s closest yoga peer, but unclosed private asks cannot dictate "
+        "actual public equity valuation.",
+    ),
+    (
+        "Valuation model anchors",
+        f"Target figures ({_d(_base_px)} DCF, $140 OW target) derive from DCF and public comps (prior slide); precedents "
+        "are contextual floor only.",
+    ),
 ]:
-    add_para(tf, t, 10.5, INK, bullet=True, space_after=4)
+    add_para(tf, title, 11, CARD, bold=True, first=(title == "Private precedent framework"), space_after=2)
+    add_para(tf, body, 10, INK, space_after=5)
 
-box = rect(s, Inches(8.5), Inches(5.55), Inches(4.35), Inches(1.35), fill=LGREY)
+box = rect(s, Inches(8.5), Inches(5.85), Inches(4.35), Inches(1.05), fill=LGREY)
 btf = box.text_frame
 btf.word_wrap = True
 add_para(btf, "Valuation stack", 11, CARD, bold=True, first=True, space_after=4)
