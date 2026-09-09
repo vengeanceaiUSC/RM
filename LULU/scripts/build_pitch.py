@@ -164,10 +164,10 @@ _DECK_TOC = [
     (4, "Investment Thesis Summary and Target Price"),
     (5, "Geographic Segments and Revenue Breakdown"),
     (6, "Business Model Unit Economics and Competitive Moats"),
-    (7, "Industry Overview \u2014 Trends and Structure"),
-    (8, "Industry Overview \u2014 Barriers to Entry and Profitability"),
+    (7, "Industry Overview - Trends and Structure"),
+    (8, "Industry Overview - Barriers to Entry and Profitability"),
     (9, "Investment Thesis I"),
-    (10, "Investment Thesis II: Partial Margin Recovery & Brand Loyalty Floor"),
+    (10, "Investment Thesis II  Partial Margin Recovery & Brand Loyalty Floor"),
     (11, "Investment Thesis III: Geographic Growth Divergence"),
     (12, "Risk & Mitigants"),
     (13, "Timeline of Recovery"),
@@ -252,9 +252,9 @@ _narrative_slide(
     ],
 )
 
-# Slide 5 — Geographic segments
+# Slide 5 — Geographic segments (descriptor only; no separate title in user copy)
 _narrative_slide(
-    "Geographic Segments and Revenue Breakdown",
+    " ",
     "This slide outlines Lululemon's geographic segments and revenue breakdown while detailing why China growth offsets temporary US declines",
     [
         "Lululemon generated 11.1 billion dollars in total revenue with Americas contributing 7.85 billion dollars or 70.68 percent [1]",
@@ -334,7 +334,7 @@ _narrative_slide(
 
 # Slide 10 — Investment Thesis II
 _narrative_slide(
-    "Investment Thesis II: Partial Margin Recovery & Brand Loyalty Floor",
+    "Investment Thesis II  Partial Margin Recovery & Brand Loyalty Floor",
     "This slide details how partial margin recovery supported by core brand loyalty still drives a highly compelling valuation",
     [
         "Historical pandemic-era peak EBIT margins reached 23.7% in FY24 showing prior peak earnings power [1]",
@@ -353,7 +353,7 @@ _narrative_slide(
 # Slide 11 — Investment Thesis III
 _narrative_slide(
     "Investment Thesis III: Geographic Growth Divergence",
-    "This slide examines how Lululemon's top-line projections rely disproportionately on Chinese market expansion to conceal domestic North American stagnation",
+    "This slide examines how Lululemon's top-line projections rely disproportionately on Chinese market expansion to conceal domestic North American stagnation.",
     [
         "The revenue build reveals Americas facing near-term contraction with -4.0% comps in FY26 flatlining at a terminal 2.0% growth rate by FY30 [1]",
         "To offset this domestic anchor, the model relies entirely on disproportionate FY26\u2013FY30 Chinese footprint expansion, averaging 16 new stores annually versus just 6 domestically, and sustained double-digit (10.2% average) comp growth to overcome clear Americas expansion drawbacks [2]",
@@ -366,7 +366,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 11 — Risk & Mitigants
+# Slide 12 — Risk & Mitigants
 _narrative_slide(
     "Risk & Mitigants",
     "This slide evaluates core downside risks and demonstrates how share repurchases compound EPS to drive share price recovery",
@@ -382,7 +382,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 12 — Timeline of Recovery (last narrative slide before 3-statement financials)
+# Slide 13 — Timeline of Recovery (last narrative slide before 3-statement financials on slide 14)
 _timeline_links = [
     (1, f"{_MODEL}, Scenarios & Revenue Drivers / {_LULU_PR}"),
     (2, f"{_MODEL}, NOPAT Bridge & Scenarios / {_LULU_PR}"),
