@@ -278,7 +278,7 @@ _narrative_slide(
         "Our base-case DCF yields an intrinsic fair value of $133.64 per share (+33.6% upside), supporting our 12-month target price of $140.00 as market multiples modestly re-rate [1]",
         "The first pillar is profitability because adjusting out the tariff refunds reveals LULU still maintains a highly resilient 13.2 percent clean run-rate operating margin [2]",
         "The second pillar is our mathematically sound 9.0 percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]",
-        "Finally, international expansion remains the crucial growth engine, as 20% revenue growth in China Mainland (+10-12% comps) easily offsets near-term North American stagnation [4]",
+        "Finally, international expansion remains the crucial growth engine, as +20% FY25 China comps, modeled +14% to +12% FY26-FY27 same-store comps, and ~16 annual net store openings offset near-term North American stagnation [4]",
     ],
     [
         (1, f"Provided Valuation Model (Base Case Implied Value): {_MODEL3}"),
@@ -296,7 +296,7 @@ _narrative_slide(
     [
         "Lululemon generated 11.1 billion dollars in total revenue with Americas contributing 7.85 billion dollars or 70.68 percent [1]",
         "Americas comparable sales fell 3 percent due to temporary cyclical macro pressure rather than structural brand degradation [2]",
-        "China Mainland surged 20 percent to 1.75 billion dollars proving high growth international expansion easily offsets US temporary weakness [3]",
+        "China Mainland reached 1.75 billion dollars in segment revenue on +20% FY25 comparable sales growth, proving high-growth international expansion easily offsets US temporary weakness [3]",
     ],
     [
         (1, f"Lululemon FY2025 Form 10-K (Segment Revenue and Percentages): {_Q2_SUPP}"),
@@ -393,7 +393,7 @@ _narrative_slide(
     "This slide examines how Lululemon's top-line projections rely disproportionately on Chinese market expansion to conceal domestic North American stagnation.",
     [
         "The revenue build reveals Americas facing near-term contraction with -4.0% comps in FY26 flatlining at a terminal 2.0% growth rate by FY30 [1]",
-        "To offset this domestic anchor, the model relies entirely on disproportionate FY26-FY30 Chinese footprint expansion, averaging 16 new stores annually versus just 6 domestically, and sustained double-digit (10.2% average) comp growth to overcome clear Americas expansion drawbacks [2]",
+        "To offset this domestic anchor, the model assumes FY26-FY30 China footprint expansion averaging 16 gross store openings annually versus 6 in Americas, plus 10.2% average same-store comp growth (14% to 7% FY26-FY30) on existing doors [2]",
         "Consequently, if the Chinese consumer softens, this model's core top-line projections will not be optimal enough to meet our target [3]",
     ],
     [
@@ -456,7 +456,7 @@ cats = [
     ),
     (
         "2028 (FY2027-FY2028 Multiple Re-Rating)",
-        "Accelerating international store scaling (+12% China comps) offsets Americas softness (-4%), driving overall revenue recovery and valuation re-rating toward $133.64 [4]",
+        "China adds ~17 net stores in FY27 while +12% FY27 and +10% FY28 same-store comps offset Americas -4% FY26 comps, driving re-rating toward $133.64 [4]",
     ),
 ]
 _timeline_label_w = 3.55
