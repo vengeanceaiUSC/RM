@@ -1019,7 +1019,7 @@ lzb_r = EM["La-Z-Boy (LZB)"]
 # Alo has no published EV/EBITDA. Prove the ask and parent sales, then show EV/Sales only.
 rr[0] += 1
 write(comps, f'A{rr[0]}',
-      "ALO YOGA BUILD \u2014 no source prints EV/EBITDA (Firecrawl: Reuters + Forbes)",
+      "ALO YOGA BUILD \u2014 no source prints EV/EBITDA (Reuters + Forbes)",
       S.ACCENT, bold=True, size=10)
 rr[0] += 1
 write(comps, f'A{rr[0]}',
@@ -1050,7 +1050,7 @@ write(comps, f'{DJ}{rr[0]}', D.JUST["comps_alo_impl"], S.BLACK, italic=True, siz
 write_internal_link(comps, f'{DS}{rr[0]}', "Comps: Alo ask / parent sales",
                     f"'Comps'!E{EM['alo_ask']}")
 write_ctrl_f(comps, f'{DC}{rr[0]}',
-             "No Ctrl+F for EV/EBITDA \u2014 Firecrawl found none on Reuters or Forbes. "
+             "No Ctrl+F for EV/EBITDA \u2014 none found on Reuters or Forbes. "
              f"This cell is E{EM['alo_ask']} / E{EM['alo_sales']} (ask \u00f7 parent sales). Not the TV.")
 rr[0] += 1
 EM['alo_evebitda'] = rr[0]
