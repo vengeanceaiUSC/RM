@@ -191,16 +191,22 @@ s = slide_base(
     page=pg(),
     sources=" ",
 )
+rect(s, Inches(0.5), Inches(_toc_top), Inches(12.35), Inches(_toc_h), fill=LGREY)
+_toc_tbl_h = _toc_h - 0.08
+_toc_tbl_top = _toc_top + 0.04
 for col_i, entries in enumerate((_DECK_TOC[:_toc_split], _DECK_TOC[_toc_split:])):
-    tb, tf = textbox(
+    stmt_table(
         s,
-        Inches(0.5 + col_i * 6.25),
-        Inches(_toc_top),
-        Inches(6.05),
-        Inches(_toc_h),
+        [[str(num), title] for num, title in entries],
+        ["#", "Slide"],
+        col0w=0.42,
+        top=_toc_tbl_top,
+        height=_toc_tbl_h,
+        left=0.5 + col_i * 6.3,
+        width=6.02,
+        font_size=9,
+        header_font_size=9.5,
     )
-    for j, (num, title) in enumerate(entries):
-        add_para(tf, f"{num}. {title}", 10.5, INK, first=(j == 0), space_after=5)
 
 # Slide 2 — Situation Overview
 _narrative_slide(
