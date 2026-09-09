@@ -40,19 +40,19 @@ STANDARD_TOC = [
     "4.  Company overview",
     "5.  Business model & unit economics",
     "6.  Industry overview",
-    "7.  Thesis I \u2014 Priced for terminal decline",
-    "8.  Thesis II \u2014 International growth engine",
-    "9.  Thesis III \u2014 Elite economics & capital return",
+    "7.  Thesis I: Priced for terminal decline",
+    "8.  Thesis II: International growth engine",
+    "9.  Thesis III: Elite economics & capital return",
     "10. Risks & mitigants",
     "11. Catalyst timeline",
-    "12. Financials \u2014 income statement",
-    "13. Financials \u2014 balance sheet",
-    "14. Financials \u2014 cash flow",
+    "12. Financials: income statement",
+    "13. Financials: balance sheet",
+    "14. Financials: cash flow",
     "15. Capital structure & WACC",
     "16. Valuation summary (football field)",
     "17. DCF valuation",
     "18. Comparable companies",
-    "19. Appendix \u2014 bull / bear scenarios",
+    "19. Appendix: bull / bear scenarios",
 ]
 
 DEFAULT_SOURCE = "Source: company SEC filings (Form 10-K, CIK 0000000000)"
@@ -165,32 +165,43 @@ class PitchDeck:
 
     def slide_base(self, title, descriptor, sources=None, page=None):
         s = self.prs.slides.add_slide(self.blank)
-        tb, tf = textbox(s, Inches(0.45), Inches(0.18), Inches(6.5), Inches(0.55))
+        # Left header stops at 5.90" so it never sits under the navy title bar.
+        tb, tf = textbox(s, Inches(0.45), Inches(0.16), Inches(5.40), Inches(0.44))
         add_para(tf, "Investment Research Division", 11, CARD, bold=True, first=True, space_after=0)
         add_para(tf, self.company_header, 12.5, NAVY, bold=True, space_after=0)
 
-        hr = rect(s, Inches(6.0), Inches(0.22), Inches(6.9), Inches(0.3), fill=NAVY)
-        htf = hr.text_frame
-        htf.word_wrap = True
-        htf.margin_top = Pt(0)
-        htf.margin_bottom = Pt(0)
-        htf.margin_right = Pt(6)
-        hp = htf.paragraphs[0]
-        hp.alignment = PP_ALIGN.RIGHT
-        hr_run = hp.add_run()
-        hr_run.text = title
-        _set_font(hr_run, 15, WHITE, bold=True)
+        title_clean = (title or "").strip()
+        if title_clean:
+            title_h = 0.40 if len(title_clean) > 40 else 0.30
+            title_size = 12 if len(title_clean) > 52 else (13 if len(title_clean) > 38 else 15)
+            hr = rect(s, Inches(6.05), Inches(0.16), Inches(6.85), Inches(title_h), fill=NAVY)
+            htf = hr.text_frame
+            htf.word_wrap = True
+            htf.vertical_anchor = MSO_ANCHOR.MIDDLE
+            htf.margin_top = Pt(1)
+            htf.margin_bottom = Pt(1)
+            htf.margin_left = Pt(8)
+            htf.margin_right = Pt(8)
+            hp = htf.paragraphs[0]
+            hp.alignment = PP_ALIGN.RIGHT
+            hr_run = hp.add_run()
+            hr_run.text = title_clean
+            _set_font(hr_run, title_size, WHITE, bold=True)
 
-        tb2, tf2 = textbox(s, Inches(0.45), Inches(0.62), Inches(5.35), Inches(0.48))
-        add_para(tf2, descriptor, 12.5, GREY, italic=True, first=True, space_after=0)
+        desc = (descriptor or "").strip()
+        desc_size = 10.5 if len(desc) > 95 else 12.5
+        tb2, tf2 = textbox(s, Inches(0.45), Inches(0.64), Inches(12.45), Inches(0.48))
+        if desc:
+            add_para(tf2, desc, desc_size, GREY, italic=True, first=True, space_after=0)
 
         rect(s, Inches(0.45), Inches(1.18), Inches(12.45), Pt(1.6), fill=GOLD)
 
-        ftb, ftf = textbox(s, Inches(0.45), Inches(7.12), Inches(12.45), Inches(0.3))
+        # Footer source stops short of the page number.
+        ftb, ftf = textbox(s, Inches(0.45), Inches(7.12), Inches(11.65), Inches(0.30))
         src = sources or self.default_source
-        add_para(ftf, src, 8.5, GREY, first=True, space_after=0)
+        add_para(ftf, src, 8, GREY, first=True, space_after=0)
         if page is not None:
-            ptb, ptf = textbox(s, Inches(12.3), Inches(7.12), Inches(0.9), Inches(0.3))
+            ptb, ptf = textbox(s, Inches(12.25), Inches(7.12), Inches(0.70), Inches(0.30))
             add_para(ptf, str(page), 9, GREY, align=PP_ALIGN.RIGHT, first=True, space_after=0)
         return s
 
@@ -249,7 +260,7 @@ class PitchDeck:
     def placeholder_slide(
         self,
         title: str,
-        descriptor: str = "[One-sentence descriptor — no trailing period]",
+        descriptor: str = "[One-sentence descriptor :  no trailing period]",
         sections: list[tuple[str, list[str]]] | None = None,
         sources: str | None = None,
     ):

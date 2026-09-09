@@ -153,10 +153,10 @@ pg = deck.pg
 stmt_table = deck.stmt_table
 
 # =====================================================================
-# SLIDES 1–12 (narrative — user-specified copy before Timeline / financials)
+# SLIDES 1-12 (narrative - user-specified copy before Timeline / financials)
 # =====================================================================
 
-# Slide 1 — Table of Contents (full deck outline)
+# Slide 1 - Table of Contents (full deck outline)
 _DECK_TOC = [
     (1, "Table of Contents"),
     (2, "Situation Overview and Current Investment Setup"),
@@ -208,7 +208,7 @@ for col_i, entries in enumerate((_DECK_TOC[:_toc_split], _DECK_TOC[_toc_split:])
         header_font_size=9.5,
     )
 
-# Slide 2 — Situation Overview
+# Slide 2 - Situation Overview
 _narrative_slide(
     "Situation Overview and Current Investment Setup",
     "This slide outlines why this investment opportunity exists and the historical financial context driving the current setup",
@@ -224,7 +224,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 3 — Market Narrative
+# Slide 3 - Market Narrative
 _narrative_slide(
     "Market Narrative and Analyst Sentiment Surrounding the Stock",
     "This slide breaks down current market sentiment and exactly what analysts are saying about the recent guidance cut",
@@ -240,7 +240,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 4 — Investment Thesis Summary
+# Slide 4 - Investment Thesis Summary
 _narrative_slide(
     "Investment Thesis Summary and Target Price",
     "This slide breaks down our actual 133 dollar base case target price and the three core pillars supporting our overweight recommendation",
@@ -258,7 +258,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 5 — Geographic segments (descriptor only; no separate title in user copy)
+# Slide 5 - Geographic segments (descriptor only; no separate title in user copy)
 _narrative_slide(
     " ",
     "This slide outlines Lululemon's geographic segments and revenue breakdown while detailing why China growth offsets temporary US declines",
@@ -274,7 +274,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 6 — Unit economics
+# Slide 6 - Unit economics
 _narrative_slide(
     "Business Model Unit Economics and Competitive Moats",
     "This slide analyzes Lululemon's unit economics and competitive moats that protect its long-term market leadership",
@@ -290,7 +290,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 7 — Industry overview
+# Slide 7 - Industry overview
 _narrative_slide(
     "Industry Overview - Trends and Structure",
     "This slide explores the ongoing athleisure industry trends including market fragmentation and the barriers to entry",
@@ -306,7 +306,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 8 — Industry margins (Slide 7 Part 2)
+# Slide 8 - Industry margins (Slide 7 Part 2)
 _narrative_slide(
     "Industry Overview - Barriers to Entry and Profitability",
     "This slide dissects capital efficiency metrics comparing Lululemon's gross margin directly against legacy apparel competitors",
@@ -322,7 +322,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 9 — Investment Thesis I
+# Slide 9 - Investment Thesis I
 _narrative_slide(
     "Investment Thesis I",
     "This slide outlines the core contrarian investment thesis utilizing numerical evidence from the LULUMODEL18.xlsx file",
@@ -338,7 +338,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 10 — Investment Thesis II
+# Slide 10 - Investment Thesis II
 _narrative_slide(
     "Investment Thesis II  Partial Margin Recovery & Brand Loyalty Floor",
     "This slide details how partial margin recovery supported by core brand loyalty still drives a highly compelling valuation",
@@ -356,13 +356,13 @@ _narrative_slide(
     ],
 )
 
-# Slide 11 — Investment Thesis III
+# Slide 11 - Investment Thesis III
 _narrative_slide(
     "Investment Thesis III: Geographic Growth Divergence",
     "This slide examines how Lululemon's top-line projections rely disproportionately on Chinese market expansion to conceal domestic North American stagnation.",
     [
         "The revenue build reveals Americas facing near-term contraction with -4.0% comps in FY26 flatlining at a terminal 2.0% growth rate by FY30 [1]",
-        "To offset this domestic anchor, the model relies entirely on disproportionate FY26\u2013FY30 Chinese footprint expansion, averaging 16 new stores annually versus just 6 domestically, and sustained double-digit (10.2% average) comp growth to overcome clear Americas expansion drawbacks [2]",
+        "To offset this domestic anchor, the model relies entirely on disproportionate FY26-FY30 Chinese footprint expansion, averaging 16 new stores annually versus just 6 domestically, and sustained double-digit (10.2% average) comp growth to overcome clear Americas expansion drawbacks [2]",
         "Consequently, if the Chinese consumer softens, this model's core top-line projections will not be optimal enough to meet our target [3]",
     ],
     [
@@ -372,7 +372,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 12 — Risk & Mitigants
+# Slide 12 - Risk & Mitigants
 _narrative_slide(
     "Risk & Mitigants",
     "This slide evaluates core downside risks and demonstrates how share repurchases compound EPS to drive share price recovery",
@@ -388,7 +388,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 13 — Timeline of Recovery (last narrative slide before 3-statement financials on slide 14)
+# Slide 13 - Timeline of Recovery (last narrative slide before 3-statement financials on slide 14)
 _timeline_links = [
     (1, f"{_MODEL}, Scenarios & Revenue Drivers / {_LULU_PR}"),
     (2, f"{_MODEL}, NOPAT Bridge & Scenarios / {_LULU_PR}"),
@@ -424,7 +424,7 @@ cats = [
         "Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while 75% UFCF buybacks compound EPS to boost sentiment [3]",
     ),
     (
-        "2028 (FY2027\u2013FY2028 Multiple Re-Rating)",
+        "2028 (FY2027-FY2028 Multiple Re-Rating)",
         "Accelerating international store scaling (+12% China comps) offsets Americas softness (-4%), driving overall revenue recovery and valuation re-rating toward $133.64 [4]",
     ),
 ]
@@ -454,9 +454,9 @@ HY = ["FY2022", "FY2023", "FY2024", "FY2025"]
 DCF_MODEL = "LULU_DCF_Valuation_Model.xlsx"
 SCEN_TAB = "Scenarios"
 SCEN_G = f"{DCF_MODEL} → {SCEN_TAB}, col G (base)"
-HIST_10K = "SEC Form 10-K (FY2022–FY2025)"
+HIST_10K = "SEC Form 10-K (FY2022-FY2025)"
 FIN_FOOTNOTE = (
-    "Hist = 10-K. Forecast (26–30) = DCF Scenarios pitch-bridge block, col G (base case only). "
+    "Hist = 10-K. Forecast (26-30) = DCF Scenarios pitch-bridge block, col G (base case only). "
     "Per-row model refs shown under line items."
 )
 
@@ -551,7 +551,7 @@ def _fin_explainer_boxes(slide, hist_title, hist_bullets, fcst_title, fcst_bulle
         (0.5, hist_title, hist_bullets, LGREY),
         (6.7, fcst_title, fcst_bullets, NAVY),
     ):
-        box = rect(slide, Inches(x), Inches(1.12), Inches(6.05), Inches(box_height), fill=fill)
+        box = rect(slide, Inches(x), Inches(1.26), Inches(6.05), Inches(box_height), fill=fill)
         btf = box.text_frame
         btf.word_wrap = True
         title_color = CARD if fill == LGREY else GOLD
@@ -573,7 +573,7 @@ def _fmt_cell(v, fmt="num"):
 
 def _fin_source_table(slide, source_rows, top=5.92, col0w=1.85, height=0.95):
     """Per-line model source: Hist | Fcst (Scenarios G)."""
-    headers = ["Line item", "Hist source (22–25)", "Fcst source, Scenarios col G"]
+    headers = ["Line item", "Hist source (22-25)", "Fcst source, Scenarios col G"]
     rows = [[line, hist, fcst] for line, hist, fcst in source_rows]
     stmt_table(
         slide, rows, headers, col0w=col0w, top=top, height=height,
@@ -594,9 +594,9 @@ def pitch_financial_slide(
     bold_rows=(),
     italic_note=None,
     col0w=2.35,
-    table_top=3.68,
-    table_height=2.22,
-    explainer_height=2.45,
+    table_top=3.72,
+    table_height=2.16,
+    explainer_height=2.32,
 ):
     """Build one financial slide: historicals + 5yr base-case forecast (Scenarios G)."""
     hdr = _fin_headers()
@@ -613,7 +613,7 @@ def pitch_financial_slide(
 
 
 # =====================================================================
-# FINANCIAL STATEMENTS & VALUATION (starts slide 13 — income statement; narrative ends at slide 12)
+# FINANCIAL STATEMENTS & VALUATION (starts slide 13 - income statement; narrative ends at slide 12)
 # =====================================================================
 _IS26B, _IS30B = IS_BASE["FY2026E"], IS_BASE["FY2030E"]
 _OM22 = D.IS["operating_income"]["FY2022"] / D.IS["revenue"]["FY2022"] * 100
@@ -681,7 +681,7 @@ _BS_HIST, _BS_FCST = _aligned_explainers([
     ),
     (
         "Funded debt",
-        "$0 across FY22\u2013FY25 (net-cash)",
+        "$0 across FY22-FY25 (net-cash)",
         "Funded debt: $0 (no term debt in model)",
     ),
 ])
@@ -715,9 +715,9 @@ _CF_HIST, _CF_FCST = _aligned_explainers([
 ])
 
 _IS_SOURCES = [
-    ("Net revenue", "10-K IS, Net revenue", f"{_scen_rng('revenue')} (Revenue yr 1–5)"),
+    ("Net revenue", "10-K IS, Net revenue", f"{_scen_rng('revenue')} (Revenue yr 1-5)"),
     ("Gross profit", "10-K IS, Gross profit", f"{_scen_rng('revenue')} × {_scen_rng('gross_margin')} (rev × GM%)"),
-    ("Operating income", "10-K IS, Operating income", f"{_scen_rng('ebit')} (EBIT yr 1–5)"),
+    ("Operating income", "10-K IS, Operating income", f"{_scen_rng('ebit')} (EBIT yr 1-5)"),
     ("Operating margin %", "10-K IS, OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
     ("Net income", "10-K IS, Net income", f"{_scen_rng('net_income')} (pitch bridge NI)"),
     ("Diluted EPS", "10-K IS, Diluted EPS", f"NI ÷ buyback-adjusted shares ($500M/yr; {_scen_rng('eps')})"),
@@ -750,8 +750,8 @@ _BS_NOTES = [
 
 _CF_SOURCES = [
     ("Cash from operations", "10-K CF, Operating activities", f"{_scen_rng('cfo')} (pitch bridge CFO)"),
-    ("D&A (add-back)", "10-K CF, Depreciation & amortization", f"{_scen_rng('dna')} (D&A yr 1–5)"),
-    ("Capital expenditures", "10-K CF, Capital expenditures", f"{_scen_rng('capex')} (Capex yr 1–5)"),
+    ("D&A (add-back)", "10-K CF, Depreciation & amortization", f"{_scen_rng('dna')} (D&A yr 1-5)"),
+    ("Capital expenditures", "10-K CF, Capital expenditures", f"{_scen_rng('capex')} (Capex yr 1-5)"),
     ("Free cash flow", "10-K CF, CFO − capex", f"{_scen_rng('fcf')} (pitch bridge FCF/CFS)"),
     ("Share repurchases", "10-K CF, Repurchases (financing)", f"{_scen_rng('buybacks')} (G21=$500M/yr fixed)"),
 ]
@@ -765,7 +765,7 @@ _CF_NOTES = [
 
 pitch_financial_slide(
     "Financials | Income Statement",
-    "Reported history (10-K) vs base-case operating forecast: FY26\u201330 (US$ M)",
+    "Reported history (10-K) vs base-case operating forecast: FY26-30 (US$ M)",
     [
         ["Net revenue"] + _hist_m(D.IS, "revenue") + _base_year_vals(IS_BASE, "revenue"),
         ["Gross profit"] + _hist_m(D.IS, "gross_profit") + _base_year_vals(IS_BASE, "gross_profit"),
@@ -775,9 +775,9 @@ pitch_financial_slide(
         ["Diluted EPS ($)"] + _hist_eps() + _base_year_vals(IS_BASE, "eps", fmt="eps"),
     ],
     row_notes=_IS_NOTES,
-    hist_title="HISTORICALS (FY2022\u2013FY2025) | SEC 10-K",
+    hist_title="HISTORICALS (FY2022-FY2025) | SEC 10-K",
     hist_bullets=_IS_HIST,
-    fcst_title="FORECAST (FY2026E\u2013FY2030E) | base case (Scenarios col G)",
+    fcst_title="FORECAST (FY2026E-FY2030E) | base case (Scenarios col G)",
     fcst_bullets=_IS_FCST,
     source_rows=_IS_SOURCES,
     bold_rows=(0, 2, 5),
@@ -789,7 +789,7 @@ pitch_financial_slide(
 
 pitch_financial_slide(
     "Financials | Balance Sheet",
-    "Net-cash history vs base-case funded growth: FY26\u201330 (US$ M)",
+    "Net-cash history vs base-case funded growth: FY26-30 (US$ M)",
     [
         ["Cash & equivalents"] + _hist_m(D.BS, "cash") + _base_year_vals(BS_BASE, "cash", by_year=False),
         ["Inventories"] + _hist_m(D.BS, "inventories") + _base_year_vals(BS_BASE, "inventories", by_year=False),
@@ -799,9 +799,9 @@ pitch_financial_slide(
         ["Funded debt"] + ["0"] * 4 + ["0"] * len(PROJ_YEARS),
     ],
     row_notes=_BS_NOTES,
-    hist_title="HISTORICALS (FY2022\u2013FY2025) | SEC 10-K",
+    hist_title="HISTORICALS (FY2022-FY2025) | SEC 10-K",
     hist_bullets=_BS_HIST,
-    fcst_title="FORECAST (FY2026E\u2013FY2030E) | base case (Scenarios col G)",
+    fcst_title="FORECAST (FY2026E-FY2030E) | base case (Scenarios col G)",
     fcst_bullets=_BS_FCST,
     source_rows=_BS_SOURCES,
     bold_rows=(2, 4, 5),
@@ -822,9 +822,9 @@ pitch_financial_slide(
         ["Share repurchases (CFF)"] + _hist_buybacks_out() + _base_year_vals(CF_BASE, "buybacks", by_year=False, fmt="neg_paren"),
     ],
     row_notes=_CF_NOTES,
-    hist_title="HISTORICALS (FY2022\u2013FY2025) | SEC 10-K",
+    hist_title="HISTORICALS (FY2022-FY2025) | SEC 10-K",
     hist_bullets=_CF_HIST,
-    fcst_title="FORECAST (FY2026E\u2013FY2030E) | base case (Scenarios col G)",
+    fcst_title="FORECAST (FY2026E-FY2030E) | base case (Scenarios col G)",
     fcst_bullets=_CF_FCST,
     source_rows=_CF_SOURCES,
     bold_rows=(3,),
@@ -875,9 +875,9 @@ s = slide_base(
 )
 
 # Section headers (GIS financial-slide style)
-tb, tf = textbox(s, Inches(0.5), Inches(1.1), Inches(6.0), Inches(0.28))
+tb, tf = textbox(s, Inches(0.5), Inches(1.24), Inches(6.0), Inches(0.22))
 add_para(tf, "CAPITAL STACK (US$ M)", 11, CARD, bold=True, first=True, space_after=0)
-tb, tf = textbox(s, Inches(6.7), Inches(1.1), Inches(6.15), Inches(0.28))
+tb, tf = textbox(s, Inches(6.7), Inches(1.24), Inches(6.15), Inches(0.22))
 add_para(tf, "WACC BUILD (CAPM)", 11, CARD, bold=True, first=True, space_after=0)
 
 # --- Cap stack table (left): WACC weights only on equity + lease debt ---
@@ -889,10 +889,10 @@ cap_rows = [
     ["Total capital (WACC basis)", f"{WB['total_cap_m']:,}", "100.0%"],
 ]
 stmt_table(
-    s, cap_rows, cap_headers, col0w=2.85, top=1.38, height=1.45, left=0.5, width=6.05,
+    s, cap_rows, cap_headers, col0w=2.85, top=1.48, height=1.35, left=0.5, width=6.05,
     font_size=9, header_font_size=9, bold_rows=(3,),
 )
-tb, tf = textbox(s, Inches(0.5), Inches(2.9), Inches(6.05), Inches(0.28))
+tb, tf = textbox(s, Inches(0.5), Inches(2.86), Inches(6.05), Inches(0.20))
 add_para(tf, "EV BRIDGE (NOT IN WACC WEIGHTS)", 9, CARD, bold=True, first=True, space_after=0)
 bridge_rows = [
     ["Cash & equivalents", f"{WB['cash_m']:,}", "Added back in EV \u2192 equity bridge"],
@@ -900,7 +900,7 @@ bridge_rows = [
 ]
 stmt_table(
     s, bridge_rows, ["Component", "US$ M", "Note"],
-    col0w=2.85, top=3.12, height=0.78, left=0.5, width=6.05,
+    col0w=2.85, top=3.08, height=0.78, left=0.5, width=6.05,
     font_size=8.5, header_font_size=8.5,
 )
 tb, tf = textbox(s, Inches(0.5), Inches(4.0), Inches(6.05), Inches(0.5))
@@ -912,7 +912,7 @@ add_para(
 )
 
 # --- WACC build (right): template LGREY panel + compact 2-col table ---
-rect(s, Inches(6.7), Inches(1.35), Inches(6.15), Inches(4.0), fill=LGREY)
+rect(s, Inches(6.7), Inches(1.50), Inches(6.15), Inches(3.85), fill=LGREY)
 wacc_compact = [
     ["Risk-free rate (10-yr UST)", _pct_wb(WB["rf"])],
     ["Equity risk premium", _pct_wb(WB["erp"])],
@@ -926,10 +926,10 @@ wacc_compact = [
 stmt_table(
     s, wacc_compact,
     ["Input", "Value"],
-    col0w=3.35, top=1.42, height=2.35, left=6.78, width=5.98,
+    col0w=3.35, top=1.56, height=2.22, left=6.78, width=5.98,
     font_size=9, header_font_size=9, bold_rows=(4,),
 )
-tb, tf = textbox(s, Inches(6.85), Inches(3.92), Inches(5.85), Inches(0.42))
+tb, tf = textbox(s, Inches(6.85), Inches(3.88), Inches(5.85), Inches(0.42))
 add_para(
     tf,
     f"\u03b2: Yahoo \u03b2L {WB['beta_obs']:.2f} \u2192 unlevered {WB['beta_unlev']:.2f} "
@@ -974,8 +974,8 @@ _sotp_lo = SOTP.get("implied_px_lo", _base_px)
 _sotp_hi = SOTP.get("implied_px_hi", _base_px)
 _gordon_exit = SOTP.get("gordon_exit_multiple", DCF_BASE.get("exit_multiple", 7.36))
 ff_methods = [
-    ("P / E (10\u201318x FY2026E)", round(FF["P / E"]["low"]), round(FF["P / E"]["high"])),
-    ("EV / EBITDA (5.0\u20138.0x FY30E)", round(FF["EV / EBITDA"]["low"]), round(FF["EV / EBITDA"]["high"])),
+    ("P / E (10-18x FY2026E)", round(FF["P / E"]["low"]), round(FF["P / E"]["high"])),
+    ("EV / EBITDA (5.0-8.0x FY30E)", round(FF["EV / EBITDA"]["low"]), round(FF["EV / EBITDA"]["high"])),
     ("Geographic SOTP (FY30E; Gordon anchor)", _sotp_lo, _sotp_hi),
     ("Unlevered DCF (base / Gordon g)", _base_px, _base_px),
     ("52-week range", 100, 226),
@@ -1002,13 +1002,13 @@ for name, lo, hi in ff_methods:
     if lo == hi:
         mx = _xpos(lo)
         rect(s, Inches(mx - 0.015), Inches(top + 0.04), Pt(3), Inches(0.34), fill=NAVY)
-        # Label above marker — avoids collision with $140 target line at nearby x-positions
+        # Label above marker - avoids collision with $140 target line at nearby x-positions
         tb2, tf2 = textbox(s, Inches(mx - 0.42), Inches(top - 0.22), Inches(0.84), Inches(0.24))
         add_para(tf2, f"${lo}", 9.5, NAVY, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
     else:
         bar_w = max(_xpos(hi) - _xpos(lo), 0.15)
         rect(s, Inches(_xpos(lo)), Inches(top), Inches(bar_w), Inches(0.42), fill=GOLD)
-        # Low label outside bar (left) — keeps $139 clear of target line at $140
+        # Low label outside bar (left) - keeps $139 clear of target line at $140
         tb_lo, tf_lo = textbox(
             s, Inches(_xpos(lo) - 0.5), Inches(top), Inches(0.46), Inches(0.42), anchor=MSO_ANCHOR.MIDDLE
         )
@@ -1021,9 +1021,9 @@ cp_x = _xpos(100)
 pt_x = _xpos(140)
 rect(s, Inches(cp_x), Inches(1.45), Pt(2), Inches(4.25), fill=INK)
 rect(s, Inches(pt_x), Inches(1.45), Pt(2), Inches(4.25), fill=CARD)
-tb, tf = textbox(s, Inches(cp_x - 0.6), Inches(1.08), Inches(1.2), Inches(0.34))
+tb, tf = textbox(s, Inches(cp_x - 0.6), Inches(1.22), Inches(1.2), Inches(0.24))
 add_para(tf, "Current $100", 8.5, INK, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
-tb, tf = textbox(s, Inches(pt_x - 0.7), Inches(1.08), Inches(1.2), Inches(0.34))
+tb, tf = textbox(s, Inches(pt_x - 0.7), Inches(1.22), Inches(1.2), Inches(0.24))
 add_para(tf, "Target $140", 8.5, CARD, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
 
 tb, tf = textbox(s, Inches(0.5), Inches(6.12), Inches(12.35), Inches(0.88))
@@ -1054,16 +1054,16 @@ for seg in SOTP.get("segments", []):
         f"{seg['fy30_rev_m']:,}",
         f"{seg['ebitda_margin_pct']:.1f}%",
         f"{seg['fy30_ebitda_m']:,}",
-        f"{seg['ev_ebitda_lo']:.1f}x\u2013{seg['ev_ebitda_hi']:.1f}x",
-        f"{seg['ev_lo_m']:,}\u2013{seg['ev_hi_m']:,}",
+        f"{seg['ev_ebitda_lo']:.1f}x-{seg['ev_ebitda_hi']:.1f}x",
+        f"{seg['ev_lo_m']:,}-{seg['ev_hi_m']:,}",
     ])
 seg_rows.append([
     "Total segment EV",
     f"{SOTP.get('fy30_rev_m', 0):,}",
     "",
     f"{SOTP.get('fy30_ebitda_m', 0):,}",
-    f"{SOTP.get('consolidated_multiple_lo', _gordon_exit):.1f}x\u2013{SOTP.get('consolidated_multiple_hi', _gordon_exit):.1f}x",
-    f"{SOTP.get('total_ev_lo_m', 0):,}\u2013{SOTP.get('total_ev_hi_m', 0):,}",
+    f"{SOTP.get('consolidated_multiple_lo', _gordon_exit):.1f}x-{SOTP.get('consolidated_multiple_hi', _gordon_exit):.1f}x",
+    f"{SOTP.get('total_ev_lo_m', 0):,}-{SOTP.get('total_ev_hi_m', 0):,}",
 ])
 seg_rows.append([
     "Corporate / HQ (no separate carve-out)",
@@ -1077,7 +1077,7 @@ seg_rows.append([
 seg_rows.append([
     "Implied equity value / share",
     "", "", "", "n/a",
-    f"${SOTP.get('implied_px_lo', 0)}\u2013${SOTP.get('implied_px_hi', 0)}",
+    f"${SOTP.get('implied_px_lo', 0)}-${SOTP.get('implied_px_hi', 0)}",
 ])
 stmt_table(
     s, seg_rows,
@@ -1090,7 +1090,7 @@ add_para(tf, "Methodology", 12, CARD, bold=True, first=True, space_after=3)
 for t in [
     "Single-brand retailer: geography is the cleanest SOTP cut (Americas / China / RoW per 10-K)",
     "FY30E segment revenue = FY25 geo mix \u00d7 base-case consolidated FY30 revenue (Scenarios col G)",
-    f"Segment EV/EBITDA spreads anchor to Gordon-implied exit {_gordon_exit:.1f}x (selected DCF TV identity: not the 5\u20138x comps football-field band)",
+    f"Segment EV/EBITDA spreads anchor to Gordon-implied exit {_gordon_exit:.1f}x (selected DCF TV identity: not the 5-8x comps football-field band)",
     "Americas: Gordon \u2212 1.0x to \u2212 0.25x (mature); China: +0.5x to +2.0x (growth); RoW: \u22120.25x to +0.75x",
     f"Consolidated base-case DCF {_d(_base_px)} uses Gordon growth (g={DCF_BASE.get('terminal_g', 0.0225)*100:.2f}%); SOTP is terminal-year EBITDA triangulation only",
 ]:
@@ -1100,7 +1100,7 @@ box = rect(s, Inches(8.5), Inches(4.38), Inches(4.35), Inches(1.55), fill=LGREY)
 btf = box.text_frame
 btf.word_wrap = True
 add_para(btf, "SOTP vs DCF", 12, CARD, bold=True, first=True, space_after=4)
-add_para(btf, f"SOTP range: ${_sotp_lo}\u2013${_sotp_hi}", 13, NAVY, bold=True, space_after=3)
+add_para(btf, f"SOTP range: ${_sotp_lo}-${_sotp_hi}", 13, NAVY, bold=True, space_after=3)
 add_para(btf, f"Base-case DCF: {_d(_base_px)}", 13, NAVY, bold=True, space_after=3)
 add_para(btf, "Overlap is expected: SOTP applies FY30 EBITDA multiples; DCF discounts explicit FCF + Gordon growth TV.", 9.5, INK, space_after=0)
 
@@ -1121,12 +1121,12 @@ s = slide_base(
 )
 
 # --- Assumptions (left) ---
-tb, tf = textbox(s, Inches(0.5), Inches(1.12), Inches(6.2), Inches(0.28))
+tb, tf = textbox(s, Inches(0.5), Inches(1.24), Inches(6.2), Inches(0.22))
 add_para(tf, "BASE-CASE ASSUMPTIONS (SCENARIOS COL G)", 11, CARD, bold=True, first=True, space_after=0)
 arows = [
     ["Assumption", "Value"],
     ["FY2026 revenue growth", f"{_rev_g1 * 100:.1f}%"],
-    ["FY2027\u201330 revenue growth (avg)", f"{_rev_gt * 100:+.1f}%"],
+    ["FY2027-30 revenue growth (avg)", f"{_rev_gt * 100:+.1f}%"],
     ["Clean EBIT margin (FY26 run-rate)", f"{DCF_BASE.get('ebit_margin_clean', 0.132) * 100:.1f}%"],
     ["Terminal EBIT margin (FY2030E)", f"{DCF_BASE.get('ebit_margin_terminal', 0.155) * 100:.1f}%"],
     ["FY26 tariff refunds (one-time)", f"${DCF_BASE.get('tariff_refund_k', 134500) / 1000:.1f}M"],
@@ -1136,7 +1136,7 @@ arows = [
     ["Terminal growth (g)", f"{_tg * 100:.2f}%"],
     ["Gordon-implied exit EV/EBITDA (identity)", f"{_exit_m:.1f}x"],
 ]
-stmt_table(s, arows[1:], arows[0], col0w=3.5, top=1.38, height=2.85, left=0.5, width=6.15,
+stmt_table(s, arows[1:], arows[0], col0w=3.5, top=1.48, height=2.75, left=0.5, width=6.15,
            font_size=9, header_font_size=9, bold_rows=())
 
 # --- Terminal value approaches (left bottom) ---
@@ -1164,7 +1164,7 @@ btf = box.text_frame
 btf.word_wrap = True
 add_para(btf, "VALUATION OUTPUT (US$ M)", 11, CARD, bold=True, first=True, space_after=5)
 for t2, v in [
-    ("PV of explicit FCF (FY26\u2013FY30)", _m(round(V["pv_fcf_m"]))),
+    ("PV of explicit FCF (FY26-FY30)", _m(round(V["pv_fcf_m"]))),
     ("PV of terminal value", _m(round(V["pv_tv_m"]))),
     ("Enterprise value", _m(round(V["ev_m"]))),
     ("Plus: cash", _m(round(V["cash_m"]))),
@@ -1201,7 +1201,7 @@ add_para(
 )
 
 # --- Sensitivity ---
-tb, tf = textbox(s, Inches(0.5), Inches(5.42), Inches(12.35), Inches(0.25))
+tb, tf = textbox(s, Inches(0.5), Inches(5.38), Inches(12.35), Inches(0.20))
 add_para(tf, "SENSITIVITY | IMPLIED SHARE PRICE (WACC vs TERMINAL g)", 10, CARD, bold=True, first=True, space_after=0)
 _g_cols = ["1.5%", "2.0%", "2.25%", "2.5%", "3.0%"]
 sens = [["WACC \\ g"] + _g_cols]
@@ -1212,16 +1212,16 @@ _base_wacc_idx = min(
 for row in PV["sensitivity"]:
     sens.append([row["wacc"]] + [_d(p) for p in row["prices"]])
 stmt_table(
-    s, sens[1:], sens[0], col0w=1.0, top=5.65, height=1.05, left=0.5, width=7.4,
+    s, sens[1:], sens[0], col0w=1.0, top=5.60, height=1.08, left=0.5, width=7.4,
     font_size=9, header_font_size=9,
     bold_rows=(),
 )
 # highlight base cell via note
-tb, tf = textbox(s, Inches(8.1), Inches(5.65), Inches(4.75), Inches(1.05))
+tb, tf = textbox(s, Inches(8.1), Inches(5.60), Inches(4.75), Inches(1.08))
 add_para(tf, "Base-case cell", 9, CARD, bold=True, first=True, space_after=2)
 add_para(
     tf,
-    f"WACC {_pct(V['wacc'])} \u00d7 g {_tg*100:.2f}% \u2192 {_d(_base_px)}. Grid brackets \u00b1100bps WACC and 1.5\u20133.0% g.",
+    f"WACC {_pct(V['wacc'])} \u00d7 g {_tg*100:.2f}% \u2192 {_d(_base_px)}. Grid brackets \u00b1100bps WACC and 1.5-3.0% g.",
     9, INK, space_after=0,
 )
 
@@ -1238,7 +1238,7 @@ s = slide_base(
     sources=_ca.get("source", "PitchBook Comps Set 04-Sep-2026"),
 )
 # --- Peer multiples (left) ---
-tb, tf = textbox(s, Inches(0.5), Inches(1.1), Inches(7.2), Inches(0.25))
+tb, tf = textbox(s, Inches(0.5), Inches(1.24), Inches(7.2), Inches(0.20))
 add_para(tf, "COMPARABLE COMPANIES | TRADING MULTIPLES", 10, CARD, bold=True, first=True, space_after=0)
 peer_hdr = ["Company", "EV/Rev", "EV/EBITDA", "EV/EBIT", "P/E"]
 peer_rows = []
@@ -1270,12 +1270,12 @@ peer_rows.append([
     f"{_lulu_t.get('pe_fwd', 0):.1f}x",
 ])
 stmt_table(
-    s, peer_rows, peer_hdr, col0w=2.0, top=1.32, height=2.55, left=0.5, width=7.25,
+    s, peer_rows, peer_hdr, col0w=2.0, top=1.46, height=2.40, left=0.5, width=7.25,
     font_size=8.5, header_font_size=8.5, bold_rows=(len(peer_rows) - 1,),
 )
 
 # --- Implied valuation (right) ---
-tb, tf = textbox(s, Inches(7.95), Inches(1.1), Inches(5.0), Inches(0.25))
+tb, tf = textbox(s, Inches(7.95), Inches(1.24), Inches(5.0), Inches(0.20))
 add_para(tf, "IMPLIED LULU VALUATION (CORE PEER MEDIAN)", 10, CARD, bold=True, first=True, space_after=0)
 imp_hdr = ["Metric", "Peer med.", "LULU base", "Implied px"]
 imp_rows = []
@@ -1286,21 +1286,21 @@ for row in _ca.get("implied", []):
         row["metric"],
         f"{row['peer_median']:.1f}x" if row["metric"] != "EV / Revenue" else f"{row['peer_median']:.2f}x",
         base_s,
-        f"${row['implied_px_low']}\u2013${row['implied_px_high']} (med ${row['implied_px_median']})",
+        f"${row['implied_px_low']}-${row['implied_px_high']} (med ${row['implied_px_median']})",
     ])
 stmt_table(
-    s, imp_rows, imp_hdr, col0w=1.2, top=1.32, height=2.55, left=7.95, width=5.05,
+    s, imp_rows, imp_hdr, col0w=1.2, top=1.46, height=2.40, left=7.95, width=5.05,
     font_size=7.5, header_font_size=8, bold_rows=(),
 )
-tb, tf = textbox(s, Inches(7.95), Inches(4.0), Inches(5.05), Inches(0.45))
+tb, tf = textbox(s, Inches(7.95), Inches(3.92), Inches(5.05), Inches(0.48))
 add_para(
     tf,
-    "Implied EV = peer median \u00d7 LULU base (cols 2\u20133); P/E = median \u00d7 EPS (no EV). "
+    "Implied EV = peer median \u00d7 LULU base (cols 2-3); P/E = median \u00d7 EPS (no EV). "
     "EV + cash \u2212 lease debt \u00f7 shares = equity/sh.",
     7.5, INK, italic=True, first=True, space_after=0,
 )
 
-tb, tf = textbox(s, Inches(0.5), Inches(4.05), Inches(12.35), Inches(2.35))
+tb, tf = textbox(s, Inches(0.5), Inches(4.48), Inches(12.35), Inches(2.00))
 _ebitda_med = _core.get("ev_ebitda", {}).get("median", 0)
 _rev_med = _core.get("ev_rev", {}).get("median", 0)
 _pe_med = _core.get("pe_fwd", {}).get("median", 0)
@@ -1369,7 +1369,7 @@ prec_rows.append([
     "Trading comps only (not a premium benchmark)",
 ])
 stmt_table(
-    s, prec_rows, prec_hdr, col0w=1.55, top=1.15, height=2.25, left=0.5, width=12.35,
+    s, prec_rows, prec_hdr, col0w=1.55, top=1.28, height=2.15, left=0.5, width=12.35,
     font_size=8, header_font_size=8, bold_rows=(len(prec_rows) - 1,),
 )
 
