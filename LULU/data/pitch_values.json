@@ -56,16 +56,6 @@
         104.723500298124,
         109.531860763763
       ]
-    },
-    {
-      "wacc": "11.5%",
-      "prices": [
-        91.7259105771327,
-        95.1063625546076,
-        96.9336338937831,
-        98.8624203073574,
-        103.06036720749
-      ]
     }
   ],
   "football_field": {
@@ -98,7 +88,8 @@
         "operating_income": 1511,
         "operating_margin": "14.5%",
         "net_income": 1089,
-        "eps": 9776.9
+        "eps": 9.55,
+        "diluted_shares_k": 114068
       },
       "FY2027E": {
         "revenue": 10665,
@@ -106,7 +97,8 @@
         "operating_income": 1469,
         "operating_margin": "13.8%",
         "net_income": 1056,
-        "eps": 9484.51
+        "eps": 9.65,
+        "diluted_shares_k": 109438
       },
       "FY2028E": {
         "revenue": 10910,
@@ -114,7 +106,8 @@
         "operating_income": 1566,
         "operating_margin": "14.4%",
         "net_income": 1120,
-        "eps": 10059.72
+        "eps": 10.66,
+        "diluted_shares_k": 105091
       },
       "FY2029E": {
         "revenue": 11161,
@@ -122,7 +115,8 @@
         "operating_income": 1666,
         "operating_margin": "14.9%",
         "net_income": 1187,
-        "eps": 10657.96
+        "eps": 11.75,
+        "diluted_shares_k": 100992
       },
       "FY2030E": {
         "revenue": 11418,
@@ -130,7 +124,8 @@
         "operating_income": 1770,
         "operating_margin": "15.5%",
         "net_income": 1256,
-        "eps": 11279.95
+        "eps": 12.93,
+        "diluted_shares_k": 97146
       }
     },
     "bull": {
@@ -140,7 +135,8 @@
         "operating_income": 1680,
         "operating_margin": "15.8%",
         "net_income": 1242,
-        "eps": 11150.9
+        "eps": 11.39,
+        "diluted_shares_k": 109018
       },
       "FY2027E": {
         "revenue": 11298,
@@ -148,7 +144,8 @@
         "operating_income": 1765,
         "operating_margin": "15.6%",
         "net_income": 1300,
-        "eps": 11670.19
+        "eps": 12.94,
+        "diluted_shares_k": 100472
       },
       "FY2028E": {
         "revenue": 11976,
@@ -156,7 +153,8 @@
         "operating_income": 2006,
         "operating_margin": "16.8%",
         "net_income": 1469,
-        "eps": 13193.5
+        "eps": 16.08,
+        "diluted_shares_k": 91359
       },
       "FY2029E": {
         "revenue": 12694,
@@ -164,7 +162,8 @@
         "operating_income": 2269,
         "operating_margin": "17.9%",
         "net_income": 1655,
-        "eps": 14862.4
+        "eps": 20.27,
+        "diluted_shares_k": 81646
       },
       "FY2030E": {
         "revenue": 13456,
@@ -172,7 +171,8 @@
         "operating_income": 2557,
         "operating_margin": "19.0%",
         "net_income": 1859,
-        "eps": 16688.77
+        "eps": 26.05,
+        "diluted_shares_k": 71376
       }
     }
   },
@@ -407,8 +407,8 @@
       "label": "Capex \u2013 year 1"
     },
     "eps": {
-      "r1": 183,
-      "r5": 187,
+      "r1": 188,
+      "r5": 192,
       "label": "Diluted EPS ($) \u2013 year 1"
     }
   },
@@ -652,9 +652,9 @@
         "revenue_usd_m": 250,
         "ev_sales": 1.64,
         "ev_ebitda": 16.0,
-        "status": "Closed Aug-2021 \u2014 ~16x FY21E EBITDA; women's premium activewear",
+        "status": "Closed Aug-2021; ~16x FY21E EBITDA",
         "source": "Wolverine IR / SEC investor deck (Aug-2021)",
-        "use": "Closed strategic comp \u2014 premium DTC activewear at scale"
+        "use": "Closed strategic comp; premium DTC activewear at scale"
       },
       {
         "target": "Gymshark",
@@ -665,9 +665,9 @@
         "revenue_usd_m": 258,
         "ev_sales": 5.0,
         "ev_ebitda": null,
-        "status": "Closed Aug-2020 \u2014 $1.3bn implied EV; minority stake, not control",
+        "status": "Closed Aug-2020; $1.3bn EV (minority)",
         "source": "Bloomberg Aug-2020; ~\u00a3258M FY20 sales cited",
-        "use": "Private growth valuation marker \u2014 UK DTC fitness apparel"
+        "use": "Private growth valuation marker; UK DTC fitness apparel"
       },
       {
         "target": "Vuori",
@@ -678,9 +678,9 @@
         "revenue_usd_m": null,
         "ev_sales": null,
         "ev_ebitda": null,
-        "status": "Closed Oct-2021 \u2014 $4bn post-money; revenue not disclosed (~140% YoY growth)",
+        "status": "Closed Oct-2021; $4bn post-money",
         "source": "BusinessWire / Reuters Oct-2021",
-        "use": "Private athleisure unicorn valuation \u2014 profitable DTC since 2017"
+        "use": "Private athleisure unicorn valuation; profitable DTC since 2017"
       },
       {
         "target": "Alo Yoga (Color Image)",
@@ -691,9 +691,9 @@
         "revenue_usd_m": 2000,
         "ev_sales": 5.0,
         "ev_ebitda": null,
-        "status": "Unclosed \u2014 Reuters Jun-2026: no deal announced; IPO or sale still explored",
+        "status": "Unclosed; no deal per Reuters Jun-2026",
         "source": "Reuters Oct-2023 Moelis ask; Forbes parent sales ~$2bn",
-        "use": "Private precedent only \u2014 unclosed ask; not a premium to LULU stock"
+        "use": "Private precedent only; unclosed ask; not a premium to LULU stock"
       }
     ],
     "lulu_ev_sales": 1.07,

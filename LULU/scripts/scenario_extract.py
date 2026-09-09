@@ -54,6 +54,31 @@ def align_cash_flow(cf_paths):
             cf_paths["fcf"][fy] = cfo + capex
 
 
+# Matches 3-statement Assumptions repurchase price path ($/sh).
+_REPURCHASE_PRICES = [100, 108, 115, 122, 130]
+_BUYBACK_BUDGET_M = 500  # $500M/yr base case (Scenarios col G bb_fixed)
+
+
+def align_buyback_eps(income, cash_flow):
+    """Recompute forecast EPS from NI and buyback-reduced diluted share count.
+
+    Scenarios pitch-bridge EPS had a units bug (NI×1000/shares). Forecast EPS
+    should match the 3-statement: NI ($M) ÷ diluted shares (000), with shares
+    reduced by $500M/yr repurchases at the assumed avg price path.
+    """
+    sh_k = D.IS["diluted_shares"]["FY2025"]
+    for i, fy in enumerate(PROJ_YEARS):
+        ni_m = income[fy].get("net_income")
+        if ni_m is None:
+            continue
+        bb_m = abs(cash_flow["buybacks"].get(fy) or _BUYBACK_BUDGET_M)
+        price = _REPURCHASE_PRICES[i]
+        retired_k = bb_m * 1000 / price
+        sh_k = max(sh_k - retired_k, 1)
+        income[fy]["eps"] = round((ni_m * 1000) / sh_k, 2)
+        income[fy]["diluted_shares_k"] = round(sh_k)
+
+
 def extract_scenario(sc, col):
     """Read full pitch deck paths from Scenarios pitch-bridge block + forecast rows."""
     rev_r = _year_rows(sc, "revenue")
@@ -122,6 +147,7 @@ def extract_scenario(sc, col):
     }
     align_income_statement(income)
     align_cash_flow(cash_flow)
+    align_buyback_eps(income, cash_flow)
     return income, balance, cash_flow
 
 

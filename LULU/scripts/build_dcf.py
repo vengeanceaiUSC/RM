@@ -429,7 +429,9 @@ FY25_TL = D.BS['total_liab']['FY2025']
 FY25_TE = D.BS['total_equity']['FY2025']
 PITCH_OTHER_INC = [45000, 40000, 35000, 30000, 25000]
 other_rows, ni_rows, cfo_rows, fcf_cfs_rows, buy_rows, cash_bs_rows = {}, {}, {}, {}, {}, {}
-ta_rows, tl_rows, te_rows, eps_rows = {}, {}, {}, {}
+ta_rows, tl_rows, te_rows, sh_rows, eps_rows = {}, {}, {}, {}, {}
+PITCH_REP_PRICES = [100, 108, 115, 122, 130]
+PITCH_SH_START = D.IS['diluted_shares']['FY2025']
 for t in range(1, 6):
     other_rows[t] = cur
     put(cur, f"  Other income \u2013 year {t}")
@@ -499,10 +501,26 @@ for t in range(1, 6):
         write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
     cur += 1
 for t in range(1, 6):
+    sh_rows[t] = cur
+    put(cur, f"  Diluted shares (000) \u2013 year {t}")
+    for col in SCEN_COLS:
+        if t == 1:
+            prev = PITCH_SH_START
+        else:
+            prev = f"{col}{sh_rows[t - 1]}"
+        price = PITCH_REP_PRICES[t - 1]
+        if col == "H":
+            buy_expr = f"ROUND({col}{SC['bb_pct']}*{col}{fcf_cfs_rows[t]},0)"
+        else:
+            buy_expr = f"{col}{SC['bb_fixed']}"
+        f = f"={prev}-{buy_expr}/{price}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
     eps_rows[t] = cur
     put(cur, f"  Diluted EPS ($) \u2013 year {t}")
     for col in SCEN_COLS:
-        f = f"={col}{ni_rows[t]}*1000/{D.MKT['shares_out']}"
+        f = f"={col}{ni_rows[t]}/{col}{sh_rows[t]}"
         write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=EPSFMT, align=S.right)
     cur += 1
 write(scn, f'A{cur}',

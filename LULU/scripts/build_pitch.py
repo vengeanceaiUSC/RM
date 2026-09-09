@@ -358,7 +358,7 @@ _narrative_slide(
     [
         ("China Downside", "Bear case **$56/sh** floor; **$45.64** cumulative cash/sh recovers **45%** of entry [1]"),
         ("CapEx Flex", "Reduced CapEx saves **$360M/yr**; e-commerce **23.6%** EBIT + **$101.5M** inventory release [2]"),
-        ("Buyback Engine", "Deploying **$500M** annually into buybacks retires **18.7 million** shares, compounding EPS to **$13.36** to support our target price of **$133.64** [3]"),
+        ("Buyback Engine", "Deploying **$500M** annually into buybacks retires **~18.7M** shares, compounding diluted EPS to **$12.93** by FY30 (IS forecast) [3]"),
         ("Price Recovery", "EPS accretion supports sentiment; **$133.64** base target is DCF on day-one shares (buybacks do not change IV per share) [3]"),
     ],
     [
@@ -401,7 +401,7 @@ cats = [
     ),
     (
         "FY27 Inflection",
-        "Operating margin to **13.8%** (+60 bps); **$500M/yr** buybacks compound EPS to **$13.36** by FY30 [3]",
+        "Operating margin to **13.8%** (+60 bps); **$500M/yr** buybacks compound diluted EPS to **$12.93** by FY30 [3]",
     ),
     (
         "FY28 Re-Rating",
@@ -699,7 +699,7 @@ _IS_SOURCES = [
     ("Operating income", "10-K IS, Operating income", f"{_scen_rng('ebit')} (EBIT yr 1–5)"),
     ("Operating margin %", "10-K IS, OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
     ("Net income", "10-K IS, Net income", f"{_scen_rng('net_income')} (pitch bridge NI)"),
-    ("Diluted EPS", "10-K IS, Diluted EPS", f"{_scen_rng('eps')} (pitch bridge EPS)"),
+    ("Diluted EPS", "10-K IS, Diluted EPS", f"NI ÷ buyback-adjusted shares ($500M/yr; {_scen_rng('eps')})"),
 ]
 _IS_NOTES = [
     _row_note("10-K IS, Net revenue", f"{_scen_rng('revenue')}"),
@@ -707,7 +707,7 @@ _IS_NOTES = [
     _row_note("10-K IS, Operating income", f"{_scen_rng('ebit')}"),
     _row_note("10-K IS, OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
     _row_note("10-K IS, Net income", f"{_scen_rng('net_income')}"),
-    _row_note("10-K IS, Diluted EPS", f"{_scen_rng('eps')}"),
+    _row_note("10-K IS, Diluted EPS", f"NI ÷ diluted sh (500M/yr buybacks); {_scen_rng('eps')}"),
 ]
 
 _BS_SOURCES = [
@@ -760,7 +760,10 @@ pitch_financial_slide(
     fcst_bullets=_IS_FCST,
     source_rows=_IS_SOURCES,
     bold_rows=(0, 2, 5),
-    italic_note=f"All forecast lines: {DCF_MODEL} \u2192 Scenarios tab \u2192 pitch deck bridge block (col G).",
+    italic_note=(
+        f"Forecast: {DCF_MODEL} \u2192 Scenarios col G. EPS = NI \u00f7 diluted shares after "
+        "$500M/yr repurchases (DCF $134 still uses 111.4M day-one basic shares)."
+    ),
 )
 
 pitch_financial_slide(
@@ -781,7 +784,10 @@ pitch_financial_slide(
     fcst_bullets=_BS_FCST,
     source_rows=_BS_SOURCES,
     bold_rows=(2, 4, 5),
-    italic_note="BS forecast: Scenarios pitch bridge (cash waterfall + FY25 BS \u00d7 revenue growth), col G.",
+    italic_note=(
+        "BS forecast: cash roll-forward includes $500M/yr buybacks; equity scales with revenue "
+        "(buyback-driven equity reduction shown via CF / IS share count, not TE line)."
+    ),
 )
 
 pitch_financial_slide(
@@ -801,7 +807,9 @@ pitch_financial_slide(
     fcst_bullets=_CF_FCST,
     source_rows=_CF_SOURCES,
     bold_rows=(3,),
-    italic_note="Buybacks: col G = $500M/yr fixed (Scenarios assumptions).",
+    italic_note=(
+        "Buybacks: $500M/yr fixed (Scenarios col G). Cash roll-forward = prior cash + FCF \u2212 buybacks."
+    ),
 )
 
 # =====================================================================
