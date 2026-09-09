@@ -99,7 +99,6 @@ LULU_TOC = [
     "16. Financials \u2014 capital structure", "17. Valuation summary (football field)",
     "18. Sum of the parts", "19. DCF valuation (base case)",
     "20. Comps analysis", "21. Precedent transactions",
-    "22. Appendix \u2014 bull / bear scenarios",
 ]
 deck.toc_slide(LULU_TOC)
 
@@ -902,7 +901,7 @@ stmt_table(
 # =====================================================================
 s = slide_base(
     "Valuation Summary",
-    "Football field \u2014 implied share-price ranges by methodology (base case DCF; bear/bull in appendix)",
+    "Football field \u2014 implied share-price ranges by methodology (base case DCF)",
     page=pg(),
     sources=f"Source: {DCF_MODEL} \u2192 Comps / football field tab; geographic SOTP on FY30E base revenue mix",
 )
@@ -969,7 +968,7 @@ add_para(
 )
 add_para(
     tf,
-    "DCF row = Scenarios col G (Gordon growth). Bear ${_d(V['bear'])} / bull ${_d(V['bull'])} bracket scenarios are in the appendix.",
+    f"DCF row = Scenarios col G (Gordon growth). Bear ${_d(V['bear'])} / bull ${_d(V['bull'])} bracket scenario range from the model.",
     11, INK, italic=True, space_after=0,
 )
 
@@ -1052,7 +1051,7 @@ s = slide_base(
     "DCF Valuation",
     f"Base-case unlevered DCF (Scenarios col G) \u2014 Gordon growth terminal value; {_exit_m:.1f}x is implied exit identity",
     page=pg(),
-    sources=f"Source: {DCF_MODEL} \u2192 Scenarios col G + DCF tab; bear/bull scenarios in appendix",
+    sources=f"Source: {DCF_MODEL} \u2192 Scenarios col G + DCF tab",
 )
 
 # --- Assumptions (left) ---
@@ -1336,74 +1335,24 @@ for title, body in [
     add_para(tf, title, 11, CARD, bold=True, first=(title == "Private precedent framework"), space_after=2)
     add_para(tf, body, 10, INK, space_after=5)
 
-box = rect(s, Inches(8.5), Inches(5.85), Inches(4.35), Inches(1.05), fill=LGREY)
+box = rect(s, Inches(8.5), Inches(5.75), Inches(4.35), Inches(1.2), fill=LGREY)
 btf = box.text_frame
 btf.word_wrap = True
 add_para(btf, "Valuation stack", 11, CARD, bold=True, first=True, space_after=4)
 add_para(btf, f"DCF base: {_d(_base_px)}  |  Target: $140", 12, NAVY, bold=True, space_after=3)
 _cs = _core.get("ev_ebitda", {})
 _ebitda_imp = next((r for r in _ca.get("implied", []) if r.get("metric") == "EV / EBITDA"), {})
+_ebitda_px = int(_ebitda_imp.get("implied_px_median", _base_px))
 add_para(
     btf,
-    f"Comps median EV/EBITDA {_cs.get('median', 0):.1f}x \u2192 ~${_ebitda_imp.get('implied_px_median', _base_px)}/sh",
-    10, INK, space_after=0,
+    f"Comps median EV/EBITDA {_cs.get('median', 0):.1f}x \u2192 ~${_ebitda_px}/sh",
+    10, INK, bold=True, space_after=2,
 )
-
-# =====================================================================
-# 22. APPENDIX: SCENARIOS
-# =====================================================================
-s = slide_base("Appendix \u2014 Bull / Bear Scenarios", "Asymmetric payoff: limited downside, substantial upside", page=pg(),
-               sources="Source: GIS DCF model (scenario tab)")
-cols = [
-    ("BEAR", _d(V["bear"]), _up(V["bear"]), CARD, [
-        "FY2026 revenue \u22129%; growth stays negative (\u22121% avg FY28\u201330)",
-        "Terminal EBIT margin 12.0%",
-        "WACC 11.0%; terminal growth 1.5%",
-        "Americas decline persists; share loss continues",
-    ]),
-    ("BASE", _d(V["base_dcf"]), _up(V["base_dcf"]), GREEN, [
-        "FY2026 revenue \u22126.1%; then +2.3% (Street 3Y forecast)",
-        "Clean EBIT margin 13.2% \u2192 15.5%; +$134.5M refund in FY26 only",
-        f"WACC {_pct(V['wacc'])}; terminal growth 2.25%",
-        "International offsets a stabilizing Americas",
-    ]),
-    ("BULL", _d(V["bull"]), _up(V["bull"]), NAVY, [
-        "FY2026 revenue \u22124%; +6% avg FY27\u201330",
-        "Terminal EBIT margin 19.0%",
-        "WACC 9.5%; terminal growth 3.0%",
-        "Margin recovery toward peak; brand re-accelerates",
-    ]),
-]
-x = 0.5
-for name, px, up, color, bullets in cols:
-    head = rect(s, Inches(x), Inches(1.35), Inches(4.05), Inches(0.95), fill=color)
-    ht = head.text_frame; ht.word_wrap = True; ht.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(ht, f"{name}   {px}", 20, WHITE, bold=True, first=True, space_after=0, align=PP_ALIGN.CENTER)
-    add_para(ht, f"{up} vs $100", 12.5, WHITE, align=PP_ALIGN.CENTER, space_after=0)
-    b = rect(s, Inches(x), Inches(2.4), Inches(4.05), Inches(3.6), fill=LGREY)
-    bt = b.text_frame; bt.word_wrap = True
-    for i, blt in enumerate(bullets):
-        add_para(bt, blt, 12.5, INK, bullet=True, first=(i == 0), space_after=8)
-    x += 4.25
-tb, tf = textbox(s, Inches(0.5), Inches(6.2), Inches(12.35), Inches(0.8))
-add_para(tf, f"Probability-weighted value (25% / 50% / 25%) \u2248 {_d(V['prob_weighted'])} \u2014 the risk/reward skews decisively to the upside", 13.5, NAVY, bold=True, italic=True, first=True, space_after=0)
-
-# =====================================================================
-# 23. DISCLAIMER / SOURCES
-# =====================================================================
-s = slide_base("Sources & Disclaimer", "Data provenance and standard research disclaimer", page=pg())
-tb, tf = body_box(s)
-add_para(tf, "Sources", 14, CARD, bold=True, first=True, space_after=5)
-for t in [
-    "Historical financials: lululemon athletica inc. Forms 10-K via SEC EDGAR (CIK 0001397187); FY2025 fiscal year ended February 1, 2026",
-    "Q2 FY2026 results and FY2026 guidance: company earnings release dated September 3, 2026",
-    "Market data (price, shares, beta): public market sources as of early September 2026",
-    "Projections, DCF and comparable-company analysis: GIS Investment Research models, built from scratch for this assignment",
-    "Alo Yoga: Reuters 2023 Moelis ask ~$10bn (no deal announced, Reuters 2026) and Forbes Color Image sales nearly $2bn. No page prints EV/EBITDA; implied 5.0x is EV/Sales, not the FY30 exit",
-]:
-    add_para(tf, t, 12.5, INK, bullet=True, space_after=5)
-add_para(tf, "Disclaimer", 14, CARD, bold=True, space_after=5)
-add_para(tf, "This presentation is prepared for educational purposes as part of the Global Investment Society selection process and does not constitute investment advice or a recommendation to buy or sell any security", 12, GREY, italic=True, space_after=0)
+add_para(
+    btf,
+    "Reasonably assumed ceiling from peer EV/EBITDA re-rating \u2014 not our price target.",
+    9, INK, italic=True, space_after=0,
+)
 
 n = deck.save(OUT)
 print("Saved", os.path.abspath(OUT), "with", n, "slides")
