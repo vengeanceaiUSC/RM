@@ -315,6 +315,7 @@ class PitchDeck:
                 cell.fill.fore_color.rgb = WHITE if ri % 2 else LGREY
                 tf = cell.text_frame
                 tf.clear()
+                tf.word_wrap = True
                 p = tf.paragraphs[0]
                 p.alignment = PP_ALIGN.LEFT if c == 0 else PP_ALIGN.RIGHT
                 r = p.add_run()

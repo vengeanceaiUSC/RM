@@ -83,7 +83,7 @@ deck.title_slide(
     current_price="$100.00",
     target_price="$140",
     upside_pct="+40% upside",
-    descriptor="A net-cash, high-margin brand priced for terminal decline \u2014 we see a cyclical trough, not a broken business",
+    descriptor="A net-cash, high-margin brand priced for terminal decline. We see a cyclical trough, not a broken business",
 )
 
 # =====================================================================
@@ -92,11 +92,11 @@ deck.title_slide(
 LULU_TOC = [
     "1.  Investment thesis summary", "2.  Situation overview", "3.  Macro \u00d7 micro overlap",
     "4.  Market narrative", "5.  Company overview", "6.  Business model & unit economics",
-    "7.  Industry overview", "8.  Thesis I \u2014 Priced for terminal decline",
-    "9.  Thesis II \u2014 International growth engine", "10. Thesis III \u2014 Elite economics & capital return",
-    "11. Risks & mitigants", "12. Catalyst timeline", "13. Financials \u2014 income statement",
-    "14. Financials \u2014 balance sheet", "15. Financials \u2014 cash flow",
-    "16. Financials \u2014 capital structure", "17. Valuation summary (football field)",
+    "7.  Industry overview", "8.  Thesis I | Priced for terminal decline",
+    "9.  Thesis II | International growth engine", "10. Thesis III | Elite economics & capital return",
+    "11. Risks & mitigants", "12. Catalyst timeline", "13. Financials | income statement",
+    "14. Financials | balance sheet", "15. Financials | cash flow",
+    "16. Financials | capital structure", "17. Valuation summary (football field)",
     "18. Sum of the parts", "19. DCF valuation (base case)",
     "20. Comps analysis", "21. Precedent transactions",
 ]
@@ -125,10 +125,10 @@ add_para(b3, "WHY NOW", 12, CARD, bold=True, first=True, space_after=2)
 add_para(b3, "Shares \u201355% off highs; ~18% single-day drop after Q2 FY2026 print (Sep 3, 2026) overshoots the fundamentals", 12.5, INK, space_after=0)
 tb, tf = textbox(s, Inches(0.5), Inches(2.95), Inches(12.35), Inches(4.0))
 add_para(tf, "Three reasons to be long", 15, CARD, bold=True, first=True, space_after=6)
-add_para(tf, "1.  Priced for terminal decline \u2014 at ~3.5x EV/EBITDA and ~10x FY2026E EPS with a net-cash balance sheet, the stock embeds a permanent impairment that the business does not support", 13.5, INK, bold=False, space_after=7)
-add_para(tf, "2.  International is a multi-year growth engine \u2014 China Mainland and Rest-of-World more than offset a maturing Americas and can return total revenue to low-single-digit growth (~2.3% FY27\u201330 in our model)", 13.5, INK, space_after=7)
-add_para(tf, "3.  Elite economics + accretive buybacks \u2014 FY2025 operating margin was 19.9% (last full year, not the trough); we model a 13.2% clean FY2026 run-rate (Q2 18.8% minus 560bps of tariff refunds), then add the $134.5M refund once (~15.2% reported in our IS). Diluted shares are down ~7% (128.0M \u2192 119.1M)", 13.5, INK, space_after=7)
-add_para(tf, f"Base-case DCF {_d(V['base_dcf'])}; bear {_d(V['bear'])} ({_up(V['bear'])}) vs bull {_d(V['bull'])} ({_up(V['bull'])}) \u2014 downside is protected by net cash and an ~8\u20139% FCF yield", 13, NAVY, bold=True, italic=True, space_after=0)
+add_para(tf, "1.  Priced for terminal decline. At ~3.5x EV/EBITDA and ~10x FY2026E EPS with a net-cash balance sheet, the stock embeds a permanent impairment that the business does not support", 13.5, INK, bold=False, space_after=7)
+add_para(tf, "2.  International is a multi-year growth engine. China Mainland and Rest-of-World more than offset a maturing Americas and can return total revenue to low-single-digit growth (~2.3% FY27\u201330 in our model)", 13.5, INK, space_after=7)
+add_para(tf, "3.  Elite economics + accretive buybacks. FY2025 operating margin was 19.9% (last full year, not the trough); we model a 13.2% clean FY2026 run-rate (Q2 18.8% minus 560bps of tariff refunds), then add the $134.5M refund once (~15.2% reported in our IS). Diluted shares are down ~7% (128.0M \u2192 119.1M)", 13.5, INK, space_after=7)
+add_para(tf, f"Base-case DCF {_d(V['base_dcf'])}; bear {_d(V['bear'])} ({_up(V['bear'])}) vs bull {_d(V['bull'])} ({_up(V['bull'])}). Downside is protected by net cash and an ~8\u20139% FCF yield", 13, NAVY, bold=True, italic=True, space_after=0)
 
 # =====================================================================
 # 4. SITUATION OVERVIEW
@@ -147,7 +147,7 @@ add_para(tf, "Where the business stands (FY2025, ended Feb 1, 2026)", 14.5, CARD
 for t in [
     "Net revenue $11,102.6M (+4.9% y/y); gross profit $6,284.1M (56.6% margin); operating income $2,210.6M (19.9% margin)",
     "Net income $1,579.2M; diluted EPS $13.26; diluted shares 119.1M (down from 128.0M in FY2022)",
-    "Balance sheet: $1,807.2M cash and no funded debt \u2014 a net-cash position that funds buybacks and international expansion",
+    "Balance sheet: $1,807.2M cash and no funded debt: a net-cash position that funds buybacks and international expansion",
     "Cash from operations $1,602.5M; capital expenditures $680.8M \u2192 ~$0.9B free cash flow even in a decelerating year",
 ]:
     add_para(tf, t, 13, INK, bullet=True, space_after=5)
@@ -155,13 +155,13 @@ for t in [
 # =====================================================================
 # 5. MACRO × MICRO OVERLAP (Firecrawl-sourced context)
 # =====================================================================
-s = slide_base("Macro \u00d7 Micro Overlap", "A discretionary macro air pocket collided with an Americas-specific slowdown \u2014 the stock prices both at once", page=pg(),
+s = slide_base("Macro \u00d7 Micro Overlap", "A discretionary macro air pocket collided with an Americas-specific slowdown: the stock prices both at once", page=pg(),
                sources="Source: FY2025 10-K (SEC EDGAR); Q2 FY2026 release (Sep 3, 2026); FRED GDPC1 (Aug 2026)")
 tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(6.1), Inches(5.9))
 add_para(tf, "Macro (external)", 14.5, CARD, bold=True, first=True, space_after=5)
 for t in [
-    "Real GDP still grows ~2.1% y/y (FRED GDPC1 Q2\u201926 vs Q2\u201925) \u2014 not recession, but selective spending away from premium discretionary",
-    "Inflation and economic uncertainty weighed on Americas store traffic (10-K) \u2014 macro consumer caution shows up in micro footfall",
+    "Real GDP still grows ~2.1% y/y (FRED GDPC1 Q2\u201926 vs Q2\u201925): not recession, but selective spending away from premium discretionary",
+    "Inflation and economic uncertainty weighed on Americas store traffic (10-K): macro consumer caution shows up in micro footfall",
     "Tariff regime: Q2 recognized $134.5M IEEPA refunds (+560 bps GM) while new tariff layers remain an overhang on sourcing costs",
     "Athleisure competition intensifying at macro category level (Nike/adidas incumbents + Alo/Vuori/On challengers)",
 ]:
@@ -169,27 +169,27 @@ for t in [
 add_para(tf, "Micro (company-specific)", 14.5, CARD, bold=True, space_after=5)
 for t in [
     "Americas comps: \u22123% FY2025 \u2192 \u221212% in Q2 FY2026; China +20% FY2025 but \u22126% in Q2 as the base scales",
-    "811 stores (+44 net FY2025) at ~$1,426/sq ft \u2014 still opening doors while mature-region comps turn negative",
+    "811 stores (+44 net FY2025) at ~$1,426/sq ft: still opening doors while mature-region comps turn negative",
     "FY2026 guide: first annual revenue decline (\u22125% to \u22127%) and EPS $9.48\u2013$9.73; Q3 guide \u221210% to \u221211%",
-    "Clean run-rate EBIT margin ~13.2% (Q2 18.8% OM minus 560 bps tariff boost) \u2014 investors who miss this overstate sustainable margin",
+    "Clean run-rate EBIT margin ~13.2% (Q2 18.8% OM minus 560 bps tariff boost): investors who miss this overstate sustainable margin",
 ]:
     add_para(tf, t, 12.8, INK, bullet=True, space_after=5)
 box = rect(s, Inches(6.85), Inches(1.15), Inches(6.0), Inches(5.5), fill=NAVY)
 btf = box.text_frame; btf.word_wrap = True
-add_para(btf, "OVERLAP \u2014 WHY $100", 12.5, GOLD, bold=True, first=True, space_after=8)
+add_para(btf, "OVERLAP | WHY $100", 12.5, GOLD, bold=True, first=True, space_after=8)
 for t in [
     "Macro weakness maps onto LULU\u2019s largest profit pool: Americas ~71% of FY25 revenue (10-K: 70.7%)",
-    "Tariff is simultaneously macro policy and micro P&L \u2014 Q2 optics mask run-rate margin",
+    "Tariff is simultaneously macro policy and micro P&L: Q2 optics mask run-rate margin",
     "The de-rating blends macro fear with a micro guide miss; both are largely in the price at ~10x FY26E EPS",
     "Our edge: underwrite trough economics (13.2% \u2192 15.5% OM), not a return to 30x earnings",
-    "International micro growth (China/RoW) is the bridge \u2014 but needs macro stability, not a free option",
+    "International micro growth (China/RoW) is the bridge: but needs macro stability, not a free option",
 ]:
     add_para(btf, t, 12.5, WHITE, bullet=True, space_after=6)
 
 # =====================================================================
 # 6. MARKET NARRATIVE
 # =====================================================================
-s = slide_base("Market Narrative", "Sentiment has capitulated \u2014 the sell-side is cutting targets into the print", page=pg(),
+s = slide_base("Market Narrative", "Sentiment has capitulated: the sell-side is cutting targets into the print", page=pg(),
                sources="Source: sell-side research notes (Sep 2026); company guidance")
 tb, tf = body_box(s)
 add_para(tf, "What the street is saying", 14.5, CARD, bold=True, first=True, space_after=5)
@@ -200,7 +200,7 @@ for t in [
     add_para(tf, t, 13, INK, bullet=True, space_after=5)
 add_para(tf, "Our differentiated view", 14.5, CARD, bold=True, space_after=5)
 for t in [
-    "The tape has moved from euphoria (30\u201340x earnings in 2023\u201324) to capitulation (~10x today) \u2014 expectations are now low enough that even a conservative recovery re-rates the stock",
+    "The tape has moved from euphoria (30\u201340x earnings in 2023\u201324) to capitulation (~10x today): expectations are now low enough that even a conservative recovery re-rates the stock",
     "At ~3.5x EV/EBITDA the market implicitly assumes revenue and margins decline in perpetuity; our base case only needs stabilization, not a return to peak growth",
     "Consensus is extrapolating one weak fiscal year; we underwrite the international runway and structural margins the street is discounting to zero",
 ]:
@@ -214,7 +214,7 @@ tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(7.2), Inches(5.9))
 add_para(tf, "Business", 14.5, CARD, bold=True, first=True, space_after=5)
 for t in [
     "Founded 1998 in Vancouver; designs technical athletic apparel and accessories for yoga, training, running and everyday wear",
-    "Sells through company-operated stores, a direct e-commerce channel, and select wholesale \u2014 a predominantly DTC model that captures full retail economics and first-party data",
+    "Sells through company-operated stores, a direct e-commerce channel, and select wholesale: a predominantly DTC model that captures full retail economics and first-party data",
     "Reports revenue by geography: Americas (majority of sales), China Mainland (fastest-growing), and Rest of World",
 ]:
     add_para(tf, t, 13, INK, bullet=True, space_after=6)
@@ -227,7 +227,7 @@ box = rect(s, Inches(8.0), Inches(1.15), Inches(4.85), Inches(5.5), fill=LGREY)
 btf = box.text_frame; btf.word_wrap = True
 add_para(btf, "GROWTH ARCHITECTURE", 12.5, CARD, bold=True, first=True, space_after=6)
 add_para(btf, "Americas", 13.5, NAVY, bold=True, space_after=1)
-add_para(btf, "Mature, high-productivity base; now negative comps \u2014 the source of the market's concern", 12, INK, space_after=8)
+add_para(btf, "Mature, high-productivity base; now negative comps: the source of the market's concern", 12, INK, space_after=8)
 add_para(btf, "China Mainland", 13.5, NAVY, bold=True, space_after=1)
 add_para(btf, "Fastest-growing region (~20%+); large store and brand-awareness runway", 12, INK, space_after=8)
 add_para(btf, "Rest of World", 13.5, NAVY, bold=True, space_after=1)
@@ -240,8 +240,8 @@ s = slide_base("Business Model & Unit Economics", "Premium pricing plus DTC scal
 tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(7.2), Inches(5.9))
 add_para(tf, "Unit economics", 14.5, CARD, bold=True, first=True, space_after=5)
 for t in [
-    "Gross margin ~57\u201359% \u2014 premium, full-price selling with historically limited promotion",
-    "Operating margin ~20% (peaked ~24% in FY2024) \u2014 among the best in branded apparel",
+    "Gross margin ~57\u201359%: premium, full-price selling with historically limited promotion",
+    "Operating margin ~20% (peaked ~24% in FY2024): among the best in branded apparel",
     "Asset-efficient store fleet: leased footprint (right-of-use assets ~$1.6B) with high sales productivity per square foot",
     "Cash-generative: FY2025 CFO $1,602.5M on $680.8M capex \u2192 ~$0.9B free cash flow",
 ]:
@@ -278,7 +278,7 @@ for t in [
 add_para(tf, "Where LULU fits", 14.5, CARD, bold=True, space_after=5)
 for t in [
     "A premium, category-defining brand in technical apparel with structurally higher margins than most peers",
-    "Under-indexed internationally versus Nike/adidas \u2014 the primary multi-year growth lever",
+    "Under-indexed internationally versus Nike/adidas: the primary multi-year growth lever",
     "Competition is real but LULU's scale, innovation cadence and community remain differentiated",
 ]:
     add_para(tf, t, 13, INK, bullet=True, space_after=6)
@@ -304,9 +304,9 @@ thesis_slide(
     "The valuation already discounts a permanently shrinking business",
     "The market is paying trough multiples for a brand that still earned 19.9% operating margin in FY2025",
     [
-        "At ~$100 the stock trades at ~3.5x EV/EBITDA and ~10.4x FY2026E EPS \u2014 versus a 5-year history of ~20\u201330x earnings",
+        "At ~$100 the stock trades at ~3.5x EV/EBITDA and ~10.4x FY2026E EPS: versus a 5-year history of ~20\u201330x earnings",
         "The balance sheet holds $1.8B of cash and no funded debt, so nearly the entire enterprise value is covered by the operating business at a very low multiple",
-        f"Our base-case DCF (WACC {_pct(V['wacc'])}, terminal growth 2.25%, terminal EBIT margin 15.5%) is in the model \u2014 bear is ~{_d(V['bear'])}; downside is cushioned by net cash and FCF yield, not because bear brackets $100",
+        f"Our base-case DCF (WACC {_pct(V['wacc'])}, terminal growth 2.25%, terminal EBIT margin 15.5%) is in the model: bear is ~{_d(V['bear'])}; downside is cushioned by net cash and FCF yield, not because bear brackets $100",
         "To justify $100 you must assume revenue and margins fall in perpetuity; that is inconsistent with international growth and the FY2026 tariff-refund tailwind",
     ],
     "VALUATION SNAPSHOT",
@@ -319,7 +319,7 @@ thesis_slide(
     "Geographic mix shift is the bridge back to low-single-digit revenue growth (~2.3% FY27\u201330)",
     [
         "China Mainland has been compounding at ~20%+ with a long runway in store count and brand awareness relative to the Americas base",
-        "Rest of World (Europe, APAC) is early-stage and under-penetrated versus global peers \u2014 an incremental multi-year contributor",
+        "Rest of World (Europe, APAC) is early-stage and under-penetrated versus global peers: an incremental multi-year contributor",
         "As international scales, it dilutes the drag from negative Americas comps; our model returns total revenue to ~2.3% growth (Street 3Y forecast 2.26%) after the FY2026 reset",
         "Men's and the digital channel add further optionality that the market is not paying for today",
     ],
@@ -332,10 +332,10 @@ thesis_slide(
     "Best-in-class margins and buybacks compound value through the trough",
     "Even a down year throws off ~$1B of FCF that is being returned aggressively",
     [
-        "Operating margin remains ~20% in FY2025 \u2014 far above most branded-apparel peers \u2014 with room to recover as tariffs and promotions normalize",
+        "Operating margin remains ~20% in FY2025, far above most branded-apparel peers, with room to recover as tariffs and promotions normalize",
         "FY2025 cash from operations was $1,602.5M; after ~$681M capex the business generated roughly $0.9B of free cash flow",
         "The company repurchased $1.6B (FY2024) and $1.2B (FY2025) of stock; share count has fallen from 128.0M (FY2022) to 119.1M (FY2025)",
-        "At ~$100 per share, every dollar of buyback retires far more shares than at prior highs \u2014 highly accretive to per-share value",
+        "At ~$100 per share, every dollar of buyback retires far more shares than at prior highs: highly accretive to per-share value",
     ],
     "CAPITAL RETURN",
     ["FY2025 CFO:  $1,602.5M", "FY2025 capex:  $680.8M", "FY2025 buyback:  $1,178.3M", "Shares:  128.0M \u2192 119.1M"],
@@ -377,7 +377,7 @@ cats = [
     ("Q3 FY2026 (Dec 2026)", "Company guided revenue \u221210% to \u221211%; watch for stabilization signals and holiday traffic / China 11.11 read-through"),
     ("FY2026 year-end (early 2027)", "First full year lapping the reset; tariff refunds and cost actions support EPS versus lowered expectations"),
     ("FY2027", "Margin inflection as promotions/tariffs anniversary; continued accretive buybacks compound per-share value"),
-    ("FY2027\u2013FY2028", "Total revenue returns to growth as international scales \u2014 the trigger for multiple re-rating toward peers"),
+    ("FY2027\u2013FY2028", "Total revenue returns to growth as international scales: the trigger for multiple re-rating toward peers"),
 ]
 top = 1.5
 for i, (when, what) in enumerate(cats):
@@ -416,7 +416,7 @@ def _row_note(hist_src, fcst_src):
 
 
 def _hist_m(section, key, years=HY):
-    """Historical line item in US$M — same units as forecast JSON."""
+    """Historical line item in US$M: same units as forecast JSON."""
     return [m(section[key][y] / 1000) for y in years]
 
 
@@ -438,7 +438,7 @@ def _hist_capex_out(years=HY):
 
 
 def _hist_fcf(years=HY):
-    """FCF = CFO − capex — same definition as forecast (CFO + negative capex)."""
+    """FCF = CFO − capex: same definition as forecast (CFO + negative capex)."""
     return [m((D.CF["cfo"][y] - D.CF["capex"][y]) / 1000) for y in years]
 
 
@@ -515,12 +515,12 @@ def _fmt_cell(v, fmt="num"):
     return _m(v)
 
 
-def _fin_source_table(slide, source_rows, top=6.22, col0w=1.85):
+def _fin_source_table(slide, source_rows, top=5.92, col0w=1.85, height=0.95):
     """Per-line model source: Hist | Fcst (Scenarios G)."""
-    headers = ["Line item", "Hist source (22–25)", "Fcst source — Scenarios col G"]
+    headers = ["Line item", "Hist source (22–25)", "Fcst source, Scenarios col G"]
     rows = [[line, hist, fcst] for line, hist, fcst in source_rows]
     stmt_table(
-        slide, rows, headers, col0w=col0w, top=top, height=1.05,
+        slide, rows, headers, col0w=col0w, top=top, height=height,
         font_size=7, header_font_size=7.5, bold_rows=(),
     )
 
@@ -539,21 +539,20 @@ def pitch_financial_slide(
     italic_note=None,
     col0w=2.35,
     table_top=3.68,
-    table_height=2.48,
+    table_height=2.22,
     explainer_height=2.45,
 ):
     """Build one financial slide: historicals + 5yr base-case forecast (Scenarios G)."""
     hdr = _fin_headers()
-    s = slide_base(title, subtitle, page=pg(), sources=FIN_FOOTNOTE)
+    footnote = FIN_FOOTNOTE
+    if italic_note:
+        footnote = f"{italic_note}  {FIN_FOOTNOTE}"
+    s = slide_base(title, subtitle, page=pg(), sources=footnote)
     _fin_explainer_boxes(s, hist_title, hist_bullets, fcst_title, fcst_bullets,
                          box_height=explainer_height)
     stmt_table(s, rows, hdr, col0w=col0w, top=table_top, height=table_height,
-               bold_rows=bold_rows, font_size=8.5, header_font_size=8,
-               row_notes=row_notes, note_font_size=6.5)
-    _fin_source_table(s, source_rows)
-    if italic_note:
-        tb, tf = textbox(s, Inches(0.5), Inches(7.28), Inches(12.35), Inches(0.22))
-        add_para(tf, italic_note, 8.5, GREY, italic=True, first=True, space_after=0)
+               bold_rows=bold_rows, font_size=8.5, header_font_size=8)
+    _fin_source_table(s, source_rows, top=5.92, height=0.95)
     return s
 
 
@@ -660,57 +659,57 @@ _CF_HIST, _CF_FCST = _aligned_explainers([
 ])
 
 _IS_SOURCES = [
-    ("Net revenue", "10-K IS — Net revenue", f"{_scen_rng('revenue')} (Revenue yr 1–5)"),
-    ("Gross profit", "10-K IS — Gross profit", f"{_scen_rng('revenue')} × {_scen_rng('gross_margin')} (rev × GM%)"),
-    ("Operating income", "10-K IS — Operating income", f"{_scen_rng('ebit')} (EBIT yr 1–5)"),
-    ("Operating margin %", "10-K IS — OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
-    ("Net income", "10-K IS — Net income", f"{_scen_rng('net_income')} (pitch bridge NI)"),
-    ("Diluted EPS", "10-K IS — Diluted EPS", f"{_scen_rng('eps')} (pitch bridge EPS)"),
+    ("Net revenue", "10-K IS, Net revenue", f"{_scen_rng('revenue')} (Revenue yr 1–5)"),
+    ("Gross profit", "10-K IS, Gross profit", f"{_scen_rng('revenue')} × {_scen_rng('gross_margin')} (rev × GM%)"),
+    ("Operating income", "10-K IS, Operating income", f"{_scen_rng('ebit')} (EBIT yr 1–5)"),
+    ("Operating margin %", "10-K IS, OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
+    ("Net income", "10-K IS, Net income", f"{_scen_rng('net_income')} (pitch bridge NI)"),
+    ("Diluted EPS", "10-K IS, Diluted EPS", f"{_scen_rng('eps')} (pitch bridge EPS)"),
 ]
 _IS_NOTES = [
-    _row_note("10-K IS — Net revenue", f"{_scen_rng('revenue')}"),
-    _row_note("10-K IS — Gross profit", f"{_scen_rng('revenue')} × {_scen_rng('gross_margin')}"),
-    _row_note("10-K IS — Operating income", f"{_scen_rng('ebit')}"),
-    _row_note("10-K IS — OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
-    _row_note("10-K IS — Net income", f"{_scen_rng('net_income')}"),
-    _row_note("10-K IS — Diluted EPS", f"{_scen_rng('eps')}"),
+    _row_note("10-K IS, Net revenue", f"{_scen_rng('revenue')}"),
+    _row_note("10-K IS, Gross profit", f"{_scen_rng('revenue')} × {_scen_rng('gross_margin')}"),
+    _row_note("10-K IS, Operating income", f"{_scen_rng('ebit')}"),
+    _row_note("10-K IS, OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
+    _row_note("10-K IS, Net income", f"{_scen_rng('net_income')}"),
+    _row_note("10-K IS, Diluted EPS", f"{_scen_rng('eps')}"),
 ]
 
 _BS_SOURCES = [
-    ("Cash & equivalents", "10-K BS — Cash & equivalents", f"{_scen_rng('cash')} (pitch bridge cash roll-forward)"),
-    ("Inventories", "10-K BS — Inventories", f"{_scen_rng('inventories')} (NWC schedule)"),
-    ("Total assets", "10-K BS — Total assets", f"{_scen_rng('total_assets')} (FY25 TA × rev growth)"),
-    ("Total liabilities", "10-K BS — Total liabilities", f"{_scen_rng('total_liab')} (FY25 TL × rev growth)"),
-    ("Total equity", "10-K BS — Total equity", f"{_scen_rng('total_equity')} (FY25 TE × rev growth)"),
-    ("Funded debt", "10-K BS — Long-term debt ($0)", "Model assumption — $0 (no term debt)"),
+    ("Cash & equivalents", "10-K BS, Cash & equivalents", f"{_scen_rng('cash')} (pitch bridge cash roll-forward)"),
+    ("Inventories", "10-K BS, Inventories", f"{_scen_rng('inventories')} (NWC schedule)"),
+    ("Total assets", "10-K BS, Total assets", f"{_scen_rng('total_assets')} (FY25 TA × rev growth)"),
+    ("Total liabilities", "10-K BS, Total liabilities", f"{_scen_rng('total_liab')} (FY25 TL × rev growth)"),
+    ("Total equity", "10-K BS, Total equity", f"{_scen_rng('total_equity')} (FY25 TE × rev growth)"),
+    ("Funded debt", "10-K BS, Long-term debt ($0)", "Model assumption, $0 (no term debt)"),
 ]
 _BS_NOTES = [
-    _row_note("10-K BS — Cash", f"{_scen_rng('cash')}"),
-    _row_note("10-K BS — Inventories", f"{_scen_rng('inventories')}"),
-    _row_note("10-K BS — Total assets", f"{_scen_rng('total_assets')}"),
-    _row_note("10-K BS — Total liabilities", f"{_scen_rng('total_liab')}"),
-    _row_note("10-K BS — Total equity", f"{_scen_rng('total_equity')}"),
-    _row_note("10-K BS — Debt ($0)", "Model — $0"),
+    _row_note("10-K BS, Cash", f"{_scen_rng('cash')}"),
+    _row_note("10-K BS, Inventories", f"{_scen_rng('inventories')}"),
+    _row_note("10-K BS, Total assets", f"{_scen_rng('total_assets')}"),
+    _row_note("10-K BS, Total liabilities", f"{_scen_rng('total_liab')}"),
+    _row_note("10-K BS, Total equity", f"{_scen_rng('total_equity')}"),
+    _row_note("10-K BS, Debt ($0)", "Model, $0"),
 ]
 
 _CF_SOURCES = [
-    ("Cash from operations", "10-K CF — Operating activities", f"{_scen_rng('cfo')} (pitch bridge CFO)"),
-    ("D&A (add-back)", "10-K CF — Depreciation & amortization", f"{_scen_rng('dna')} (D&A yr 1–5)"),
-    ("Capital expenditures", "10-K CF — Capital expenditures", f"{_scen_rng('capex')} (Capex yr 1–5)"),
-    ("Free cash flow", "10-K CF — CFO − capex", f"{_scen_rng('fcf')} (pitch bridge FCF/CFS)"),
-    ("Share repurchases", "10-K CF — Repurchases (financing)", f"{_scen_rng('buybacks')} (G21=$500M/yr fixed)"),
+    ("Cash from operations", "10-K CF, Operating activities", f"{_scen_rng('cfo')} (pitch bridge CFO)"),
+    ("D&A (add-back)", "10-K CF, Depreciation & amortization", f"{_scen_rng('dna')} (D&A yr 1–5)"),
+    ("Capital expenditures", "10-K CF, Capital expenditures", f"{_scen_rng('capex')} (Capex yr 1–5)"),
+    ("Free cash flow", "10-K CF, CFO − capex", f"{_scen_rng('fcf')} (pitch bridge FCF/CFS)"),
+    ("Share repurchases", "10-K CF, Repurchases (financing)", f"{_scen_rng('buybacks')} (G21=$500M/yr fixed)"),
 ]
 _CF_NOTES = [
-    _row_note("10-K CF — CFO", f"{_scen_rng('cfo')}"),
-    _row_note("10-K CF — D&A", f"{_scen_rng('dna')}"),
-    _row_note("10-K CF — Capex", f"{_scen_rng('capex')}"),
-    _row_note("10-K CF — CFO − capex", f"{_scen_rng('fcf')}"),
-    _row_note("10-K CF — Buybacks", f"{_scen_rng('buybacks')}"),
+    _row_note("10-K CF, CFO", f"{_scen_rng('cfo')}"),
+    _row_note("10-K CF, D&A", f"{_scen_rng('dna')}"),
+    _row_note("10-K CF, Capex", f"{_scen_rng('capex')}"),
+    _row_note("10-K CF, CFO − capex", f"{_scen_rng('fcf')}"),
+    _row_note("10-K CF, Buybacks", f"{_scen_rng('buybacks')}"),
 ]
 
 pitch_financial_slide(
-    "Financials \u2014 Income Statement",
-    "Reported history (10-K) vs base-case operating forecast \u2014 FY26\u201330 (US$ M)",
+    "Financials | Income Statement",
+    "Reported history (10-K) vs base-case operating forecast: FY26\u201330 (US$ M)",
     [
         ["Net revenue"] + _hist_m(D.IS, "revenue") + _base_year_vals(IS_BASE, "revenue"),
         ["Gross profit"] + _hist_m(D.IS, "gross_profit") + _base_year_vals(IS_BASE, "gross_profit"),
@@ -720,9 +719,9 @@ pitch_financial_slide(
         ["Diluted EPS ($)"] + _hist_eps() + _base_year_vals(IS_BASE, "eps", fmt="eps"),
     ],
     row_notes=_IS_NOTES,
-    hist_title="HISTORICALS (FY2022\u2013FY2025) \u2014 SEC 10-K",
+    hist_title="HISTORICALS (FY2022\u2013FY2025) | SEC 10-K",
     hist_bullets=_IS_HIST,
-    fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base case (Scenarios col G)",
+    fcst_title="FORECAST (FY2026E\u2013FY2030E) | base case (Scenarios col G)",
     fcst_bullets=_IS_FCST,
     source_rows=_IS_SOURCES,
     bold_rows=(0, 2, 5),
@@ -730,8 +729,8 @@ pitch_financial_slide(
 )
 
 pitch_financial_slide(
-    "Financials \u2014 Balance Sheet",
-    "Net-cash history vs base-case funded growth \u2014 FY26\u201330 (US$ M)",
+    "Financials | Balance Sheet",
+    "Net-cash history vs base-case funded growth: FY26\u201330 (US$ M)",
     [
         ["Cash & equivalents"] + _hist_m(D.BS, "cash") + _base_year_vals(BS_BASE, "cash", by_year=False),
         ["Inventories"] + _hist_m(D.BS, "inventories") + _base_year_vals(BS_BASE, "inventories", by_year=False),
@@ -741,9 +740,9 @@ pitch_financial_slide(
         ["Funded debt"] + ["0"] * 4 + ["0"] * len(PROJ_YEARS),
     ],
     row_notes=_BS_NOTES,
-    hist_title="HISTORICALS (FY2022\u2013FY2025) \u2014 SEC 10-K",
+    hist_title="HISTORICALS (FY2022\u2013FY2025) | SEC 10-K",
     hist_bullets=_BS_HIST,
-    fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base case (Scenarios col G)",
+    fcst_title="FORECAST (FY2026E\u2013FY2030E) | base case (Scenarios col G)",
     fcst_bullets=_BS_FCST,
     source_rows=_BS_SOURCES,
     bold_rows=(2, 4, 5),
@@ -751,8 +750,8 @@ pitch_financial_slide(
 )
 
 pitch_financial_slide(
-    "Financials \u2014 Cash Flow",
-    "Operating FCF (DCF input) vs financing \u2014 historical 10-K vs base case (US$ M)",
+    "Financials | Cash Flow",
+    "Operating FCF (DCF input) vs financing: historical 10-K vs base case (US$ M)",
     [
         ["Cash from operations"] + _hist_m(D.CF, "cfo") + _base_year_vals(CF_BASE, "cfo", by_year=False),
         ["D&A (add-back)"] + _hist_m(D.CF, "d_and_a") + _base_year_vals(CF_BASE, "dna", by_year=False),
@@ -761,9 +760,9 @@ pitch_financial_slide(
         ["Share repurchases (CFF)"] + _hist_buybacks_out() + _base_year_vals(CF_BASE, "buybacks", by_year=False, fmt="neg_paren"),
     ],
     row_notes=_CF_NOTES,
-    hist_title="HISTORICALS (FY2022\u2013FY2025) \u2014 SEC 10-K",
+    hist_title="HISTORICALS (FY2022\u2013FY2025) | SEC 10-K",
     hist_bullets=_CF_HIST,
-    fcst_title="FORECAST (FY2026E\u2013FY2030E) \u2014 base case (Scenarios col G)",
+    fcst_title="FORECAST (FY2026E\u2013FY2030E) | base case (Scenarios col G)",
     fcst_bullets=_CF_FCST,
     source_rows=_CF_SOURCES,
     bold_rows=(3,),
@@ -771,7 +770,7 @@ pitch_financial_slide(
 )
 
 # =====================================================================
-# 16. FINANCIALS — CAPITAL STRUCTURE & WACC
+# 16. FINANCIALS: CAPITAL STRUCTURE & WACC
 # =====================================================================
 def _wacc_ref(key):
     r = WR.get(key)
@@ -787,7 +786,7 @@ _CAP_SOURCES = [
     ("ASC 842 operating leases", f"{_wacc_ref('lease_d')} (FY25 10-K)"),
     ("Funded debt", _wacc_ref("fund_d")),
     ("Total capital", _wacc_ref("debt_tot")),
-    ("Cash & equivalents", "10-K BS \u2014 Cash"),
+    ("Cash & equivalents", "10-K BS, Cash"),
     ("Net debt", "DCF EV bridge"),
 ]
 _WACC_SOURCES = [
@@ -805,8 +804,8 @@ _cap_src_rows = [(line, src) for line, src in _CAP_SOURCES]
 _wacc_src_rows = [(line, src) for line, src in _WACC_SOURCES]
 
 s = slide_base(
-    "Financials \u2014 Capital Structure",
-    "Cap stack and WACC build \u2014 lease-adjusted; no funded term debt",
+    "Financials | Capital Structure",
+    "Cap stack and WACC build: lease-adjusted; no funded term debt",
     page=pg(),
     sources=f"Cap stack & WACC: {DCF_MODEL} \u2192 WACC tab (col E). Cash/leases: FY2025 10-K.",
 )
@@ -817,7 +816,7 @@ add_para(tf, "CAPITAL STACK (US$ M)", 11, CARD, bold=True, first=True, space_aft
 tb, tf = textbox(s, Inches(6.7), Inches(1.1), Inches(6.15), Inches(0.28))
 add_para(tf, "WACC BUILD (CAPM)", 11, CARD, bold=True, first=True, space_after=0)
 
-# --- Cap stack table (left) — WACC weights only on equity + lease debt ---
+# --- Cap stack table (left): WACC weights only on equity + lease debt ---
 cap_headers = ["Component", "US$ M", "WACC weight"]
 cap_rows = [
     ["Market equity (price \u00d7 shares)", f"{WB['mkt_eq_m']:,}", f"{WB['equity_pct']:.1f}%"],
@@ -837,10 +836,10 @@ bridge_rows = [
 ]
 stmt_table(
     s, bridge_rows, ["Component", "US$ M", "Note"],
-    col0w=2.85, top=3.12, height=0.62, left=0.5, width=6.05,
+    col0w=2.85, top=3.12, height=0.78, left=0.5, width=6.05,
     font_size=8.5, header_font_size=8.5,
 )
-tb, tf = textbox(s, Inches(0.5), Inches(3.82), Inches(6.05), Inches(0.42))
+tb, tf = textbox(s, Inches(0.5), Inches(4.0), Inches(6.05), Inches(0.5))
 add_para(
     tf,
     "No funded bank debt; ASC 842 store leases are the only debt equivalent (~14% WACC weight). "
@@ -848,7 +847,7 @@ add_para(
     8.5, INK, italic=True, first=True, space_after=0,
 )
 
-# --- WACC build (right) — template LGREY panel + compact 2-col table ---
+# --- WACC build (right): template LGREY panel + compact 2-col table ---
 rect(s, Inches(6.7), Inches(1.35), Inches(6.15), Inches(4.0), fill=LGREY)
 wacc_compact = [
     ["Risk-free rate (10-yr UST)", _pct_wb(WB["rf"])],
@@ -901,7 +900,7 @@ stmt_table(
 # =====================================================================
 s = slide_base(
     "Valuation Summary",
-    "Football field \u2014 implied share-price ranges by methodology (base case DCF)",
+    "Football field: implied share-price ranges by methodology (base case DCF)",
     page=pg(),
     sources=f"Source: {DCF_MODEL} \u2192 Comps / football field tab; geographic SOTP on FY30E base revenue mix",
 )
@@ -936,17 +935,22 @@ top = 1.55
 for name, lo, hi in ff_methods:
     tb, tf = textbox(s, Inches(0.5), Inches(top - 0.02), Inches(2.75), Inches(0.48), anchor=MSO_ANCHOR.MIDDLE)
     add_para(tf, name, 11, NAVY, bold=True, first=True, space_after=0)
-    bar_w = max(_xpos(hi) - _xpos(lo), 0.08)
-    bar = rect(s, Inches(_xpos(lo)), Inches(top), Inches(bar_w), Inches(0.42), fill=GOLD)
-    bt = bar.text_frame
-    bt.vertical_anchor = MSO_ANCHOR.MIDDLE
-    bt.margin_left = Pt(3)
-    p = bt.paragraphs[0]
-    p.alignment = PP_ALIGN.LEFT
-    r = p.add_run()
-    r.text = f"${lo}" if lo == hi else f"${lo}"
-    _set_font(r, 10, NAVY, bold=True)
-    if hi != lo:
+    if lo == hi:
+        mx = _xpos(lo)
+        rect(s, Inches(mx - 0.015), Inches(top + 0.04), Pt(3), Inches(0.34), fill=NAVY)
+        tb2, tf2 = textbox(s, Inches(mx + 0.06), Inches(top), Inches(0.7), Inches(0.42), anchor=MSO_ANCHOR.MIDDLE)
+        add_para(tf2, f"${lo}", 10, NAVY, bold=True, first=True, space_after=0)
+    else:
+        bar_w = max(_xpos(hi) - _xpos(lo), 0.15)
+        bar = rect(s, Inches(_xpos(lo)), Inches(top), Inches(bar_w), Inches(0.42), fill=GOLD)
+        bt = bar.text_frame
+        bt.vertical_anchor = MSO_ANCHOR.MIDDLE
+        bt.margin_left = Pt(3)
+        p = bt.paragraphs[0]
+        p.alignment = PP_ALIGN.LEFT
+        r = p.add_run()
+        r.text = f"${lo}"
+        _set_font(r, 10, NAVY, bold=True)
         tb2, tf2 = textbox(s, Inches(_xpos(hi) + 0.02), Inches(top), Inches(0.85), Inches(0.42), anchor=MSO_ANCHOR.MIDDLE)
         add_para(tf2, f"${hi}", 10, NAVY, bold=True, first=True, space_after=0)
     top += 0.72
@@ -955,20 +959,20 @@ cp_x = _xpos(100)
 pt_x = _xpos(140)
 rect(s, Inches(cp_x), Inches(1.45), Pt(2), Inches(4.25), fill=INK)
 rect(s, Inches(pt_x), Inches(1.45), Pt(2), Inches(4.25), fill=CARD)
-tb, tf = textbox(s, Inches(cp_x - 0.65), Inches(5.82), Inches(1.5), Inches(0.25))
-add_para(tf, "Current $100", 9.5, INK, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
-tb, tf = textbox(s, Inches(pt_x - 0.65), Inches(5.82), Inches(1.5), Inches(0.25))
-add_para(tf, "Target $140", 9.5, CARD, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
+tb, tf = textbox(s, Inches(cp_x - 0.6), Inches(1.08), Inches(1.2), Inches(0.34))
+add_para(tf, "Current $100", 8.5, INK, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
+tb, tf = textbox(s, Inches(pt_x - 0.7), Inches(1.08), Inches(1.2), Inches(0.34))
+add_para(tf, "Target $140", 8.5, CARD, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
 
 tb, tf = textbox(s, Inches(0.5), Inches(6.12), Inches(12.35), Inches(0.88))
 add_para(
     tf,
-    f"12-month target $140 sits above base-case DCF {_d(_base_px)} and inside the comps/SOTP ranges \u2014 a partial re-rating, not a return to peak multiples.",
+    f"12-month target $140 sits above base-case DCF {_d(_base_px)} and inside the comps/SOTP ranges: a partial re-rating, not a return to peak multiples.",
     12.5, NAVY, bold=True, first=True, space_after=4,
 )
 add_para(
     tf,
-    f"DCF row = Scenarios col G (Gordon growth). Bear ${_d(V['bear'])} / bull ${_d(V['bull'])} bracket scenario range from the model.",
+    f"DCF row = Scenarios col G (Gordon growth). Bear {_d(V['bear'])} / bull {_d(V['bull'])} bracket scenario range from the model.",
     11, INK, italic=True, space_after=0,
 )
 
@@ -977,7 +981,7 @@ add_para(
 # =====================================================================
 s = slide_base(
     "Sum of the Parts",
-    f"Geographic segments on FY30E base revenue \u2014 EV/EBITDA spreads vs Gordon-implied exit ({_gordon_exit:.1f}x)",
+    f"Geographic segments on FY30E base revenue: EV/EBITDA spreads vs Gordon-implied exit ({_gordon_exit:.1f}x)",
     page=pg(),
     sources="Segment revenue: FY2025 10-K geography; FY30E scaled to base-case consolidated revenue (Scenarios col G)",
 )
@@ -1022,9 +1026,9 @@ stmt_table(
 tb, tf = textbox(s, Inches(0.5), Inches(4.38), Inches(7.8), Inches(1.05))
 add_para(tf, "Methodology", 12, CARD, bold=True, first=True, space_after=3)
 for t in [
-    "Single-brand retailer \u2014 geography is the cleanest SOTP cut (Americas / China / RoW per 10-K)",
+    "Single-brand retailer: geography is the cleanest SOTP cut (Americas / China / RoW per 10-K)",
     "FY30E segment revenue = FY25 geo mix \u00d7 base-case consolidated FY30 revenue (Scenarios col G)",
-    f"Segment EV/EBITDA spreads anchor to Gordon-implied exit {_gordon_exit:.1f}x (selected DCF TV identity \u2014 not the 5\u20138x comps football-field band)",
+    f"Segment EV/EBITDA spreads anchor to Gordon-implied exit {_gordon_exit:.1f}x (selected DCF TV identity: not the 5\u20138x comps football-field band)",
     "Americas: Gordon \u2212 1.0x to \u2212 0.25x (mature); China: +0.5x to +2.0x (growth); RoW: \u22120.25x to +0.75x",
     f"Consolidated base-case DCF {_d(_base_px)} uses Gordon growth (g={DCF_BASE.get('terminal_g', 0.0225)*100:.2f}%); SOTP is terminal-year EBITDA triangulation only",
 ]:
@@ -1036,7 +1040,7 @@ btf.word_wrap = True
 add_para(btf, "SOTP vs DCF", 12, CARD, bold=True, first=True, space_after=4)
 add_para(btf, f"SOTP range: ${_sotp_lo}\u2013${_sotp_hi}", 13, NAVY, bold=True, space_after=3)
 add_para(btf, f"Base-case DCF: {_d(_base_px)}", 13, NAVY, bold=True, space_after=3)
-add_para(btf, "Overlap is expected \u2014 SOTP applies FY30 EBITDA multiples; DCF discounts explicit FCF + Gordon growth TV.", 9.5, INK, space_after=0)
+add_para(btf, "Overlap is expected: SOTP applies FY30 EBITDA multiples; DCF discounts explicit FCF + Gordon growth TV.", 9.5, INK, space_after=0)
 
 # =====================================================================
 # 19. DCF VALUATION (BASE CASE)
@@ -1049,7 +1053,7 @@ _tv_pct = DCF_BASE.get("tv_pct_ev", 0.735)
 
 s = slide_base(
     "DCF Valuation",
-    f"Base-case unlevered DCF (Scenarios col G) \u2014 Gordon growth terminal value; {_exit_m:.1f}x is implied exit identity",
+    f"Base-case unlevered DCF (Scenarios col G): Gordon growth terminal value; {_exit_m:.1f}x is implied exit identity",
     page=pg(),
     sources=f"Source: {DCF_MODEL} \u2192 Scenarios col G + DCF tab",
 )
@@ -1075,7 +1079,7 @@ stmt_table(s, arows[1:], arows[0], col0w=3.5, top=1.38, height=2.85, left=0.5, w
 
 # --- Terminal value approaches (left bottom) ---
 tb, tf = textbox(s, Inches(0.5), Inches(4.32), Inches(6.15), Inches(0.25))
-add_para(tf, "TERMINAL VALUE \u2014 GORDON GROWTH (SELECTED)", 10, CARD, bold=True, first=True, space_after=0)
+add_para(tf, "TERMINAL VALUE | GORDON GROWTH (SELECTED)", 10, CARD, bold=True, first=True, space_after=0)
 tv_rows = [
     ["Method", "Formula / input", "FY30 TV ($M)"],
     [
@@ -1136,7 +1140,7 @@ add_para(
 
 # --- Sensitivity ---
 tb, tf = textbox(s, Inches(0.5), Inches(5.42), Inches(12.35), Inches(0.25))
-add_para(tf, "SENSITIVITY \u2014 IMPLIED SHARE PRICE (WACC vs TERMINAL g)", 10, CARD, bold=True, first=True, space_after=0)
+add_para(tf, "SENSITIVITY | IMPLIED SHARE PRICE (WACC vs TERMINAL g)", 10, CARD, bold=True, first=True, space_after=0)
 _g_cols = ["1.5%", "2.0%", "2.25%", "2.5%", "3.0%"]
 sens = [["WACC \\ g"] + _g_cols]
 _base_wacc_idx = min(
@@ -1173,7 +1177,7 @@ s = slide_base(
 )
 # --- Peer multiples (left) ---
 tb, tf = textbox(s, Inches(0.5), Inches(1.1), Inches(7.2), Inches(0.25))
-add_para(tf, "COMPARABLE COMPANIES \u2014 TRADING MULTIPLES", 10, CARD, bold=True, first=True, space_after=0)
+add_para(tf, "COMPARABLE COMPANIES | TRADING MULTIPLES", 10, CARD, bold=True, first=True, space_after=0)
 peer_hdr = ["Company", "EV/Rev", "EV/EBITDA", "EV/EBIT", "P/E"]
 peer_rows = []
 for p in _ca.get("peers", []):
@@ -1182,10 +1186,10 @@ for p in _ca.get("peers", []):
     short = p["name"].split("(")[0].strip()
     peer_rows.append([
         short,
-        f"{p['ev_rev']:.2f}x" if p.get("ev_rev") else "\u2014",
-        f"{p['ev_ebitda']:.1f}x" if p.get("ev_ebitda") else "\u2014",
-        f"{p['ev_ebit']:.1f}x" if p.get("ev_ebit") else "\u2014",
-        f"{p['pe_fwd']:.1f}x" if p.get("pe_fwd") else "\u2014",
+        f"{p['ev_rev']:.2f}x" if p.get("ev_rev") else "n/a",
+        f"{p['ev_ebitda']:.1f}x" if p.get("ev_ebitda") else "n/a",
+        f"{p['ev_ebit']:.1f}x" if p.get("ev_ebit") else "n/a",
+        f"{p['pe_fwd']:.1f}x" if p.get("pe_fwd") else "n/a",
     ])
 med = _core
 if med:
@@ -1199,7 +1203,7 @@ if med:
 peer_rows.append([
     "LULU @ $100 (current)",
     f"{_lulu_t.get('ev_rev', 0):.2f}x",
-    f"{_lulu_t.get('ev_ebitda', 0):.1f}x" if _lulu_t.get("ev_ebitda") else "\u2014",
+    f"{_lulu_t.get('ev_ebitda', 0):.1f}x" if _lulu_t.get("ev_ebitda") else "n/a",
     f"{_lulu_t.get('ev_ebit', 0):.1f}x",
     f"{_lulu_t.get('pe_fwd', 0):.1f}x",
 ])
@@ -1223,10 +1227,10 @@ for row in _ca.get("implied", []):
         f"${row['implied_px_low']}\u2013${row['implied_px_high']} (med ${row['implied_px_median']})",
     ])
 stmt_table(
-    s, imp_rows, imp_hdr, col0w=1.35, top=1.32, height=2.55, left=7.95, width=5.05,
-    font_size=8, header_font_size=8, bold_rows=(),
+    s, imp_rows, imp_hdr, col0w=1.2, top=1.32, height=2.55, left=7.95, width=5.05,
+    font_size=7.5, header_font_size=8, bold_rows=(),
 )
-tb, tf = textbox(s, Inches(7.95), Inches(3.92), Inches(5.05), Inches(0.55))
+tb, tf = textbox(s, Inches(7.95), Inches(4.0), Inches(5.05), Inches(0.45))
 add_para(
     tf,
     "Implied EV = peer median \u00d7 LULU base (cols 2\u20133); P/E = median \u00d7 EPS (no EV). "
@@ -1234,7 +1238,7 @@ add_para(
     7.5, INK, italic=True, first=True, space_after=0,
 )
 
-tb, tf = textbox(s, Inches(0.5), Inches(3.95), Inches(12.35), Inches(2.55))
+tb, tf = textbox(s, Inches(0.5), Inches(4.05), Inches(12.35), Inches(2.35))
 _ebitda_med = _core.get("ev_ebitda", {}).get("median", 0)
 _rev_med = _core.get("ev_rev", {}).get("median", 0)
 _pe_med = _core.get("pe_fwd", {}).get("median", 0)
@@ -1256,12 +1260,12 @@ for title, body in [
     (
         "DCF terminal valuation discount",
         f"Base-case DCF uses Gordon growth g = {DCF_BASE.get('terminal_g', 0.0225)*100:.2f}%, implying {_exit_m:.1f}x FY30 "
-        f"EV/EBITDA exit multiple \u2014 well below the {_ebitda_med:.1f}x peer median (right table uses TTM EBITDA).",
+        f"EV/EBITDA exit multiple: well below the {_ebitda_med:.1f}x peer median (right table uses TTM EBITDA).",
     ),
     (
         "Conservative target price re-rating",
         f"Our {_d(_base_px)} base-case DCF and ${_tgt_px} 12-month target (+{_tgt_px - int(_base_px)} vs DCF, ~{round((_tgt_px/int(_base_px)-1)*100)}% "
-        f"above model fair value) reflect undervaluation with only a modest re-rating \u2014 not Nike-level multiples.",
+        f"above model fair value) reflect undervaluation with only a modest re-rating: not Nike-level multiples.",
     ),
 ]:
     add_para(tf, title, 11, CARD, bold=True, first=(title == "Peer benchmark methodology"), space_after=2)
@@ -1272,7 +1276,7 @@ for title, body in [
 # =====================================================================
 s = slide_base(
     "Precedent Transactions",
-    "Private-market context for athleisure M&A \u2014 not used to imply a control premium on LULU",
+    "Private-market context for athleisure M&A: not used to imply a control premium on LULU",
     page=pg(),
     sources="Source: Wolverine IR/SEC (Sweaty Betty); Bloomberg (Gymshark); BusinessWire/Reuters (Vuori); Reuters/Forbes (Alo)",
 )
@@ -1281,40 +1285,43 @@ _lulu_es = PREC.get("lulu_ev_sales", 0)
 prec_hdr = ["Target", "Year", "Type", "EV ($M)", "EV/Rev", "EV/EBITDA", "Status"]
 prec_rows = []
 for d in _prec_deals:
+    status = (d.get("status", "") or "")
+    if len(status) > 48:
+        status = status[:45] + "..."
     prec_rows.append([
         d.get("target", ""),
         d.get("year", ""),
         d.get("deal_type", ""),
-        f"{d.get('ev_usd_m', 0):,}" if d.get("ev_usd_m") else "\u2014",
-        f"{d.get('ev_sales', 0):.1f}x" if d.get("ev_sales") else "\u2014",
-        f"{d.get('ev_ebitda', 0):.1f}x" if d.get("ev_ebitda") else "\u2014",
-        (d.get("status", "") or "")[:72],
+        f"{d.get('ev_usd_m', 0):,}" if d.get("ev_usd_m") else "n/a",
+        f"{d.get('ev_sales', 0):.1f}x" if d.get("ev_sales") else "n/a",
+        f"{d.get('ev_ebitda', 0):.1f}x" if d.get("ev_ebitda") else "n/a",
+        status,
     ])
 prec_rows.append([
     "LULU (public @ $100)",
-    "\u2014",
+    "n/a",
     "Public equity",
     f"{PREC.get('lulu_ev_m', _lulu_t.get('ev_m', 0)):,}",
     f"{_lulu_es:.2f}x",
     f"{_lulu_t.get('ev_ebitda', 0):.1f}x",
-    "Trading comps only \u2014 not a premium benchmark",
+    "Trading comps only (not a premium benchmark)",
 ])
 stmt_table(
-    s, prec_rows, prec_hdr, col0w=1.75, top=1.15, height=2.05, left=0.5, width=12.35,
+    s, prec_rows, prec_hdr, col0w=1.55, top=1.15, height=2.25, left=0.5, width=12.35,
     font_size=8, header_font_size=8, bold_rows=(len(prec_rows) - 1,),
 )
 
-tb, tf = textbox(s, Inches(0.5), Inches(3.3), Inches(12.35), Inches(2.9))
+tb, tf = textbox(s, Inches(0.5), Inches(3.55), Inches(7.85), Inches(2.35))
 for title, body in [
     (
         "Private precedent framework",
-        "Non-Alo private transactions establish a contextual floor of what strategics and PE pay for premium athleisure "
-        "\u2014 not a control premium on LULU\u2019s public stock.",
+        "Non-Alo private transactions establish a contextual floor of what strategics and PE pay for premium athleisure. "
+        "They do not imply a control premium on LULU's public stock.",
     ),
     (
         "Closed M&A benchmark",
-        "Wolverine paid $410M (~16x EBITDA, ~1.6x sales) for Sweaty Betty (2021) \u2014 concrete operating-company "
-        "precedent for women\u2019s DTC activewear.",
+        "Wolverine paid $410M (~16x EBITDA, ~1.6x sales) for Sweaty Betty (2021), a concrete operating-company "
+        "precedent for women's DTC activewear.",
     ),
     (
         "Growth capital rounds",
@@ -1323,19 +1330,14 @@ for title, body in [
     ),
     (
         "Excluded unclosed process",
-        "Alo\u2019s ~$10B ask (~5.0x EV/Sales) is LULU\u2019s closest yoga peer, but unclosed private asks cannot dictate "
+        "Alo's ~$10B ask (~5.0x EV/Sales) is LULU's closest yoga peer, but unclosed private asks cannot dictate "
         "actual public equity valuation.",
     ),
-    (
-        "Valuation model anchors",
-        f"Target figures ({_d(_base_px)} DCF, $140 OW target) derive from DCF and public comps (prior slide); precedents "
-        "are contextual floor only.",
-    ),
 ]:
-    add_para(tf, title, 11, CARD, bold=True, first=(title == "Private precedent framework"), space_after=2)
-    add_para(tf, body, 10, INK, space_after=5)
+    add_para(tf, title, 10.5, CARD, bold=True, first=(title == "Private precedent framework"), space_after=2)
+    add_para(tf, body, 9.5, INK, space_after=5)
 
-box = rect(s, Inches(8.5), Inches(5.75), Inches(4.35), Inches(1.2), fill=LGREY)
+box = rect(s, Inches(8.5), Inches(3.55), Inches(4.35), Inches(2.35), fill=LGREY)
 btf = box.text_frame
 btf.word_wrap = True
 add_para(btf, "Valuation stack", 11, CARD, bold=True, first=True, space_after=4)
@@ -1350,7 +1352,7 @@ add_para(
 )
 add_para(
     btf,
-    "Reasonably assumed ceiling from peer EV/EBITDA re-rating \u2014 not our price target.",
+    "Reasonably assumed ceiling from peer EV/EBITDA re-rating. Not our price target.",
     9, INK, italic=True, space_after=0,
 )
 

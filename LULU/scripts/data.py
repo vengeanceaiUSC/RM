@@ -196,13 +196,13 @@ MKT = {
     "week52_low": 99.64,
     "beta": 0.86,
     "yahoo_debt_mrq": 2140000,     # Yahoo Total Debt (mrq) $2.14B ($000)
-    "yahoo_mkt_cap": 11140000,     # Yahoo Market Cap $11.14B ($000) — same page as beta
-    "de_ratio_yahoo_book": 0.4469, # Yahoo Total Debt/Equity (mrq) 44.69% — book; reference only
-    "de_ratio_sa": 0.45,           # StockAnalysis book D/E — legacy reference
+    "yahoo_mkt_cap": 11140000,     # Yahoo Market Cap $11.14B ($000); same page as beta
+    "de_ratio_yahoo_book": 0.4469, # Yahoo Total Debt/Equity (mrq) 44.69%; book; reference only
+    "de_ratio_sa": 0.45,           # StockAnalysis book D/E; legacy reference
     "total_debt_sa": 2141000,
 }
 
-# PitchBook pubcomps (04-Sep-2026) — supplemental TTM / latest-fiscal revenue, EBIT, and
+# PitchBook pubcomps (04-Sep-2026); supplemental TTM / latest-fiscal revenue, EBIT, and
 # forward P/E for multivariate comps. EV from PitchBook; revenue/EBIT from company filings
 # ($000 unless noted). Forward P/E aligns with StockAnalysis / consensus as of Sep-2026.
 PEER_FINANCIALS = {
@@ -271,7 +271,7 @@ PEER_FINANCIALS = {
     },
 }
 
-# Private-market / strategic precedents (context for athleisure M&A — not control-premium math)
+# Private-market / strategic precedents (context for athleisure M&A; not control-premium math)
 PRECEDENT_TRANSACTIONS = [
     {
         "target": "Sweaty Betty",
@@ -282,9 +282,9 @@ PRECEDENT_TRANSACTIONS = [
         "revenue_usd_m": 250,
         "ev_sales": 1.64,
         "ev_ebitda": 16.0,
-        "status": "Closed Aug-2021 — ~16x FY21E EBITDA; women's premium activewear",
+        "status": "Closed Aug-2021; ~16x FY21E EBITDA",
         "source": "Wolverine IR / SEC investor deck (Aug-2021)",
-        "use": "Closed strategic comp — premium DTC activewear at scale",
+        "use": "Closed strategic comp; premium DTC activewear at scale",
     },
     {
         "target": "Gymshark",
@@ -295,9 +295,9 @@ PRECEDENT_TRANSACTIONS = [
         "revenue_usd_m": 258,
         "ev_sales": 5.0,
         "ev_ebitda": None,
-        "status": "Closed Aug-2020 — $1.3bn implied EV; minority stake, not control",
+        "status": "Closed Aug-2020; $1.3bn EV (minority)",
         "source": "Bloomberg Aug-2020; ~£258M FY20 sales cited",
-        "use": "Private growth valuation marker — UK DTC fitness apparel",
+        "use": "Private growth valuation marker; UK DTC fitness apparel",
     },
     {
         "target": "Vuori",
@@ -308,9 +308,9 @@ PRECEDENT_TRANSACTIONS = [
         "revenue_usd_m": None,
         "ev_sales": None,
         "ev_ebitda": None,
-        "status": "Closed Oct-2021 — $4bn post-money; revenue not disclosed (~140% YoY growth)",
+        "status": "Closed Oct-2021; $4bn post-money",
         "source": "BusinessWire / Reuters Oct-2021",
-        "use": "Private athleisure unicorn valuation — profitable DTC since 2017",
+        "use": "Private athleisure unicorn valuation; profitable DTC since 2017",
     },
     {
         "target": "Alo Yoga (Color Image)",
@@ -321,14 +321,14 @@ PRECEDENT_TRANSACTIONS = [
         "revenue_usd_m": 2000,
         "ev_sales": 5.0,
         "ev_ebitda": None,
-        "status": "Unclosed — Reuters Jun-2026: no deal announced; IPO or sale still explored",
+        "status": "Unclosed; no deal per Reuters Jun-2026",
         "source": "Reuters Oct-2023 Moelis ask; Forbes parent sales ~$2bn",
-        "use": "Private precedent only — unclosed ask; not a premium to LULU stock",
+        "use": "Private precedent only; unclosed ask; not a premium to LULU stock",
     },
 ]
 
 # ---------------------------------------------------------------------------
-# Source links for blue-font (reported) figures — click value or header link
+# Source links for blue-font (reported) figures; click value or header link
 # ---------------------------------------------------------------------------
 def _sec_10k(accession, filename):
     acc = accession.replace("-", "")
@@ -375,14 +375,14 @@ JUST = {
     # WACC tab
     "wacc_rf": "4.8% risk-free = FRED DGS10 on 2026-09-03 (4.77%) rounded; replaces the stale 4.3% input.",
     "wacc_erp": "6.0% ERP is a conservative overlay vs Damodaran Jan-2026 implied 4.23%; used to keep CoE above the risk-free 4.8%.",
-    "wacc_beta_obs": "Yahoo Beta (5Y Monthly) = 0.86. Levered equity βL from ~60 monthly returns vs S&P 500 — not unlevered.",
+    "wacc_beta_obs": "Yahoo Beta (5Y Monthly) = 0.86. Levered equity βL from ~60 monthly returns vs S&P 500; not unlevered.",
     "wacc_beta_yahoo_debt": "Yahoo Total Debt (mrq) = $2.14B on the same Key Statistics page as βL. Most recent quarter balance sheet.",
     "wacc_beta_yahoo_mktcap": "Yahoo Market Cap = $11.14B on the same page as βL and Total Debt (mrq). Market value of equity.",
     "wacc_beta_de_unlever": "Unlever D/E = Yahoo debt (mrq) ÷ Yahoo market cap ≈ 0.19. Market-value D/E from the beta source page (Hamada convention).",
-    "wacc_beta_de_book_ref": "Yahoo Total Debt/Equity (mrq) = 44.69% is book D/E on the same page — shown for reference, not used in Hamada.",
+    "wacc_beta_de_book_ref": "Yahoo Total Debt/Equity (mrq) = 44.69% is book D/E on the same page; shown for reference, not used in Hamada.",
     "wacc_beta_unlev": "βu = 0.86 ÷ [1 + 0.70 × 0.19]. Strip Yahoo market D/E from βL → βu ≈ 0.76. No vendor publishes D/E inside the regression.",
-    "wacc_beta_de_relever": "Relever D/E = FY25 10-K lease debt ÷ our market cap ≈ 0.16 — WACC capital structure we model.",
-    "wacc_beta_ind": "Benchmark only: Damodaran unlevered Retail (Special Lines) βu = 0.95. Not used — we derive βu from Yahoo βL.",
+    "wacc_beta_de_relever": "Relever D/E = FY25 10-K lease debt ÷ our market cap ≈ 0.16; WACC capital structure we model.",
+    "wacc_beta_ind": "Benchmark only: Damodaran unlevered Retail (Special Lines) βu = 0.95. Not used; we derive βu from Yahoo βL.",
     "wacc_beta": "β used = βu × [1 + 0.70 × WACC D/E] ≈ 0.84. Relevered βL feeds CAPM: CoE = rf + β×ERP.",
     "wacc_kd": "5.0% pre-tax lease-equivalent borrowing cost; cheaper than equity. No funded revolver borrowings per FY25 10-K.",
     "wacc_tax": "30% cash tax matches FY2026 guidance (“approximately 30%”). Also sets (1−T) = 0.70 in the Hamada β unlever/relever formulas.",
@@ -390,14 +390,14 @@ JUST = {
     "wacc_mkt_eq": "Market equity = share price × shares outstanding. Capital-structure weighting numerator for relevered β and WACC weights.",
     "wacc_mkt_shares": "111,380k class A shares outstanding at FY25 year-end (10-K cover). Diluted WA 119,068 is for EPS, not market cap.",
     "wacc_lease_d": "ASC 842 operating lease liabilities = current + non-current ($1,798,441k FY25). Treated as debt equivalent in WACC and EV bridge.",
-    "wacc_fund_d": "Funded term debt $0 — 10-K: no borrowings outstanding on the revolver. Leases are the only debt equivalent here.",
+    "wacc_fund_d": "Funded term debt $0; 10-K: no borrowings outstanding on the revolver. Leases are the only debt equivalent here.",
     "wacc_we": "Equity weight = market cap ÷ (market cap + lease debt). ~86% at $100 and FY25 lease balance.",
-    "wacc_wd": "Debt weight = lease liabilities ÷ (market cap + lease debt). ~14% — ASC 842 leases, not bank debt.",
+    "wacc_wd": "Debt weight = lease liabilities ÷ (market cap + lease debt). ~14%; ASC 842 leases, not bank debt.",
     # Scenarios tab
     "sc_g1": "−6.1% FY2026 revenue growth matches company guidance midpoint of −5% to −7% after Q2 FY2026 print.",
     "sc_gterm": "2.3% FY27–30 growth matches StockAnalysis Revenue Growth Forecast (3Y) of 2.26%; next-year consensus is +2.64%.",
     "sc_m1": "13.2% is the real/run-rate OM: Q2 18.8% minus 560bps of tariff refunds. FY26 then adds the $134.5M refund once on top.",
-    "sc_tariff": "Add back $134.5M in FY26 only — already recognized (reduced COGS). +130bps on FY26 sales, not +560bps (that was Q2-only).",
+    "sc_tariff": "Add back $134.5M in FY26 only; already recognized (reduced COGS). +130bps on FY26 sales, not +560bps (that was Q2-only).",
     "sc_mterm": "FY30 15.5% is a partial recovery vs the FY25 10-K OM of 19.9% (unique Ctrl+F). Still well below the FY24 23.7% peak.",
     "sc_wacc": "Base WACC from WACC tab (lease-adjusted CAPM). Bear/bull bracket ±100bps around the calculated base.",
     "sc_g": "2.25% terminal g sits next to FRED GDPC1 Q2/Q2 real GDP ≈ 2.1% (24,269.613 / 23,770.976 − 1).",
@@ -406,22 +406,22 @@ JUST = {
     "sc_capex_pct": "FY26 7.0% is $735M on $10.4B sales, not FY25 $11.1B. Since 7.0% steps toward FY25 6.1%, we assume a fade: DCF 5.5% = (7.0+6.0+5.5+5.0+4.0)/5.",
     "sc_capex_sales": "FY26 sales are $10.35–$10.50B (earnings). Use that $10.4B year as the 7% denominator, not FY25 $11.1B.",
     "sc_gm": "56.6% of revenue (gross margin). Isolates COGS for inventory/AP drivers; base case held near FY25 reported GM.",
-    "sc_dso": "Not % of revenue — DSO (days), flat ~6.3. Mostly own stores/DTC (cash at register); AR is small wholesale residual — predictable ~6 days FY22–25.",
+    "sc_dso": "Not % of revenue; DSO (days), flat ~6.3. Mostly own stores/DTC (cash at register); AR is small wholesale residual; predictable ~6 days FY22–25.",
     "sc_ar": "Implied ~1.7% of revenue (not a direct % plug). AR = (DSO÷365)×revenue; flat DSO because sales are mostly own-store/DTC, not credit wholesale.",
     "sc_dio": (
-        "Not % of revenue — DIO (days).\n"
+        "Not % of revenue; DIO (days).\n"
         "FY25 anchor: DIO = (Inventories ÷ COGS) × 365\n"
         "  = (1,700,753 ÷ 4,818,468) × 365 ≈ 129 days (FY24 inv: 1,442,081).\n"
         "Forecast path: DIO_t = FY25 DIO − (1 day × year t); flat across scenarios."
     ),
     "sc_dio_decline": (
-        "Not % of revenue — subtract 1 DIO day per forecast year (−5 days FY26–30).\n"
+        "Not % of revenue; subtract 1 DIO day per forecast year (−5 days FY26–30).\n"
         "Feeds Inventories = (DIO_t ÷ 365) × COGS_t.\n"
         'Ctrl+F "reduce the percentage of markdowns"\n'
         'Ctrl+F "On a unit basis, we expect inventories to slightly decrease"'
     ),
     "sc_inventory": (
-        "Not % of revenue — $ balance (not a direct % plug).\n"
+        "Not % of revenue; $ balance (not a direct % plug).\n"
         "Inventories_t = (DIO_t ÷ 365) × COGS_t\n"
         "COGS_t = Revenue_t × (1 − GM%). FY25 check: (129 ÷ 365) × 4,818,468 ≈ 1,700,753.\n"
         'Ctrl+F "Inventories"\n'
@@ -429,18 +429,18 @@ JUST = {
         'Ctrl+F "Cost of goods sold"\n'
         "→ 4,818,468 ($000)"
     ),
-    "sc_dpo": "Not % of revenue — DPO (days), flat ~25.1. Implied AP ≈3.0% of sales / 6.9% of COGS.",
+    "sc_dpo": "Not % of revenue; DPO (days), flat ~25.1. Implied AP ≈3.0% of sales / 6.9% of COGS.",
     "sc_ap": "Implied ~3.0% of revenue (not a direct % plug). Balance = (DPO÷365)×COGS; DPO flat at FY25.",
     "sc_prepaid": "5.1% of revenue (flat). FY25 other current assets (prepaids + tax receivables) ÷ net revenue.",
     "sc_accrued": "6.0% of revenue (flat). FY25 accrued liabilities ÷ net revenue; comp/marketing accrual mix.",
-    "sc_coa": "Not one % — sum ≈22.1% of FY25 sales (AR ~1.7% + inventory ~15.3% + prepaids 5.1%).",
-    "sc_col": "Not one % — sum ≈9.0% of FY25 sales (AP ~3.0% + accrued liabilities 6.0%).",
-    "sc_nwc": "Not one % — net ≈13.2% of FY25 sales ($1,461,096k). COA minus COL; rolls forward each year.",
-    "sc_dnwc": "Not % of revenue — $ change in NWC year-over-year. Prior-year NWC minus current-year NWC for the FCF bridge.",
+    "sc_coa": "Not one %; sum ≈22.1% of FY25 sales (AR ~1.7% + inventory ~15.3% + prepaids 5.1%).",
+    "sc_col": "Not one %; sum ≈9.0% of FY25 sales (AP ~3.0% + accrued liabilities 6.0%).",
+    "sc_nwc": "Not one %; net ≈13.2% of FY25 sales ($1,461,096k). COA minus COL; rolls forward each year.",
+    "sc_dnwc": "Not % of revenue; $ change in NWC year-over-year. Prior-year NWC minus current-year NWC for the FCF bridge.",
     # DCF valuation
     "dcf_exitm": "Selected exit is Gordon TV / FY30 EBITDA. Identity: (UFCF/EBITDA)×(1+g)/(WACC−g). Not Deckers and not a peer average.",
     "dcf_debt_bridge": "Subtract ASC 842 operating lease liabilities as debt equivalent. Funded term debt $0 per FY25 10-K; leases ≈ $1.80B.",
-    # Comps — peer multiples
+    # Comps; peer multiples
     "comps_nke": "Nike EV/EBITDA is PitchBook daily EV / TTM EBITDA as of 04-Sep-2026. Black formula, not a typed print.",
     "comps_deck": "Deckers EV/EBITDA is PitchBook daily EV / TTM EBITDA as of 04-Sep-2026. Closest premium-footwear peer.",
     "comps_ads": "adidas EV/EBITDA is PitchBook daily EV / TTM EBITDA as of 04-Sep-2026. Global incumbent.",
@@ -462,7 +462,7 @@ JUST = {
     # 3-statement Assumptions tab
     "3s_rev_growth": "FY26 −6.1% is guidance midpoint. FY27 +2.6% then +2.3% tracks StockAnalysis next-year +2.64% and 3Y forecast 2.26%.",
     "3s_gm": "Clean GM 56.5%→58.0% (ex-refunds), still below peak ~58–59%. FY26 COGS is then reduced by the $134.5M IEEPA refund.",
-    "3s_tariff": "Add back $134.5M in FY26 only — already recognized (reduced COGS). +130bps on FY26 sales, not +560bps (that was Q2-only).",
+    "3s_tariff": "Add back $134.5M in FY26 only; already recognized (reduced COGS). +130bps on FY26 sales, not +560bps (that was Q2-only).",
     "3s_sga_pct": "FY26 SG&A 42.5% matches YTD 42.3% (earnings), vs FY25 36.7% 10-K; then fades to 39.5% as volume stabilizes.",
     "3s_other_opex": "$7M annual amortization run-rate; stable intangible amortization per recent 10-K disclosure levels.",
     "3s_other_inc": "FY26 $45M other income annualizes YTD $22,829; then steps down as cash is deployed (FY25 was only $28,352).",
@@ -491,19 +491,19 @@ JUST = {
     "drv_comp_americas": "FY25 Americas comp −3% per 10-K (traffic, conversion, AOV down). FY26 −4%: modest step-down before flat FY27 as promo clears.",
     "drv_comp_china": "FY25 China comp +20% (+19% CCY) per 10-K. FY26 +14%: still fastest region but moderating as the store base scales.",
     "drv_comp_row": "FY25 RoW comp +9% (+7% CCY) per 10-K. FY26 +7%: hold above CCY, fade to +4% by FY30 as APAC/Europe base matures.",
-    "drv_comp_store_rev": "Existing-store sales only — prior store rev grown by geo comp %. New doors are a separate line, not in here.",
+    "drv_comp_store_rev": "Existing-store sales only; prior store rev grown by geo comp %. New doors are a separate line, not in here.",
     "drv_new_store_rev": "Net new doors × sq ft × $/sq ft is plain dollars. /1000 → $000 on this tab. ×0.55 'cause year-one stores don't run full.",
     "drv_f_end_stores": "Simple roll-forward: where you started, plus openings, minus closures. That's your ending store count for the year.",
     "drv_f_beg_stores": "Beginning stores = last year's ending count. Same number, just carried forward into the new fiscal year.",
     "drv_f_total_stores": "Add up Americas + China + RoW ending stores. Should tie to the 10-K total company-operated count.",
     "drv_f_total_sqft": "Ending stores times avg sq ft per box. Gives you total fleet square footage for the productivity math.",
-    "drv_f_store_rev_base": "Last year's total store-channel revenue — the base you're growing comps off of, not the new boxes.",
+    "drv_f_store_rev_base": "Last year's total store-channel revenue; the base you're growing comps off of, not the new boxes.",
     "drv_f_store_rev": "Brick-and-mortar channel = comp store sales plus whatever the net new stores contributed. That's the whole store line.",
     "drv_f_ecomm_rev": "Traffic × conversion × AOV is dollars. ×1M 'cause sessions are in millions; /1000 puts it in $000 like everything else.",
-    "drv_f_other_rev_growth": "Take last year's other-channel revenue and grow it by your assumed %. Wholesale/license/outlets — not stores or dot-com.",
+    "drv_f_other_rev_growth": "Take last year's other-channel revenue and grow it by your assumed %. Wholesale/license/outlets; not stores or dot-com.",
     "drv_f_geo_scale": "FY26 geo rev = FY25 geo rev × (FY26 total rev ÷ FY25 total rev). Total = store + e-comm + other.",
     "drv_f_total_rev": "Bottom-up total = store channel + e-comm + other. That's your driver-built revenue before you check Scenarios.",
-    "drv_f_scen_rev": "Pulls the Scenarios base-case revenue path — that's still the number the DCF actually uses, not the driver total.",
+    "drv_f_scen_rev": "Pulls the Scenarios base-case revenue path; that's still the number the DCF actually uses, not the driver total.",
     "drv_f_variance": "Driver-built revenue minus Scenarios revenue. Shows you how far off the bottom-up path is from what you're valuing on.",
     "drv_f_var_pct": "Variance as a percent of Scenarios revenue. Easy read on whether the driver schedule is close or way out of line.",
     "drv_ecomm_sessions": "485M FY25 sessions implied from reported e-comm revenue / conv / AOV. FY26 −3% on Americas softness.",
@@ -511,22 +511,22 @@ JUST = {
     "drv_ecomm_aov": "AOV $305 FY26 on promo intensity; steps to $315 by FY30 as mix normalizes.",
     "drv_other_rev": "Other channels (wholesale/license/outlets) held at FY25 $1.13B base; low-single-digit growth thereafter.",
     "drv_geo_americas": "Geographic split scales with consolidated growth; FY25 Americas 70.7% of revenue per 10-K segment table.",
-    "drv_geo_china": "China 15.8% of FY25 revenue; fastest comp and store growth — expansion market in the driver schedule.",
+    "drv_geo_china": "China 15.8% of FY25 revenue; fastest comp and store growth; expansion market in the driver schedule.",
     "drv_geo_row": "Rest of World 13.5% of FY25 revenue; mid-single-digit comps and steady openings.",
     "drv_mix_women": "Women's mix fades 62.5%→60% as men's penetrates; FY25 reported 63% women's per 10-K category disclosure.",
     "drv_mix_men": "Men's mix rises 24.5%→27%; FY25 men's grew 4% vs women's 5% per 10-K category commentary.",
     "drv_mix_accessories": "Accessories steady at 13% of revenue; FY25 accessories +8% per 10-K category disclosure.",
-    "drv_store_traffic": "Fleet traffic memo line — not a separate FCF item. Calibrated to FY25 store productivity commentary.",
-    "drv_store_conv": "In-store conversion memo — 10-K cites lower conversion in Americas; FY26 27% improving to 29%.",
+    "drv_store_traffic": "Fleet traffic memo line; not a separate FCF item. Calibrated to FY25 store productivity commentary.",
+    "drv_store_conv": "In-store conversion memo; 10-K cites lower conversion in Americas; FY26 27% improving to 29%.",
     "drv_store_aov": "In-store average transaction $115–$122; supports SPSF and comp-sales bridge on the driver tab.",
-    # NOPAT Bridge — 5-phase EBIT → normalized NOPAT pipeline
+    # NOPAT Bridge; 5-phase EBIT → normalized NOPAT pipeline
     "np_sbc": (
-        "Not % of revenue — SBC add-back flag. Set to 0 (Convention A).\n"
+        "Not % of revenue; SBC add-back flag. Set to 0 (Convention A).\n"
         "SBC stays inside Scenarios EBIT/NOPAT as a real economic cost; DCF uses basic shares (111.4M).\n"
-        "FY25 reference: $62,203k (10-K). Flag = 1 would add back (Convention B + diluted shares) — not used."
+        "FY25 reference: $62,203k (10-K). Flag = 1 would add back (Convention B + diluted shares); not used."
     ),
     "np_m_store": (
-        "Not % of consolidated revenue — EBIT as % of store-channel revenue only "
+        "Not % of consolidated revenue; EBIT as % of store-channel revenue only "
         "(not the Scenarios 13.2%–15.5% consolidated margin).\n"
         "18.6% margin assumption.\n"
         "EBIT_store = Rev_store × Margin_store\n"
@@ -534,64 +534,64 @@ JUST = {
         "Calibrated so Σ channel EBIT ≈ consolidated EBIT 2,210,615 (10-K)."
     ),
     "np_m_ecomm": (
-        "Not % of consolidated revenue — EBIT as % of e-commerce revenue only "
+        "Not % of consolidated revenue; EBIT as % of e-commerce revenue only "
         "(not the Scenarios 13.2%–15.5% consolidated margin).\n"
         "23.6% margin assumption.\n"
         "EBIT_e-comm = Rev_e-comm × Margin_e-comm\n"
         "FY25 check: 4,918,697 × 23.6% ≈ 1,160,812 ($000).\n"
-        "Higher than stores — no occupancy; fulfillment + digital marketing only."
+        "Higher than stores; no occupancy; fulfillment + digital marketing only."
     ),
     "np_m_other": (
-        "Not % of consolidated revenue — EBIT as % of other-channel revenue only "
+        "Not % of consolidated revenue; EBIT as % of other-channel revenue only "
         "(not the Scenarios 13.2%–15.5% consolidated margin).\n"
         "9.1% margin assumption.\n"
         "EBIT_other = Rev_other × Margin_other\n"
         "FY25 check: 1,134,159 × 9.1% ≈ 103,209 ($000).\n"
-        "Wholesale/license/outlets — lower-margin residual channel."
+        "Wholesale/license/outlets; lower-margin residual channel."
     ),
     "np_t_marg": "30% statutory marginal rate. t_operating transitions here over the 5-year forecast.",
-    "np_rd_years": "Not % of revenue — amortization period (years) if R&D/software is capitalized. LULU: no separate R&D cap.",
+    "np_rd_years": "Not % of revenue; amortization period (years) if R&D/software is capitalized. LULU: no separate R&D cap.",
     "np_ebit_rep": "FY25: reported operating income from 10-K. Forecast: Scenarios base-case EBIT (margin path).",
     "np_impair": "Add back intangible amortization / impairments. FY25 = other operating expense amortization run-rate.",
     "np_restruct": "Add back restructuring (severance, store closures). LULU FY25: none identified.",
     "np_legal": "Strip one-off legal / M&A advisory fees. LULU FY25: none identified.",
     "np_ebit_p1": "Phase 1 adjusted EBIT = reported + non-recurring add-backs. SBC add-back = 0 when flag = 0.",
     "np_lease_int": (
-        "Not % of revenue — implied lease interest ($1,028k FY25). "
+        "Not % of revenue; implied lease interest ($1,028k FY25). "
         "Reclass from rent to unlevered EBIT; scales with revenue in forecast."
     ),
-    "np_rd_cap": "Capitalize multi-year software/R&D. LULU: immaterial separate R&D line — held at $0.",
+    "np_rd_cap": "Capitalize multi-year software/R&D. LULU: immaterial separate R&D line; held at $0.",
     "np_rd_amort": "Amortization of prior capitalized intangibles. LULU: flows through existing D&A.",
     "np_ebit_p2": "Phase 2 EBIT = Phase 1 + lease interest reclass + R&D cap − amortization.",
-    "np_rev_store": "Not % of revenue — store-channel revenue from Revenue Drivers tab.",
-    "np_rev_ecomm": "Not % of revenue — e-commerce revenue from Revenue Drivers tab.",
-    "np_rev_other": "Not % of revenue — wholesale/license/outlet revenue from Revenue Drivers tab.",
+    "np_rev_store": "Not % of revenue; store-channel revenue from Revenue Drivers tab.",
+    "np_rev_ecomm": "Not % of revenue; e-commerce revenue from Revenue Drivers tab.",
+    "np_rev_other": "Not % of revenue; wholesale/license/outlet revenue from Revenue Drivers tab.",
     "np_ebit_store": (
-        "Not % of consolidated revenue — store EBIT ÷ store revenue only "
+        "Not % of consolidated revenue; store EBIT ÷ store revenue only "
         "(not Scenarios consolidated EBIT margin).\n"
         "EBIT_store,t = Rev_store,t × 18.6%\n"
         "FY25: 5,049,744 × 18.6% ≈ 939,252 ($000).\n"
         "Margin from driver assumptions row above; ties to 10-K store revenue."
     ),
     "np_ebit_ecomm": (
-        "Not % of consolidated revenue — e-commerce EBIT ÷ e-commerce revenue only "
+        "Not % of consolidated revenue; e-commerce EBIT ÷ e-commerce revenue only "
         "(not Scenarios consolidated EBIT margin).\n"
         "EBIT_e-comm,t = Rev_e-comm,t × 23.6%\n"
         "FY25: 4,918,697 × 23.6% ≈ 1,160,812 ($000).\n"
-        "Higher than stores — no brick-and-mortar occupancy drag."
+        "Higher than stores; no brick-and-mortar occupancy drag."
     ),
     "np_ebit_other": (
-        "Not % of consolidated revenue — other-channel EBIT ÷ other revenue only "
+        "Not % of consolidated revenue; other-channel EBIT ÷ other revenue only "
         "(not Scenarios consolidated EBIT margin).\n"
         "EBIT_other,t = Rev_other,t × 9.1%\n"
         "FY25: 1,134,159 × 9.1% ≈ 103,209 ($000).\n"
-        "Wholesale/license/outlets — lowest channel margin."
+        "Wholesale/license/outlets; lowest channel margin."
     ),
     "np_ebit_channel": "Phase 3 channel EBIT = Σ sector EBIT_i. FY26 adds Scenarios tariff refund.",
     "np_ebit_p3": "Channel-mix EBIT output (Phase 3). Check row vs Scenarios shows channel vs margin-path gap.",
     "np_ebit_norm": (
         "FY25: Phases 1–2 walk-through (SBC not added back; flag = 0). "
-        "Forecast: Scenarios base EBIT — tax base for NOPAT."
+        "Forecast: Scenarios base EBIT; tax base for NOPAT."
     ),
     "np_t_oper": (
         "Operating effective tax rate: (tax + interest shield) ÷ (EBT + interest). "
@@ -660,7 +660,7 @@ ASSUMPTION_SRC = {
     "comps_onon": ("StockAnalysis: ONON EV/EBITDA", "https://stockanalysis.com/stocks/onon/statistics/"),
     "comps_vfc": ("StockAnalysis: VFC EV/EBITDA", "https://stockanalysis.com/stocks/vfc/statistics/"),
     "comps_alo_ask": ("Reuters: Alo parent $10bn Moelis ask", SOURCES["alo_reuters_2023"]),
-    "comps_alo_closed": ("Reuters: Alo 2023 process — no deal", SOURCES["alo_reuters_2026"]),
+    "comps_alo_closed": ("Reuters: Alo 2023 process; no deal", SOURCES["alo_reuters_2026"]),
     "comps_alo_sales": ("Forbes: Color Image nearly $2bn sales", SOURCES["alo_forbes"]),
     "comps_ff_ev_lo": ("StockAnalysis: LULU EV/EBITDA", SOURCES["lulu_stats"]),
     "comps_ff_ev_hi": ("StockAnalysis: DECK EV/EBITDA", "https://stockanalysis.com/stocks/deck/statistics/"),
@@ -759,7 +759,7 @@ ASSUMPTION_SRC = {
     "np_nopat": ("NOPAT Bridge tab: normalized NOPAT", None),
 }
 
-# Exact Ctrl+F strings — every quoted phrase appears verbatim in the linked source.
+# Exact Ctrl+F strings; every quoted phrase appears verbatim in the linked source.
 # Format: Ctrl+F "phrase" → what to read; model value noted where it is an assumption.
 SOURCE_HINT = {
     # WACC
@@ -769,10 +769,10 @@ SOURCE_HINT = {
     "wacc_beta_yahoo_debt": 'Ctrl+F "Total Debt (mrq)" → 2.14B. Same page as beta.',
     "wacc_beta_yahoo_mktcap": 'Ctrl+F "Market Cap" → 11.14B. Same page as beta and debt.',
     "wacc_beta_de_unlever": 'Formula: D/E = E[Yahoo debt mrq] ÷ E[Yahoo market cap]. 2.14B ÷ 11.14B ≈ 0.19.',
-    "wacc_beta_de_book_ref": 'Ctrl+F "Total Debt/Equity (mrq)" → 44.69%. Book D/E — reference only, not in Hamada.',
+    "wacc_beta_de_book_ref": 'Ctrl+F "Total Debt/Equity (mrq)" → 44.69%. Book D/E; reference only, not in Hamada.',
     "wacc_beta_unlev": 'βu = E[βL] ÷ (1 + 0.70 × E[D/E Yahoo]). 0.86 ÷ 1.134 ≈ 0.76. Regression does not publish embedded D/E.',
     "wacc_beta_de_relever": 'D/E = E[FY25 lease debt] ÷ E[market cap]. 1,798,441 ÷ 11,138,000 ≈ 0.16 (10-K + model).',
-    "wacc_beta_ind": 'Ctrl+F "Retail (Special Lines)" → 0.95 βu. Sector benchmark — not used in WACC.',
+    "wacc_beta_ind": 'Ctrl+F "Retail (Special Lines)" → 0.95 βu. Sector benchmark; not used in WACC.',
     "wacc_beta": 'β used = E[βu] × (1 + 0.70 × E[D/E WACC]). ≈ 0.84 → CoE row below.',
     "wacc_kd": 'Ctrl+F "Current lease liabilities" + "Non-current lease liabilities" → debt equiv. 5.0% illustrative lease borrowing cost.',
     "wacc_tax": 'Ctrl+F "a tax rate of approximately 30%" on the FY2026 outlook paragraph.',
@@ -805,9 +805,9 @@ SOURCE_HINT = {
         "→ 4,818,468 ($000)"
     ),
     "sc_dso": (
-        "Not % of revenue — DSO (days), flat ~6.3.\n"
+        "Not % of revenue; DSO (days), flat ~6.3.\n"
         "Why flat: ~90%+ revenue is company-operated stores + e-commerce (cash/card at sale);\n"
-        "AR is a small, stable wholesale/license residual — predictable collection, not trade credit.\n"
+        "AR is a small, stable wholesale/license residual; predictable collection, not trade credit.\n"
         'Ctrl+F "Accounts receivable, net"\n'
         "→ 190,657 ($000)\n"
         'Ctrl+F "Net revenue"\n'
@@ -818,14 +818,14 @@ SOURCE_HINT = {
     ),
     "sc_ar": (
         "Implied ~1.7% of revenue (= 190,657 ÷ 11,102,600); not a direct % plug.\n"
-        "AR_t = (DSO ÷ 365) × Revenue_t. DSO flat because own-store/DTC dominates — AR scales predictably with sales.\n"
+        "AR_t = (DSO ÷ 365) × Revenue_t. DSO flat because own-store/DTC dominates; AR scales predictably with sales.\n"
         'Ctrl+F "Accounts receivable, net"\n'
         "→ 190,657 ($000)\n"
         'Ctrl+F "Net revenue"\n'
         "→ 11,102,600 ($000)"
     ),
     "sc_dio": (
-        "Not % of revenue — DIO (days).\n"
+        "Not % of revenue; DIO (days).\n"
         "FY25 anchor formula:\n"
         "  DIO = (Inventories ÷ COGS) × 365\n"
         'Ctrl+F "Inventories"\n'
@@ -836,7 +836,7 @@ SOURCE_HINT = {
         "Forecast: DIO_t = FY25 DIO − (1 × year t)"
     ),
     "sc_inventory": (
-        "Not % of revenue — Inventories_t = (DIO_t ÷ 365) × COGS_t.\n"
+        "Not % of revenue; Inventories_t = (DIO_t ÷ 365) × COGS_t.\n"
         "COGS_t = Revenue_t × (1 − GM%).\n"
         'Ctrl+F "Inventories"\n'
         "→ 1,700,753 ($000)\n"
@@ -845,7 +845,7 @@ SOURCE_HINT = {
         "FY25 proof: (129 ÷ 365) × 4,818,468 ≈ 1,700,753"
     ),
     "sc_dio_decline": (
-        "Not % of revenue — DIO −1 day/yr (−5 days FY26–30).\n"
+        "Not % of revenue; DIO −1 day/yr (−5 days FY26–30).\n"
         "Feeds Inventories_t = (DIO_t ÷ 365) × COGS_t.\n"
         'Ctrl+F "reduce the percentage of markdowns"\n'
         'Ctrl+F "On a unit basis, we expect inventories to slightly decrease"'
@@ -855,7 +855,7 @@ SOURCE_HINT = {
         "→ 331,421 ($000)\n"
         'Ctrl+F "Cost of goods sold"\n'
         "→ 4,818,468 ($000)\n"
-        "Not % of revenue — DPO ≈ 25.1 days. Implied AP ≈ 3.0% of sales / 6.9% of COGS."
+        "Not % of revenue; DPO ≈ 25.1 days. Implied AP ≈ 3.0% of sales / 6.9% of COGS."
     ),
     "sc_ap": (
         'Ctrl+F "Accounts payable"\n'
@@ -879,19 +879,19 @@ SOURCE_HINT = {
         "6.0% of revenue (flat). 662,982 ÷ 11,102,600."
     ),
     "sc_coa": (
-        "Not one % of revenue — sum of line items.\n"
+        "Not one % of revenue; sum of line items.\n"
         "FY25: AR ~1.7% + inventory ~15.3% + prepaids 5.1% ≈ 22.1% of sales."
     ),
     "sc_col": (
-        "Not one % of revenue — sum of line items.\n"
+        "Not one % of revenue; sum of line items.\n"
         "FY25: AP ~3.0% + accrued liabilities 6.0% ≈ 9.0% of sales."
     ),
     "sc_nwc": (
-        "Not one % of revenue — net balance.\n"
+        "Not one % of revenue; net balance.\n"
         "FY25 NWC ≈ 13.2% of sales ($1,461,096k = COA − COL)."
     ),
     "sc_dnwc": (
-        "Not % of revenue — $ change year-over-year.\n"
+        "Not % of revenue; $ change year-over-year.\n"
         "FY26: revenue −6.1% + DIO −1 day → NWC falls → ΔNWC positive (WC release).\n"
         "FY27–30: revenue +2.3%/yr → AR & inventory rebuild → ΔNWC negative (WC build)."
     ),
@@ -902,19 +902,19 @@ SOURCE_HINT = {
         "DCF IV uses basic 111,380k shares."
     ),
     "np_m_store": (
-        "Not consolidated EBIT margin — EBIT ÷ store revenue only (cf. Scenarios 13.2%–15.5%).\n"
+        "Not consolidated EBIT margin; EBIT ÷ store revenue only (cf. Scenarios 13.2%–15.5%).\n"
         'Ctrl+F "Company-operated stores"\n'
         "→ 5,049,744 ($000) net revenue\n"
         "× 18.6% margin assumption → store EBIT ≈ 939,252 ($000)"
     ),
     "np_m_ecomm": (
-        "Not consolidated EBIT margin — EBIT ÷ e-commerce revenue only (cf. Scenarios 13.2%–15.5%).\n"
+        "Not consolidated EBIT margin; EBIT ÷ e-commerce revenue only (cf. Scenarios 13.2%–15.5%).\n"
         'Ctrl+F "E-commerce"\n'
         "→ 4,918,697 ($000) net revenue\n"
         "× 23.6% margin assumption → e-comm EBIT ≈ 1,160,812 ($000)"
     ),
     "np_m_other": (
-        "Not consolidated EBIT margin — EBIT ÷ other-channel revenue only (cf. Scenarios 13.2%–15.5%).\n"
+        "Not consolidated EBIT margin; EBIT ÷ other-channel revenue only (cf. Scenarios 13.2%–15.5%).\n"
         'Ctrl+F "Net revenue" → 11,102,600\n'
         "Minus stores + e-comm → other channels ≈ 1,134,159 ($000)\n"
         "× 9.1% margin assumption → other EBIT ≈ 103,209 ($000)"
@@ -924,32 +924,32 @@ SOURCE_HINT = {
     "np_ebit_rep": 'Ctrl+F "Income from operations" → 2,210,615 ($000). Forecast links to Scenarios EBIT.',
     "np_impair": 'Ctrl+F "Amortization of intangible assets" → other operating expense run-rate (add-back).',
     "np_restruct": 'Ctrl+F "restructuring" → none material in FY25 10-K.',
-    "np_legal": "One-off legal/M&A fees in SG&A — none identified FY25.",
+    "np_legal": "One-off legal/M&A fees in SG&A; none identified FY25.",
     "np_ebit_p1": "Sum of reported EBIT + Phase 1 add-backs on this tab.",
     "np_lease_int": (
         'Ctrl+F "Interest paid on lease liabilities"\n'
         "→ 1,028 ($000) supplemental cash-flow disclosure. Reclass to unlevered EBIT."
     ),
-    "np_rd_cap": "R&D / software capitalization — LULU immaterial; held at $0.",
-    "np_rd_amort": "Amortization of prior capitalized intangibles — netted in D&A line.",
+    "np_rd_cap": "R&D / software capitalization; LULU immaterial; held at $0.",
+    "np_rd_amort": "Amortization of prior capitalized intangibles; netted in D&A line.",
     "np_ebit_p2": "Phase 1 + lease interest + R&D cap − amortization.",
     "np_rev_store": "Revenue Drivers tab → store-channel revenue row.",
     "np_rev_ecomm": "Revenue Drivers tab → e-commerce revenue row.",
     "np_rev_other": "Revenue Drivers tab → other channels revenue row.",
     "np_ebit_store": (
-        "Not consolidated EBIT margin — store EBIT ÷ store revenue only.\n"
+        "Not consolidated EBIT margin; store EBIT ÷ store revenue only.\n"
         'Ctrl+F "Company-operated stores"\n'
         "→ 5,049,744 ($000)\n"
         "EBIT = Rev × 18.6% → ≈ 939,252 ($000)"
     ),
     "np_ebit_ecomm": (
-        "Not consolidated EBIT margin — e-commerce EBIT ÷ e-commerce revenue only.\n"
+        "Not consolidated EBIT margin; e-commerce EBIT ÷ e-commerce revenue only.\n"
         'Ctrl+F "E-commerce"\n'
         "→ 4,918,697 ($000)\n"
         "EBIT = Rev × 23.6% → ≈ 1,160,812 ($000)"
     ),
     "np_ebit_other": (
-        "Not consolidated EBIT margin — other-channel EBIT ÷ other revenue only.\n"
+        "Not consolidated EBIT margin; other-channel EBIT ÷ other revenue only.\n"
         "Other rev = 11,102,600 − 5,049,744 − 4,918,697 ≈ 1,134,159 ($000)\n"
         "EBIT = Rev × 9.1% → ≈ 103,209 ($000)"
     ),
@@ -962,7 +962,7 @@ SOURCE_HINT = {
         'Ctrl+F "Income before income tax expense" → 2,238,967\n'
         'Ctrl+F "Interest paid on lease liabilities" → 1,028'
     ),
-    "np_tax_exp": "Normalized EBIT × t_operating — unlevered tax (no debt shield).",
+    "np_tax_exp": "Normalized EBIT × t_operating; unlevered tax (no debt shield).",
     "np_nopat": "EBIT_norm − unlevered tax. Scenarios base-case NOPAT links to this row.",
     # DCF / comps
     "dcf_exitm": "No peer Ctrl+F. This cell = Gordon TV / FY30 EBITDA = (UFCF/EBITDA)×(1+g)/(WACC−g). WACC and g are sourced on those rows.",
@@ -1008,28 +1008,28 @@ SOURCE_HINT = {
     "3s_rep_price": 'Ctrl+F "closed at $100.61" → Last Sale (NASDAQ). Model repurchase price starts at $100.',
     # Revenue drivers
     "drv_openings": 'Ctrl+F "Total company-operated stores" → 811 (FY25). FY25 added 44 net stores; model skews openings to China.',
-    "drv_closures": 'Ctrl+F "lease" / store fleet — immaterial closures vs expansion; 2–3 per mature region.',
+    "drv_closures": 'Ctrl+F "lease" / store fleet; immaterial closures vs expansion; 2–3 per mature region.',
     "drv_sqft_store": 'Ctrl+F "sales per square foot were $1,426" → implied 3.54M sq ft / 811 stores ≈ 4,367 sq ft.',
     "drv_spsf": 'Ctrl+F "sales per square foot were $1,426" → FY25 reported $1,426; FY26 model $1,380 on traffic pressure.',
     "drv_comp_americas": 'Ctrl+F "Americas comparable sales decreased 3%" → FY25 anchor. FY26 model −4% before stabilization.',
     "drv_comp_china": 'Ctrl+F "China Mainland comparable sales increased 20%" → FY25 anchor. FY26 model +14% on a larger base.',
     "drv_comp_row": 'Ctrl+F "Rest of World comparable sales increased 9%" → FY25 +9% (+7% CCY). FY26 model +7%, fading to +4%.',
-    "drv_comp_store_rev": "=prior store rev×(71%×(1+Am comp)+16%×(1+China)+13%×(1+RoW)). Existing base only — new stores are on the next row.",
+    "drv_comp_store_rev": "=prior store rev×(71%×(1+Am comp)+16%×(1+China)+13%×(1+RoW)). Existing base only; new stores are on the next row.",
     "drv_new_store_rev": (
         "=(open−close each geo)×sq ft×$/sq ft → raw annual $. /1000 flips that to $000 (this whole tab is thousands). "
-        "×0.55 = year-one haircut — new boxes don't run at full SPSF yet. FY27 ex: (D7−D8+D11−D12+D15−D16)×D19×D24/1000×0.55."
+        "×0.55 = year-one haircut; new boxes don't run at full SPSF yet. FY27 ex: (D7−D8+D11−D12+D15−D16)×D19×D24/1000×0.55."
     ),
-    "drv_f_end_stores": "=beginning stores + openings − closures. Roll-forward — nothing fancy, just how many doors you end with.",
-    "drv_f_beg_stores": "=prior-year ending stores. Same count, new column — that's where the year starts.",
+    "drv_f_end_stores": "=beginning stores + openings − closures. Roll-forward; nothing fancy, just how many doors you end with.",
+    "drv_f_beg_stores": "=prior-year ending stores. Same count, new column; that's where the year starts.",
     "drv_f_total_stores": "=Americas ending + China ending + RoW ending. Should foot to total company-operated stores.",
     "drv_f_total_sqft": "=total ending stores × avg sq ft per store. Fleet size in square feet for the productivity lines.",
-    "drv_f_store_rev_base": "=prior column's total store-channel revenue. Base you're applying comps to — not new-store contribution.",
+    "drv_f_store_rev_base": "=prior column's total store-channel revenue. Base you're applying comps to; not new-store contribution.",
     "drv_f_store_rev": "=comparable store revenue + net new store revenue. Full brick-and-mortar channel for the year.",
     "drv_f_ecomm_rev": "=sessions×1,000,000×conversion×AOV/1000 → e-comm $000. ×1M 'cause sessions are millions; /1000 matches tab units.",
-    "drv_f_other_rev_growth": "=prior other-channel rev × (1 + growth %). Wholesale/license/outlets — grown off last year.",
+    "drv_f_other_rev_growth": "=prior other-channel rev × (1 + growth %). Wholesale/license/outlets; grown off last year.",
     "drv_f_geo_scale": "FY26 geo rev = FY25 geo rev × (FY26 total rev ÷ FY25 total rev). Total rev = store + e-comm + other.",
     "drv_f_total_rev": "=store channel + e-commerce + other. Bottom-up top line before you reconcile to Scenarios.",
-    "drv_f_scen_rev": "=Scenarios! base-case revenue. DCF still runs off this path — not the driver total.",
+    "drv_f_scen_rev": "=Scenarios! base-case revenue. DCF still runs off this path; not the driver total.",
     "drv_f_variance": "=bottom-up total − Scenarios revenue. Positive = drivers above Scenarios; negative = below.",
     "drv_f_var_pct": "=variance ÷ Scenarios revenue. Quick % read on how far the driver build is from the valuation path.",
     "drv_ecomm_sessions": 'Ctrl+F "E-commerce" → 4,918,697 ($000). Sessions implied from revenue / conv / AOV.',
@@ -1049,7 +1049,7 @@ SOURCE_HINT = {
 
 # Organized Ctrl+F block for the capex assumption cell (column D)
 BETA_CTRL_F = (
-    "YAHOO KEY STATISTICS — \u03b2L + debt + equity on ONE page\n"
+    "YAHOO KEY STATISTICS; \u03b2L + debt + equity on ONE page\n"
     "(No vendor publishes the D/E embedded inside the regression.)\n"
     "\n"
     "Observed levered \u03b2L\n"
