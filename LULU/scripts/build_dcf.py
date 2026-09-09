@@ -225,7 +225,7 @@ s_assum('prepaid_pct', "Prepaid expenses (% of revenue)", _NWC['prepaid_pct'], _
         _NWC['prepaid_pct'], doc_key='sc_prepaid')
 s_assum('accrued_pct', "Accrued liabilities (% of revenue)", _NWC['accrued_pct'], _NWC['accrued_pct'],
         _NWC['accrued_pct'], doc_key='sc_accrued')
-s_assum('bb_fixed', "Pitch CFF: fixed buyback ($k/yr) bear/base", 500000, 500000, 0, fmt=NUM)
+s_assum('bb_fixed', "Pitch CFF: fixed buyback ($k/yr) bear/base", 750000, 750000, 0, fmt=NUM)
 s_assum('bb_pct', "Pitch CFF: % of FCF to buybacks (bull)", 0, 0, 0.75, fmt=PCT)
 
 rr[0] += 1

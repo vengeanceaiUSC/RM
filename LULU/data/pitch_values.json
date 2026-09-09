@@ -88,8 +88,8 @@
         "operating_income": 1511,
         "operating_margin": "14.5%",
         "net_income": 1089,
-        "eps": 9.55,
-        "diluted_shares_k": 114068
+        "eps": 9.76,
+        "diluted_shares_k": 111568
       },
       "FY2027E": {
         "revenue": 10665,
@@ -97,8 +97,8 @@
         "operating_income": 1469,
         "operating_margin": "13.8%",
         "net_income": 1056,
-        "eps": 9.65,
-        "diluted_shares_k": 109438
+        "eps": 10.09,
+        "diluted_shares_k": 104624
       },
       "FY2028E": {
         "revenue": 10910,
@@ -106,8 +106,8 @@
         "operating_income": 1566,
         "operating_margin": "14.4%",
         "net_income": 1120,
-        "eps": 10.66,
-        "diluted_shares_k": 105091
+        "eps": 11.42,
+        "diluted_shares_k": 98102
       },
       "FY2029E": {
         "revenue": 11161,
@@ -115,8 +115,8 @@
         "operating_income": 1666,
         "operating_margin": "14.9%",
         "net_income": 1187,
-        "eps": 11.75,
-        "diluted_shares_k": 100992
+        "eps": 12.91,
+        "diluted_shares_k": 91954
       },
       "FY2030E": {
         "revenue": 11418,
@@ -124,8 +124,8 @@
         "operating_income": 1770,
         "operating_margin": "15.5%",
         "net_income": 1256,
-        "eps": 12.93,
-        "diluted_shares_k": 97146
+        "eps": 14.57,
+        "diluted_shares_k": 86185
       }
     },
     "bull": {
@@ -179,11 +179,11 @@
   "balance_sheet": {
     "base": {
       "cash": {
-        "FY2026E": 2393,
-        "FY2027E": 2825,
-        "FY2028E": 3317,
-        "FY2029E": 3874,
-        "FY2030E": 4497
+        "FY2026E": 2143,
+        "FY2027E": 2325,
+        "FY2028E": 2567,
+        "FY2029E": 2874,
+        "FY2030E": 3247
       },
       "inventories": {
         "FY2026E": 1585,
@@ -193,11 +193,11 @@
         "FY2030E": 1681
       },
       "total_assets": {
-        "FY2026E": 7941,
-        "FY2027E": 8124,
-        "FY2028E": 8310,
-        "FY2029E": 8502,
-        "FY2030E": 8697
+        "FY2026E": 7691,
+        "FY2027E": 7624,
+        "FY2028E": 7560,
+        "FY2029E": 7502,
+        "FY2030E": 7447
       },
       "total_liab": {
         "FY2026E": 3282,
@@ -276,11 +276,11 @@
         "FY2030E": 1123
       },
       "buybacks": {
-        "FY2026E": -500,
-        "FY2027E": -500,
-        "FY2028E": -500,
-        "FY2029E": -500,
-        "FY2030E": -500
+        "FY2026E": -750,
+        "FY2027E": -750,
+        "FY2028E": -750,
+        "FY2029E": -750,
+        "FY2030E": -750
       },
       "dna": {
         "FY2026E": 469,

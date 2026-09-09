@@ -17,6 +17,7 @@ from gis_pitch import (
     add_para,
     textbox,
     rect,
+    fit_font_size,
     _set_font,
     _add_bullet,
     NAVY,
@@ -130,16 +131,44 @@ def _add_labeled_bullet(tf, label, body, size=13, color=INK, first=False, space_
     return p
 
 
+_CARD_GAP = 0.14      # vertical gutter between bullet panels
+_CARD_ACCENT_W = 0.06  # navy rule down the left edge of each panel
+_CARD_PAD_L = 0.34     # text inset past the accent rule
+_CARD_PAD_R = 0.30
+
+
 def _narrative_slide(title, descriptor, bullets, links, body_top=_CONTENT_TOP):
+    """One panel per bullet, spread evenly over the full content band.
+
+    The copy is fixed and short, so a plain bullet list leaves most of the page
+    empty. Giving each bullet its own panel spends that space on structure
+    instead of adding words, and matches the timeline slide's card treatment.
+    """
     bottom = _content_bottom(len(links))
-    body_h = max(0.8, bottom - body_top)
     s = slide_base(title, descriptor, page=pg(), sources=" ")
-    tb, tf = textbox(s, Inches(0.5), Inches(body_top), Inches(12.35), Inches(body_h))
+    n = len(bullets)
+    band = max(0.8, bottom - body_top)
+    card_h = (band - (n - 1) * _CARD_GAP) / n
+    text_w = 12.35 - _CARD_PAD_L - _CARD_PAD_R
+    plain = [b[0] + ": " + b[1] if isinstance(b, tuple) else b for b in bullets]
+    size = fit_font_size(plain, text_w, card_h - 0.30)
+
     for i, bullet in enumerate(bullets):
+        top = body_top + i * (card_h + _CARD_GAP)
+        rect(s, Inches(0.5), Inches(top), Inches(12.35), Inches(card_h), fill=LGREY)
+        rect(s, Inches(0.5), Inches(top), Inches(_CARD_ACCENT_W), Inches(card_h), fill=NAVY)
+        _, tf = textbox(
+            s,
+            Inches(0.5 + _CARD_PAD_L),
+            Inches(top),
+            Inches(text_w),
+            Inches(card_h),
+            anchor=MSO_ANCHOR.MIDDLE,
+        )
         if isinstance(bullet, tuple):
-            _add_labeled_bullet(tf, bullet[0], bullet[1], first=(i == 0))
+            _add_labeled_bullet(tf, bullet[0], bullet[1], size=size, first=True)
         else:
-            add_para(tf, bullet, 12, INK, bullet=True, first=(i == 0), space_after=7)
+            add_para(tf, bullet, size, INK, first=True, space_after=0)
     _add_links_box(s, links)
     return s
 
@@ -206,6 +235,7 @@ for col_i, entries in enumerate((_DECK_TOC[:_toc_split], _DECK_TOC[_toc_split:])
         width=6.02,
         font_size=9,
         header_font_size=9.5,
+        text_cols=(1,),
     )
 
 # Slide 2 - Situation Overview
@@ -215,12 +245,14 @@ _narrative_slide(
     [
         "The recent guidance cut triggered a massive cyclical panic pushing Lululemon down to roughly 100 dollars [1]",
         "Despite historically compounding double digit growth the market capitulated over a guidance cut of 5 to 7 percent [2]",
+        "Near-term Americas stagnation is modeled via FY26-FY30 US averages of approximately flat same-store comps and only 6 annual gross store openings, offset by China Mainland averages of 10.2% comps and 16 gross store openings [4]",
         "Lululemon still retains durable cash flows with clean run rate operating margins of 13.2 percent [3]",
     ],
     [
         (1, f"TIKR LULU Stock Crashed 17%: {_TIKR}"),
         (2, f"Lululemon Q2 FY2026 Guidance Release: {_Q2_SUPP}"),
         (3, f"Provided Valuation Model: {_MODEL}"),
+        (4, f"{_MODEL}, Revenue Drivers Schedule (Americas & China comps & store openings)"),
     ],
 )
 
@@ -243,29 +275,30 @@ _narrative_slide(
 # Slide 4 - Investment Thesis Summary
 _narrative_slide(
     "Investment Thesis Summary and Target Price",
-    "This slide breaks down our actual 133 dollar base case target price and the three core pillars supporting our overweight recommendation",
+    "This slide breaks down our $133.64 intrinsic DCF fair value, our $140 twelve-month target price, and the three core pillars supporting our overweight recommendation",
     [
-        "Our discounted cash flow valuation generates a base case implied share price of 133.64 dollars representing a 33.6 percent upside from current levels [1]",
-        "The first pillar is profitability because adjusting out the tariff refunds reveals LULU still maintains a highly resilient 13.2 percent clean run-rate operating margin [2]",
+        "Our base-case DCF yields an intrinsic fair value of $133.64 per share (+33.6% upside), supporting our 12-month target price of $140.00 as market multiples modestly re-rate [1]",
+        "The first pillar is profitability because the base case models an approximately 14.4 percent average EBIT margin across FY26-FY30 as clean margins recover from 13.2 percent toward 15.5 percent by FY30 [2]",
         "The second pillar is our mathematically sound 9.0 percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]",
-        "Finally international expansion remains the crucial growth engine as 4 percent growth in China Mainland easily offsets the temporary North American stagnation [4]",
+        "Finally, international expansion remains the crucial growth engine, as FY25 China segment revenue grew approximately 29% year-over-year versus flat Americas, and modeled China growth offsets this stagnation with FY26-FY30 averages of 10.2% same-store comps and 16 annual gross store openings [4]",
     ],
     [
         (1, f"Provided Valuation Model (Base Case Implied Value): {_MODEL3}"),
-        (2, f"Lululemon Q2 FY2026 Earnings Release (13.2% Margin Calc): {_Q2_SUPP}"),
+        (2, f"Provided Valuation Model (FY26-FY30 EBIT Margin Path): {_MODEL3}"),
         (3, f"Provided Valuation Model (WACC & Revenue Drivers): {_MODEL3}"),
         (4, f"Lululemon Q2 FY2026 Earnings Release (International Growth): {_Q2_SUPP}"),
     ],
 )
 
-# Slide 5 - Geographic segments (descriptor only; no separate title in user copy)
+# Slide 5 - Geographic segments. The user copy gives no title, so the title bar
+# reuses the table-of-contents entry rather than leaving the bar blank.
 _narrative_slide(
-    " ",
+    _DECK_TOC[4][1],
     "This slide outlines Lululemon's geographic segments and revenue breakdown while detailing why China growth offsets temporary US declines",
     [
         "Lululemon generated 11.1 billion dollars in total revenue with Americas contributing 7.85 billion dollars or 70.68 percent [1]",
         "Americas comparable sales fell 3 percent due to temporary cyclical macro pressure rather than structural brand degradation [2]",
-        "China Mainland surged 20 percent to 1.75 billion dollars proving high growth international expansion easily offsets US temporary weakness [3]",
+        "China Mainland reached 1.75 billion dollars in segment revenue on +20% FY25 comparable sales growth, proving high-growth international expansion easily offsets US temporary weakness [3]",
     ],
     [
         (1, f"Lululemon FY2025 Form 10-K (Segment Revenue and Percentages): {_Q2_SUPP}"),
@@ -344,7 +377,7 @@ _narrative_slide(
     "This slide details how partial margin recovery supported by core brand loyalty still drives a highly compelling valuation",
     [
         "Historical pandemic-era peak EBIT margins reached 23.7% in FY24 showing prior peak earnings power [1]",
-        "Our valuation assumes a floor built on resilient baseline brand loyalty, proving Lululemon does not need to remain the hottest viral trend 100% of the time to sustain a 13.2% trough margin [2]",
+        "Our valuation assumes a floor built on resilient baseline brand loyalty, proving Lululemon does not need to remain the hottest viral trend 100% of the time to sustain at minimum a 13.2% trough EBIT margin [2]",
         "A modest partial recovery to just 15.5% EBIT margin by FY30 still yields $133.64 per share [3]",
         "This proves returning to peak COVID profitability is completely unnecessary to unlock substantial market upside [4]",
     ],
@@ -362,7 +395,7 @@ _narrative_slide(
     "This slide examines how Lululemon's top-line projections rely disproportionately on Chinese market expansion to conceal domestic North American stagnation.",
     [
         "The revenue build reveals Americas facing near-term contraction with -4.0% comps in FY26 flatlining at a terminal 2.0% growth rate by FY30 [1]",
-        "To offset this domestic anchor, the model relies entirely on disproportionate FY26-FY30 Chinese footprint expansion, averaging 16 new stores annually versus just 6 domestically, and sustained double-digit (10.2% average) comp growth to overcome clear Americas expansion drawbacks [2]",
+        "To offset this domestic anchor, the model assumes FY26-FY30 China footprint expansion averaging 16 gross store openings annually versus 6 in Americas, plus 10.2% average same-store comp growth (14% to 7% FY26-FY30) on existing doors [2]",
         "Consequently, if the Chinese consumer softens, this model's core top-line projections will not be optimal enough to meet our target [3]",
     ],
     [
@@ -378,12 +411,12 @@ _narrative_slide(
     "This slide evaluates core downside risks and demonstrates how share repurchases compound EPS to drive share price recovery",
     [
         "China deceleration risks a $56.00 bear floor, but $45.64 cumulative cash per share recovers 45% of entry price [1]",
-        "Slashed CapEx saves $360M annually by relying on online e-commerce's 23.6% EBIT margin plus $101.5M inventory releases [2]",
-        "Deploying $500M annually into buybacks retires 18.7 million shares, compounding EPS to $13.36 to support our target price of $133.64 [3]",
+        "CapEx fading from a 7% FY26 guide toward 5.5% of revenue, plus FY26 inventory normalization and a capital-light 23.6% e-commerce EBIT margin, support free cash flow even if China comps moderate [2]",
+        "Deploying $750M annually into buybacks retires 32.9 million shares, compounding EPS to $14.57, more than enough to recover our $133.64 DCF-implied share price [3]",
     ],
     [
         (1, f"{_MODEL}, Bear Case DCF Valuation Summary / https://www.barrons.com/articles/lululemon-stock-earnings-guidance-a7a7c5c0"),
-        (2, f"{_MODEL}, CapEx & E-Commerce Channel EBIT Assumptions / {_LULU_PR}"),
+        (2, f"{_MODEL}, CapEx Fade & NWC Schedule / NOPAT Bridge (E-Commerce EBIT Margin) / {_LULU_PR}"),
         (3, f"{_MODEL}, Share Repurchase & EPS Accretion Schedule / {_LULU_PR}"),
     ],
 )
@@ -421,28 +454,36 @@ cats = [
     ),
     (
         "2027 (FY2027 Margin Inflection)",
-        "Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while 75% UFCF buybacks compound EPS to boost sentiment [3]",
+        "Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while $750M annual buybacks compound EPS to $10.09 to boost sentiment [3]",
     ),
     (
         "2028 (FY2027-FY2028 Multiple Re-Rating)",
-        "Accelerating international store scaling (+12% China comps) offsets Americas softness (-4%), driving overall revenue recovery and valuation re-rating toward $133.64 [4]",
+        "China adds ~17 net stores in FY27 while +12% FY27 and +10% FY28 same-store comps offset Americas -4% FY26 comps, driving re-rating toward $133.64 [4]",
     ),
 ]
 _timeline_label_w = 3.55
 _timeline_body_l = 4.2
 _timeline_body_w = 8.65
+# Match the body type on slides 2-12 so the narrative run reads as one section.
+_timeline_body_size = fit_font_size(
+    [what for _, what in cats], _timeline_body_w - 0.3, _timeline_row_h - 0.24
+)
+_timeline_label_size = fit_font_size(
+    [when for when, _ in cats], _timeline_label_w - 0.3, _timeline_row_h - 0.24,
+    candidates=(13, 12, 11, 10, 9),
+)
 top = _timeline_top
 for when, what in cats:
     b = rect(s, Inches(0.5), Inches(top), Inches(_timeline_label_w), Inches(_timeline_row_h), fill=NAVY)
     bt = b.text_frame
     bt.word_wrap = True
     bt.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt, when, 9, GOLD, bold=True, first=True, space_after=0)
+    add_para(bt, when, _timeline_label_size, GOLD, bold=True, first=True, space_after=0)
     b2 = rect(s, Inches(_timeline_body_l), Inches(top), Inches(_timeline_body_w), Inches(_timeline_row_h), fill=LGREY)
     bt2 = b2.text_frame
     bt2.word_wrap = True
     bt2.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt2, what, 9.5, INK, first=True, space_after=0)
+    add_para(bt2, what, _timeline_body_size, INK, first=True, space_after=0)
     top += _timeline_step
 _add_links_box(s, _timeline_links)
 
@@ -578,6 +619,7 @@ def _fin_source_table(slide, source_rows, top=5.92, col0w=1.85, height=0.95):
     stmt_table(
         slide, rows, headers, col0w=col0w, top=top, height=height,
         font_size=7, header_font_size=7.5, bold_rows=(),
+        text_cols=(1, 2),
     )
 
 
@@ -595,7 +637,7 @@ def pitch_financial_slide(
     italic_note=None,
     col0w=2.35,
     table_top=3.72,
-    table_height=2.16,
+    table_height=1.98,
     explainer_height=2.32,
 ):
     """Build one financial slide: historicals + 5yr base-case forecast (Scenarios G)."""
@@ -608,7 +650,7 @@ def pitch_financial_slide(
                          box_height=explainer_height)
     stmt_table(s, rows, hdr, col0w=col0w, top=table_top, height=table_height,
                bold_rows=bold_rows, font_size=8.5, header_font_size=8)
-    _fin_source_table(s, source_rows, top=5.92, height=0.95)
+    _fin_source_table(s, source_rows, top=5.74, height=0.95)
     return s
 
 
@@ -720,7 +762,7 @@ _IS_SOURCES = [
     ("Operating income", "10-K IS, Operating income", f"{_scen_rng('ebit')} (EBIT yr 1-5)"),
     ("Operating margin %", "10-K IS, OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
     ("Net income", "10-K IS, Net income", f"{_scen_rng('net_income')} (pitch bridge NI)"),
-    ("Diluted EPS", "10-K IS, Diluted EPS", f"NI ÷ buyback-adjusted shares ($500M/yr; {_scen_rng('eps')})"),
+    ("Diluted EPS", "10-K IS, Diluted EPS", f"NI ÷ buyback-adjusted shares ($750M/yr; {_scen_rng('eps')})"),
 ]
 _IS_NOTES = [
     _row_note("10-K IS, Net revenue", f"{_scen_rng('revenue')}"),
@@ -728,7 +770,7 @@ _IS_NOTES = [
     _row_note("10-K IS, Operating income", f"{_scen_rng('ebit')}"),
     _row_note("10-K IS, OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
     _row_note("10-K IS, Net income", f"{_scen_rng('net_income')}"),
-    _row_note("10-K IS, Diluted EPS", f"NI ÷ diluted sh (500M/yr buybacks); {_scen_rng('eps')}"),
+    _row_note("10-K IS, Diluted EPS", f"NI ÷ diluted sh (750M/yr buybacks); {_scen_rng('eps')}"),
 ]
 
 _BS_SOURCES = [
@@ -753,7 +795,7 @@ _CF_SOURCES = [
     ("D&A (add-back)", "10-K CF, Depreciation & amortization", f"{_scen_rng('dna')} (D&A yr 1-5)"),
     ("Capital expenditures", "10-K CF, Capital expenditures", f"{_scen_rng('capex')} (Capex yr 1-5)"),
     ("Free cash flow", "10-K CF, CFO − capex", f"{_scen_rng('fcf')} (pitch bridge FCF/CFS)"),
-    ("Share repurchases", "10-K CF, Repurchases (financing)", f"{_scen_rng('buybacks')} (G21=$500M/yr fixed)"),
+    ("Share repurchases", "10-K CF, Repurchases (financing)", f"{_scen_rng('buybacks')} (G21=$750M/yr fixed)"),
 ]
 _CF_NOTES = [
     _row_note("10-K CF, CFO", f"{_scen_rng('cfo')}"),
@@ -783,7 +825,7 @@ pitch_financial_slide(
     bold_rows=(0, 2, 5),
     italic_note=(
         f"Forecast: {DCF_MODEL}, Scenarios col G. EPS = NI \u00f7 diluted shares after "
-        "$500M/yr repurchases (DCF $134 still uses 111.4M day-one basic shares)."
+        "$750M/yr repurchases (DCF $134 still uses 111.4M day-one basic shares)."
     ),
 )
 
@@ -806,7 +848,7 @@ pitch_financial_slide(
     source_rows=_BS_SOURCES,
     bold_rows=(2, 4, 5),
     italic_note=(
-        "BS forecast: cash roll-forward includes $500M/yr buybacks; equity scales with revenue "
+        "BS forecast: cash roll-forward includes $750M/yr buybacks; equity scales with revenue "
         "(buyback-driven equity reduction shown via CF / IS share count, not TE line)."
     ),
 )
@@ -829,7 +871,7 @@ pitch_financial_slide(
     source_rows=_CF_SOURCES,
     bold_rows=(3,),
     italic_note=(
-        "Buybacks: $500M/yr fixed (Scenarios col G). Cash roll-forward = prior cash + FCF \u2212 buybacks."
+        "Buybacks: $750M/yr fixed (Scenarios col G). Cash roll-forward = prior cash + FCF \u2212 buybacks."
     ),
 )
 
@@ -903,7 +945,7 @@ stmt_table(
     col0w=2.85, top=3.08, height=0.78, left=0.5, width=6.05,
     font_size=8.5, header_font_size=8.5,
 )
-tb, tf = textbox(s, Inches(0.5), Inches(4.0), Inches(6.05), Inches(0.5))
+tb, tf = textbox(s, Inches(0.5), Inches(4.12), Inches(6.05), Inches(0.5))
 add_para(
     tf,
     "No funded bank debt; ASC 842 store leases are the only debt equivalent (~14% WACC weight). "
@@ -912,7 +954,7 @@ add_para(
 )
 
 # --- WACC build (right): template LGREY panel + compact 2-col table ---
-rect(s, Inches(6.7), Inches(1.50), Inches(6.15), Inches(3.85), fill=LGREY)
+rect(s, Inches(6.7), Inches(1.50), Inches(6.15), Inches(3.53), fill=LGREY)
 wacc_compact = [
     ["Risk-free rate (10-yr UST)", _pct_wb(WB["rf"])],
     ["Equity risk premium", _pct_wb(WB["erp"])],
@@ -929,14 +971,14 @@ stmt_table(
     col0w=3.35, top=1.56, height=2.22, left=6.78, width=5.98,
     font_size=9, header_font_size=9, bold_rows=(4,),
 )
-tb, tf = textbox(s, Inches(6.85), Inches(3.88), Inches(5.85), Inches(0.42))
+tb, tf = textbox(s, Inches(6.85), Inches(3.88), Inches(5.85), Inches(0.24))
 add_para(
     tf,
     f"\u03b2: Yahoo \u03b2L {WB['beta_obs']:.2f} to unlevered {WB['beta_unlev']:.2f} "
     f"@ D/E {WB['de_unlev']:.2f} to relever {WB['beta']:.2f} @ lease D/E {WB['de_relev']:.2f}",
     8, INK, italic=True, first=True, space_after=0,
 )
-box = rect(s, Inches(6.7), Inches(4.42), Inches(6.15), Inches(0.88), fill=NAVY)
+box = rect(s, Inches(6.7), Inches(4.14), Inches(6.15), Inches(0.84), fill=NAVY)
 btf = box.text_frame
 btf.word_wrap = True
 btf.vertical_anchor = MSO_ANCHOR.MIDDLE
@@ -948,15 +990,26 @@ add_para(
 )
 
 # --- Model source map (footer, matches other financial slides) ---
-_all_src_rows = _cap_src_rows + _wacc_src_rows
-tb, tf = textbox(s, Inches(0.5), Inches(5.78), Inches(12.35), Inches(0.2))
+# Split across two columns under their own halves of the slide: all 15 rows in
+# one full-width table stack past the bottom of the page.
+tb, tf = textbox(s, Inches(0.5), Inches(5.06), Inches(12.35), Inches(0.2))
 add_para(tf, "MODEL SOURCE MAP", 9, CARD, bold=True, first=True, space_after=0)
+_SRC_MAP_TOP = 5.26
+_SRC_MAP_HDR = "DCF model source (WACC tab, col E)"
 stmt_table(
-    s, [[a, b] for a, b in _all_src_rows],
-    ["Line item", "DCF model source (WACC tab, col E)"],
-    col0w=2.4, top=5.98, height=1.02, left=0.5, width=12.35,
+    s, [[a, b] for a, b in _cap_src_rows],
+    ["Cap stack line item", _SRC_MAP_HDR],
+    col0w=2.4, top=_SRC_MAP_TOP, height=0.72, left=0.5, width=6.05,
     font_size=7, header_font_size=7.5,
-    bold_rows=(len(_all_src_rows) - 1,),
+    text_cols=(1,),
+)
+stmt_table(
+    s, [[a, b] for a, b in _wacc_src_rows],
+    ["WACC input", _SRC_MAP_HDR],
+    col0w=2.4, top=_SRC_MAP_TOP, height=1.08, left=6.78, width=5.98,
+    font_size=7, header_font_size=7.5,
+    bold_rows=(len(_wacc_src_rows) - 1,),
+    text_cols=(1,),
 )
 
 # =====================================================================
@@ -1085,7 +1138,7 @@ stmt_table(
     col0w=2.15, top=1.2, height=3.05, font_size=9, header_font_size=9,
     bold_rows=(3, len(seg_rows) - 1),
 )
-tb, tf = textbox(s, Inches(0.5), Inches(4.38), Inches(7.8), Inches(1.05))
+tb, tf = textbox(s, Inches(0.5), Inches(4.38), Inches(7.8), Inches(1.85))
 add_para(tf, "Methodology", 12, CARD, bold=True, first=True, space_after=3)
 for t in [
     "Single-brand retailer: geography is the cleanest SOTP cut (Americas / China / RoW per 10-K)",
@@ -1155,7 +1208,7 @@ tv_rows = [
         f"{DCF_BASE.get('exit_tv_m', 0):,}",
     ],
 ]
-stmt_table(s, tv_rows[1:], tv_rows[0], col0w=1.55, top=4.58, height=0.72, left=0.5, width=6.15,
+stmt_table(s, tv_rows[1:], tv_rows[0], col0w=1.85, top=4.58, height=0.92, left=0.5, width=6.15,
            font_size=8.5, header_font_size=8.5, bold_rows=())
 
 # --- Output (right) ---
@@ -1201,7 +1254,7 @@ add_para(
 )
 
 # --- Sensitivity ---
-tb, tf = textbox(s, Inches(0.5), Inches(5.38), Inches(12.35), Inches(0.20))
+tb, tf = textbox(s, Inches(0.5), Inches(5.58), Inches(12.35), Inches(0.20))
 add_para(tf, "SENSITIVITY | IMPLIED SHARE PRICE (WACC vs TERMINAL g)", 10, CARD, bold=True, first=True, space_after=0)
 _g_cols = ["1.5%", "2.0%", "2.25%", "2.5%", "3.0%"]
 sens = [["WACC \\ g"] + _g_cols]
@@ -1212,12 +1265,12 @@ _base_wacc_idx = min(
 for row in PV["sensitivity"]:
     sens.append([row["wacc"]] + [_d(p) for p in row["prices"]])
 stmt_table(
-    s, sens[1:], sens[0], col0w=1.0, top=5.60, height=1.08, left=0.5, width=7.4,
+    s, sens[1:], sens[0], col0w=1.0, top=5.80, height=1.08, left=0.5, width=7.4,
     font_size=9, header_font_size=9,
     bold_rows=(),
 )
 # highlight base cell via note
-tb, tf = textbox(s, Inches(8.1), Inches(5.60), Inches(4.75), Inches(1.08))
+tb, tf = textbox(s, Inches(8.1), Inches(5.80), Inches(4.75), Inches(1.08))
 add_para(tf, "Base-case cell", 9, CARD, bold=True, first=True, space_after=2)
 add_para(
     tf,
@@ -1300,7 +1353,7 @@ add_para(
     7.5, INK, italic=True, first=True, space_after=0,
 )
 
-tb, tf = textbox(s, Inches(0.5), Inches(4.48), Inches(12.35), Inches(2.00))
+tb, tf = textbox(s, Inches(0.5), Inches(4.48), Inches(12.35), Inches(2.20))
 _ebitda_med = _core.get("ev_ebitda", {}).get("median", 0)
 _rev_med = _core.get("ev_rev", {}).get("median", 0)
 _pe_med = _core.get("pe_fwd", {}).get("median", 0)
@@ -1373,7 +1426,7 @@ stmt_table(
     font_size=8, header_font_size=8, bold_rows=(len(prec_rows) - 1,),
 )
 
-tb, tf = textbox(s, Inches(0.5), Inches(3.55), Inches(7.85), Inches(2.35))
+tb, tf = textbox(s, Inches(0.5), Inches(3.55), Inches(7.85), Inches(2.55))
 for title, body in [
     (
         "Private precedent framework",
@@ -1399,25 +1452,44 @@ for title, body in [
     add_para(tf, title, 10.5, CARD, bold=True, first=(title == "Private precedent framework"), space_after=2)
     add_para(tf, body, 9.5, INK, space_after=5)
 
-box = rect(s, Inches(8.5), Inches(3.55), Inches(4.35), Inches(2.35), fill=LGREY)
+box = rect(s, Inches(8.5), Inches(3.55), Inches(4.35), Inches(1.35), fill=LGREY)
 btf = box.text_frame
 btf.word_wrap = True
-add_para(btf, "Valuation stack", 11, CARD, bold=True, first=True, space_after=4)
+add_para(btf, "Valuation anchors", 11, CARD, bold=True, first=True, space_after=4)
 add_para(btf, f"DCF base: {_d(_base_px)}  |  Target: $140", 12, NAVY, bold=True, space_after=3)
-_cs = _core.get("ev_ebitda", {})
-_ebitda_imp = next((r for r in _ca.get("implied", []) if r.get("metric") == "EV / EBITDA"), {})
-_ebitda_px = int(_ebitda_imp.get("implied_px_median", _base_px))
 add_para(
     btf,
-    f"Comps median EV/EBITDA {_cs.get('median', 0):.1f}x implies ~${_ebitda_px}/sh",
-    10, INK, bold=True, space_after=2,
-)
-add_para(
-    btf,
-    "Reasonably assumed ceiling from peer EV/EBITDA re-rating. Not our price target.",
+    "Private precedents inform strategic context only; public comps on the prior slide.",
     9, INK, italic=True, space_after=0,
 )
 
+def _strip_terminal_periods(presentation):
+    """Drop the full stop that closes a paragraph, deck-wide.
+
+    Sentence punctuation inside a paragraph is left alone; only the very last
+    character goes, so "9.0% WACC. Grid brackets..." keeps its interior period.
+    Ellipses are skipped.
+    """
+    frames = []
+    for slide in presentation.slides:
+        for shape in slide.shapes:
+            if shape.has_text_frame:
+                frames.append(shape.text_frame)
+            if shape.has_table:
+                frames += [c.text_frame for r in shape.table.rows for c in r.cells]
+    for frame in frames:
+        for para in frame.paragraphs:
+            runs = [r for r in para.runs if r.text]
+            if not runs:
+                continue
+            text = "".join(r.text for r in runs).rstrip()
+            if not text.endswith(".") or text.endswith(".."):
+                continue
+            last = runs[-1]
+            last.text = last.text.rstrip().removesuffix(".")
+
+
+_strip_terminal_periods(prs)
 n = deck.save(OUT)
 print("Saved", os.path.abspath(OUT), "with", n, "slides")
 try:

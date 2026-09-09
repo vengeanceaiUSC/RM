@@ -24,6 +24,7 @@ partial multiple recovery).
 | `LULU_Investment_Pitch_Deck.pptx` | 23-slide investment pitch (GIS template + Macro × micro slide). Built via `GIS/gis_pitch.py`. |
 | `LULU_Investment_Pitch_Deck.pdf` | PDF export of the pitch deck (submission format). |
 | `LULU_Investment_Thesis_Outline.md` | Slide-by-slide written thesis outline — talking points, macro/micro overlap, model map (for prep and script). |
+| `slide_copy_source.txt` | Author-supplied copy for deck slides 2–13, verbatim. `scripts/verify_slide_copy.py` parses this file and fails if any word or citation is missing from the built deck. |
 | `NUMBER_AUDIT.md` | Living audit of pitch vs model inconsistencies — what ties, what's still open. |
 | `data/pitch_values.json` | Live figures extracted from recalculated DCF + 3-statement workbooks for the pitch deck (run `pitch_values.py`). |
 | `data/pitch_context.json` | Firecrawl-sourced macro/micro/overlap context (10-K, Sep 2026 earnings, FRED GDPC1). |
@@ -77,6 +78,7 @@ python3 build_3statement.py     # -> ../LULU_3_Statement_Model.xlsx
 python3 build_dcf.py            # -> ../LULU_DCF_Valuation_Model.xlsx + Assumptions Memo PDF
 python3 pitch_values.py         # -> ../data/pitch_values.json (live deck figures)
 python3 build_pitch.py         # -> ../LULU_Investment_Pitch_Deck.pptx
+python3 verify_slide_copy.py   # slides 2-13 vs ../slide_copy_source.txt (must print PASS)
 # optional PDF export:
 soffice --headless --convert-to pdf ../LULU_Investment_Pitch_Deck.pptx
 ```

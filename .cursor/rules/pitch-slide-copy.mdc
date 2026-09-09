@@ -13,9 +13,11 @@ summarize, reorder, drop citation markers, or "institutionalize" the wording.
 
 ## Single source of truth
 
-`LULU/scripts/verify_slide_copy.py` holds the canonical `EXPECTED` copy and
-checks the built deck. When the user supplies new slide text, update `EXPECTED`
-there first, then mirror it in `build_pitch.py`.
+`LULU/slide_copy_source.txt` is the user's slide text pasted verbatim.
+`LULU/scripts/verify_slide_copy.py` parses that file — it does not restate the
+copy — and checks the built deck against it. When the user supplies new slide
+text, replace `slide_copy_source.txt` first, then mirror it in
+`build_pitch.py`.
 
 ## Required after any deck rebuild
 
@@ -24,13 +26,16 @@ cd LULU/scripts && python3 build_pitch.py && python3 verify_slide_copy.py
 ```
 
 The verifier must print `PASS`. A `MISSING` line means a word/citation was
-dropped or altered — fix `build_pitch.py`, never the verifier's expectations
+dropped or altered — fix `build_pitch.py`, never `slide_copy_source.txt`
 (unless the user changed the copy).
 
 ## Allowed deviations only
 
-- En/em dashes (`–` `—`) render as hyphens (`-`). This is the only permitted
-  character substitution; it is normalized in the verifier.
+- En/em dashes (`–` `—`) render as hyphens (`-`) and curly quotes render
+  straight. These are the only permitted character substitutions; both are
+  normalized in the verifier.
+- A bullet may drop a trailing sentence period, and slide 13 may split a
+  `Label: body` line into a label shape plus a body shape.
 - No `→` arrows, no AI em-dashes, no added/removed words otherwise.
 
 ## Citation placement

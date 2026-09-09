@@ -6,7 +6,7 @@ import data as D
 FY25_COL = "E"
 FCOLS = ["F", "G", "H", "I", "J"]
 PREVF = {"F": FY25_COL, "G": "F", "H": "G", "I": "H", "J": "I"}
-BUYBACK_FIXED_K = 500_000  # $500M/yr — matches 3-statement / Scenarios col G
+BUYBACK_FIXED_K = 750_000  # $750M/yr — matches 3-statement / Scenarios col G
 FCF_ALLOC_SENSITIVITY = 0.75  # upside scenario only (bull CFF tab)
 COE_GROWTH = 0.105
 

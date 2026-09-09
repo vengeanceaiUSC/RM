@@ -58,6 +58,31 @@ STANDARD_TOC = [
 DEFAULT_SOURCE = "Source: company SEC filings (Form 10-K, CIK 0000000000)"
 
 
+# Garamond averages this many characters per inch at 10pt in body copy;
+# measured off rendered PDF exports of this template and scaled linearly.
+CHARS_PER_INCH_10PT = 15.0
+LINE_SPACING = 1.25
+
+
+def est_lines(text: str, width_in: float, size: float) -> int:
+    """Wrapped line count for `text` set at `size` in a `width_in` column."""
+    per_line = max(8.0, width_in * CHARS_PER_INCH_10PT * (10.0 / size))
+    return max(1, -(-len(text) // int(per_line)))
+
+
+def est_height(text: str, width_in: float, size: float) -> float:
+    """Rendered height in inches of `text` set at `size`."""
+    return est_lines(text, width_in, size) * size * LINE_SPACING / 72.0
+
+
+def fit_font_size(texts, width_in, height_in, candidates=(17, 16, 15, 14, 13, 12, 11)):
+    """Largest candidate size at which every string still fits `height_in`."""
+    for size in candidates:
+        if all(est_height(t, width_in, size) <= height_in for t in texts):
+            return size
+    return candidates[-1]
+
+
 def _set_font(run, size, color=INK, bold=False, italic=False, name=FONT):
     run.font.name = name
     run.font.size = Pt(size)
@@ -142,6 +167,12 @@ def rect(slide, l, t, w, h, fill=NAVY, line=None):
         sp.line.color.rgb = line
         sp.line.width = Pt(0.75)
     sp.shadow.inherit = False
+    # An empty <a:effectLst/> is enough for PowerPoint, but LibreOffice still
+    # draws the theme shadow off the shape's <p:style> effectRef, which shows up
+    # in the PDF export. Fill and line are set explicitly, so drop the style.
+    style = sp.element.find(qn("p:style"))
+    if style is not None:
+        sp.element.remove(style)
     return sp
 
 
@@ -294,8 +325,14 @@ class PitchDeck:
         header_font_size=None,
         row_notes=(),
         note_font_size=None,
+        text_cols=(),
     ):
+        """Columns are right-aligned for figures; `text_cols` stay left-aligned."""
         ncol = len(headers)
+
+        def _align(c):
+            return PP_ALIGN.LEFT if c == 0 or c in text_cols else PP_ALIGN.RIGHT
+
         hdr_fs = header_font_size if header_font_size is not None else (8 if ncol > 12 else 11)
         left_in = Inches(left)
         width_in = Inches(width)
@@ -310,7 +347,7 @@ class PitchDeck:
             cell.fill.solid()
             cell.fill.fore_color.rgb = NAVY
             p = cell.text_frame.paragraphs[0]
-            p.alignment = PP_ALIGN.LEFT if c == 0 else PP_ALIGN.RIGHT
+            p.alignment = _align(c)
             r = p.add_run()
             r.text = htxt
             _set_font(r, hdr_fs, WHITE, bold=True)
@@ -332,7 +369,7 @@ class PitchDeck:
                 tf.clear()
                 tf.word_wrap = True
                 p = tf.paragraphs[0]
-                p.alignment = PP_ALIGN.LEFT if c == 0 else PP_ALIGN.RIGHT
+                p.alignment = _align(c)
                 r = p.add_run()
                 r.text = val
                 color = CARD if (is_red and c > 0) else (NAVY if is_bold else INK)

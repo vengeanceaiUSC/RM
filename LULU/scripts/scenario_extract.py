@@ -56,7 +56,7 @@ def align_cash_flow(cf_paths):
 
 # Matches 3-statement Assumptions repurchase price path ($/sh).
 _REPURCHASE_PRICES = [100, 108, 115, 122, 130]
-_BUYBACK_BUDGET_M = 500  # $500M/yr base case (Scenarios col G bb_fixed)
+_BUYBACK_BUDGET_M = 750  # $750M/yr base case (Scenarios col G bb_fixed)
 
 
 def align_buyback_eps(income, cash_flow):
@@ -64,7 +64,7 @@ def align_buyback_eps(income, cash_flow):
 
     Scenarios pitch-bridge EPS had a units bug (NI×1000/shares). Forecast EPS
     should match the 3-statement: NI ($M) ÷ diluted shares (000), with shares
-    reduced by $500M/yr repurchases at the assumed avg price path.
+    reduced by $750M/yr repurchases at the assumed avg price path.
     """
     sh_k = D.IS["diluted_shares"]["FY2025"]
     for i, fy in enumerate(PROJ_YEARS):

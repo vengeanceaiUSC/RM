@@ -199,7 +199,7 @@ a_row('oncl_pct', "Other non-current liab % of revenue", [oncl[y]/rev[y] for y i
       justify_key="3s_oncl_pct")
 
 a_section("CAPITAL RETURN")
-a_row('buyback', "Share repurchases ($)", [D.CF['buybacks'][y] for y in HIST], [500000]*5, fmt=NUM,
+a_row('buyback', "Share repurchases ($)", [D.CF['buybacks'][y] for y in HIST], [750000]*5, fmt=NUM,
       justify_key="3s_buyback")
 a_row('rep_price', "Avg repurchase price ($/sh)", [None]*4, [100, 108, 115, 122, 130], fmt=MONEY,
       justify_key="3s_rep_price")
