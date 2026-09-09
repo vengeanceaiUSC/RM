@@ -77,313 +77,400 @@ deck.title_slide(
     ticker_line="NASDAQ: LULU",
     recommendation="OVERWEIGHT / LONG",
     current_price="$100.00",
-    target_price="$140",
-    upside_pct="+40% upside",
+    target_price="$133.64",
+    upside_pct="+33.6% upside",
     descriptor="A net-cash, high-margin brand priced for terminal decline \u2014 we see a cyclical trough, not a broken business",
 )
 
-# =====================================================================
-# 2. TABLE OF CONTENTS (standard GIS + optional macro slide)
-# =====================================================================
+deck._page = 1  # so presentation slide 2 has page number 2
+
 LULU_TOC = [
-    "1.  Investment thesis summary", "2.  Situation overview", "3.  Macro \u00d7 micro overlap",
-    "4.  Market narrative", "5.  Company overview", "6.  Business model & unit economics",
-    "7.  Industry overview", "8.  Thesis I \u2014 Priced for terminal decline",
-    "9.  Thesis II \u2014 International growth engine", "10. Thesis III \u2014 Elite economics & capital return",
-    "11. Risks & mitigants", "12. Catalyst timeline", "13. Financials \u2014 income statement",
-    "14. Financials \u2014 balance sheet", "15. Financials \u2014 cash flow",
-    "16. Capital structure & WACC", "17. Valuation summary (football field)",
-    "18. DCF valuation", "19. Comparable companies", "20. Appendix \u2014 bull / bear scenarios",
+    "1.  Situation overview & current setup",
+    "2.  Market narrative & analyst sentiment",
+    "3.  Investment thesis summary & target price",
+    "4.  Geographic segments & revenue breakdown",
+    "5.  Business model & unit economics",
+    "6.  Industry overview \u2014 trends & structure",
+    "7.  Industry overview \u2014 barriers & profitability",
+    "8.  Thesis I \u2014 Contrarian setup & valuation buffer",
+    "9.  Thesis II \u2014 Partial margin recovery",
+    "10. Thesis III \u2014 Geographic divergence",
+    "11. Risks & mitigants",
+    "12. Timeline of recovery",
+    "13. Financials \u2014 income statement",
+    "14. Financials \u2014 balance sheet",
+    "15. Financials \u2014 cash flow",
+    "16. Capital structure & WACC",
+    "17. Valuation summary (football field)",
+    "18. DCF valuation",
+    "19. Comparable companies",
+    "20. Appendix \u2014 bull / bear scenarios",
 ]
-deck.toc_slide(LULU_TOC)
 
-# =====================================================================
-# 3. INVESTMENT THESIS SUMMARY
-# =====================================================================
-s = slide_base("Investment Thesis Summary", "Overweight LULU with a $140 target on ~40% upside and an asymmetric payoff", page=pg())
-# target box
-box = rect(s, Inches(0.5), Inches(1.2), Inches(3.9), Inches(1.5), fill=LGREY)
-btf = box.text_frame; btf.word_wrap = True
-add_para(btf, "PRICE TARGET", 12, CARD, bold=True, first=True, space_after=2)
-add_para(btf, "$140", 30, NAVY, bold=True, space_after=0)
-add_para(btf, "+40% vs $100.00 today", 12, GREEN, bold=True, space_after=0)
-# rating box
-box2 = rect(s, Inches(4.6), Inches(1.2), Inches(3.9), Inches(1.5), fill=LGREY)
-b2 = box2.text_frame; b2.word_wrap = True
-add_para(b2, "RATING", 12, CARD, bold=True, first=True, space_after=2)
-add_para(b2, "OVERWEIGHT", 24, NAVY, bold=True, space_after=0)
-add_para(b2, "12-month horizon", 12, GREY, space_after=0)
-# setup box
-box3 = rect(s, Inches(8.7), Inches(1.2), Inches(4.15), Inches(1.5), fill=LGREY)
-b3 = box3.text_frame; b3.word_wrap = True
-add_para(b3, "WHY NOW", 12, CARD, bold=True, first=True, space_after=2)
-add_para(b3, "Shares \u201355% off highs; ~18% single-day drop after Q2 FY2026 print (Sep 3, 2026) overshoots the fundamentals", 12.5, INK, space_after=0)
-tb, tf = textbox(s, Inches(0.5), Inches(2.95), Inches(12.35), Inches(4.0))
-add_para(tf, "Three reasons to be long", 15, CARD, bold=True, first=True, space_after=6)
-add_para(tf, "1.  Priced for terminal decline \u2014 at ~3.5x EV/EBITDA and ~10x FY2026E EPS with a net-cash balance sheet, the stock embeds a permanent impairment that the business does not support", 13.5, INK, bold=False, space_after=7)
-add_para(tf, "2.  International is a multi-year growth engine \u2014 China Mainland and Rest-of-World more than offset a maturing Americas and can return total revenue to low-single-digit growth (~2.3% FY27\u201330 in our model)", 13.5, INK, space_after=7)
-add_para(tf, "3.  Elite economics + accretive buybacks \u2014 FY2025 operating margin was 19.9% (last full year, not the trough); we model a 13.2% clean FY2026 run-rate (Q2 18.8% minus 560bps of tariff refunds), then add the $134.5M refund once (~15.2% reported in our IS). Diluted shares are down ~7% (128.0M \u2192 119.1M)", 13.5, INK, space_after=7)
-add_para(tf, f"Base-case DCF {_d(V['base_dcf'])}; bear {_d(V['bear'])} ({_up(V['bear'])}) vs bull {_d(V['bull'])} ({_up(V['bull'])}) \u2014 downside is protected by net cash and an ~8\u20139% FCF yield", 13, NAVY, bold=True, italic=True, space_after=0)
+# Helper to create standard card slide for slides 2-12
+def build_prompt_slide(
+    slide_num,
+    title,
+    descriptor,
+    tag,
+    cards,
+    bullets,
+    sources_text,
+    extra_heading=None,
+):
+    s = slide_base(title, descriptor, page=pg())
 
-# =====================================================================
-# 4. SITUATION OVERVIEW
-# =====================================================================
-s = slide_base("Situation Overview", "A high-quality compounder has de-rated to value multiples after a guidance reset", page=pg(),
-               sources="Source: company 10-K (FY2025, ended Feb 1, 2026) and Q2 FY2026 release (Sep 3, 2026)")
-tb, tf = body_box(s)
-add_para(tf, "What happened", 14.5, CARD, bold=True, first=True, space_after=5)
-for t in [
-    "LULU shares fell from a 52-week high of ~$226 to ~$100, including an ~18% single-day decline following the Q2 FY2026 earnings release on September 3, 2026",
-    "Management guided FY2026 to the first annual revenue decline in company history: net revenue of $10.35\u2013$10.50B (\u22125% to \u22127%) and diluted EPS of $9.48\u2013$9.73",
-    "The Americas (the majority of sales) has decelerated to negative comparable sales, while tariffs and higher promotions pressure gross margin and SG&A deleverages on lower volume",
-]:
-    add_para(tf, t, 13, INK, bullet=True, space_after=5)
-add_para(tf, "Where the business stands (FY2025, ended Feb 1, 2026)", 14.5, CARD, bold=True, space_after=5)
-for t in [
-    "Net revenue $11,102.6M (+4.9% y/y); gross profit $6,284.1M (56.6% margin); operating income $2,210.6M (19.9% margin)",
-    "Net income $1,579.2M; diluted EPS $13.26; diluted shares 119.1M (down from 128.0M in FY2022)",
-    "Balance sheet: $1,807.2M cash and no funded debt \u2014 a net-cash position that funds buybacks and international expansion",
-    "Cash from operations $1,602.5M; capital expenditures $680.8M \u2192 ~$0.9B free cash flow even in a decelerating year",
-]:
-    add_para(tf, t, 13, INK, bullet=True, space_after=5)
+    # 3 Top highlight cards
+    cx = Inches(0.5)
+    cw = Inches(3.95)
+    gap = Inches(0.25)
+    top_y = Inches(1.12)
+    card_h = Inches(1.10)
+    for c_title, c_val, c_sub in cards:
+        b = rect(s, cx, top_y, cw, card_h, fill=LGREY)
+        btf = b.text_frame
+        btf.word_wrap = True
+        btf.margin_top = Pt(4)
+        btf.margin_bottom = Pt(4)
+        btf.margin_left = Pt(8)
+        btf.margin_right = Pt(8)
+        add_para(btf, c_title, 10.5, CARD, bold=True, first=True, space_after=1)
+        add_para(btf, c_val, 19, NAVY, bold=True, space_after=1)
+        add_para(btf, c_sub, 9.5, GREY, space_after=0)
+        cx += cw + gap
 
-# =====================================================================
-# 5. MACRO × MICRO OVERLAP (Firecrawl-sourced context)
-# =====================================================================
-s = slide_base("Macro \u00d7 Micro Overlap", "A discretionary macro air pocket collided with an Americas-specific slowdown \u2014 the stock prices both at once", page=pg(),
-               sources="Source: FY2025 10-K (SEC EDGAR); Q2 FY2026 release (Sep 3, 2026); FRED GDPC1 (Aug 2026)")
-tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(6.1), Inches(5.9))
-add_para(tf, "Macro (external)", 14.5, CARD, bold=True, first=True, space_after=5)
-for t in [
-    "Real GDP still grows ~2.1% y/y (FRED GDPC1 Q2\u201926 vs Q2\u201925) \u2014 not recession, but selective spending away from premium discretionary",
-    "Inflation and economic uncertainty weighed on Americas store traffic (10-K) \u2014 macro consumer caution shows up in micro footfall",
-    "Tariff regime: Q2 recognized $134.5M IEEPA refunds (+560 bps GM) while new tariff layers remain an overhang on sourcing costs",
-    "Athleisure competition intensifying at macro category level (Nike/adidas incumbents + Alo/Vuori/On challengers)",
-]:
-    add_para(tf, t, 12.8, INK, bullet=True, space_after=5)
-add_para(tf, "Micro (company-specific)", 14.5, CARD, bold=True, space_after=5)
-for t in [
-    "Americas comps: \u22123% FY2025 \u2192 \u221212% in Q2 FY2026; China +20% FY2025 but \u22126% in Q2 as the base scales",
-    "811 stores (+44 net FY2025) at ~$1,426/sq ft \u2014 still opening doors while mature-region comps turn negative",
-    "FY2026 guide: first annual revenue decline (\u22125% to \u22127%) and EPS $9.48\u2013$9.73; Q3 guide \u221210% to \u221211%",
-    "Clean run-rate EBIT margin ~13.2% (Q2 18.8% OM minus 560 bps tariff boost) \u2014 investors who miss this overstate sustainable margin",
-]:
-    add_para(tf, t, 12.8, INK, bullet=True, space_after=5)
-box = rect(s, Inches(6.85), Inches(1.15), Inches(6.0), Inches(5.5), fill=NAVY)
-btf = box.text_frame; btf.word_wrap = True
-add_para(btf, "OVERLAP \u2014 WHY $100", 12.5, GOLD, bold=True, first=True, space_after=8)
-for t in [
-    "Macro weakness maps onto LULU\u2019s largest profit pool: Americas ~71% of FY25 revenue (10-K: 70.7%)",
-    "Tariff is simultaneously macro policy and micro P&L \u2014 Q2 optics mask run-rate margin",
-    "The de-rating blends macro fear with a micro guide miss; both are largely in the price at ~10x FY26E EPS",
-    "Our edge: underwrite trough economics (13.2% \u2192 15.5% OM), not a return to 30x earnings",
-    "International micro growth (China/RoW) is the bridge \u2014 but needs macro stability, not a free option",
-]:
-    add_para(btf, t, 12.5, WHITE, bullet=True, space_after=6)
+    # Middle narrative box
+    body_y = Inches(2.32)
+    body_h = Inches(3.45)
+    tb, tf = textbox(s, Inches(0.5), body_y, Inches(12.35), body_h)
+    
+    # Tag / section header
+    add_para(tf, tag, 13, CARD, bold=True, first=True, space_after=4)
+    if extra_heading:
+        add_para(tf, extra_heading, 12, INK, bold=True, space_after=4)
 
-# =====================================================================
-# 6. MARKET NARRATIVE
-# =====================================================================
-s = slide_base("Market Narrative", "Sentiment has capitulated \u2014 the sell-side is cutting targets into the print", page=pg(),
-               sources="Source: sell-side research notes (Sep 2026); company guidance")
-tb, tf = body_box(s)
-add_para(tf, "What the street is saying", 14.5, CARD, bold=True, first=True, space_after=5)
-for t in [
-    "Consensus rating has drifted to \u201cHold / Reduce\u201d with a rapidly falling target; recent cuts include Goldman Sachs and JPMorgan to $95, Morgan Stanley $93 (Underweight), Wells Fargo $95, and Bank of America to $122",
-    "Bear case: Americas saturation and negative comps, tariff-driven gross-margin pressure, SG&A deleverage, and share loss to emerging brands (Alo, Vuori, On)",
-]:
-    add_para(tf, t, 13, INK, bullet=True, space_after=5)
-add_para(tf, "Our differentiated view", 14.5, CARD, bold=True, space_after=5)
-for t in [
-    "The tape has moved from euphoria (30\u201340x earnings in 2023\u201324) to capitulation (~10x today) \u2014 expectations are now low enough that even a conservative recovery re-rates the stock",
-    "At ~3.5x EV/EBITDA the market implicitly assumes revenue and margins decline in perpetuity; our base case only needs stabilization, not a return to peak growth",
-    "Consensus is extrapolating one weak fiscal year; we underwrite the international runway and structural margins the street is discounting to zero",
-]:
-    add_para(tf, t, 13, INK, bullet=True, space_after=5)
+    for i, bullet in enumerate(bullets):
+        add_para(tf, bullet, 12.2, INK, bullet=True, space_after=6)
 
-# =====================================================================
-# 6. COMPANY OVERVIEW
-# =====================================================================
-s = slide_base("Company Overview", "A vertically integrated, direct-to-consumer technical apparel brand", page=pg())
-tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(7.2), Inches(5.9))
-add_para(tf, "Business", 14.5, CARD, bold=True, first=True, space_after=5)
-for t in [
-    "Founded 1998 in Vancouver; designs technical athletic apparel and accessories for yoga, training, running and everyday wear",
-    "Sells through company-operated stores, a direct e-commerce channel, and select wholesale \u2014 a predominantly DTC model that captures full retail economics and first-party data",
-    "Reports revenue by geography: Americas (majority of sales), China Mainland (fastest-growing), and Rest of World",
-]:
-    add_para(tf, t, 13, INK, bullet=True, space_after=6)
-add_para(tf, "Revenue trajectory (US$ M)", 14.5, CARD, bold=True, space_after=5)
-for y in ["FY2022", "FY2023", "FY2024", "FY2025"]:
-    add_para(tf, f"{y}:  {D.IS['revenue'][y]:,}   \u2192  op. margin {D.IS['operating_income'][y]/D.IS['revenue'][y]*100:.1f}%",
-             13, INK, bullet=True, space_after=4)
-# right: segment mix note box
-box = rect(s, Inches(8.0), Inches(1.15), Inches(4.85), Inches(5.5), fill=LGREY)
-btf = box.text_frame; btf.word_wrap = True
-add_para(btf, "GROWTH ARCHITECTURE", 12.5, CARD, bold=True, first=True, space_after=6)
-add_para(btf, "Americas", 13.5, NAVY, bold=True, space_after=1)
-add_para(btf, "Mature, high-productivity base; now negative comps \u2014 the source of the market's concern", 12, INK, space_after=8)
-add_para(btf, "China Mainland", 13.5, NAVY, bold=True, space_after=1)
-add_para(btf, "Fastest-growing region (~20%+); large store and brand-awareness runway", 12, INK, space_after=8)
-add_para(btf, "Rest of World", 13.5, NAVY, bold=True, space_after=1)
-add_para(btf, "Early-stage in Europe and APAC; men's and international whitespace underpenetrated", 12, INK, space_after=0)
+    # Bottom sources box
+    src_y = Inches(5.85)
+    src_h = Inches(1.22)
+    sb = rect(s, Inches(0.5), src_y, Inches(12.35), src_h, fill=LGREY)
+    stf = sb.text_frame
+    stf.word_wrap = True
+    stf.margin_top = Pt(4)
+    stf.margin_bottom = Pt(4)
+    stf.margin_left = Pt(8)
+    stf.margin_right = Pt(8)
 
-# =====================================================================
-# 7. BUSINESS MODEL
-# =====================================================================
-s = slide_base("Business Model & Unit Economics", "Premium pricing plus DTC scale drives sector-leading margins", page=pg())
-tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(7.2), Inches(5.9))
-add_para(tf, "Unit economics", 14.5, CARD, bold=True, first=True, space_after=5)
-for t in [
-    "Gross margin ~57\u201359% \u2014 premium, full-price selling with historically limited promotion",
-    "Operating margin ~20% (peaked ~24% in FY2024) \u2014 among the best in branded apparel",
-    "Asset-efficient store fleet: leased footprint (right-of-use assets ~$1.6B) with high sales productivity per square foot",
-    "Cash-generative: FY2025 CFO $1,602.5M on $680.8M capex \u2192 ~$0.9B free cash flow",
-]:
-    add_para(tf, t, 13, INK, bullet=True, space_after=6)
-add_para(tf, "Competitive moats", 14.5, CARD, bold=True, space_after=5)
-for t in [
-    "Brand and community (ambassadors, in-store events) supporting pricing power",
-    "Product innovation and proprietary fabrics driving repeat purchase",
-    "First-party DTC data enabling assortment, pricing and inventory discipline",
-    "Scale in sourcing and a growing men's and international opportunity",
-]:
-    add_para(tf, t, 13, INK, bullet=True, space_after=6)
-box = rect(s, Inches(8.0), Inches(1.15), Inches(4.85), Inches(3.0), fill=NAVY)
-btf = box.text_frame; btf.word_wrap = True
-add_para(btf, "MARGIN PROFILE (FY2025)", 12.5, GOLD, bold=True, first=True, space_after=8)
-add_para(btf, "Gross margin        56.6%", 15, WHITE, space_after=6)
-add_para(btf, "Operating margin   19.9%", 15, WHITE, space_after=6)
-add_para(btf, "Net margin            14.2%", 15, WHITE, space_after=6)
-add_para(btf, "FCF (approx.)         ~$0.9B", 15, WHITE, space_after=0)
+    if isinstance(sources_text, list):
+        for j, s_line in enumerate(sources_text):
+            is_hdr = s_line.startswith("Links & Sources")
+            f_size = 9.5 if is_hdr else 8.5
+            f_color = CARD if is_hdr else GREY
+            add_para(stf, s_line, f_size, f_color, bold=is_hdr, first=(j == 0), space_after=1)
+    else:
+        add_para(stf, sources_text, 8.5, GREY, first=True, space_after=0)
 
-# =====================================================================
-# 8. INDUSTRY OVERVIEW
-# =====================================================================
-s = slide_base("Industry Overview", "Structural tailwinds favor scaled brands in a consolidating category", page=pg(),
-               sources="Source: company filings; industry estimates (analyst)")
-tb, tf = body_box(s)
-add_para(tf, "Category dynamics", 14.5, CARD, bold=True, first=True, space_after=5)
-for t in [
-    "Global activewear / athleisure is a large (~$400B) market growing at a mid-single-digit rate, supported by health, wellness and the ongoing casualization of apparel",
-    "The category is fragmented but consolidating toward brands with scale, technical product and omnichannel reach; Nike and adidas are incumbents, with Vuori, Alo and On emerging",
-    "Barriers to entry are rising: brand equity, technical fabric development, supply-chain scale and a productive retail footprint are difficult to replicate quickly",
-]:
-    add_para(tf, t, 13, INK, bullet=True, space_after=6)
-add_para(tf, "Where LULU fits", 14.5, CARD, bold=True, space_after=5)
-for t in [
-    "A premium, category-defining brand in technical apparel with structurally higher margins than most peers",
-    "Under-indexed internationally versus Nike/adidas \u2014 the primary multi-year growth lever",
-    "Competition is real but LULU's scale, innovation cadence and community remain differentiated",
-]:
-    add_para(tf, t, 13, INK, bullet=True, space_after=6)
-
-# =====================================================================
-# 9-11. THESIS I / II / III
-# =====================================================================
-def thesis_slide(num, title, desc, headline, bullets, metric_title, metric_lines):
-    s = slide_base(f"Investment Thesis {num}", desc, page=pg())
-    tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(7.4), Inches(5.9))
-    add_para(tf, headline, 15, CARD, bold=True, first=True, space_after=7)
-    for t in bullets:
-        add_para(tf, t, 13.3, INK, bullet=True, space_after=7)
-    box = rect(s, Inches(8.15), Inches(1.15), Inches(4.7), Inches(len(metric_lines)*0.55 + 0.9), fill=LGREY)
-    btf = box.text_frame; btf.word_wrap = True
-    add_para(btf, metric_title, 12.5, CARD, bold=True, first=True, space_after=8)
-    for ml in metric_lines:
-        add_para(btf, ml, 13.5, NAVY, bold=True, space_after=6)
     return s
 
-thesis_slide(
-    "I", "Priced for terminal decline",
-    "The valuation already discounts a permanently shrinking business",
-    "The market is paying trough multiples for a brand that still earned 19.9% operating margin in FY2025",
-    [
-        "At ~$100 the stock trades at ~3.5x EV/EBITDA and ~10.4x FY2026E EPS \u2014 versus a 5-year history of ~20\u201330x earnings",
-        "The balance sheet holds $1.8B of cash and no funded debt, so nearly the entire enterprise value is covered by the operating business at a very low multiple",
-        f"Our base-case DCF (WACC {_pct(V['wacc'])}, terminal growth 2.25%, terminal EBIT margin 15.5%) is in the model \u2014 bear is ~{_d(V['bear'])}; downside is cushioned by net cash and FCF yield, not because bear brackets $100",
-        "To justify $100 you must assume revenue and margins fall in perpetuity; that is inconsistent with international growth and the FY2026 tariff-refund tailwind",
-    ],
-    "VALUATION SNAPSHOT",
-    ["EV / EBITDA:  3.5x", "FY2026E P/E:  10.4x", "FCF yield:  ~8\u20139%", "Net cash:  $1.8B", f"DCF base:  {_d(V['base_dcf'])}"],
-)
 
-thesis_slide(
-    "II", "International growth engine",
-    "China and Rest-of-World offset a maturing Americas and restore growth",
-    "Geographic mix shift is the bridge back to low-single-digit revenue growth (~2.3% FY27\u201330)",
+# =====================================================================
+# 2. SITUATION OVERVIEW (PROMPT SLIDE 2)
+# =====================================================================
+build_prompt_slide(
+    2,
+    "Situation Overview and Current Investment Setup",
+    "This slide outlines why this investment opportunity exists and the historical financial context driving the current setup",
+    "Slide 2: Situation Overview and Current Investment Setup",
     [
-        "China Mainland has been compounding at ~20%+ with a long runway in store count and brand awareness relative to the Americas base",
-        "Rest of World (Europe, APAC) is early-stage and under-penetrated versus global peers \u2014 an incremental multi-year contributor",
-        "As international scales, it dilutes the drag from negative Americas comps; our model returns total revenue to ~2.3% growth (Street 3Y forecast 2.26%) after the FY2026 reset",
-        "Men's and the digital channel add further optionality that the market is not paying for today",
+        ("CURRENT SHARE PRICE", "$100.00", "Down ~55% from peak; 17% single-day crash"),
+        ("FY2026 GUIDANCE RESET", "−5% to −7%", "First revenue decline in corporate history"),
+        ("CLEAN RUN-RATE MARGIN", "13.2%", "Durable operating cash flow through trough"),
     ],
-    "REVENUE PATH (model)",
-    ["FY2025A:  $11,102.6M", f"FY2026E:  ${IS_BASE['FY2026E']['revenue']:,}M (\u22126.1%)", f"FY2028E:  ${IS_BASE['FY2028E']['revenue']:,}M", f"FY2030E:  ${IS_BASE['FY2030E']['revenue']:,}M"],
-)
-
-thesis_slide(
-    "III", "Elite economics & capital return",
-    "Best-in-class margins and buybacks compound value through the trough",
-    "Even a down year throws off ~$1B of FCF that is being returned aggressively",
     [
-        "Operating margin remains ~20% in FY2025 \u2014 far above most branded-apparel peers \u2014 with room to recover as tariffs and promotions normalize",
-        "FY2025 cash from operations was $1,602.5M; after ~$681M capex the business generated roughly $0.9B of free cash flow",
-        "The company repurchased $1.6B (FY2024) and $1.2B (FY2025) of stock; share count has fallen from 128.0M (FY2022) to 119.1M (FY2025)",
-        "At ~$100 per share, every dollar of buyback retires far more shares than at prior highs \u2014 highly accretive to per-share value",
+        "The recent guidance cut triggered a massive cyclical panic pushing Lululemon down to roughly 100 dollars [1]",
+        "Despite historically compounding double digit growth the market capitulated over a guidance cut of 5 to 7 percent [2]",
+        "Lululemon still retains durable cash flows with clean run rate operating margins of 13.2 percent [3]",
     ],
-    "CAPITAL RETURN",
-    ["FY2025 CFO:  $1,602.5M", "FY2025 capex:  $680.8M", "FY2025 buyback:  $1,178.3M", "Shares:  128.0M \u2192 119.1M"],
+    [
+        "Links & Sources:",
+        "[1] TIKR LULU Stock Crashed 17%: https://www.tikr.com/blog/lululemon-stock-crashed-17-on-friday-the-guidance-cut-was-the-real-story",
+        "[2] Lululemon Q2 FY2026 Guidance Release: https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf",
+        "[3] Provided Valuation Model: LULUMODEL18.xlsx",
+    ],
 )
 
 # =====================================================================
-# 12. RISKS & MITIGANTS
+# 3. MARKET NARRATIVE (PROMPT SLIDE 3)
 # =====================================================================
-s = slide_base("Risks & Mitigants", "The bear points are real but largely discounted at today's multiple", page=pg())
-risks = [
-    ("Brand fatigue / fashion risk in a core-heavy assortment",
-     "Deep product pipeline, community engagement and international whitespace diversify demand"),
-    ("Americas comparable sales stay negative",
-     "Expectations are already low; ~10x earnings provides a valuation cushion if declines moderate"),
-    ("Tariffs compress gross margin",
-     "Pricing power, sourcing diversification, and $0.86/share of FY2026 tariff refunds offset part of the hit"),
-    ("Competition from Alo, Vuori, On and incumbents",
-     "Scale, fabric innovation, and under-penetrated men's / international segments defend share"),
-    ("FX translation on a growing international mix",
-     "Natural operational hedges and an active hedging program limit earnings volatility"),
-]
-tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(12.35), Inches(0.3))
-add_para(tf, "Risk  \u2192  Mitigant", 14, CARD, bold=True, first=True, space_after=0)
-top = 1.55
-for rk, mg in risks:
-    b = rect(s, Inches(0.5), Inches(top), Inches(6.0), Inches(0.95), fill=LGREY)
-    bt = b.text_frame; bt.word_wrap = True; bt.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt, rk, 12.5, CARD, bold=True, first=True, space_after=0)
-    b2 = rect(s, Inches(6.7), Inches(top), Inches(6.15), Inches(0.95), fill=WHITE, line=GREY)
-    bt2 = b2.text_frame; bt2.word_wrap = True; bt2.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt2, mg, 12.5, INK, first=True, space_after=0)
-    top += 1.06
+build_prompt_slide(
+    3,
+    "Market Narrative and Analyst Sentiment Surrounding the Stock",
+    "This slide breaks down current market sentiment and exactly what analysts are saying about the recent guidance cut",
+    "Slide 3: Market Narrative and Analyst Sentiment Surrounding the Stock",
+    [
+        ("REVENUE GUIDANCE CUT", "$10.35B", "Morgan Stanley pessimistic outlook"),
+        ("CONSENSUS TARGET CUT", "$176 → $136", "Cyclical fears paralyze the Street"),
+        ("RATING DISPERSION", "Neutral Bias", "BTIG ignores durable competitive moats"),
+    ],
+    [
+        "Morgan Stanley issued a highly pessimistic forecast after management aggressively cut 2026 revenue guidance to 10.35 billion [1]",
+        "Analysts are paralyzed by cyclical fears as the consensus price target was slashed from 176 dollars to 136 dollars [2]",
+        "Firms like BTIG maintain neutral ratings due to short-term turbulence but ignore the durable competitive advantage we see [3]",
+    ],
+    "Links & Sources: [1] MarketBeat: Morgan Stanley Issues Pessimistic Forecast for lululemon athletica: https://www.marketbeat.com/instant-alerts/analyst-morgan-stanley-issues-pessimistic-forecast-for-lululemon-athletica-nasdaq-lulu-stock-price-2026-09-04/ [2] Simply Wall St: lululemon athletica Stock Analysis: https://simplywall.st/stocks/us/consumer-durables/nasdaq-lulu/lululemon-athletica [3] GuruFocus: LULU Reiterates by BTIG - Rating Maintained at Neutral: https://www.gurufocus.com/news/9068272/lulu-reiterates-by-btig-rating-maintained-at-neutral",
+)
 
 # =====================================================================
-# 13. CATALYST TIMELINE
+# 4. INVESTMENT THESIS SUMMARY (PROMPT SLIDE 4)
 # =====================================================================
-s = slide_base("Catalyst Timeline", "A sequence of events that closes the gap to intrinsic value", page=pg())
-cats = [
-    ("Q3 FY2026 (Dec 2026)", "Company guided revenue \u221210% to \u221211%; watch for stabilization signals and holiday traffic / China 11.11 read-through"),
-    ("FY2026 year-end (early 2027)", "First full year lapping the reset; tariff refunds and cost actions support EPS versus lowered expectations"),
-    ("FY2027", "Margin inflection as promotions/tariffs anniversary; continued accretive buybacks compound per-share value"),
-    ("FY2027\u2013FY2028", "Total revenue returns to growth as international scales \u2014 the trigger for multiple re-rating toward peers"),
-]
-top = 1.5
-for i, (when, what) in enumerate(cats):
-    dot = rect(s, Inches(0.6), Inches(top+0.05), Inches(0.22), Inches(0.22), fill=CARD)
-    b = rect(s, Inches(1.1), Inches(top), Inches(2.9), Inches(1.05), fill=NAVY)
-    bt = b.text_frame; bt.word_wrap = True; bt.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt, when, 13, GOLD, bold=True, first=True, space_after=0)
-    b2 = rect(s, Inches(4.2), Inches(top), Inches(8.6), Inches(1.05), fill=LGREY)
-    bt2 = b2.text_frame; bt2.word_wrap = True; bt2.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt2, what, 13, INK, first=True, space_after=0)
-    top += 1.25
+build_prompt_slide(
+    4,
+    "Investment Thesis Summary and Target Price",
+    "This slide breaks down our actual 133 dollar base case target price and the three core pillars supporting our overweight recommendation",
+    "Slide 4: Investment Thesis Summary and Target Price",
+    [
+        ("BASE CASE TARGET PRICE", "$133.64", "+33.6% upside vs $100.00 current price"),
+        ("CLEAN RUN-RATE EBIT", "13.2%", "Pillar 1: Resilient profitability floor"),
+        ("DISCOUNT RATE (WACC)", "9.0% / 2.3% g", "Pillar 2: Mathematically sound valuation"),
+    ],
+    [
+        "Our discounted cash flow valuation generates a base case implied share price of 133.64 dollars representing a 33.6 percent upside from current levels [1]",
+        "The first pillar is profitability because adjusting out the tariff refunds reveals LULU still maintains a highly resilient 13.2 percent clean run-rate operating margin [2]",
+        "The second pillar is our mathematically sound 9.0 percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]",
+        "Finally international expansion remains the crucial growth engine as 4 percent growth in China Mainland easily offsets the temporary North American stagnation [4]",
+    ],
+    "Links & Sources: [1] Provided Valuation Model (Base Case Implied Value): LULUMODEL18_3.xlsx [2] Lululemon Q2 FY2026 Earnings Release (13.2% Margin Calc): https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf [3] Provided Valuation Model (WACC & Revenue Drivers): LULUMODEL18_3.xlsx [4] Lululemon Q2 FY2026 Earnings Release (International Growth): https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf",
+)
+
+# =====================================================================
+# 5. GEOGRAPHIC SEGMENTS (PROMPT SLIDE 5)
+# =====================================================================
+build_prompt_slide(
+    5,
+    "Geographic Segments and Revenue Breakdown",
+    "This slide outlines Lululemon's geographic segments and revenue breakdown while detailing why China growth offsets temporary US declines",
+    "Slide 5",
+    [
+        ("TOTAL REVENUE (FY25)", "$11.1B", "10-K reported top-line foundation"),
+        ("AMERICAS CONTRIBUTION", "$7.85B (70.68%)", "−3% comps reflect macro pressure"),
+        ("CHINA MAINLAND SURGE", "+20% ($1.75B)", "High-growth international engine"),
+    ],
+    [
+        "Lululemon generated 11.1 billion dollars in total revenue with Americas contributing 7.85 billion dollars or 70.68 percent [1]",
+        "Americas comparable sales fell 3 percent due to temporary cyclical macro pressure rather than structural brand degradation [2]",
+        "China Mainland surged 20 percent to 1.75 billion dollars proving high growth international expansion easily offsets US temporary weakness [3]",
+    ],
+    "Links & Sources: [1] Lululemon FY2025 Form 10-K (Segment Revenue and Percentages): https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf [2] Lululemon FY2025 Form 10-K (Americas Comparable Sales): https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf [3] Provided Valuation Model (China Mainland Growth & Revenue Driver): LULUMODEL18.xlsx",
+)
+
+# =====================================================================
+# 6. BUSINESS MODEL & UNIT ECONOMICS (PROMPT SLIDE 6)
+# =====================================================================
+build_prompt_slide(
+    6,
+    "Business Model Unit Economics and Competitive Moats",
+    "This slide analyzes Lululemon's unit economics and competitive moats that protect its long-term market leadership",
+    "Slide 6: Business Model Unit Economics and Competitive Moats",
+    [
+        ("GROSS MARGIN", "56.6%", "Insulating moat against price competition"),
+        ("DTC E-COMMERCE EBIT", "23.6%", "Zero retail occupancy drag economics"),
+        ("STORE SALES PER SQ FT", "$1,426 / sq ft", "18.6% store-level EBIT margin"),
+    ],
+    [
+        "Lululemon sustains a 56.6 percent gross margin providing a massive competitive moat against retail price competition [1]",
+        "E-commerce unit economics remain elite with direct-to-consumer EBIT margins hitting 23.6 percent without retail occupancy drag [2]",
+        "Company-operated stores generate 1,426 dollars per square foot and an 18.6 percent EBIT margin establishing high capital efficiency [3]",
+    ],
+    "Links & Sources: [1] Provided Valuation Model (Gross Margin): LULUMODEL18_6.xlsx [2] Provided Valuation Model (E-commerce EBIT Margin Driver): LULUMODEL18_6.xlsx [3] Provided Valuation Model (Store EBIT Margin & SPSF): LULUMODEL18_6.xlsx",
+)
+
+# =====================================================================
+# 7. INDUSTRY OVERVIEW - PART 1 (PROMPT SLIDE 7)
+# =====================================================================
+build_prompt_slide(
+    7,
+    "Industry Overview - Trends and Structure",
+    "This slide explores the ongoing athleisure industry trends including market fragmentation and the barriers to entry",
+    "Slide 7: Industry Overview - Trends and Structure",
+    [
+        ("GLOBAL MARKET", "Fragmented", "Most competitors lack durable advantage"),
+        ("PREMIUM SEGMENT", "High Barriers", "Scale, fabric R&D & brand equity protect"),
+        ("LULULEMON ROE", "30.25%", "vs 6.81% retail industry median"),
+    ],
+    [
+        "I argue the global athleisure market remains highly fragmented meaning most players lack a durable competitive advantage [1]",
+        "The premium segment maintains high barriers to entry protecting global champions from temporary cyclical noise [2]",
+        "Lululemon mathematically proves its moat by generating a 30.25 percent ROE far outpacing the 6.81 percent industry median [3]",
+    ],
+    "Links & Sources: [1] Market.us Media (Athleisure Market Fragmentation): https://media.market.us/athleisure-industry-statistics/ [2] Fortune Business Insights (Premium Athleisure Trends): https://www.fortunebusinessinsights.com/athleisure-market-110642 [3] FinanceCharts (Lululemon ROE & Retail Median): https://www.financecharts.com/stocks/LULU/growth/roe",
+)
+
+# =====================================================================
+# 8. INDUSTRY OVERVIEW - PART 2 (PROMPT SLIDE 7 PART 2)
+# =====================================================================
+build_prompt_slide(
+    8,
+    "Industry Overview - Barriers to Entry and Profitability",
+    "This slide dissects capital efficiency metrics comparing Lululemon's gross margin directly against legacy apparel competitors",
+    "Slide 7 Part 2: Industry Overview - Barriers to Entry and Profitability",
+    [
+        ("LULULEMON GROSS MARGIN", "56.6%", "DTC scale prevents margin compression"),
+        ("NIKE GROSS MARGIN", "43%", "Wholesale dependence & markdown drag"),
+        ("UNDER ARMOUR GM", "46%", "Structural margin compression vs DTC"),
+    ],
+    [
+        "Lululemon commands a 56.6 percent gross margin far exceeding traditional athletic apparel peers like Nike and Under Armour [1]",
+        "Nike struggles to maintain a 43 percent margin while Under Armour hovers around 46 percent reflecting their wholesale dependence [2]",
+        "Lululemon's direct-to-consumer scale prevents this structural margin compression and forms an impenetrable economic moat against industry price wars [3]",
+    ],
+    "Links & Sources: [1] Provided Valuation Model (Gross Margin Assumptions): LULUMODEL18.xlsx [2] Investing.com (Nike & Under Armour Historical Gross Margins): https://www.investing.com/pro/NYSE:NKE/explorer/gp_margin [3] ProAnalyst LULU Market Report (Competitor Margins & DTC Moat): https://lulu.proanalyst.ai/business",
+)
+
+# =====================================================================
+# 9. THESIS I (PROMPT SLIDE 8)
+# =====================================================================
+build_prompt_slide(
+    9,
+    "Investment Thesis I",
+    "This slide outlines the core contrarian investment thesis utilizing numerical evidence from the LULUMODEL18.xlsx file",
+    "Slide 8 Investment Thesis I",
+    [
+        ("PRICE DRAWDOWN", ">50%", "Critically undervalued vs durable cash flow"),
+        ("ADJ. GROSS MARGIN", "54.9%", "Protected by premium DTC channel mix"),
+        ("TERMINAL GROWTH / UPSIDE", "2.25% g → $133.64", ">30% upside provides valuation buffer"),
+    ],
+    [
+        "The 2026 price drop exceeding 50% has left Lululemon critically undervalued despite durable cash flows [1]",
+        "Its premium Direct-to-Consumer revenue mix protects a massive 54.9% adjusted gross margin, mathematically justifying my intrinsic valuation thesis [2]",
+        "Furthermore, even with Americas growth stagnating, sheer cash flow generation creates a robust intrinsic valuation buffer, where a conservative 2.25% terminal growth rate still yields over 30% upside to our $133.64 target price [3]",
+    ],
+    [
+        "[1] https://everythingmoney.com/blog/lululemon-is-collapsing-burry-s-biggest-bet-4334",
+        "[2] https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
+        "[3] LULUMODEL18.xlsx, DCF Terminal Value & Valuation Summary Schedule is that ready",
+    ],
+)
+
+# =====================================================================
+# 10. THESIS II (PROMPT SLIDE 9)
+# =====================================================================
+build_prompt_slide(
+    10,
+    "Investment Thesis II  Partial Margin Recovery & Brand Loyalty Floor",
+    "This slide details how partial margin recovery supported by core brand loyalty still drives a highly compelling valuation",
+    "Slide 9: Investment Thesis II  Partial Margin Recovery & Brand Loyalty Floor",
+    [
+        ("PEAK EBIT MARGIN", "23.7%", "FY24 pandemic-era peak earnings power"),
+        ("TROUGH MARGIN FLOOR", "13.2%", "Core brand loyalty sustains floor"),
+        ("PARTIAL RECOVERY TO FY30", "15.5% EBIT", "Unlocks $133.64 base DCF share price"),
+    ],
+    [
+        "Historical pandemic-era peak EBIT margins reached 23.7% in FY24 showing prior peak earnings power [1]",
+        "Our valuation assumes a floor built on resilient baseline brand loyalty, proving Lululemon does not need to remain the hottest viral trend 100% of the time to sustain a 13.2% trough margin [2]",
+        "A modest partial recovery to just 15.5% EBIT margin by FY30 still yields $133.64 per share [3]",
+        "This proves returning to peak COVID profitability is completely unnecessary to unlock substantial market upside [4]",
+    ],
+    [
+        "Links & Sources:",
+        "[1] LULUMODEL18.xlsx / SEC EDGAR Form 10-K (FY24 Peak Margins)",
+        "[2] LULUMODEL18.xlsx, Clean Run-Rate EBIT Margin & Brand Royalty Assumptions",
+        "[3] LULUMODEL18.xlsx, Base Case DCF Valuation Summary",
+        "[4] LULUMODEL18.xlsx, Discounted Cash Flow Valuation Summary",
+    ],
+)
+
+# =====================================================================
+# 11. THESIS III (PROMPT SLIDE 10)
+# =====================================================================
+build_prompt_slide(
+    11,
+    "Investment Thesis III: Geographic Growth Divergence",
+    "This slide examines how Lululemon's top-line projections rely disproportionately on Chinese market expansion to conceal domestic North American stagnation.",
+    "Slide 10:",
+    [
+        ("AMERICAS COMPS", "−4.0% → 2.0%", "Near-term contraction flatlining by FY30"),
+        ("CHINA FOOTPRINT EXPANSION", "16 stores / yr", "Disproportionate vs 6 domestically"),
+        ("CHINA COMPS AVERAGE", "+10.2%", "Double-digit engine offsets Americas drag"),
+    ],
+    [
+        "The revenue build reveals Americas facing near-term contraction with -4.0% comps in FY26 flatlining at a terminal 2.0% growth rate by FY30 [1].",
+        "To offset this domestic anchor, the model relies entirely on disproportionate FY26–FY30 Chinese footprint expansion, averaging 16 new stores annually versus just 6 domestically, and sustained double-digit (10.2% average) comp growth to overcome clear Americas expansion drawbacks [2].",
+        "Consequently, if the Chinese consumer softens, this model's core top-line projections will not be optimal enough to meet our target [3].",
+    ],
+    "[1] LULUMODEL18.xlsx, Americas FY26-FY30 Comparable Sales Growth Assumptions [2] LULUMODEL18.xlsx, FY26 Store Openings & Mainland China Revenue Build [3] LULUMODEL18.xlsx, Revenue Drivers Schedule",
+    extra_heading="Investment Thesis III: Geographic Growth Divergence This slide examines how Lululemon's top-line projections rely disproportionately on Chinese market expansion to conceal domestic North American stagnation.",
+)
+
+# =====================================================================
+# 12. RISK & MITIGANTS (PROMPT SLIDE 11)
+# =====================================================================
+build_prompt_slide(
+    12,
+    "Risk & Mitigants",
+    "This slide evaluates core downside risks and demonstrates how share repurchases compound EPS to drive share price recovery",
+    "Slide 11 Risk & Mitigants",
+    [
+        ("BEAR CASE VALUATION", "$56.00", "Recovers 45% of entry price in cash ($45.64)"),
+        ("CAPEX & INVENTORY", "$360M / yr", "Slashed CapEx + $101.5M inventory release"),
+        ("SHARE REPURCHASES", "18.7M shares", "$500M/yr buybacks compound EPS to $13.36"),
+    ],
+    [
+        "China deceleration risks a $56.00 bear floor, but $45.64 cumulative cash per share recovers 45% of entry price [1]",
+        "Slashed CapEx saves $360M annually by relying on online e-commerce's 23.6% EBIT margin plus $101.5M inventory releases [2]",
+        "Deploying $500M annually into buybacks retires 18.7 million shares, compounding EPS to $13.36 to support our target price of $133.64.",
+    ],
+    "[1] LULUMODEL18.xlsx, Bear Case DCF Valuation Summary / https://www.barrons.com/articles/lululemon-stock-earnings-guidance-a7a7c5c0 [2] LULUMODEL18.xlsx, CapEx & E-Commerce Channel EBIT Assumptions / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733 [3] LULUMODEL18.xlsx, Share Repurchase & EPS Accretion Schedule / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
+)
+
+# =====================================================================
+# 13. TIMELINE OF RECOVERY (PROMPT SLIDE 12)
+# =====================================================================
+def build_timeline_slide():
+    s = slide_base("Timeline of Recovery", "Slide 12: Timeline of Recovery", page=pg())
+
+    cats = [
+        ("2026 Q3 Trough", "2026 (Q3 FY2026 Trough): Q3 FY2026 revenue laps guidance trough while China Double 11 sales confirm holiday store traffic floor stabilization across key markets [1]"),
+        ("2027 Year-End", "2027 (FY2026 Year-End): First full-year reset absorbs steep prior declines while $134.5M tariff refunds and targeted SG&A cost actions protect earnings per share [2]"),
+        ("2027 Inflection", "2027 (FY2027 Margin Inflection): Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while 75% UFCF buybacks compound EPS to boost sentiment [3]"),
+        ("2028 Re-Rating", "2028 (FY2027–FY2028 Multiple Re-Rating): Accelerating international store scaling (+12% China comps) offsets Americas softness (-4%), driving overall revenue recovery and valuation re-rating toward $133.64 [4]"),
+    ]
+
+    top = Inches(1.22)
+    row_h = Inches(1.00)
+    gap = Inches(0.12)
+    for date_lbl, full_text in cats:
+        b1 = rect(s, Inches(0.5), top, Inches(2.2), row_h, fill=NAVY)
+        bt1 = b1.text_frame
+        bt1.word_wrap = True
+        bt1.vertical_anchor = MSO_ANCHOR.MIDDLE
+        add_para(bt1, date_lbl, 12, GOLD, bold=True, first=True, align=PP_ALIGN.CENTER, space_after=0)
+
+        b2 = rect(s, Inches(2.8), top, Inches(10.05), row_h, fill=LGREY)
+        bt2 = b2.text_frame
+        bt2.word_wrap = True
+        bt2.vertical_anchor = MSO_ANCHOR.MIDDLE
+        bt2.margin_left = Pt(10)
+        bt2.margin_right = Pt(10)
+        add_para(bt2, full_text, 11.5, INK, first=True, space_after=0)
+        top += row_h + gap
+
+    # Sources box
+    src_y = Inches(5.85)
+    src_h = Inches(1.22)
+    sb = rect(s, Inches(0.5), src_y, Inches(12.35), src_h, fill=LGREY)
+    stf = sb.text_frame
+    stf.word_wrap = True
+    stf.margin_top = Pt(4)
+    stf.margin_bottom = Pt(4)
+    stf.margin_left = Pt(8)
+    stf.margin_right = Pt(8)
+    src_txt = "[1] LULUMODEL18.xlsx, Scenarios & Revenue Drivers / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733 [2] LULUMODEL18.xlsx, NOPAT Bridge & Scenarios / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733 [3] LULUMODEL18.xlsx, Scenarios & Unlevered Free Cash Flow Schedule / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733 [4] LULUMODEL18.xlsx, Revenue Drivers & DCF Valuation Summary / https://stockanalysis.com/stocks/lulu/forecast/"
+    add_para(stf, src_txt, 8.5, GREY, first=True, space_after=0)
+    return s
+
+build_timeline_slide()
 
 def m(v):
     return f"{v:,.0f}"
@@ -500,7 +587,7 @@ def pitch_financial_slide(
 
 
 # =====================================================================
-# 13–15. FINANCIALS (historicals + base & bull, all five forecast years)
+# 14–16. FINANCIALS (historicals + base & bull, all five forecast years)
 # =====================================================================
 _IS26B, _IS30B = IS_BASE["FY2026E"], IS_BASE["FY2030E"]
 _IS26U, _IS30U = IS_BULL["FY2026E"], IS_BULL["FY2030E"]
@@ -622,7 +709,7 @@ r = p.add_run(); r.text = f"WACC = {_pct(V['wacc'])}"; _set_font(r, 16, GREEN, b
 # =====================================================================
 # 18. VALUATION SUMMARY (FOOTBALL FIELD)
 # =====================================================================
-s = slide_base("Valuation Summary", "Multiple methods converge above the current price \u2014 target $140", page=pg(),
+s = slide_base("Valuation Summary", "Multiple methods converge above the current price \u2014 target $133.64", page=pg(),
                sources="Source: GIS DCF and comps models; multiples are analyst ranges")
 # football field: horizontal floating bars
 methods = [
@@ -648,15 +735,15 @@ for name, lo, hi in methods:
     add_para(tf2, f"${hi}", 10.5, NAVY, bold=True, first=True, space_after=0)
     top += 0.75
 # current price line and target line
-cp_x = xpos(100); pt_x = xpos(140)
+cp_x = xpos(100); pt_x = xpos(133.64)
 ln = rect(s, Inches(cp_x), Inches(1.55), Pt(2), Inches(3.4), fill=INK)
 ln2 = rect(s, Inches(pt_x), Inches(1.55), Pt(2), Inches(3.4), fill=CARD)
 tb, tf = textbox(s, Inches(cp_x-0.7), Inches(4.95), Inches(1.6), Inches(0.3))
 add_para(tf, "Current $100", 10.5, INK, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
 tb, tf = textbox(s, Inches(pt_x-0.7), Inches(5.2), Inches(1.6), Inches(0.3))
-add_para(tf, "Target $140", 10.5, CARD, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
+add_para(tf, "Target $133.64", 10.5, CARD, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
 tb, tf = textbox(s, Inches(0.5), Inches(5.7), Inches(12.35), Inches(1.2))
-add_para(tf, f"We set a 12-month target of $140 \u2014 above the Gordon DCF of {_d(V['base_dcf'])}, for a partial re-rating toward historical multiples \u2014 implying ~40% upside", 13, NAVY, bold=True, first=True, space_after=5)
+add_para(tf, f"We set a 12-month target of $133.64 \u2014 based on the DCF base case ({_d(V['base_dcf'])}) \u2014 implying +33.6% upside", 13, NAVY, bold=True, first=True, space_after=5)
 add_para(tf, "The P/E low end (~$96) sits near today's price, showing how little recovery is required for the stock to work", 12.5, INK, italic=True, space_after=0)
 
 # =====================================================================
