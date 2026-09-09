@@ -411,7 +411,7 @@ _narrative_slide(
     "This slide evaluates core downside risks and demonstrates how share repurchases compound EPS to drive share price recovery",
     [
         "China deceleration risks a $56.00 bear floor, but $45.64 cumulative cash per share recovers 45% of entry price [1]",
-        "Our model fades CapEx from management's 7% FY26 guide to a 5.5% revenue blend, freeing roughly $160M annually versus the guided run-rate, while approximately $116M of FY26 inventory normalization and a 23.6% e-commerce EBIT margin support free cash flow [2]",
+        "CapEx fading from a 7% FY26 guide toward 5.5% of revenue, plus FY26 inventory normalization and a capital-light 23.6% e-commerce EBIT margin, support free cash flow even if China comps moderate [2]",
         "Deploying $750M annually into buybacks retires 32.9 million shares, compounding EPS to $14.57, more than enough to recover our $133.64 DCF-implied share price [3]",
     ],
     [
