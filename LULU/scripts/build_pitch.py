@@ -246,7 +246,7 @@ _narrative_slide(
         "The recent guidance cut triggered a massive cyclical panic pushing Lululemon down to roughly 100 dollars [1]",
         "Despite historically compounding double digit growth the market capitulated over a guidance cut of 5 to 7 percent [2]",
         "Lululemon still retains durable cash flows with clean run rate operating margins of 13.2 percent [3]",
-        "China Mainland modeled FY26-FY30 averages of 10.2% same-store comps and 16 annual gross store openings provide a long-term growth offset to near-term North American stagnation [4]",
+        "China Mainland modeled FY26-FY30 averages of 10.2% same-store comps and 16 annual gross store openings offset Americas averages of approximately flat comps and 6 annual gross store openings amid near-term North American stagnation [4]",
     ],
     [
         (1, f"TIKR LULU Stock Crashed 17%: {_TIKR}"),
