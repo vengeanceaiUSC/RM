@@ -17,6 +17,7 @@ from gis_pitch import (
     add_para,
     textbox,
     rect,
+    fit_font_size,
     _set_font,
     _add_bullet,
     NAVY,
@@ -130,16 +131,44 @@ def _add_labeled_bullet(tf, label, body, size=13, color=INK, first=False, space_
     return p
 
 
+_CARD_GAP = 0.14      # vertical gutter between bullet panels
+_CARD_ACCENT_W = 0.06  # navy rule down the left edge of each panel
+_CARD_PAD_L = 0.34     # text inset past the accent rule
+_CARD_PAD_R = 0.30
+
+
 def _narrative_slide(title, descriptor, bullets, links, body_top=_CONTENT_TOP):
+    """One panel per bullet, spread evenly over the full content band.
+
+    The copy is fixed and short, so a plain bullet list leaves most of the page
+    empty. Giving each bullet its own panel spends that space on structure
+    instead of adding words, and matches the timeline slide's card treatment.
+    """
     bottom = _content_bottom(len(links))
-    body_h = max(0.8, bottom - body_top)
     s = slide_base(title, descriptor, page=pg(), sources=" ")
-    tb, tf = textbox(s, Inches(0.5), Inches(body_top), Inches(12.35), Inches(body_h))
+    n = len(bullets)
+    band = max(0.8, bottom - body_top)
+    card_h = (band - (n - 1) * _CARD_GAP) / n
+    text_w = 12.35 - _CARD_PAD_L - _CARD_PAD_R
+    plain = [b[0] + ": " + b[1] if isinstance(b, tuple) else b for b in bullets]
+    size = fit_font_size(plain, text_w, card_h - 0.30)
+
     for i, bullet in enumerate(bullets):
+        top = body_top + i * (card_h + _CARD_GAP)
+        rect(s, Inches(0.5), Inches(top), Inches(12.35), Inches(card_h), fill=LGREY)
+        rect(s, Inches(0.5), Inches(top), Inches(_CARD_ACCENT_W), Inches(card_h), fill=NAVY)
+        _, tf = textbox(
+            s,
+            Inches(0.5 + _CARD_PAD_L),
+            Inches(top),
+            Inches(text_w),
+            Inches(card_h),
+            anchor=MSO_ANCHOR.MIDDLE,
+        )
         if isinstance(bullet, tuple):
-            _add_labeled_bullet(tf, bullet[0], bullet[1], first=(i == 0))
+            _add_labeled_bullet(tf, bullet[0], bullet[1], size=size, first=True)
         else:
-            add_para(tf, bullet, 12, INK, bullet=True, first=(i == 0), space_after=7)
+            add_para(tf, bullet, size, INK, first=True, space_after=0)
     _add_links_box(s, links)
     return s
 
@@ -206,6 +235,7 @@ for col_i, entries in enumerate((_DECK_TOC[:_toc_split], _DECK_TOC[_toc_split:])
         width=6.02,
         font_size=9,
         header_font_size=9.5,
+        text_cols=(1,),
     )
 
 # Slide 2 - Situation Overview
@@ -432,18 +462,26 @@ cats = [
 _timeline_label_w = 3.55
 _timeline_body_l = 4.2
 _timeline_body_w = 8.65
+# Match the body type on slides 2-12 so the narrative run reads as one section.
+_timeline_body_size = fit_font_size(
+    [what for _, what in cats], _timeline_body_w - 0.3, _timeline_row_h - 0.24
+)
+_timeline_label_size = fit_font_size(
+    [when for when, _ in cats], _timeline_label_w - 0.3, _timeline_row_h - 0.24,
+    candidates=(13, 12, 11, 10, 9),
+)
 top = _timeline_top
 for when, what in cats:
     b = rect(s, Inches(0.5), Inches(top), Inches(_timeline_label_w), Inches(_timeline_row_h), fill=NAVY)
     bt = b.text_frame
     bt.word_wrap = True
     bt.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt, when, 9, GOLD, bold=True, first=True, space_after=0)
+    add_para(bt, when, _timeline_label_size, GOLD, bold=True, first=True, space_after=0)
     b2 = rect(s, Inches(_timeline_body_l), Inches(top), Inches(_timeline_body_w), Inches(_timeline_row_h), fill=LGREY)
     bt2 = b2.text_frame
     bt2.word_wrap = True
     bt2.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt2, what, 9.5, INK, first=True, space_after=0)
+    add_para(bt2, what, _timeline_body_size, INK, first=True, space_after=0)
     top += _timeline_step
 _add_links_box(s, _timeline_links)
 
@@ -579,6 +617,7 @@ def _fin_source_table(slide, source_rows, top=5.92, col0w=1.85, height=0.95):
     stmt_table(
         slide, rows, headers, col0w=col0w, top=top, height=height,
         font_size=7, header_font_size=7.5, bold_rows=(),
+        text_cols=(1, 2),
     )
 
 
@@ -958,6 +997,7 @@ stmt_table(
     col0w=2.4, top=5.98, height=1.02, left=0.5, width=12.35,
     font_size=7, header_font_size=7.5,
     bold_rows=(len(_all_src_rows) - 1,),
+    text_cols=(1,),
 )
 
 # =====================================================================
@@ -1086,7 +1126,7 @@ stmt_table(
     col0w=2.15, top=1.2, height=3.05, font_size=9, header_font_size=9,
     bold_rows=(3, len(seg_rows) - 1),
 )
-tb, tf = textbox(s, Inches(0.5), Inches(4.38), Inches(7.8), Inches(1.05))
+tb, tf = textbox(s, Inches(0.5), Inches(4.38), Inches(7.8), Inches(1.85))
 add_para(tf, "Methodology", 12, CARD, bold=True, first=True, space_after=3)
 for t in [
     "Single-brand retailer: geography is the cleanest SOTP cut (Americas / China / RoW per 10-K)",
@@ -1301,7 +1341,7 @@ add_para(
     7.5, INK, italic=True, first=True, space_after=0,
 )
 
-tb, tf = textbox(s, Inches(0.5), Inches(4.48), Inches(12.35), Inches(2.00))
+tb, tf = textbox(s, Inches(0.5), Inches(4.48), Inches(12.35), Inches(2.20))
 _ebitda_med = _core.get("ev_ebitda", {}).get("median", 0)
 _rev_med = _core.get("ev_rev", {}).get("median", 0)
 _pe_med = _core.get("pe_fwd", {}).get("median", 0)
@@ -1374,7 +1414,7 @@ stmt_table(
     font_size=8, header_font_size=8, bold_rows=(len(prec_rows) - 1,),
 )
 
-tb, tf = textbox(s, Inches(0.5), Inches(3.55), Inches(7.85), Inches(2.35))
+tb, tf = textbox(s, Inches(0.5), Inches(3.55), Inches(7.85), Inches(2.55))
 for title, body in [
     (
         "Private precedent framework",
@@ -1419,6 +1459,33 @@ add_para(
     9, INK, italic=True, space_after=0,
 )
 
+def _strip_terminal_periods(presentation):
+    """Drop the full stop that closes a paragraph, deck-wide.
+
+    Sentence punctuation inside a paragraph is left alone; only the very last
+    character goes, so "9.0% WACC. Grid brackets..." keeps its interior period.
+    Ellipses are skipped.
+    """
+    frames = []
+    for slide in presentation.slides:
+        for shape in slide.shapes:
+            if shape.has_text_frame:
+                frames.append(shape.text_frame)
+            if shape.has_table:
+                frames += [c.text_frame for r in shape.table.rows for c in r.cells]
+    for frame in frames:
+        for para in frame.paragraphs:
+            runs = [r for r in para.runs if r.text]
+            if not runs:
+                continue
+            text = "".join(r.text for r in runs).rstrip()
+            if not text.endswith(".") or text.endswith(".."):
+                continue
+            last = runs[-1]
+            last.text = last.text.rstrip().removesuffix(".")
+
+
+_strip_terminal_periods(prs)
 n = deck.save(OUT)
 print("Saved", os.path.abspath(OUT), "with", n, "slides")
 try:
