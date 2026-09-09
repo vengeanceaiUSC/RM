@@ -40,14 +40,43 @@ def _boxes(slide):
 
 def _label(sh):
     txt = ""
-    if sh.has_text_frame:
+    if sh.has_table:
+        txt = " ".join(c.text for c in sh.table.rows[0].cells)[:40]
+    elif sh.has_text_frame:
         txt = " ".join(sh.text_frame.text.split())[:40]
     return f"{sh.shape_type}:{txt!r}" if txt else f"{sh.shape_type}"
 
 
+def _table_height(sh):
+    """Drawn height of a table.
+
+    A row's declared height is only a floor request: renderers grow it to fit
+    the tallest cell, so a table declared shorter than its content silently
+    runs off the slide.
+    """
+    table = sh.table
+    widths = [_in(c.width) for c in table.columns]
+    total = 0.0
+    for row in table.rows:
+        need = 0.0
+        for cell, width in zip(row.cells, widths):
+            margins = (cell.margin_top.pt + cell.margin_bottom.pt) / 72.0
+            inner = max(0.2, width - (cell.margin_left.pt + cell.margin_right.pt) / 72.0)
+            text_h = 0.0
+            for para in cell.text_frame.paragraphs:
+                text = "".join(r.text for r in para.runs)
+                sizes = [r.font.size.pt for r in para.runs if r.font.size]
+                text_h += est_height(text, inner, max(sizes) if sizes else 10.5)
+            need = max(need, text_h + margins)
+        total += max(_in(row.height), need)
+    return total
+
+
 def _effective_bottom(sh):
-    """Bottom edge as drawn: PowerPoint text spills past an undersized box."""
+    """Bottom edge as drawn, not as declared."""
     bottom = sh.top + sh.height
+    if sh.has_table:
+        return max(bottom, sh.top + int(_table_height(sh) * 914400))
     if sh.has_text_frame and sh.text_frame.text.strip():
         spill = int(max(_in(sh.height), _text_rows(sh)) * 914400)
         bottom = max(bottom, sh.top + spill)
@@ -81,12 +110,17 @@ def audit(slide, n, w_in, h_in):
     findings = []
     shapes = _boxes(slide)
 
+    def _carries_text(sh):
+        # Tables are GraphicFrames with no text frame of their own, but they
+        # very much draw text and must be part of the overlap test.
+        if sh.has_table:
+            return True
+        return bool(sh.has_text_frame and sh.text_frame.text.strip())
+
     for ai in range(len(shapes)):
         for bi in range(ai + 1, len(shapes)):
             a, b = shapes[ai][1], shapes[bi][1]
-            a_txt = a.has_text_frame and a.text_frame.text.strip()
-            b_txt = b.has_text_frame and b.text_frame.text.strip()
-            if not (a_txt and b_txt):
+            if not (_carries_text(a) and _carries_text(b)):
                 continue  # a plain fill behind a label is intentional
             hit = _intersect(a, b)
             if hit:
@@ -99,8 +133,15 @@ def audit(slide, n, w_in, h_in):
             findings.append(f"BLEED off top/left: {_label(sh)}")
         if _in(sh.left + sh.width) > w_in + 0.01:
             findings.append(f"BLEED off right edge: {_label(sh)}")
-        if _in(sh.top + sh.height) > h_in + 0.01:
-            findings.append(f"BLEED off bottom edge: {_label(sh)}")
+        if _in(_effective_bottom(sh)) > h_in + 0.01:
+            findings.append(
+                f"BLEED off bottom edge, reaches {_in(_effective_bottom(sh)):.2f}in "
+                f"on a {h_in:.2f}in slide: {_label(sh)}"
+            )
+        elif _in(_effective_bottom(sh)) > FOOTER_Y_IN + 0.01 and sh.has_table:
+            findings.append(
+                f"TABLE INTO FOOTER, reaches {_in(_effective_bottom(sh)):.2f}in: {_label(sh)}"
+            )
         if sh.has_text_frame and sh.text_frame.text.strip():
             need = _text_rows(sh)
             have = _in(sh.height)
