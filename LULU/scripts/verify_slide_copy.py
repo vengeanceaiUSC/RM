@@ -1,0 +1,223 @@
+"""Verify narrative slides 2-13 contain the user's canonical copy verbatim.
+
+Run after build_pitch.py:  python3 verify_slide_copy.py
+Exit code 0 = every title/descriptor/bullet/link fragment is present.
+Exit code 1 = at least one fragment is missing (prints which).
+
+Dash normalization: en/em dashes are treated as hyphens (the deck deliberately
+uses hyphens), so "FY26-FY30" matches the source "FY26-FY30" either way.
+This is the single source of truth for slides 2-13 copy; update EXPECTED here
+whenever the user changes the narrative text, then re-run.
+"""
+import os
+import sys
+
+from pptx import Presentation
+
+DECK = os.path.join(os.path.dirname(__file__), "..", "LULU_Investment_Pitch_Deck.pptx")
+
+# deck slide number -> canonical fragments (title None = no navy title bar)
+EXPECTED = {
+2: {
+ "title": "Situation Overview and Current Investment Setup",
+ "desc": "This slide outlines why this investment opportunity exists and the historical financial context driving the current setup",
+ "bullets": [
+  "The recent guidance cut triggered a massive cyclical panic pushing Lululemon down to roughly 100 dollars [1]",
+  "Despite historically compounding double digit growth the market capitulated over a guidance cut of 5 to 7 percent [2]",
+  "Lululemon still retains durable cash flows with clean run rate operating margins of 13.2 percent [3]",
+ ],
+ "links": [
+  "[1] TIKR LULU Stock Crashed 17%: https://www.tikr.com/blog/lululemon-stock-crashed-17-on-friday-the-guidance-cut-was-the-real-story",
+  "[2] Lululemon Q2 FY2026 Guidance Release: https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf",
+  "[3] Provided Valuation Model: LULUMODEL18.xlsx",
+ ]},
+3: {
+ "title": "Market Narrative and Analyst Sentiment Surrounding the Stock",
+ "desc": "This slide breaks down current market sentiment and exactly what analysts are saying about the recent guidance cut",
+ "bullets": [
+  "Morgan Stanley issued a highly pessimistic forecast after management aggressively cut 2026 revenue guidance to 10.35 billion [1]",
+  "Analysts are paralyzed by cyclical fears as the consensus price target was slashed from 176 dollars to 136 dollars [2]",
+  "Firms like BTIG maintain neutral ratings due to short-term turbulence but ignore the durable competitive advantage we see [3]",
+ ],
+ "links": [
+  "[1] MarketBeat: Morgan Stanley Issues Pessimistic Forecast for lululemon athletica: https://www.marketbeat.com/instant-alerts/analyst-morgan-stanley-issues-pessimistic-forecast-for-lululemon-athletica-nasdaq-lulu-stock-price-2026-09-04/",
+  "[2] Simply Wall St: lululemon athletica Stock Analysis: https://simplywall.st/stocks/us/consumer-durables/nasdaq-lulu/lululemon-athletica",
+  "[3] GuruFocus: LULU Reiterates by BTIG - Rating Maintained at Neutral: https://www.gurufocus.com/news/9068272/lulu-reiterates-by-btig-rating-maintained-at-neutral",
+ ]},
+4: {
+ "title": "Investment Thesis Summary and Target Price",
+ "desc": "This slide breaks down our actual 133 dollar base case target price and the three core pillars supporting our overweight recommendation",
+ "bullets": [
+  "Our discounted cash flow valuation generates a base case implied share price of 133.64 dollars representing a 33.6 percent upside from current levels [1]",
+  "The first pillar is profitability because adjusting out the tariff refunds reveals LULU still maintains a highly resilient 13.2 percent clean run-rate operating margin [2]",
+  "The second pillar is our mathematically sound 9.0 percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]",
+  "Finally international expansion remains the crucial growth engine as 4 percent growth in China Mainland easily offsets the temporary North American stagnation [4]",
+ ],
+ "links": [
+  "[1] Provided Valuation Model (Base Case Implied Value): LULUMODEL18_3.xlsx",
+  "[2] Lululemon Q2 FY2026 Earnings Release (13.2% Margin Calc): https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf",
+  "[3] Provided Valuation Model (WACC & Revenue Drivers): LULUMODEL18_3.xlsx",
+  "[4] Lululemon Q2 FY2026 Earnings Release (International Growth): https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf",
+ ]},
+5: {
+ "title": None,
+ "desc": "This slide outlines Lululemon's geographic segments and revenue breakdown while detailing why China growth offsets temporary US declines",
+ "bullets": [
+  "Lululemon generated 11.1 billion dollars in total revenue with Americas contributing 7.85 billion dollars or 70.68 percent [1]",
+  "Americas comparable sales fell 3 percent due to temporary cyclical macro pressure rather than structural brand degradation [2]",
+  "China Mainland surged 20 percent to 1.75 billion dollars proving high growth international expansion easily offsets US temporary weakness [3]",
+ ],
+ "links": [
+  "[1] Lululemon FY2025 Form 10-K (Segment Revenue and Percentages): https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf",
+  "[2] Lululemon FY2025 Form 10-K (Americas Comparable Sales): https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf",
+  "[3] Provided Valuation Model (China Mainland Growth & Revenue Driver): LULUMODEL18.xlsx",
+ ]},
+6: {
+ "title": "Business Model Unit Economics and Competitive Moats",
+ "desc": "This slide analyzes Lululemon's unit economics and competitive moats that protect its long-term market leadership",
+ "bullets": [
+  "Lululemon sustains a 56.6 percent gross margin providing a massive competitive moat against retail price competition [1]",
+  "E-commerce unit economics remain elite with direct-to-consumer EBIT margins hitting 23.6 percent without retail occupancy drag [2]",
+  "Company-operated stores generate 1,426 dollars per square foot and an 18.6 percent EBIT margin establishing high capital efficiency [3]",
+ ],
+ "links": [
+  "[1] Provided Valuation Model (Gross Margin): LULUMODEL18_6.xlsx",
+  "[2] Provided Valuation Model (E-commerce EBIT Margin Driver): LULUMODEL18_6.xlsx",
+  "[3] Provided Valuation Model (Store EBIT Margin & SPSF): LULUMODEL18_6.xlsx",
+ ]},
+7: {
+ "title": "Industry Overview - Trends and Structure",
+ "desc": "This slide explores the ongoing athleisure industry trends including market fragmentation and the barriers to entry",
+ "bullets": [
+  "I argue the global athleisure market remains highly fragmented meaning most players lack a durable competitive advantage [1]",
+  "The premium segment maintains high barriers to entry protecting global champions from temporary cyclical noise [2]",
+  "Lululemon mathematically proves its moat by generating a 30.25 percent ROE far outpacing the 6.81 percent industry median [3]",
+ ],
+ "links": [
+  "[1] Market.us Media (Athleisure Market Fragmentation): https://media.market.us/athleisure-industry-statistics/",
+  "[2] Fortune Business Insights (Premium Athleisure Trends): https://www.fortunebusinessinsights.com/athleisure-market-110642",
+  "[3] FinanceCharts (Lululemon ROE & Retail Median): https://www.financecharts.com/stocks/LULU/growth/roe",
+ ]},
+8: {
+ "title": "Industry Overview - Barriers to Entry and Profitability",
+ "desc": "This slide dissects capital efficiency metrics comparing Lululemon's gross margin directly against legacy apparel competitors",
+ "bullets": [
+  "Lululemon commands a 56.6 percent gross margin far exceeding traditional athletic apparel peers like Nike and Under Armour [1]",
+  "Nike struggles to maintain a 43 percent margin while Under Armour hovers around 46 percent reflecting their wholesale dependence [2]",
+  "Lululemon's direct-to-consumer scale prevents this structural margin compression and forms an impenetrable economic moat against industry price wars [3]",
+ ],
+ "links": [
+  "[1] Provided Valuation Model (Gross Margin Assumptions): LULUMODEL18.xlsx",
+  "[2] Investing.com (Nike & Under Armour Historical Gross Margins): https://www.investing.com/pro/NYSE:NKE/explorer/gp_margin",
+  "[3] ProAnalyst LULU Market Report (Competitor Margins & DTC Moat): https://lulu.proanalyst.ai/business",
+ ]},
+9: {
+ "title": "Investment Thesis I",
+ "desc": "This slide outlines the core contrarian investment thesis utilizing numerical evidence from the LULUMODEL18.xlsx file",
+ "bullets": [
+  "The 2026 price drop exceeding 50% has left Lululemon critically undervalued despite durable cash flows [1]",
+  "Its premium Direct-to-Consumer revenue mix protects a massive 54.9% adjusted gross margin, mathematically justifying my intrinsic valuation thesis [2]",
+  "Furthermore, even with Americas growth stagnating, sheer cash flow generation creates a robust intrinsic valuation buffer, where a conservative 2.25% terminal growth rate still yields over 30% upside to our $133.64 target price [3]",
+ ],
+ "links": [
+  "[1] https://everythingmoney.com/blog/lululemon-is-collapsing-burry-s-biggest-bet-4334",
+  "[2] https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
+  "[3] LULUMODEL18.xlsx, DCF Terminal Value & Valuation Summary Schedule",
+ ]},
+10: {
+ "title": "Investment Thesis II  Partial Margin Recovery & Brand Loyalty Floor",
+ "desc": "This slide details how partial margin recovery supported by core brand loyalty still drives a highly compelling valuation",
+ "bullets": [
+  "Historical pandemic-era peak EBIT margins reached 23.7% in FY24 showing prior peak earnings power [1]",
+  "Our valuation assumes a floor built on resilient baseline brand loyalty, proving Lululemon does not need to remain the hottest viral trend 100% of the time to sustain a 13.2% trough margin [2]",
+  "A modest partial recovery to just 15.5% EBIT margin by FY30 still yields $133.64 per share [3]",
+  "This proves returning to peak COVID profitability is completely unnecessary to unlock substantial market upside [4]",
+ ],
+ "links": [
+  "[1] LULUMODEL18.xlsx / SEC EDGAR Form 10-K (FY24 Peak Margins)",
+  "[2] LULUMODEL18.xlsx, Clean Run-Rate EBIT Margin & Brand Royalty Assumptions",
+  "[3] LULUMODEL18.xlsx, Base Case DCF Valuation Summary",
+  "[4] LULUMODEL18.xlsx, Discounted Cash Flow Valuation Summary",
+ ]},
+11: {
+ "title": "Investment Thesis III: Geographic Growth Divergence",
+ "desc": "This slide examines how Lululemon's top-line projections rely disproportionately on Chinese market expansion to conceal domestic North American stagnation.",
+ "bullets": [
+  "The revenue build reveals Americas facing near-term contraction with -4.0% comps in FY26 flatlining at a terminal 2.0% growth rate by FY30 [1]",
+  "To offset this domestic anchor, the model relies entirely on disproportionate FY26-FY30 Chinese footprint expansion, averaging 16 new stores annually versus just 6 domestically, and sustained double-digit (10.2% average) comp growth to overcome clear Americas expansion drawbacks [2]",
+  "Consequently, if the Chinese consumer softens, this model's core top-line projections will not be optimal enough to meet our target [3]",
+ ],
+ "links": [
+  "[1] LULUMODEL18.xlsx, Americas FY26-FY30 Comparable Sales Growth Assumptions",
+  "[2] LULUMODEL18.xlsx, FY26 Store Openings & Mainland China Revenue Build",
+  "[3] LULUMODEL18.xlsx, Revenue Drivers Schedule",
+ ]},
+12: {
+ "title": "Risk & Mitigants",
+ "desc": "This slide evaluates core downside risks and demonstrates how share repurchases compound EPS to drive share price recovery",
+ "bullets": [
+  "China deceleration risks a $56.00 bear floor, but $45.64 cumulative cash per share recovers 45% of entry price [1]",
+  "Slashed CapEx saves $360M annually by relying on online e-commerce's 23.6% EBIT margin plus $101.5M inventory releases [2]",
+  "Deploying $500M annually into buybacks retires 18.7 million shares, compounding EPS to $13.36 to support our target price of $133.64 [3]",
+ ],
+ "links": [
+  "[1] LULUMODEL18.xlsx, Bear Case DCF Valuation Summary / https://www.barrons.com/articles/lululemon-stock-earnings-guidance-a7a7c5c0",
+  "[2] LULUMODEL18.xlsx, CapEx & E-Commerce Channel EBIT Assumptions / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
+  "[3] LULUMODEL18.xlsx, Share Repurchase & EPS Accretion Schedule / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
+ ]},
+13: {
+ "title": "Timeline of Recovery",
+ "desc": None,
+ "bullets": [
+  "2026 (Q3 FY2026 Trough)",
+  "Q3 FY2026 revenue laps guidance trough while China Double 11 sales confirm holiday store traffic floor stabilization across key markets [1]",
+  "2027 (FY2026 Year-End)",
+  "First full-year reset absorbs steep prior declines while $134.5M tariff refunds and targeted SG&A cost actions protect earnings per share [2]",
+  "2027 (FY2027 Margin Inflection)",
+  "Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while 75% UFCF buybacks compound EPS to boost sentiment [3]",
+  "2028 (FY2027-FY2028 Multiple Re-Rating)",
+  "Accelerating international store scaling (+12% China comps) offsets Americas softness (-4%), driving overall revenue recovery and valuation re-rating toward $133.64 [4]",
+ ],
+ "links": [
+  "[1] LULUMODEL18.xlsx, Scenarios & Revenue Drivers / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
+  "[2] LULUMODEL18.xlsx, NOPAT Bridge & Scenarios / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
+  "[3] LULUMODEL18.xlsx, Scenarios & Unlevered Free Cash Flow Schedule / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
+  "[4] LULUMODEL18.xlsx, Revenue Drivers & DCF Valuation Summary / https://stockanalysis.com/stocks/lulu/forecast/",
+ ]},
+}
+
+
+def _norm(s: str) -> str:
+    for d in ("\u2013", "\u2014"):
+        s = s.replace(d, "-")
+    return " ".join(s.split())
+
+
+def main() -> int:
+    prs = Presentation(DECK)
+    missing = 0
+    for deck_n, exp in EXPECTED.items():
+        slide = prs.slides[deck_n - 1]
+        full = _norm(" \n ".join(
+            sh.text_frame.text for sh in slide.shapes if sh.has_text_frame
+        ))
+        frags = []
+        if exp.get("title"):
+            frags.append(("title", exp["title"]))
+        if exp.get("desc"):
+            frags.append(("desc", exp["desc"]))
+        frags += [("bullet", b) for b in exp["bullets"]]
+        frags += [("link", l) for l in exp["links"]]
+        for kind, frag in frags:
+            if _norm(frag) not in full:
+                missing += 1
+                print(f"SLIDE {deck_n} MISSING {kind}: {frag}")
+    if missing:
+        print(f"\nFAIL: {missing} fragment(s) missing from slides 2-13.")
+        return 1
+    print("PASS: slides 2-13 contain all canonical copy verbatim.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
