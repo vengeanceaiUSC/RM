@@ -1235,19 +1235,38 @@ add_para(
     7.5, INK, italic=True, first=True, space_after=0,
 )
 
-tb, tf = textbox(s, Inches(0.5), Inches(4.0), Inches(12.35), Inches(2.35))
-add_para(tf, "Methodology & read-through", 12, CARD, bold=True, first=True, space_after=4)
-_ebitda_disc = _lulu_t.get("ebitda_discount_vs_median_pct")
+tb, tf = textbox(s, Inches(0.5), Inches(3.95), Inches(12.35), Inches(2.55))
 _ebitda_med = _core.get("ev_ebitda", {}).get("median", 0)
+_rev_med = _core.get("ev_rev", {}).get("median", 0)
+_pe_med = _core.get("pe_fwd", {}).get("median", 0)
 _lulu_ebitda = _lulu_t.get("ev_ebitda", 0)
-for t in [
-    f"Point of the slide: LULU trades at a deep discount \u2014 {_lulu_ebitda:.1f}x EV/EBITDA @ ${_lulu_t.get('price', 100):.0f} vs {_ebitda_med:.1f}x core median (~{_ebitda_disc}% below peers on TTM EBITDA)",
-    "Implied price (right table) = core peer median \u00d7 LULU base \u2192 enterprise value; P/E is median \u00d7 FY26E EPS ($9.61) with no EV step",
-    "EV-to-equity bridge: add FY25 cash (~$1.8B), subtract ASC 842 store lease debt (~$1.8B), divide by 111M shares",
-    "We use those implied ranges to triangulate partial re-rating to $140 \u2014 not DCF terminal value or M&A premium",
-    "Core set: NKE, ADS, DECK, CROX, LEVI, KTB (+ LULU @ $100); EV/EBITDA 4.7x = PitchBook TTM tape (Sep-2026)",
+_exit_m = DCF_BASE.get("exit_multiple", 7.36)
+_tgt_px = 140
+for title, body in [
+    (
+        "Peer benchmark methodology",
+        "Core peer set (NKE, ADS, DECK, CROX, LEVI, KTB) evaluates relative valuation using PitchBook data "
+        "(04-Sep-2026). Implied equity = peer median \u00d7 LULU base \u2192 EV, then + cash \u2212 ASC 842 lease debt \u00f7 shares.",
+    ),
+    (
+        "Multiples confirm severe undervaluation",
+        f"LULU trades at {_lulu_t.get('ev_rev', 0):.2f}x EV/Revenue, {_lulu_ebitda:.1f}x EV/EBITDA (PitchBook TTM), and "
+        f"{_lulu_t.get('pe_fwd', 0):.1f}x forward P/E vs core peer medians of {_rev_med:.2f}x EV/Revenue, "
+        f"{_ebitda_med:.1f}x EV/EBITDA, and {_pe_med:.1f}x P/E.",
+    ),
+    (
+        "DCF terminal valuation discount",
+        f"Base-case DCF uses Gordon growth g = {DCF_BASE.get('terminal_g', 0.0225)*100:.2f}%, implying {_exit_m:.1f}x FY30 "
+        f"EV/EBITDA exit multiple \u2014 well below the {_ebitda_med:.1f}x peer median (right table uses TTM EBITDA).",
+    ),
+    (
+        "Conservative target price re-rating",
+        f"Our {_d(_base_px)} base-case DCF and ${_tgt_px} 12-month target (+{_tgt_px - int(_base_px)} vs DCF, ~{round((_tgt_px/int(_base_px)-1)*100)}% "
+        f"above model fair value) reflect undervaluation with only a modest re-rating \u2014 not Nike-level multiples.",
+    ),
 ]:
-    add_para(tf, t, 10, INK, bullet=True, space_after=3)
+    add_para(tf, title, 11, CARD, bold=True, first=(title == "Peer benchmark methodology"), space_after=2)
+    add_para(tf, body, 10, INK, space_after=6)
 
 # =====================================================================
 # 21. PRECEDENT TRANSACTIONS
