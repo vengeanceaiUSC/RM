@@ -246,13 +246,13 @@ _narrative_slide(
         "The recent guidance cut triggered a massive cyclical panic pushing Lululemon down to roughly 100 dollars [1]",
         "Despite historically compounding double digit growth the market capitulated over a guidance cut of 5 to 7 percent [2]",
         "Lululemon still retains durable cash flows with clean run rate operating margins of 13.2 percent [3]",
-        "China Mainland modeled FY26-FY30 averages of 10.2% same-store comps and 16 annual gross store openings offset Americas averages of approximately flat comps and 6 annual gross store openings amid near-term North American stagnation [4]",
+        "Near-term Americas stagnation is modeled via FY26-FY30 US averages of approximately flat same-store comps and only 6 annual gross store openings, offset by China Mainland averages of 10.2% comps and 16 gross store openings [4]",
     ],
     [
         (1, f"TIKR LULU Stock Crashed 17%: {_TIKR}"),
         (2, f"Lululemon Q2 FY2026 Guidance Release: {_Q2_SUPP}"),
         (3, f"Provided Valuation Model: {_MODEL}"),
-        (4, f"{_MODEL}, Revenue Drivers Schedule (China comps & store openings)"),
+        (4, f"{_MODEL}, Revenue Drivers Schedule (Americas & China comps & store openings)"),
     ],
 )
 
@@ -280,7 +280,7 @@ _narrative_slide(
         "Our base-case DCF yields an intrinsic fair value of $133.64 per share (+33.6% upside), supporting our 12-month target price of $140.00 as market multiples modestly re-rate [1]",
         "The first pillar is profitability because adjusting out the tariff refunds reveals LULU still maintains a highly resilient 13.2 percent clean run-rate operating margin [2]",
         "The second pillar is our mathematically sound 9.0 percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]",
-        "Finally, international expansion remains the crucial growth engine, as FY25 China segment revenue grew approximately 29% year-over-year versus flat Americas, while modeled FY26-FY30 five-year averages of 10.2% China comps versus approximately flat Americas comps and 16 versus 6 annual gross store openings offset near-term North American stagnation [4]",
+        "Finally, international expansion remains the crucial growth engine, as FY25 China segment revenue grew approximately 29% year-over-year versus flat Americas, while modeled FY26-FY30 US averages of approximately flat comps and 6 annual gross store openings underscore near-term Americas stagnation, offset by China averages of 10.2% comps and 16 gross store openings [4]",
     ],
     [
         (1, f"Provided Valuation Model (Base Case Implied Value): {_MODEL3}"),

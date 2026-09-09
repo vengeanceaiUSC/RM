@@ -3,12 +3,12 @@ This slide outlines why this investment opportunity exists and the historical fi
 The recent guidance cut triggered a massive cyclical panic pushing Lululemon down to roughly 100 dollars [1]
 Despite historically compounding double digit growth the market capitulated over a guidance cut of 5 to 7 percent [2]
 Lululemon still retains durable cash flows with clean run rate operating margins of 13.2 percent [3]
-China Mainland modeled FY26-FY30 averages of 10.2% same-store comps and 16 annual gross store openings offset Americas averages of approximately flat comps and 6 annual gross store openings amid near-term North American stagnation [4]
+Near-term Americas stagnation is modeled via FY26-FY30 US averages of approximately flat same-store comps and only 6 annual gross store openings, offset by China Mainland averages of 10.2% comps and 16 gross store openings [4]
 Links & Sources:
 [1] TIKR LULU Stock Crashed 17%: https://www.tikr.com/blog/lululemon-stock-crashed-17-on-friday-the-guidance-cut-was-the-real-story
 [2] Lululemon Q2 FY2026 Guidance Release: https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf
 [3] Provided Valuation Model: LULUMODEL18.xlsx
-[4] LULUMODEL18.xlsx, Revenue Drivers Schedule (China comps & store openings)
+[4] LULUMODEL18.xlsx, Revenue Drivers Schedule (Americas & China comps & store openings)
 ________________-
 
 Slide 3: Market Narrative and Analyst Sentiment Surrounding the Stock
@@ -24,7 +24,7 @@ This slide breaks down our $133.64 intrinsic DCF fair value, our $140 twelve-mon
 Our base-case DCF yields an intrinsic fair value of $133.64 per share (+33.6% upside), supporting our 12-month target price of $140.00 as market multiples modestly re-rate [1]
 The first pillar is profitability because adjusting out the tariff refunds reveals LULU still maintains a highly resilient 13.2 percent clean run-rate operating margin [2]
 The second pillar is our mathematically sound 9.0 percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]
-Finally, international expansion remains the crucial growth engine, as FY25 China segment revenue grew approximately 29% year-over-year versus flat Americas, while modeled FY26-FY30 five-year averages of 10.2% China comps versus approximately flat Americas comps and 16 versus 6 annual gross store openings offset near-term North American stagnation [4]
+Finally, international expansion remains the crucial growth engine, as FY25 China segment revenue grew approximately 29% year-over-year versus flat Americas, while modeled FY26-FY30 US averages of approximately flat comps and 6 annual gross store openings underscore near-term Americas stagnation, offset by China averages of 10.2% comps and 16 gross store openings [4]
 Links & Sources: [1] Provided Valuation Model (Base Case Implied Value): LULUMODEL18_3.xlsx [2] Lululemon Q2 FY2026 Earnings Release (13.2% Margin Calc): https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf [3] Provided Valuation Model (WACC & Revenue Drivers): LULUMODEL18_3.xlsx [4] Lululemon Q2 FY2026 Earnings Release (International Growth): https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf
 
 
