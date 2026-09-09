@@ -103,12 +103,12 @@ Slide 11 Risk & Mitigants
 This slide evaluates core downside risks and demonstrates how share repurchases compound EPS to drive share price recovery
 China deceleration risks a $56.00 bear floor, but $45.64 cumulative cash per share recovers 45% of entry price [1]
 Slashed CapEx saves $360M annually by relying on online e-commerce's 23.6% EBIT margin plus $101.5M inventory releases [2]
-Deploying $500M annually into buybacks retires 18.7 million shares, compounding EPS to $13.36 to support our target price of $133.64. 
+Deploying $750M annually into buybacks retires 32.9 million shares, compounding EPS to $14.57 to support our target price of $133.64. 
 [1] LULUMODEL18.xlsx, Bear Case DCF Valuation Summary / https://www.barrons.com/articles/lululemon-stock-earnings-guidance-a7a7c5c0 [2] LULUMODEL18.xlsx, CapEx & E-Commerce Channel EBIT Assumptions / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733 [3] LULUMODEL18.xlsx, Share Repurchase & EPS Accretion Schedule / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733
 
 Slide 12: Timeline of Recovery
 2026 (Q3 FY2026 Trough): Q3 FY2026 revenue laps guidance trough while China Double 11 sales confirm holiday store traffic floor stabilization across key markets [1]
 2027 (FY2026 Year-End): First full-year reset absorbs steep prior declines while $134.5M tariff refunds and targeted SG&A cost actions protect earnings per share [2]
-2027 (FY2027 Margin Inflection): Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while 75% UFCF buybacks compound EPS to boost sentiment [3]
+2027 (FY2027 Margin Inflection): Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while $750M annual buybacks compound EPS to $10.09 to boost sentiment [3]
 2028 (FY2027–FY2028 Multiple Re-Rating): Accelerating international store scaling (+12% China comps) offsets Americas softness (-4%), driving overall revenue recovery and valuation re-rating toward $133.64 [4]
 [1] LULUMODEL18.xlsx, Scenarios & Revenue Drivers / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733 [2] LULUMODEL18.xlsx, NOPAT Bridge & Scenarios / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733 [3] LULUMODEL18.xlsx, Scenarios & Unlevered Free Cash Flow Schedule / https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733 [4] LULUMODEL18.xlsx, Revenue Drivers & DCF Valuation Summary / https://stockanalysis.com/stocks/lulu/forecast/

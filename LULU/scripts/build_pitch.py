@@ -410,7 +410,7 @@ _narrative_slide(
     [
         "China deceleration risks a $56.00 bear floor, but $45.64 cumulative cash per share recovers 45% of entry price [1]",
         "Slashed CapEx saves $360M annually by relying on online e-commerce's 23.6% EBIT margin plus $101.5M inventory releases [2]",
-        "Deploying $500M annually into buybacks retires 18.7 million shares, compounding EPS to $13.36 to support our target price of $133.64 [3]",
+        "Deploying $750M annually into buybacks retires 32.9 million shares, compounding EPS to $14.57 to support our target price of $133.64 [3]",
     ],
     [
         (1, f"{_MODEL}, Bear Case DCF Valuation Summary / https://www.barrons.com/articles/lululemon-stock-earnings-guidance-a7a7c5c0"),
@@ -452,7 +452,7 @@ cats = [
     ),
     (
         "2027 (FY2027 Margin Inflection)",
-        "Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while 75% UFCF buybacks compound EPS to boost sentiment [3]",
+        "Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while $750M annual buybacks compound EPS to $10.09 to boost sentiment [3]",
     ),
     (
         "2028 (FY2027-FY2028 Multiple Re-Rating)",
@@ -760,7 +760,7 @@ _IS_SOURCES = [
     ("Operating income", "10-K IS, Operating income", f"{_scen_rng('ebit')} (EBIT yr 1-5)"),
     ("Operating margin %", "10-K IS, OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
     ("Net income", "10-K IS, Net income", f"{_scen_rng('net_income')} (pitch bridge NI)"),
-    ("Diluted EPS", "10-K IS, Diluted EPS", f"NI ÷ buyback-adjusted shares ($500M/yr; {_scen_rng('eps')})"),
+    ("Diluted EPS", "10-K IS, Diluted EPS", f"NI ÷ buyback-adjusted shares ($750M/yr; {_scen_rng('eps')})"),
 ]
 _IS_NOTES = [
     _row_note("10-K IS, Net revenue", f"{_scen_rng('revenue')}"),
@@ -768,7 +768,7 @@ _IS_NOTES = [
     _row_note("10-K IS, Operating income", f"{_scen_rng('ebit')}"),
     _row_note("10-K IS, OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
     _row_note("10-K IS, Net income", f"{_scen_rng('net_income')}"),
-    _row_note("10-K IS, Diluted EPS", f"NI ÷ diluted sh (500M/yr buybacks); {_scen_rng('eps')}"),
+    _row_note("10-K IS, Diluted EPS", f"NI ÷ diluted sh (750M/yr buybacks); {_scen_rng('eps')}"),
 ]
 
 _BS_SOURCES = [
@@ -793,7 +793,7 @@ _CF_SOURCES = [
     ("D&A (add-back)", "10-K CF, Depreciation & amortization", f"{_scen_rng('dna')} (D&A yr 1-5)"),
     ("Capital expenditures", "10-K CF, Capital expenditures", f"{_scen_rng('capex')} (Capex yr 1-5)"),
     ("Free cash flow", "10-K CF, CFO − capex", f"{_scen_rng('fcf')} (pitch bridge FCF/CFS)"),
-    ("Share repurchases", "10-K CF, Repurchases (financing)", f"{_scen_rng('buybacks')} (G21=$500M/yr fixed)"),
+    ("Share repurchases", "10-K CF, Repurchases (financing)", f"{_scen_rng('buybacks')} (G21=$750M/yr fixed)"),
 ]
 _CF_NOTES = [
     _row_note("10-K CF, CFO", f"{_scen_rng('cfo')}"),
@@ -823,7 +823,7 @@ pitch_financial_slide(
     bold_rows=(0, 2, 5),
     italic_note=(
         f"Forecast: {DCF_MODEL}, Scenarios col G. EPS = NI \u00f7 diluted shares after "
-        "$500M/yr repurchases (DCF $134 still uses 111.4M day-one basic shares)."
+        "$750M/yr repurchases (DCF $134 still uses 111.4M day-one basic shares)."
     ),
 )
 
@@ -846,7 +846,7 @@ pitch_financial_slide(
     source_rows=_BS_SOURCES,
     bold_rows=(2, 4, 5),
     italic_note=(
-        "BS forecast: cash roll-forward includes $500M/yr buybacks; equity scales with revenue "
+        "BS forecast: cash roll-forward includes $750M/yr buybacks; equity scales with revenue "
         "(buyback-driven equity reduction shown via CF / IS share count, not TE line)."
     ),
 )
@@ -869,7 +869,7 @@ pitch_financial_slide(
     source_rows=_CF_SOURCES,
     bold_rows=(3,),
     italic_note=(
-        "Buybacks: $500M/yr fixed (Scenarios col G). Cash roll-forward = prior cash + FCF \u2212 buybacks."
+        "Buybacks: $750M/yr fixed (Scenarios col G). Cash roll-forward = prior cash + FCF \u2212 buybacks."
     ),
 )
 

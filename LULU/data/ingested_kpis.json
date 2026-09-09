@@ -1,5 +1,5 @@
 {
-  "ingested_at": "2026-09-09T15:52:19.862823+00:00",
+  "ingested_at": "2026-09-09T20:26:56.186895+00:00",
   "sources": {
     "10k_fy2025": "https://www.sec.gov/Archives/edgar/data/1397187/000139718726000020/lulu-20260201.htm",
     "earnings_sep2026": "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733",
@@ -98,8 +98,8 @@
       "beta_5y": 0.86,
       "total_debt_b": 2.14,
       "de_book_pct": 0.44689999999999996,
-      "market_cap_b": 11.14,
-      "de_market": 0.19210053859964094
+      "market_cap_b": 11.42,
+      "de_market": 0.1873905429071804
     }
   }
 }

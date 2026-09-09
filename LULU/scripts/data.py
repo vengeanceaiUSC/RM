@@ -481,7 +481,7 @@ JUST = {
     "3s_olnc_pct": "Non-current lease liabilities 13.5% of revenue; long-term store lease commitments per 10-K.",
     "3s_ocl_pct": "OCL 5.5% = FY25 current liabilities minus AP, accrued, and current leases (residual ~594k); not the 45,954 'other' line alone.",
     "3s_oncl_pct": "Other non-current liabilities 0.5% of revenue; minor long-term accruals and provisions.",
-    "3s_buyback": "$500M annual repurchases; continued capital return at moderated pace vs FY24–25 peak buyback levels.",
+    "3s_buyback": "$750M annual repurchases; continued capital return at moderated pace vs FY24–25 peak buyback levels.",
     "3s_rep_price": "FY26 repurchase price $100 matches the current quote; path $100→$130 is a recovery assumption (FY25 10-K paid $168–$199).",
     # Revenue driver schedule (bottom-up)
     "drv_openings": "Store openings skew to China (+20 FY26) vs mature Americas (+8). Anchored to FY25 +44 net stores and 11% sq-ft growth.",
@@ -1004,7 +1004,7 @@ SOURCE_HINT = {
     "3s_olnc_pct": 'Ctrl+F "Non-current lease liabilities" → 1,499,717 ÷ "Net revenue" 11,102,600 = 13.5%',
     "3s_ocl_pct": 'Ctrl+F "Total current liabilities" 1,887,548 − "Accounts payable" 331,421 − "Accrued liabilities and other" 662,982 − "Current lease liabilities" 298,724 ≈ 594,421 (5.4%)',
     "3s_oncl_pct": 'Ctrl+F "Other non-current liabilities" → 55,360 ÷ "Net revenue" 11,102,600 = 0.5%',
-    "3s_buyback": 'Ctrl+F "Repurchase of common stock" → ( 1,178,349 ) ($000) FY25; model (500,000)/yr',
+    "3s_buyback": 'Ctrl+F "Repurchase of common stock" → ( 1,178,349 ) ($000) FY25; model (750,000)/yr',
     "3s_rep_price": 'Ctrl+F "closed at $100.61" → Last Sale (NASDAQ). Model repurchase price starts at $100.',
     # Revenue drivers
     "drv_openings": 'Ctrl+F "Total company-operated stores" → 811 (FY25). FY25 added 44 net stores; model skews openings to China.',
