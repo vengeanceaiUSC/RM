@@ -6,7 +6,8 @@ import data as D
 FY25_COL = "E"
 FCOLS = ["F", "G", "H", "I", "J"]
 PREVF = {"F": FY25_COL, "G": "F", "H": "G", "I": "H", "J": "I"}
-FCF_ALLOC = 0.75
+BUYBACK_FIXED_K = 500_000  # $500M/yr — matches 3-statement / Scenarios col G
+FCF_ALLOC_SENSITIVITY = 0.75  # upside scenario only (bull CFF tab)
 COE_GROWTH = 0.105
 
 
@@ -49,9 +50,9 @@ def build_repurchase_schedule(ws, r, DR, NP_R, VR):
           S.BLACK, italic=True, size=8, align=S.left_indent)
     r[0] += 2
 
-    rp_row("fcf_pct", "FCF allocated to buybacks",
-           FCF_ALLOC,
-           lambda c: f"=${FY25_COL}${RR['fcf_pct']}", fmt=PCT, red=True)
+    rp_row("buy_budget", "Annual repurchase budget ($000) — base case",
+           BUYBACK_FIXED_K,
+           lambda c: f"=${FY25_COL}${RR['buy_budget']}", fmt=NUM, red=True)
     rp_row("coe", "Cost of equity — share-price growth rate",
            COE_GROWTH,
            lambda c: f"=${FY25_COL}${RR['coe']}", fmt=PCT, red=True)
@@ -60,9 +61,12 @@ def build_repurchase_schedule(ws, r, DR, NP_R, VR):
     rp_row("ufcf", "Unlevered free cash flow (from DCF above)",
            None,
            lambda c: f"={c}{DR['ufcf']}")
-    rp_row("buy_cash", "Available repurchase cash (= UFCF × allocation)",
+    rp_row("buy_cash", "Repurchase cash deployed (= fixed budget)",
            0,
-           lambda c: f"={c}{RR['ufcf']}*{c}{RR['fcf_pct']}")
+           lambda c: f"={c}{RR['buy_budget']}")
+    rp_row("payout_pct", "Repurchase as % of UFCF (derived)",
+           None,
+           lambda c: f"={c}{RR['buy_cash']}/{c}{RR['ufcf']}", fmt=PCT)
     r[0] += 1
 
     rp_row("px", "Projected share price ($)",

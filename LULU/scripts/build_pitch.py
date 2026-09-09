@@ -358,8 +358,8 @@ _narrative_slide(
     [
         ("China Downside", "Bear case **$56/sh** floor; **$45.64** cumulative cash/sh recovers **45%** of entry [1]"),
         ("CapEx Flex", "Reduced CapEx saves **$360M/yr**; e-commerce **23.6%** EBIT + **$101.5M** inventory release [2]"),
-        ("Buyback Engine", "**75%** UFCF to repurchases retires **28M** shares — EPS to **$14.93** [3]"),
-        ("Price Recovery", "EPS accretion supports re-rating toward **$133.64** base target [3]"),
+        ("Buyback Engine", "**$500M/yr** (~**46–55%** of FCF) retires **18.7M** shares by FY30 — accretive EPS **$13.36** [3]"),
+        ("Price Recovery", "EPS accretion supports sentiment; **$133.64** base target is DCF on day-one shares [3]"),
     ],
     [
         (1, f"{_MODEL} — bear-case DCF summary"),
@@ -401,7 +401,7 @@ cats = [
     ),
     (
         "FY27 Inflection",
-        "Operating margin to **13.8%** (+60 bps); **75%** UFCF buybacks compound EPS [3]",
+        "Operating margin to **13.8%** (+60 bps); **$500M/yr** buybacks compound EPS to **$13.36** by FY30 [3]",
     ),
     (
         "FY28 Re-Rating",
