@@ -1450,22 +1450,14 @@ for title, body in [
     add_para(tf, title, 10.5, CARD, bold=True, first=(title == "Private precedent framework"), space_after=2)
     add_para(tf, body, 9.5, INK, space_after=5)
 
-box = rect(s, Inches(8.5), Inches(3.55), Inches(4.35), Inches(2.35), fill=LGREY)
+box = rect(s, Inches(8.5), Inches(3.55), Inches(4.35), Inches(1.35), fill=LGREY)
 btf = box.text_frame
 btf.word_wrap = True
-add_para(btf, "Valuation stack", 11, CARD, bold=True, first=True, space_after=4)
+add_para(btf, "Valuation anchors", 11, CARD, bold=True, first=True, space_after=4)
 add_para(btf, f"DCF base: {_d(_base_px)}  |  Target: $140", 12, NAVY, bold=True, space_after=3)
-_cs = _core.get("ev_ebitda", {})
-_ebitda_imp = next((r for r in _ca.get("implied", []) if r.get("metric") == "EV / EBITDA"), {})
-_ebitda_px = int(_ebitda_imp.get("implied_px_median", _base_px))
 add_para(
     btf,
-    f"Comps median EV/EBITDA {_cs.get('median', 0):.1f}x implies ~${_ebitda_px}/sh",
-    10, INK, bold=True, space_after=2,
-)
-add_para(
-    btf,
-    "Reasonably assumed ceiling from peer EV/EBITDA re-rating. Not our price target.",
+    "Private precedents inform strategic context only; public comps on the prior slide.",
     9, INK, italic=True, space_after=0,
 )
 
