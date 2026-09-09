@@ -1227,6 +1227,13 @@ stmt_table(
     s, imp_rows, imp_hdr, col0w=1.35, top=1.32, height=2.55, left=7.95, width=5.05,
     font_size=8, header_font_size=8, bold_rows=(),
 )
+tb, tf = textbox(s, Inches(7.95), Inches(3.92), Inches(5.05), Inches(0.55))
+add_para(
+    tf,
+    "Implied EV = peer median \u00d7 LULU base (cols 2\u20133); P/E = median \u00d7 EPS (no EV). "
+    "EV + cash \u2212 lease debt \u00f7 shares = equity/sh.",
+    7.5, INK, italic=True, first=True, space_after=0,
+)
 
 tb, tf = textbox(s, Inches(0.5), Inches(4.0), Inches(12.35), Inches(2.35))
 add_para(tf, "Methodology & read-through", 12, CARD, bold=True, first=True, space_after=4)
@@ -1235,10 +1242,10 @@ _ebitda_med = _core.get("ev_ebitda", {}).get("median", 0)
 _lulu_ebitda = _lulu_t.get("ev_ebitda", 0)
 for t in [
     f"Point of the slide: LULU trades at a deep discount \u2014 {_lulu_ebitda:.1f}x EV/EBITDA @ ${_lulu_t.get('price', 100):.0f} vs {_ebitda_med:.1f}x core median (~{_ebitda_disc}% below peers on TTM EBITDA)",
-    "We apply peer-medians to LULU bases for implied price ranges (right table) \u2014 triangulating partial re-rating to $140, not DCF terminal value or M&A premium",
-    "Core set: NKE, ADS, DECK, CROX, LEVI, KTB (+ LULU benchmark row) \u2014 PitchBook EV / TTM EBITDA (04-Sep-2026); LULU multiples @ model price $100 / FY26E EPS $9.61",
-    "EV/Revenue on FY2026E; EV/EBITDA 4.7x = PitchBook TTM tape (Sep-2026); EV/EBIT & P/E @ model price $100 / FY26E EPS $9.61",
-    f"Also cheap on P/E: {_lulu_t.get('pe_fwd', 0):.1f}x vs {_core.get('pe_fwd', {}).get('median', 0):.1f}x median; DCF base {_d(_base_px)} uses Gordon growth TV (~7.4x FY30 identity, not this ~9x peer tape)",
+    "Implied price (right table) = core peer median \u00d7 LULU base \u2192 enterprise value; P/E is median \u00d7 FY26E EPS ($9.61) with no EV step",
+    "EV-to-equity bridge: add FY25 cash (~$1.8B), subtract ASC 842 store lease debt (~$1.8B), divide by 111M shares",
+    "We use those implied ranges to triangulate partial re-rating to $140 \u2014 not DCF terminal value or M&A premium",
+    "Core set: NKE, ADS, DECK, CROX, LEVI, KTB (+ LULU @ $100); EV/EBITDA 4.7x = PitchBook TTM tape (Sep-2026)",
 ]:
     add_para(tf, t, 10, INK, bullet=True, space_after=3)
 
