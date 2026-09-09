@@ -210,7 +210,7 @@ PEER_FINANCIALS = {
         "revenue": IS["revenue"]["FY2025"],
         "ebit": IS["operating_income"]["FY2025"],
         "ebitda": IS["operating_income"]["FY2025"] + CF["d_and_a"]["FY2025"],
-        "pe_fwd": 8.3,
+        "pe_fwd": None,  # computed live @ MKT price / FY26E EPS in pitch_values.py
         "core": True,
     },
     "Nike (NKE)": {

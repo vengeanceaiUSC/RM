@@ -1178,7 +1178,7 @@ add_para(tf, "COMPARABLE COMPANIES \u2014 TRADING MULTIPLES", 10, CARD, bold=Tru
 peer_hdr = ["Company", "EV/Rev", "EV/EBITDA", "EV/EBIT", "P/E"]
 peer_rows = []
 for p in _ca.get("peers", []):
-    if not p.get("core"):
+    if not p.get("core") or p["name"] == "lululemon (LULU)":
         continue
     short = p["name"].split("(")[0].strip()
     peer_rows.append([
@@ -1230,12 +1230,15 @@ stmt_table(
 
 tb, tf = textbox(s, Inches(0.5), Inches(4.0), Inches(12.35), Inches(2.35))
 add_para(tf, "Methodology & read-through", 12, CARD, bold=True, first=True, space_after=4)
+_ebitda_disc = _lulu_t.get("ebitda_discount_vs_median_pct")
+_ebitda_med = _core.get("ev_ebitda", {}).get("median", 0)
+_lulu_ebitda = _lulu_t.get("ev_ebitda", 0)
 for t in [
-    "Core set: LULU, NKE, ADS, DECK, CROX, LEVI, KTB \u2014 PitchBook daily EV / TTM EBITDA (04-Sep-2026); revenue & EBIT from latest company filings",
-    "EV/Revenue on FY2026E revenue; EV/EBITDA & EV/EBIT on FY2025 (TTM anchor); P/E on FY2026E EPS ($9.61 mid-guide) \u2014 then EV \u2192 equity via cash & ASC 842 leases",
-    f"LULU trades at {_lulu_t.get('ev_rev', 0):.2f}x EV/Revenue and {_lulu_t.get('pe_fwd', 0):.1f}x forward P/E vs core medians {_core.get('ev_rev', {}).get('median', 0):.2f}x / {_core.get('pe_fwd', {}).get('median', 0):.1f}x",
-    "DCF terminal value uses Gordon growth (g = 2.25%) \u2014 the ~7.4x exit multiple is FY30 EBITDA \u00d7 identity check only, not the peer median (~9x EV/EBITDA)",
-    f"Base-case DCF {_d(_base_px)} sits between comps-implied ranges; target $140 = partial re-rating toward peer medians, not full NKE multiple",
+    f"Point of the slide: LULU trades at a deep discount \u2014 {_lulu_ebitda:.1f}x EV/EBITDA @ ${_lulu_t.get('price', 100):.0f} vs {_ebitda_med:.1f}x core median (~{_ebitda_disc}% below peers on TTM EBITDA)",
+    "We apply peer-medians to LULU bases for implied price ranges (right table) \u2014 triangulating partial re-rating to $140, not DCF terminal value or M&A premium",
+    "Core set: NKE, ADS, DECK, CROX, LEVI, KTB (+ LULU benchmark row) \u2014 PitchBook EV / TTM EBITDA (04-Sep-2026); LULU multiples @ model price $100 / FY26E EPS $9.61",
+    "EV/Revenue on FY2026E; EV/EBITDA & EV/EBIT on FY2025 EBITDA/EBIT \u2014 then EV \u2192 equity via cash & ASC 842 leases",
+    f"Also cheap on P/E: {_lulu_t.get('pe_fwd', 0):.1f}x vs {_core.get('pe_fwd', {}).get('median', 0):.1f}x median; DCF base {_d(_base_px)} uses Gordon growth TV (~7.4x FY30 identity, not this ~9x peer tape)",
 ]:
     add_para(tf, t, 10, INK, bullet=True, space_after=3)
 

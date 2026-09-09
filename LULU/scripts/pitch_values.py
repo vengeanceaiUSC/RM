@@ -212,11 +212,24 @@ def _extract_comps_analysis(comps, wacc_build, income_base):
     debt_m = wacc_build["total_debt_m"]
     shares_m = D.MKT["shares_out"] / 1000
     mkt_ev_m = (D.MKT["price"] * D.MKT["shares_out"]) / 1000 - cash_m + debt_m
+    ebitda25_m = ebitda25_k / 1000
+    ebit25_m = ebit25_k / 1000
+    rev26_m = rev26_k / 1000
+
+    # LULU row: all multiples @ model price ($100) — not stale consensus P/E prints
+    for p in peers:
+        if p["name"] == "lululemon (LULU)":
+            p["ev_rev"] = round(mkt_ev_m / rev26_m, 2)
+            p["ev_ebitda"] = round(mkt_ev_m / ebitda25_m, 1)
+            p["ev_ebit"] = round(mkt_ev_m / ebit25_m, 1)
+            p["pe_fwd"] = round(D.MKT["price"] / eps26, 1)
+            p["ev_m"] = round(mkt_ev_m)
+            break
 
     lulu_bases = [
-        ("ev_rev", "EV / Revenue", rev26_k / 1000, "FY2026E revenue ($M)"),
-        ("ev_ebitda", "EV / EBITDA", ebitda25_k / 1000, "FY2025 EBITDA ($M, TTM anchor)"),
-        ("ev_ebit", "EV / EBIT", ebit25_k / 1000, "FY2025 EBIT ($M)"),
+        ("ev_rev", "EV / Revenue", rev26_m, "FY2026E revenue ($M)"),
+        ("ev_ebitda", "EV / EBITDA", ebitda25_m, "FY2025 EBITDA ($M, TTM anchor)"),
+        ("ev_ebit", "EV / EBIT", ebit25_m, "FY2025 EBIT ($M)"),
         ("pe_fwd", "P / E", eps26, "FY2026E EPS ($)"),
     ]
 
@@ -275,17 +288,23 @@ def _extract_comps_analysis(comps, wacc_build, income_base):
             }
 
     lulu_row = next((p for p in peers if p["name"] == "lululemon (LULU)"), None)
+    lulu_ev_ebitda = lulu_row["ev_ebitda"] if lulu_row else None
+    med_ev_ebitda = core_stats.get("ev_ebitda", {}).get("median")
+    ebitda_discount_pct = None
+    if lulu_ev_ebitda and med_ev_ebitda:
+        ebitda_discount_pct = round((1 - lulu_ev_ebitda / med_ev_ebitda) * 100)
     return {
         "peers": peers,
         "core_stats": core_stats,
         "implied": implied,
         "lulu_trading": {
             "price": D.MKT["price"],
-            "ev_rev": round(mkt_ev_m / (rev26_k / 1000), 2),
-            "ev_ebitda": lulu_row["ev_ebitda"] if lulu_row else None,
-            "ev_ebit": round(mkt_ev_m / (ebit25_k / 1000), 1),
-            "pe_fwd": round(D.MKT["price"] / eps26, 1),
+            "ev_rev": lulu_row["ev_rev"] if lulu_row else round(mkt_ev_m / rev26_m, 2),
+            "ev_ebitda": lulu_ev_ebitda,
+            "ev_ebit": lulu_row["ev_ebit"] if lulu_row else round(mkt_ev_m / ebit25_m, 1),
+            "pe_fwd": lulu_row["pe_fwd"] if lulu_row else round(D.MKT["price"] / eps26, 1),
             "ev_m": round(mkt_ev_m),
+            "ebitda_discount_vs_median_pct": ebitda_discount_pct,
         },
         "source": "PitchBook Comps Set 04-Sep-2026 (EV, TTM EBITDA); revenue/EBIT from company filings; forward P/E from consensus",
     }
