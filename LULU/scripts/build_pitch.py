@@ -411,12 +411,12 @@ _narrative_slide(
     "This slide evaluates core downside risks and demonstrates how share repurchases compound EPS to drive share price recovery",
     [
         "China deceleration risks a $56.00 bear floor, but $45.64 cumulative cash per share recovers 45% of entry price [1]",
-        "Slashed CapEx saves $360M annually by relying on online e-commerce's 23.6% EBIT margin plus $101.5M inventory releases [2]",
+        "Our model fades CapEx from management's 7% FY26 guide to a 5.5% revenue blend, freeing roughly $160M annually versus the guided run-rate, while approximately $116M of FY26 inventory normalization and a 23.6% e-commerce EBIT margin support free cash flow [2]",
         "Deploying $750M annually into buybacks retires 32.9 million shares, compounding EPS to $14.57, more than enough to recover our $133.64 DCF-implied share price [3]",
     ],
     [
         (1, f"{_MODEL}, Bear Case DCF Valuation Summary / https://www.barrons.com/articles/lululemon-stock-earnings-guidance-a7a7c5c0"),
-        (2, f"{_MODEL}, CapEx & E-Commerce Channel EBIT Assumptions / {_LULU_PR}"),
+        (2, f"{_MODEL}, CapEx Fade & NWC Schedule / NOPAT Bridge (E-Commerce EBIT Margin) / {_LULU_PR}"),
         (3, f"{_MODEL}, Share Repurchase & EPS Accretion Schedule / {_LULU_PR}"),
     ],
 )
