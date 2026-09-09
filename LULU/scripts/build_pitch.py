@@ -156,31 +156,51 @@ stmt_table = deck.stmt_table
 # SLIDES 1–12 (narrative — user-specified copy before Timeline / financials)
 # =====================================================================
 
-# Slide 1 — Table of Contents
-_toc_links = [
-    (1, f"TIKR LULU Stock Crashed 17%: {_TIKR}"),
-    (2, f"Lululemon Q2 2026 Financial Supplement: {_Q2_SUPP}"),
-    (3, f"Provided Valuation Spreadsheet: {_MODEL}"),
+# Slide 1 — Table of Contents (full deck outline)
+_DECK_TOC = [
+    (1, "Table of Contents"),
+    (2, "Situation Overview and Current Investment Setup"),
+    (3, "Market Narrative and Analyst Sentiment Surrounding the Stock"),
+    (4, "Investment Thesis Summary and Target Price"),
+    (5, "Geographic Segments and Revenue Breakdown"),
+    (6, "Business Model Unit Economics and Competitive Moats"),
+    (7, "Industry Overview \u2014 Trends and Structure"),
+    (8, "Industry Overview \u2014 Barriers to Entry and Profitability"),
+    (9, "Investment Thesis I"),
+    (10, "Investment Thesis II: Partial Margin Recovery & Brand Loyalty Floor"),
+    (11, "Investment Thesis III: Geographic Growth Divergence"),
+    (12, "Risk & Mitigants"),
+    (13, "Timeline of Recovery"),
+    (14, "Financials | Income Statement"),
+    (15, "Financials | Balance Sheet"),
+    (16, "Financials | Cash Flow"),
+    (17, "Financials | Capital Structure & WACC"),
+    (18, "Valuation Summary (Football Field)"),
+    (19, "Sum of the Parts"),
+    (20, "DCF Valuation"),
+    (21, "Comps Analysis"),
+    (22, "Precedent Transactions"),
 ]
+_toc_top = _CONTENT_TOP
+_toc_bottom = _content_bottom(0)
+_toc_h = _toc_bottom - _toc_top
+_toc_split = (len(_DECK_TOC) + 1) // 2
 s = slide_base(
     "Table of Contents",
-    "This slide outlines the table of contents detailing the overarching financial roadmap for my Lululemon investment pitch",
+    "What you will be focusing on during this pitch",
     page=pg(),
     sources=" ",
 )
-tb, tf = textbox(s, Inches(0.5), Inches(1.28), Inches(12.35), Inches(_content_bottom(len(_toc_links)) - 1.28))
-add_para(
-    tf,
-    "First we will analyze the recent cyclical selloff to 100 dollars and why this price action demands a market re-evaluation "
-    "Next we dissect the NOPAT bridge and revenue drivers to expose durable cash flows hidden beneath headline noise "
-    "Then we evaluate our mathematically sound 9 percent WACC and DCF scenarios which justify my overweight thesis "
-    "Finally we review our football field valuation and comparable analysis implying a massive margin of safety for investors",
-    12,
-    INK,
-    first=True,
-    space_after=7,
-)
-_add_links_box(s, _toc_links)
+for col_i, entries in enumerate((_DECK_TOC[:_toc_split], _DECK_TOC[_toc_split:])):
+    tb, tf = textbox(
+        s,
+        Inches(0.5 + col_i * 6.25),
+        Inches(_toc_top),
+        Inches(6.05),
+        Inches(_toc_h),
+    )
+    for j, (num, title) in enumerate(entries):
+        add_para(tf, f"{num}. {title}", 10.5, INK, first=(j == 0), space_after=5)
 
 # Slide 2 — Situation Overview
 _narrative_slide(
@@ -232,9 +252,9 @@ _narrative_slide(
     ],
 )
 
-# Slide 5 — Geographic segments (no separate title in user copy)
+# Slide 5 — Geographic segments
 _narrative_slide(
-    " ",
+    "Geographic Segments and Revenue Breakdown",
     "This slide outlines Lululemon's geographic segments and revenue breakdown while detailing why China growth offsets temporary US declines",
     [
         "Lululemon generated 11.1 billion dollars in total revenue with Americas contributing 7.85 billion dollars or 70.68 percent [1]",
