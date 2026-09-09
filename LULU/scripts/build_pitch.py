@@ -410,7 +410,7 @@ _narrative_slide(
     [
         "China deceleration risks a $56.00 bear floor, but $45.64 cumulative cash per share recovers 45% of entry price [1]",
         "Slashed CapEx saves $360M annually by relying on online e-commerce's 23.6% EBIT margin plus $101.5M inventory releases [2]",
-        "Deploying $750M annually into buybacks retires 32.9 million shares, compounding EPS to $14.57 to support our target price of $133.64 [3]",
+        "Deploying $750M annually into buybacks retires 32.9 million shares, compounding EPS to $14.57, more than enough to recover our $133.64 DCF-implied share price [3]",
     ],
     [
         (1, f"{_MODEL}, Bear Case DCF Valuation Summary / https://www.barrons.com/articles/lululemon-stock-earnings-guidance-a7a7c5c0"),
