@@ -278,13 +278,13 @@ _narrative_slide(
     "This slide breaks down our $133.64 intrinsic DCF fair value, our $140 twelve-month target price, and the three core pillars supporting our overweight recommendation",
     [
         "Our base-case DCF yields an intrinsic fair value of $133.64 per share (+33.6% upside), supporting our 12-month target price of $140.00 as market multiples modestly re-rate [1]",
-        "The first pillar is profitability because adjusting out the tariff refunds reveals LULU still maintains a highly resilient 13.2 percent clean run-rate operating margin [2]",
+        "The first pillar is profitability because the base case models an approximately 14.4 percent average EBIT margin across FY26-FY30 as clean margins recover from 13.2 percent toward 15.5 percent by FY30 [2]",
         "The second pillar is our mathematically sound 9.0 percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]",
         "Finally, international expansion remains the crucial growth engine, as FY25 China segment revenue grew approximately 29% year-over-year versus flat Americas, and modeled China growth offsets this stagnation with FY26-FY30 averages of 10.2% same-store comps and 16 annual gross store openings [4]",
     ],
     [
         (1, f"Provided Valuation Model (Base Case Implied Value): {_MODEL3}"),
-        (2, f"Lululemon Q2 FY2026 Earnings Release (13.2% Margin Calc): {_Q2_SUPP}"),
+        (2, f"Provided Valuation Model (FY26-FY30 EBIT Margin Path): {_MODEL3}"),
         (3, f"Provided Valuation Model (WACC & Revenue Drivers): {_MODEL3}"),
         (4, f"Lululemon Q2 FY2026 Earnings Release (International Growth): {_Q2_SUPP}"),
     ],
