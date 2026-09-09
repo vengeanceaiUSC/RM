@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Post-process model18altered.xlsx → model18_clean.xlsx.
+"""Post-process model18altered.xlsx in place (cleans the altered workbook).
 
 - Strip AI metadata (Firecrawl, agent workflow) from cell text.
 - Replace conversational Ctrl+F notes with professional citations where possible.
 - Replace selected hardcoded FY25A values and long-float artifacts with Excel formulas.
+
+model18unaltered.xlsx is the pristine backup; this script updates model18altered.xlsx only.
 """
 from __future__ import annotations
 
@@ -17,7 +19,7 @@ from openpyxl.cell.cell import Cell
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "model18altered.xlsx"
-DST = ROOT / "model18_clean.xlsx"
+DST = ROOT / "model18altered.xlsx"
 
 # Columns that hold justification / source / Ctrl+F text on narrative tabs.
 DOC_COLS = {"B", "C", "D", "J", "K", "L", "M"}
@@ -124,8 +126,9 @@ def _set_formula(cell: Cell, formula: str) -> None:
 def clean_workbook(src: Path = SRC, dst: Path = DST) -> Path:
     if not src.exists():
         raise FileNotFoundError(src)
-    shutil.copy2(src, dst)
-    wb = openpyxl.load_workbook(dst)
+    tmp = dst.with_suffix(".cleaning.xlsx")
+    shutil.copy2(src, tmp)
+    wb = openpyxl.load_workbook(tmp)
 
     # 1) Text cleanup on all sheets.
     for ws in wb.worksheets:
@@ -171,7 +174,8 @@ def clean_workbook(src: Path = SRC, dst: Path = DST) -> Path:
                 elif "tax rate" in label.lower():
                     _set_formula(cell, "=659784/2238967")
 
-    wb.save(dst)
+    wb.save(tmp)
+    tmp.replace(dst)
     return dst
 
 
