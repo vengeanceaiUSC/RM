@@ -101,20 +101,7 @@ pg = deck.pg
 stmt_table = deck.stmt_table
 
 # =====================================================================
-# 1. TITLE
-# =====================================================================
-deck.title_slide(
-    company_name="lululemon athletica inc.",
-    ticker_line="NASDAQ: LULU",
-    recommendation="OVERWEIGHT / LONG",
-    current_price="$100.00",
-    target_price="$140",
-    upside_pct="+40% upside",
-    descriptor="A net-cash, high-margin brand priced for terminal decline. We see a cyclical trough, not a broken business",
-)
-
-# =====================================================================
-# 2–13. NARRATIVE SECTION (slides 1–12 before financial statements)
+# SLIDES 1–12 (narrative — nothing else before income statement)
 # =====================================================================
 
 # Slide 1 — Financial roadmap table of contents
@@ -178,7 +165,7 @@ _narrative_slide(
     [
         f"Our discounted cash flow valuation generates a base case implied share price of {_BASE_DCF:.2f} dollars representing {_BASE_UPSIDE} percent upside from current levels [1]",
         "The first pillar is profitability because adjusting out the tariff refunds reveals LULU still maintains a highly resilient 13.2 percent clean run-rate operating margin [2]",
-        f"The second pillar is our mathematically sound {_WACC_PCT:.1f} percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]",
+        f"The second pillar is our mathematically sound 9.0 percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]",
         "Finally international expansion remains the crucial growth engine as 4 percent growth in China Mainland easily offsets the temporary North American stagnation [4]",
     ],
     [
@@ -277,7 +264,7 @@ _narrative_slide(
     [
         "Historical pandemic-era peak EBIT margins reached 23.7% in FY24 showing prior peak earnings power [1]",
         "Our model conservatively assumes margins permanently reset lower to a 13.2% run-rate trough in FY26 [2]",
-        f"A modest partial recovery to just 15.5% EBIT margin by FY30 still yields ${_BASE_DCF:.2f} per share [3]",
+        "A modest partial recovery to just 15.5% EBIT margin by FY30 still yields $133.64 per share [3]",
         "This proves returning to peak COVID profitability is completely unnecessary to unlock substantial market upside [4]",
     ],
     [
@@ -312,7 +299,7 @@ _narrative_slide(
     [
         "China deceleration risks a $56.00 bear floor, but $45.64 cumulative cash per share recovers 45% of entry price [1]",
         "Slashed CapEx saves $360M annually by relying on online e-commerce's 23.6% EBIT margin plus $101.5M inventory releases [2]",
-        f"Deploying 75% UFCF into buybacks retires 28 million shares, compounding EPS to $14.93 to elevate share price to ${_BASE_DCF:.2f} [3]",
+        "Deploying 75% UFCF into buybacks retires 28 million shares, compounding EPS to $14.93 to elevate share price to $133.64 [3]",
     ],
     [
         (1, f"{_MODEL}, Bear Case DCF Valuation Summary / https://www.barrons.com/articles/lululemon-stock-earnings-guidance-a7a7c5c0"),
@@ -324,7 +311,7 @@ _narrative_slide(
 # Slide 12 — Timeline of recovery
 s = slide_base(
     "Timeline of Recovery",
-    "Sequence of recovery milestones that close the gap to intrinsic value",
+    "Recovery milestones from Q3 FY2026 trough through FY2027–FY2028 multiple re-rating",
     page=pg(),
     sources="See Links & Sources below.",
 )
@@ -343,7 +330,7 @@ cats = [
     ),
     (
         "2028 (FY2027\u2013FY2028 Multiple Re-Rating)",
-        f"Accelerating international store scaling (+12% China comps) offsets Americas softness (-4%), driving overall revenue recovery and valuation re-rating toward ${_BASE_DCF:.2f} [4]",
+        "Accelerating international store scaling (+12% China comps) offsets Americas softness (-4%), driving overall revenue recovery and valuation re-rating toward $133.64 [4]",
     ),
 ]
 top = 1.42
@@ -533,7 +520,7 @@ def pitch_financial_slide(
 
 
 # =====================================================================
-# 13–15. FINANCIALS (historicals + base case only, all five forecast years)
+# FINANCIAL STATEMENTS & VALUATION (starts slide 13 — income statement)
 # =====================================================================
 _IS26B, _IS30B = IS_BASE["FY2026E"], IS_BASE["FY2030E"]
 _OM22 = D.IS["operating_income"]["FY2022"] / D.IS["revenue"]["FY2022"] * 100
