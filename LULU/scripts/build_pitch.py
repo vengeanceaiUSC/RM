@@ -232,9 +232,9 @@ _narrative_slide(
     ],
 )
 
-# Slide 5 — Geographic segments
+# Slide 5 — Geographic segments (no separate title in user copy)
 _narrative_slide(
-    "Geographic Segments and Revenue Breakdown",
+    " ",
     "This slide outlines Lululemon's geographic segments and revenue breakdown while detailing why China growth offsets temporary US declines",
     [
         "Lululemon generated 11.1 billion dollars in total revenue with Americas contributing 7.85 billion dollars or 70.68 percent [1]",
@@ -280,7 +280,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 8 — Industry margins (Part 2)
+# Slide 8 — Industry margins (Slide 7 Part 2)
 _narrative_slide(
     "Industry Overview - Barriers to Entry and Profitability",
     "This slide dissects capital efficiency metrics comparing Lululemon's gross margin directly against legacy apparel competitors",
@@ -303,28 +303,28 @@ _narrative_slide(
     [
         "The 2026 price drop exceeding 50% has left Lululemon critically undervalued despite durable cash flows [1]",
         "Its premium Direct-to-Consumer revenue mix protects a massive 54.9% adjusted gross margin, mathematically justifying my intrinsic valuation thesis [2]",
-        "Furthermore, carrying just $1.78 billion in long-term debt against $8.53 billion in total assets provides immense strategic flexibility [3]",
+        "Furthermore, even with Americas growth stagnating, sheer cash flow generation creates a robust intrinsic valuation buffer, where a conservative 2.25% terminal growth rate still yields over 30% upside to our $133.64 target price [3]",
     ],
     [
         (1, "https://everythingmoney.com/blog/lululemon-is-collapsing-burry-s-biggest-bet-4334"),
         (2, "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733"),
-        (3, "https://www.gurufocus.com/term/long-term-debt-and-capital-lease-obligation/LULU"),
+        (3, f"{_MODEL}, DCF Terminal Value & Valuation Summary Schedule"),
     ],
 )
 
 # Slide 10 — Investment Thesis II
 _narrative_slide(
-    "Investment Thesis II",
-    "This slide details how partial margin recovery from peak COVID levels still drives a highly compelling valuation",
+    "Investment Thesis II: Partial Margin Recovery & Brand Loyalty Floor",
+    "This slide details how partial margin recovery supported by core brand loyalty still drives a highly compelling valuation",
     [
         "Historical pandemic-era peak EBIT margins reached 23.7% in FY24 showing prior peak earnings power [1]",
-        "Our model conservatively assumes margins permanently reset lower to a 13.2% run-rate trough in FY26 [2]",
+        "Our valuation assumes a floor built on resilient baseline brand loyalty, proving Lululemon does not need to remain the hottest viral trend 100% of the time to sustain a 13.2% trough margin [2]",
         "A modest partial recovery to just 15.5% EBIT margin by FY30 still yields $133.64 per share [3]",
         "This proves returning to peak COVID profitability is completely unnecessary to unlock substantial market upside [4]",
     ],
     [
-        (1, f"{_MODEL} / https://www.sec.gov/ix?doc=/Archives/edgar/data/0001397187/000139718724000013/lulu-20240128.htm"),
-        (2, f"{_MODEL}, Clean Run-Rate EBIT Margin Assumptions"),
+        (1, f"{_MODEL} / SEC EDGAR Form 10-K (FY24 Peak Margins)"),
+        (2, f"{_MODEL}, Clean Run-Rate EBIT Margin & Brand Royalty Assumptions"),
         (3, f"{_MODEL}, Base Case DCF Valuation Summary"),
         (4, f"{_MODEL}, Discounted Cash Flow Valuation Summary"),
     ],
@@ -336,8 +336,8 @@ _narrative_slide(
     "This slide examines how Lululemon's top-line projections rely disproportionately on Chinese market expansion to conceal domestic North American stagnation",
     [
         "The revenue build reveals Americas facing near-term contraction with -4.0% comps in FY26 flatlining at a terminal 2.0% growth rate by FY30 [1]",
-        "To offset this domestic anchor, model projections rely entirely on FY2026 store openings skewing to China (+20 openings) versus mature Americas (+8 openings) alongside aggressive +14.0% comp sales growth [2]",
-        "Consequently, if the Chinese consumer softens, this model's core top-line projections will mathematically break [3]",
+        "To offset this domestic anchor, the model relies entirely on disproportionate FY26\u2013FY30 Chinese footprint expansion, averaging 16 new stores annually versus just 6 domestically, and sustained double-digit (10.2% average) comp growth to overcome clear Americas expansion drawbacks [2]",
+        "Consequently, if the Chinese consumer softens, this model's core top-line projections will not be optimal enough to meet our target [3]",
     ],
     [
         (1, f"{_MODEL}, Americas FY26-FY30 Comparable Sales Growth Assumptions"),
@@ -346,7 +346,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 12 — Risk & Mitigants
+# Slide 11 — Risk & Mitigants
 _narrative_slide(
     "Risk & Mitigants",
     "This slide evaluates core downside risks and demonstrates how share repurchases compound EPS to drive share price recovery",
@@ -362,7 +362,7 @@ _narrative_slide(
     ],
 )
 
-# Slide 13 — Timeline of recovery
+# Slide 12 — Timeline of Recovery (last narrative slide before 3-statement financials)
 _timeline_links = [
     (1, f"{_MODEL}, Scenarios & Revenue Drivers / {_LULU_PR}"),
     (2, f"{_MODEL}, NOPAT Bridge & Scenarios / {_LULU_PR}"),
@@ -380,7 +380,7 @@ _timeline_step = _timeline_row_h + _timeline_row_gap
 
 s = slide_base(
     "Timeline of Recovery",
-    "Recovery milestones from Q3 FY2026 trough through FY2027\u2013FY2028 multiple re-rating",
+    " ",
     page=pg(),
     sources=" ",
 )
@@ -587,7 +587,7 @@ def pitch_financial_slide(
 
 
 # =====================================================================
-# FINANCIAL STATEMENTS & VALUATION (starts slide 13 — income statement)
+# FINANCIAL STATEMENTS & VALUATION (starts slide 13 — income statement; narrative ends at slide 12)
 # =====================================================================
 _IS26B, _IS30B = IS_BASE["FY2026E"], IS_BASE["FY2030E"]
 _OM22 = D.IS["operating_income"]["FY2022"] / D.IS["revenue"]["FY2022"] * 100
