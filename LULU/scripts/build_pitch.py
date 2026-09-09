@@ -119,7 +119,7 @@ LULU_TOC = [
     "5.  Geographic segments & revenue breakdown", "6.  Business model & unit economics",
     "7.  Industry overview | trends & structure", "8.  Industry overview | barriers & profitability",
     "9.  Investment thesis I", "10. Investment thesis II", "11. Investment thesis III | geographic growth",
-    "12. Risks & mitigants", "13. Catalyst timeline (recovery)",
+    "12. Risks & mitigants", "13. Timeline of recovery",
     "14. Financials | income statement", "15. Financials | balance sheet", "16. Financials | cash flow",
     "17. Financials | capital structure", "18. Valuation summary (football field)",
     "19. Sum of the parts", "20. DCF valuation (base case)",
@@ -418,40 +418,47 @@ _add_links_box(s, [
 ], top=5.95, height=0.95)
 
 # =====================================================================
-# 15. CATALYST TIMELINE (RECOVERY)
+# 15. TIMELINE OF RECOVERY
 # =====================================================================
-s = slide_base("Catalyst Timeline", "Timeline of recovery events that close the gap to intrinsic value", page=pg())
+_LULU_PR = "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733"
+s = slide_base("Timeline of Recovery", "Sequence of events that close the gap to intrinsic value", page=pg())
 cats = [
     (
-        "2026 (Q3 FY2026 trough)",
-        "Q3 FY2026 revenue laps guidance trough while China Double 11 sales confirm holiday store-traffic stabilization across key markets.",
+        "2026 (Q3 FY2026 Trough)",
+        "Q3 FY2026 revenue laps guidance trough while China Double 11 sales confirm holiday store traffic floor stabilization across key markets [1]",
     ),
     (
-        "2027 (FY2026 year-end)",
-        "First full-year reset absorbs steep prior declines while tariff refunds and targeted SG&A cost actions protect earnings per share.",
+        "2027 (FY2026 Year-End)",
+        "First full-year reset absorbs steep prior declines while $134.5M tariff refunds and targeted SG&A cost actions protect earnings per share [2]",
     ),
     (
-        "2027 (FY2027 margin inflection)",
-        "Operating margins expand toward 13.8% (+60 bps) as promotional headwinds anniversary; buybacks compound EPS to boost sentiment.",
+        "2027 (FY2027 Margin Inflection)",
+        "Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while 75% UFCF buybacks compound EPS to boost sentiment [3]",
     ),
     (
-        "2028 (FY2027–FY2028 re-rating)",
-        f"Accelerating international store scaling offsets Americas softness, driving revenue recovery and valuation re-rating toward ${_BASE_DCF:.0f}.",
+        "2028 (FY2027\u2013FY2028 Multiple Re-Rating)",
+        "Accelerating international store scaling (+12% China comps) offsets Americas softness (-4%), driving overall revenue recovery and valuation re-rating toward $133.64 [4]",
     ),
 ]
-top = 1.45
+top = 1.42
 for when, what in cats:
-    b = rect(s, Inches(0.5), Inches(top), Inches(3.15), Inches(1.15), fill=NAVY)
+    b = rect(s, Inches(0.5), Inches(top), Inches(3.35), Inches(1.22), fill=NAVY)
     bt = b.text_frame
     bt.word_wrap = True
     bt.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt, when, 11.5, GOLD, bold=True, first=True, space_after=0)
-    b2 = rect(s, Inches(3.8), Inches(top), Inches(9.05), Inches(1.15), fill=LGREY)
+    add_para(bt, when, 11, GOLD, bold=True, first=True, space_after=0)
+    b2 = rect(s, Inches(4.0), Inches(top), Inches(8.85), Inches(1.22), fill=LGREY)
     bt2 = b2.text_frame
     bt2.word_wrap = True
     bt2.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt2, what, 12, INK, first=True, space_after=0)
-    top += 1.28
+    add_para(bt2, what, 11.5, INK, first=True, space_after=0)
+    top += 1.24
+_add_links_box(s, [
+    (1, f"{_DCF_MODEL}, Scenarios & Revenue Drivers", _LULU_PR),
+    (2, f"{_DCF_MODEL}, NOPAT Bridge & Scenarios", _LULU_PR),
+    (3, f"{_DCF_MODEL}, Scenarios & Unlevered Free Cash Flow Schedule", _LULU_PR),
+    (4, f"{_DCF_MODEL}, Revenue Drivers & DCF Valuation Summary", "https://stockanalysis.com/stocks/lulu/forecast/"),
+], top=5.88, height=1.05)
 
 def m(v):
     return f"{v:,.0f}"
