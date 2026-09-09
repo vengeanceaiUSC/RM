@@ -1,0 +1,7 @@
+# Python dependencies for the RM investment-research / document-generation toolkit.
+# Installed into the user site so the system python3 (which also provides the
+# LibreOffice `uno` bridge from python3-uno) can import them.
+python-pptx>=1.0      # GIS pitch decks (LULU/scripts/build_pitch.py, GIS/*)
+openpyxl>=3.1         # 3-statement & DCF Excel models (LULU/scripts/build_*.py)
+reportlab>=4.0        # Assumptions memo PDF (LULU/scripts/build_assumptions_memo.py)
+PyMuPDF>=1.24         # Living Agreement PDF (fill_agreement.py)

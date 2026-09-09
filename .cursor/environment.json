@@ -1,0 +1,4 @@
+{
+  "name": "RM — GIS Investment Research",
+  "install": "bash .cursor/install.sh"
+}
