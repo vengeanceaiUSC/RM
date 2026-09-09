@@ -273,9 +273,9 @@ _narrative_slide(
 # Slide 4 - Investment Thesis Summary
 _narrative_slide(
     "Investment Thesis Summary and Target Price",
-    "This slide breaks down our actual 133 dollar base case target price and the three core pillars supporting our overweight recommendation",
+    "This slide breaks down our $133.64 intrinsic DCF fair value, our $140 twelve-month target price, and the three core pillars supporting our overweight recommendation",
     [
-        "Our discounted cash flow valuation generates a base case implied share price of 133.64 dollars representing a 33.6 percent upside from current levels [1]",
+        "Our base-case DCF yields an intrinsic fair value of $133.64 per share (+33.6% upside), supporting our 12-month target price of $140.00 as market multiples modestly re-rate [1]",
         "The first pillar is profitability because adjusting out the tariff refunds reveals LULU still maintains a highly resilient 13.2 percent clean run-rate operating margin [2]",
         "The second pillar is our mathematically sound 9.0 percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]",
         "Finally international expansion remains the crucial growth engine as 4 percent growth in China Mainland easily offsets the temporary North American stagnation [4]",
