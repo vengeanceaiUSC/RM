@@ -635,7 +635,7 @@ def pitch_financial_slide(
     italic_note=None,
     col0w=2.35,
     table_top=3.72,
-    table_height=2.16,
+    table_height=1.98,
     explainer_height=2.32,
 ):
     """Build one financial slide: historicals + 5yr base-case forecast (Scenarios G)."""
@@ -648,7 +648,7 @@ def pitch_financial_slide(
                          box_height=explainer_height)
     stmt_table(s, rows, hdr, col0w=col0w, top=table_top, height=table_height,
                bold_rows=bold_rows, font_size=8.5, header_font_size=8)
-    _fin_source_table(s, source_rows, top=5.92, height=0.95)
+    _fin_source_table(s, source_rows, top=5.74, height=0.95)
     return s
 
 
@@ -943,7 +943,7 @@ stmt_table(
     col0w=2.85, top=3.08, height=0.78, left=0.5, width=6.05,
     font_size=8.5, header_font_size=8.5,
 )
-tb, tf = textbox(s, Inches(0.5), Inches(4.0), Inches(6.05), Inches(0.5))
+tb, tf = textbox(s, Inches(0.5), Inches(4.12), Inches(6.05), Inches(0.5))
 add_para(
     tf,
     "No funded bank debt; ASC 842 store leases are the only debt equivalent (~14% WACC weight). "
@@ -952,7 +952,7 @@ add_para(
 )
 
 # --- WACC build (right): template LGREY panel + compact 2-col table ---
-rect(s, Inches(6.7), Inches(1.50), Inches(6.15), Inches(3.85), fill=LGREY)
+rect(s, Inches(6.7), Inches(1.50), Inches(6.15), Inches(3.53), fill=LGREY)
 wacc_compact = [
     ["Risk-free rate (10-yr UST)", _pct_wb(WB["rf"])],
     ["Equity risk premium", _pct_wb(WB["erp"])],
@@ -969,14 +969,14 @@ stmt_table(
     col0w=3.35, top=1.56, height=2.22, left=6.78, width=5.98,
     font_size=9, header_font_size=9, bold_rows=(4,),
 )
-tb, tf = textbox(s, Inches(6.85), Inches(3.88), Inches(5.85), Inches(0.42))
+tb, tf = textbox(s, Inches(6.85), Inches(3.88), Inches(5.85), Inches(0.24))
 add_para(
     tf,
     f"\u03b2: Yahoo \u03b2L {WB['beta_obs']:.2f} to unlevered {WB['beta_unlev']:.2f} "
     f"@ D/E {WB['de_unlev']:.2f} to relever {WB['beta']:.2f} @ lease D/E {WB['de_relev']:.2f}",
     8, INK, italic=True, first=True, space_after=0,
 )
-box = rect(s, Inches(6.7), Inches(4.42), Inches(6.15), Inches(0.88), fill=NAVY)
+box = rect(s, Inches(6.7), Inches(4.14), Inches(6.15), Inches(0.84), fill=NAVY)
 btf = box.text_frame
 btf.word_wrap = True
 btf.vertical_anchor = MSO_ANCHOR.MIDDLE
@@ -988,15 +988,25 @@ add_para(
 )
 
 # --- Model source map (footer, matches other financial slides) ---
-_all_src_rows = _cap_src_rows + _wacc_src_rows
-tb, tf = textbox(s, Inches(0.5), Inches(5.78), Inches(12.35), Inches(0.2))
+# Split across two columns under their own halves of the slide: all 15 rows in
+# one full-width table stack past the bottom of the page.
+tb, tf = textbox(s, Inches(0.5), Inches(5.06), Inches(12.35), Inches(0.2))
 add_para(tf, "MODEL SOURCE MAP", 9, CARD, bold=True, first=True, space_after=0)
+_SRC_MAP_TOP = 5.26
+_SRC_MAP_HDR = "DCF model source (WACC tab, col E)"
 stmt_table(
-    s, [[a, b] for a, b in _all_src_rows],
-    ["Line item", "DCF model source (WACC tab, col E)"],
-    col0w=2.4, top=5.98, height=1.02, left=0.5, width=12.35,
+    s, [[a, b] for a, b in _cap_src_rows],
+    ["Cap stack line item", _SRC_MAP_HDR],
+    col0w=2.4, top=_SRC_MAP_TOP, height=0.72, left=0.5, width=6.05,
     font_size=7, header_font_size=7.5,
-    bold_rows=(len(_all_src_rows) - 1,),
+    text_cols=(1,),
+)
+stmt_table(
+    s, [[a, b] for a, b in _wacc_src_rows],
+    ["WACC input", _SRC_MAP_HDR],
+    col0w=2.4, top=_SRC_MAP_TOP, height=1.08, left=6.78, width=5.98,
+    font_size=7, header_font_size=7.5,
+    bold_rows=(len(_wacc_src_rows) - 1,),
     text_cols=(1,),
 )
 
@@ -1196,7 +1206,7 @@ tv_rows = [
         f"{DCF_BASE.get('exit_tv_m', 0):,}",
     ],
 ]
-stmt_table(s, tv_rows[1:], tv_rows[0], col0w=1.55, top=4.58, height=0.72, left=0.5, width=6.15,
+stmt_table(s, tv_rows[1:], tv_rows[0], col0w=1.85, top=4.58, height=0.92, left=0.5, width=6.15,
            font_size=8.5, header_font_size=8.5, bold_rows=())
 
 # --- Output (right) ---
@@ -1242,7 +1252,7 @@ add_para(
 )
 
 # --- Sensitivity ---
-tb, tf = textbox(s, Inches(0.5), Inches(5.38), Inches(12.35), Inches(0.20))
+tb, tf = textbox(s, Inches(0.5), Inches(5.58), Inches(12.35), Inches(0.20))
 add_para(tf, "SENSITIVITY | IMPLIED SHARE PRICE (WACC vs TERMINAL g)", 10, CARD, bold=True, first=True, space_after=0)
 _g_cols = ["1.5%", "2.0%", "2.25%", "2.5%", "3.0%"]
 sens = [["WACC \\ g"] + _g_cols]
@@ -1253,12 +1263,12 @@ _base_wacc_idx = min(
 for row in PV["sensitivity"]:
     sens.append([row["wacc"]] + [_d(p) for p in row["prices"]])
 stmt_table(
-    s, sens[1:], sens[0], col0w=1.0, top=5.60, height=1.08, left=0.5, width=7.4,
+    s, sens[1:], sens[0], col0w=1.0, top=5.80, height=1.08, left=0.5, width=7.4,
     font_size=9, header_font_size=9,
     bold_rows=(),
 )
 # highlight base cell via note
-tb, tf = textbox(s, Inches(8.1), Inches(5.60), Inches(4.75), Inches(1.08))
+tb, tf = textbox(s, Inches(8.1), Inches(5.80), Inches(4.75), Inches(1.08))
 add_para(tf, "Base-case cell", 9, CARD, bold=True, first=True, space_after=2)
 add_para(
     tf,
