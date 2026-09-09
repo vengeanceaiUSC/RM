@@ -181,10 +181,10 @@ class PitchDeck:
         hr_run.text = title
         _set_font(hr_run, 15, WHITE, bold=True)
 
-        tb2, tf2 = textbox(s, Inches(0.45), Inches(0.62), Inches(12.45), Inches(0.34))
+        tb2, tf2 = textbox(s, Inches(0.45), Inches(0.62), Inches(5.35), Inches(0.48))
         add_para(tf2, descriptor, 12.5, GREY, italic=True, first=True, space_after=0)
 
-        rect(s, Inches(0.45), Inches(0.98), Inches(12.45), Pt(1.6), fill=GOLD)
+        rect(s, Inches(0.45), Inches(1.18), Inches(12.45), Pt(1.6), fill=GOLD)
 
         ftb, ftf = textbox(s, Inches(0.45), Inches(7.12), Inches(12.45), Inches(0.3))
         src = sources or self.default_source
@@ -194,7 +194,7 @@ class PitchDeck:
             add_para(ptf, str(page), 9, GREY, align=PP_ALIGN.RIGHT, first=True, space_after=0)
         return s
 
-    def body_box(self, slide, l=Inches(0.5), t=Inches(1.12), w=Inches(12.35), h=Inches(5.9)):
+    def body_box(self, slide, l=Inches(0.5), t=Inches(1.28), w=Inches(12.35), h=Inches(5.75)):
         return textbox(slide, l, t, w, h)
 
     def title_slide(

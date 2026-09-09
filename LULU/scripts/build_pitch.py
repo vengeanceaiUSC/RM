@@ -73,17 +73,22 @@ _MODEL6 = "LULUMODEL18_6.xlsx"
 _Q2_SUPP = "https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf"
 _LULU_PR = "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733"
 _TIKR = "https://www.tikr.com/blog/lululemon-stock-crashed-17-on-friday-the-guidance-cut-was-the-real-story"
-_CONTENT_TOP = 1.12
+_CONTENT_TOP = 1.28
 _FOOTER_Y = 7.08  # GIS footer line (page number)
+_LINK_GAP = 0.16  # clearance between body content and sources block
 
 
 def _links_block_height(n_links: int) -> float:
     """Vertical space reserved for numbered sources above the page footer."""
-    return 0.24 + n_links * 0.17
+    return 0.32 + n_links * 0.22
+
+
+def _links_top(n_links: int) -> float:
+    return _FOOTER_Y - _links_block_height(n_links) - 0.08
 
 
 def _content_bottom(n_links: int) -> float:
-    return _FOOTER_Y - _links_block_height(n_links) - 0.1
+    return _links_top(n_links) - _LINK_GAP
 
 
 def _add_links_box(slide, links, top=None):
@@ -91,7 +96,7 @@ def _add_links_box(slide, links, top=None):
     n = len(links)
     height = _links_block_height(n)
     if top is None:
-        top = _FOOTER_Y - height - 0.06
+        top = _links_top(n)
     tb, tf = textbox(slide, Inches(0.5), Inches(top), Inches(12.35), Inches(height))
     add_para(tf, "Links & Sources", 8, CARD, bold=True, first=True, space_after=1)
     for num, text in links:
@@ -133,7 +138,7 @@ _toc_links = [
     (2, f"Lululemon Q2 2026 Financial Supplement: {_Q2_SUPP}"),
     (3, f"Provided Valuation Spreadsheet: {_MODEL}"),
 ]
-tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(12.35), Inches(_content_bottom(len(_toc_links)) - 1.15))
+tb, tf = textbox(s, Inches(0.5), Inches(1.28), Inches(12.35), Inches(_content_bottom(len(_toc_links)) - 1.28))
 roadmap = (
     "First we will analyze the recent cyclical selloff to 100 dollars and why this price action demands a market "
     "re-evaluation. Next we dissect the NOPAT bridge and revenue drivers to expose durable cash flows hidden beneath "
@@ -326,16 +331,19 @@ _narrative_slide(
 
 # Slide 12 — Timeline of recovery
 _timeline_links = [
-    (1, f"{_MODEL}, Scenarios & Revenue Drivers / {_LULU_PR}"),
-    (2, f"{_MODEL}, NOPAT Bridge & Scenarios / {_LULU_PR}"),
-    (3, f"{_MODEL}, Scenarios & Unlevered Free Cash Flow Schedule / {_LULU_PR}"),
-    (4, f"{_MODEL}, Revenue Drivers & DCF Valuation Summary / https://stockanalysis.com/stocks/lulu/forecast/"),
+    (1, f"{_MODEL}, Scenarios & Revenue Drivers"),
+    (2, f"{_MODEL}, NOPAT Bridge & Scenarios"),
+    (3, f"{_MODEL}, Scenarios & Unlevered Free Cash Flow Schedule"),
+    (4, f"{_MODEL}, Revenue Drivers & DCF Valuation Summary"),
 ]
-_timeline_bottom = _content_bottom(len(_timeline_links))
-_timeline_top = 1.15
+_timeline_top = 1.28
 _timeline_rows = 4
-_timeline_row_h = (_timeline_bottom - _timeline_top - 0.08) / _timeline_rows
-_timeline_step = _timeline_row_h + 0.04
+_timeline_row_gap = 0.06
+_timeline_bottom = _content_bottom(len(_timeline_links))
+_timeline_row_h = (
+    _timeline_bottom - _timeline_top - (_timeline_rows - 1) * _timeline_row_gap
+) / _timeline_rows
+_timeline_step = _timeline_row_h + _timeline_row_gap
 
 s = slide_base(
     "Timeline of Recovery",
