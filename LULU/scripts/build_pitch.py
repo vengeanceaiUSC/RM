@@ -73,21 +73,38 @@ _MODEL6 = "LULUMODEL18_6.xlsx"
 _Q2_SUPP = "https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf"
 _LULU_PR = "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733"
 _TIKR = "https://www.tikr.com/blog/lululemon-stock-crashed-17-on-friday-the-guidance-cut-was-the-real-story"
+_CONTENT_TOP = 1.12
+_FOOTER_Y = 7.08  # GIS footer line (page number)
 
 
-def _add_links_box(slide, links, top=6.05, height=1.05):
-    """Numbered source list; label may include URL after colon."""
+def _links_block_height(n_links: int) -> float:
+    """Vertical space reserved for numbered sources above the page footer."""
+    return 0.24 + n_links * 0.17
+
+
+def _content_bottom(n_links: int) -> float:
+    return _FOOTER_Y - _links_block_height(n_links) - 0.1
+
+
+def _add_links_box(slide, links, top=None):
+    """Numbered source list tucked above the slide footer."""
+    n = len(links)
+    height = _links_block_height(n)
+    if top is None:
+        top = _FOOTER_Y - height - 0.06
     tb, tf = textbox(slide, Inches(0.5), Inches(top), Inches(12.35), Inches(height))
-    add_para(tf, "Links & Sources", 9, CARD, bold=True, first=True, space_after=2)
-    for n, text in links:
-        add_para(tf, f"[{n}] {text}", 7, INK, bullet=True, space_after=2)
+    add_para(tf, "Links & Sources", 8, CARD, bold=True, first=True, space_after=1)
+    for num, text in links:
+        add_para(tf, f"[{num}] {text}", 6.5, INK, bullet=True, space_after=1)
 
 
-def _narrative_slide(title, descriptor, bullets, links, body_top=1.12, body_h=4.75):
-    s = slide_base(title, descriptor, page=pg(), sources="See Links & Sources below.")
+def _narrative_slide(title, descriptor, bullets, links, body_top=_CONTENT_TOP):
+    bottom = _content_bottom(len(links))
+    body_h = max(0.8, bottom - body_top)
+    s = slide_base(title, descriptor, page=pg(), sources=" ")
     tb, tf = textbox(s, Inches(0.5), Inches(body_top), Inches(12.35), Inches(body_h))
     for i, bullet in enumerate(bullets):
-        add_para(tf, bullet, 12.5, INK, bullet=True, first=(i == 0), space_after=6)
+        add_para(tf, bullet, 12, INK, bullet=True, first=(i == 0), space_after=5)
     _add_links_box(s, links)
     return s
 
@@ -109,9 +126,14 @@ s = slide_base(
     "Table of Contents",
     "This slide outlines the table of contents detailing the overarching financial roadmap for my Lululemon investment pitch",
     page=pg(),
-    sources="See Links & Sources below.",
+    sources=" ",
 )
-tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(12.35), Inches(4.65))
+_toc_links = [
+    (1, f"TIKR LULU Stock Crashed 17%: {_TIKR}"),
+    (2, f"Lululemon Q2 2026 Financial Supplement: {_Q2_SUPP}"),
+    (3, f"Provided Valuation Spreadsheet: {_MODEL}"),
+]
+tb, tf = textbox(s, Inches(0.5), Inches(1.15), Inches(12.35), Inches(_content_bottom(len(_toc_links)) - 1.15))
 roadmap = (
     "First we will analyze the recent cyclical selloff to 100 dollars and why this price action demands a market "
     "re-evaluation. Next we dissect the NOPAT bridge and revenue drivers to expose durable cash flows hidden beneath "
@@ -119,12 +141,8 @@ roadmap = (
     "overweight thesis. Finally we review our football field valuation and comparable analysis implying a massive "
     "margin of safety for investors."
 )
-add_para(tf, roadmap, 13, INK, first=True, space_after=0)
-_add_links_box(s, [
-    (1, f"TIKR LULU Stock Crashed 17%: {_TIKR}"),
-    (2, f"Lululemon Q2 2026 Financial Supplement: {_Q2_SUPP}"),
-    (3, f"Provided Valuation Spreadsheet: {_MODEL}"),
-])
+add_para(tf, roadmap, 12.5, INK, first=True, space_after=0)
+_add_links_box(s, _toc_links)
 
 # Slide 2 — Situation overview
 _narrative_slide(
@@ -174,7 +192,6 @@ _narrative_slide(
         (3, f"Provided Valuation Model (WACC & Revenue Drivers): {_MODEL3}"),
         (4, f"Lululemon Q2 FY2026 Earnings Release (International Growth): {_Q2_SUPP}"),
     ],
-    body_h=4.55,
 )
 
 # Slide 5 — Geographic segments
@@ -273,7 +290,6 @@ _narrative_slide(
         (3, f"{_MODEL}, Base Case DCF Valuation Summary"),
         (4, f"{_MODEL}, Discounted Cash Flow Valuation Summary"),
     ],
-    body_h=4.45,
 )
 
 # Slide 10 — Investment thesis III
@@ -309,11 +325,23 @@ _narrative_slide(
 )
 
 # Slide 12 — Timeline of recovery
+_timeline_links = [
+    (1, f"{_MODEL}, Scenarios & Revenue Drivers / {_LULU_PR}"),
+    (2, f"{_MODEL}, NOPAT Bridge & Scenarios / {_LULU_PR}"),
+    (3, f"{_MODEL}, Scenarios & Unlevered Free Cash Flow Schedule / {_LULU_PR}"),
+    (4, f"{_MODEL}, Revenue Drivers & DCF Valuation Summary / https://stockanalysis.com/stocks/lulu/forecast/"),
+]
+_timeline_bottom = _content_bottom(len(_timeline_links))
+_timeline_top = 1.15
+_timeline_rows = 4
+_timeline_row_h = (_timeline_bottom - _timeline_top - 0.08) / _timeline_rows
+_timeline_step = _timeline_row_h + 0.04
+
 s = slide_base(
     "Timeline of Recovery",
     "Recovery milestones from Q3 FY2026 trough through FY2027–FY2028 multiple re-rating",
     page=pg(),
-    sources="See Links & Sources below.",
+    sources=" ",
 )
 cats = [
     (
@@ -333,25 +361,20 @@ cats = [
         "Accelerating international store scaling (+12% China comps) offsets Americas softness (-4%), driving overall revenue recovery and valuation re-rating toward $133.64 [4]",
     ),
 ]
-top = 1.42
+top = _timeline_top
 for when, what in cats:
-    b = rect(s, Inches(0.5), Inches(top), Inches(3.35), Inches(1.22), fill=NAVY)
+    b = rect(s, Inches(0.5), Inches(top), Inches(3.2), Inches(_timeline_row_h), fill=NAVY)
     bt = b.text_frame
     bt.word_wrap = True
     bt.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt, when, 11, GOLD, bold=True, first=True, space_after=0)
-    b2 = rect(s, Inches(4.0), Inches(top), Inches(8.85), Inches(1.22), fill=LGREY)
+    add_para(bt, when, 10, GOLD, bold=True, first=True, space_after=0)
+    b2 = rect(s, Inches(3.85), Inches(top), Inches(9.0), Inches(_timeline_row_h), fill=LGREY)
     bt2 = b2.text_frame
     bt2.word_wrap = True
     bt2.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt2, what, 11.5, INK, first=True, space_after=0)
-    top += 1.24
-_add_links_box(s, [
-    (1, f"{_MODEL}, Scenarios & Revenue Drivers / {_LULU_PR}"),
-    (2, f"{_MODEL}, NOPAT Bridge & Scenarios / {_LULU_PR}"),
-    (3, f"{_MODEL}, Scenarios & Unlevered Free Cash Flow Schedule / {_LULU_PR}"),
-    (4, f"{_MODEL}, Revenue Drivers & DCF Valuation Summary / https://stockanalysis.com/stocks/lulu/forecast/"),
-], top=5.88, height=1.05)
+    add_para(bt2, what, 10.5, INK, first=True, space_after=0)
+    top += _timeline_step
+_add_links_box(s, _timeline_links)
 
 def m(v):
     return f"{v:,.0f}"
