@@ -258,9 +258,10 @@ _narrative_slide(
     ],
 )
 
-# Slide 5 - Geographic segments (descriptor only; no separate title in user copy)
+# Slide 5 - Geographic segments. The user copy gives no title, so the title bar
+# reuses the table-of-contents entry rather than leaving the bar blank.
 _narrative_slide(
-    " ",
+    _DECK_TOC[4][1],
     "This slide outlines Lululemon's geographic segments and revenue breakdown while detailing why China growth offsets temporary US declines",
     [
         "Lululemon generated 11.1 billion dollars in total revenue with Americas contributing 7.85 billion dollars or 70.68 percent [1]",
