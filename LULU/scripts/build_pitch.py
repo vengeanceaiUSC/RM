@@ -278,7 +278,7 @@ _narrative_slide(
         "Our base-case DCF yields an intrinsic fair value of $133.64 per share (+33.6% upside), supporting our 12-month target price of $140.00 as market multiples modestly re-rate [1]",
         "The first pillar is profitability because adjusting out the tariff refunds reveals LULU still maintains a highly resilient 13.2 percent clean run-rate operating margin [2]",
         "The second pillar is our mathematically sound 9.0 percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]",
-        "Finally, international expansion remains the crucial growth engine, as China Mainland reached $1.75 billion in FY25 segment revenue on +20% comparable sales growth, with forward +10-12% same-store comps (FY26-FY27) and ~16 annual gross store openings offsetting near-term North American stagnation [4]",
+        "Finally, international expansion remains the crucial growth engine, as FY25 China segment revenue grew approximately 29% year-over-year versus flat Americas, while modeled FY26-FY30 five-year averages of 10.2% China comps versus approximately flat Americas comps and 16 versus 6 annual gross store openings offset near-term North American stagnation [4]",
     ],
     [
         (1, f"Provided Valuation Model (Base Case Implied Value): {_MODEL3}"),
