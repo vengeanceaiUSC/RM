@@ -153,9 +153,24 @@ def _fix_slide17(prs: Presentation) -> None:
             _set_footer(shape, "Source: LULU_DCF_Valuation_Model.xlsx, WACC tab (col E) · 10-K cap stack")
 
 
+def _align_sensitivity_table(table) -> None:
+    """Center g-rate headers; right-align price cells for a clean grid."""
+    for ci, cell in enumerate(table.rows[0].cells):
+        for p in cell.text_frame.paragraphs:
+            p.alignment = PP_ALIGN.LEFT if ci == 0 else PP_ALIGN.CENTER
+    for ri in range(1, len(table.rows)):
+        for ci, cell in enumerate(table.rows[ri].cells):
+            for p in cell.text_frame.paragraphs:
+                p.alignment = PP_ALIGN.LEFT if ci == 0 else PP_ALIGN.CENTER
+            cell.vertical_anchor = MSO_ANCHOR.MIDDLE
+
+
 def _fix_slide20(prs: Presentation) -> None:
-    """Slide 20 layout — keep base-case callout; sensitivity grid stays left (7.4in)."""
+    """Slide 20 — GIS grid: left col 0.50×6.15, right col 6.85×6.00, sensitivity + callout."""
     slide = prs.slides[19]
+    left, lwide = Inches(0.50), Inches(6.15)
+    right, rwide = Inches(6.85), Inches(6.00)
+
     for shape in slide.shapes:
         if shape.has_text_frame:
             t = shape.text_frame.text
@@ -163,42 +178,67 @@ def _fix_slide20(prs: Presentation) -> None:
                 for p in shape.text_frame.paragraphs:
                     for r in p.runs:
                         r.text = r.text.replace("SCENARIOS COL G", "SCENARIOS COL C")
+            if t.strip().startswith("BASE-CASE ASSUMPTIONS"):
+                shape.left = int(left)
+                shape.top = int(Inches(1.24))
+                shape.width = int(lwide)
+                shape.height = int(Inches(0.22))
             if t.strip().startswith("TERMINAL VALUE"):
+                shape.left = int(left)
                 shape.top = int(Inches(4.32))
+                shape.width = int(lwide)
                 shape.height = int(Inches(0.25))
             if "SENSITIVITY" in t and "Base-case" in t:
-                # Strip duplicate base-case line added by prior runs
                 paras = [p for p in shape.text_frame.paragraphs if "Base-case" not in p.text]
                 while len(shape.text_frame.paragraphs) > len(paras):
                     shape.text_frame._txBody.remove(shape.text_frame.paragraphs[-1]._p)
             if "SENSITIVITY" in t and "IMPLIED" in t:
+                shape.left = int(left)
                 shape.top = int(Inches(5.58))
-                shape.left = int(Inches(0.50))
                 shape.width = int(Inches(12.35))
                 shape.height = int(Inches(0.20))
+            if t.strip().startswith("VALUATION OUTPUT") or (
+                "PV of explicit FCF" in t and "Enterprise value" in t
+            ):
+                shape.left = int(right)
+                shape.top = int(Inches(1.48))
+                shape.width = int(rwide)
+                shape.height = int(Inches(2.55))
             if t.startswith("TV = 73%"):
+                shape.left = int(right)
                 shape.top = int(Inches(4.05))
-                shape.left = int(Inches(6.85))
-                shape.width = int(Inches(6.00))
+                shape.width = int(rwide)
                 shape.height = int(Inches(1.25))
                 _shrink_text_frame(shape.text_frame, 8.0)
+            if t.strip().startswith("Base-case cell"):
+                shape.left = int(Inches(8.10))
+                shape.top = int(Inches(5.80))
+                shape.width = int(Inches(4.75))
+                shape.height = int(Inches(1.08))
         if shape.has_table:
             h0 = shape.table.rows[0].cells[0].text.strip()
+            if h0 == "Assumption":
+                shape.left = int(left)
+                shape.top = int(Inches(1.48))
+                shape.width = int(lwide)
+                shape.height = int(Inches(2.75))
+                _compact_table_rows(shape.table, 2.75)
             if h0 == "Method":
+                shape.left = int(left)
                 shape.top = int(Inches(4.58))
-                shape.left = int(Inches(0.50))
-                shape.width = int(Inches(6.15))
+                shape.width = int(lwide)
                 shape.height = int(Inches(0.92))
                 _compact_table_rows(shape.table, 0.92)
                 _shrink_table_font(shape.table, 8.0)
             if h0 == "WACC vs g":
+                shape.left = int(left)
                 shape.top = int(Inches(5.80))
-                shape.left = int(Inches(0.50))
                 shape.width = int(Inches(7.40))
                 shape.height = int(Inches(1.08))
                 _compact_table_rows(shape.table, 1.08)
                 _shrink_table_font(shape.table, 9, skip_header=True)
                 _fix_navy_header_row(shape.table, 9)
+                _align_sensitivity_table(shape.table)
     for shape in _footer_shapes(slide):
         if not shape.text_frame.text.strip().isdigit():
             _set_footer(
