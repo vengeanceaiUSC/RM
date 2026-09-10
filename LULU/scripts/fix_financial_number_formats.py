@@ -64,6 +64,19 @@ def _format_for_label(label: str) -> str | None:
         return MULT
     if "discount factor" in lab:
         return FACTOR
+    # Dollar tax / EBIT rows — must come before generic "tax" → % rule
+    if any(
+        k in lab
+        for k in (
+            "less: taxes",
+            "unlevered tax on",
+            "tax on normalized",
+            "normalized ebit",
+        )
+    ):
+        return NUM
+    if any(k in lab for k in ("tax rate", "effective tax rate", "cash tax rate", "marginal tax")):
+        return PCT
     if any(
         k in lab
         for k in (
@@ -85,7 +98,6 @@ def _format_for_label(label: str) -> str | None:
             "margin",
             " rate",
             "wacc",
-            "tax",
             "weight",
             "mix %",
             "mix",
@@ -104,7 +116,7 @@ def _format_for_label(label: str) -> str | None:
         )
     ):
         if "%" in lab or any(
-            k in lab for k in ("growth", "margin", "rate", "weight", "mix", "wacc", "tax", "erp")
+            k in lab for k in ("growth", "margin", "rate", "weight", "mix", "wacc", "erp")
         ):
             return PCT
     if any(

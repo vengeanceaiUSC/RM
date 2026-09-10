@@ -17,6 +17,7 @@ SCRIPTS = Path(__file__).resolve().parent
 STEPS = [
     "backfill_source_comments.py",
     "fix_decimal_display.py",
+    "fix_dcf_fy25_bridge.py",
     "fix_financial_number_formats.py",
     "fix_human_analyst_structure.py",
     "fix_stale_formula_refs.py",
