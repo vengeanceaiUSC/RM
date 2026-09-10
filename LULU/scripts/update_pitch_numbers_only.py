@@ -171,6 +171,8 @@ def main() -> None:
         ("10.09", f"{eps[1]:.2f}"),
         ("$10.11", f"${eps[1]:.2f}"),
         ("10.11", f"{eps[1]:.2f}"),
+        ("$134", f"${px}"),
+        ("gives $134", f"gives ${px}"),
         ("3,944", _fmt_m(bridge["pv_fcf_m"])),
         ("14,876", _fmt_m(bridge["ev_m"])),
         ("14,885", _fmt_m(bridge["equity_m"])),
@@ -238,11 +240,9 @@ def main() -> None:
     prs.save(str(OUT))
 
     from fix_file_metadata import fix as fix_meta
-    from fix_pitch_gis_compliance import main as fix_gis_layout
     from repair_pitch_deck import repair_and_repackage
     from sync_sensitivity_from_dcf import sync as sync_sensitivity
 
-    fix_gis_layout()
     sync_sensitivity(OUT)
     fix_meta(OUT)
     repair_and_repackage(OUT)

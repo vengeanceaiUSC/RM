@@ -119,16 +119,16 @@ def _compact_table_rows(table, total_h_in: float) -> None:
 
 def _fix_slide17(prs: Presentation) -> None:
     slide = prs.slides[16]
-    # Remove oversized MODEL SOURCE MAP tables (bleed past slide edge)
-    for shape in list(slide.shapes):
+    # Keep MODEL SOURCE MAP — shrink tables so they fit (never delete)
+    for shape in slide.shapes:
         if not shape.has_table:
             continue
         h0 = shape.table.rows[0].cells[0].text.strip()
         if h0 in ("Cap stack line item", "WACC input"):
-            _delete_shape(shape)
-    for shape in list(slide.shapes):
-        if shape.has_text_frame and shape.text_frame.text.strip() == "MODEL SOURCE MAP":
-            _delete_shape(shape)
+            shape.width = int(Inches(6.0))
+            shape.height = int(Inches(1.05))
+            _compact_table_rows(shape.table, 1.05)
+            _shrink_table_font(shape.table, 7.0)
     for shape in slide.shapes:
         if shape.has_table and shape.table.rows[0].cells[0].text.strip() == "Component":
             # EV bridge table — cap height so note below clears
@@ -144,11 +144,8 @@ def _fix_slide17(prs: Presentation) -> None:
 
 
 def _fix_slide20(prs: Presentation) -> None:
-    """Slide 20 is dense — move Method/TV note to right column; sensitivity full-width below."""
+    """Slide 20 layout — keep base-case callout; sensitivity grid stays left (7.4in)."""
     slide = prs.slides[19]
-    for shape in list(slide.shapes):
-        if shape.has_text_frame and shape.text_frame.text.startswith("Base-case cell"):
-            _delete_shape(shape)
     for shape in slide.shapes:
         if shape.has_text_frame:
             t = shape.text_frame.text
@@ -185,13 +182,11 @@ def _fix_slide20(prs: Presentation) -> None:
                 _compact_table_rows(shape.table, 0.46)
                 _shrink_table_font(shape.table, 7.5)
             if h0 == "WACC vs g":
-                n_rows = len(shape.table.rows)
-                grid_h = round(0.18 * n_rows, 2)
-                shape.top = int(Inches(5.62))
+                shape.top = int(Inches(5.80))
                 shape.left = int(Inches(0.50))
-                shape.width = int(Inches(12.35))
-                shape.height = int(Inches(grid_h))
-                _compact_table_rows(shape.table, grid_h)
+                shape.width = int(Inches(7.40))
+                shape.height = int(Inches(1.08))
+                _compact_table_rows(shape.table, 1.08)
                 _shrink_table_font(shape.table, 9, skip_header=True)
                 _fix_navy_header_row(shape.table, 9)
     for shape in _footer_shapes(slide):
