@@ -49,10 +49,10 @@ VALUE_COLS: dict[str, tuple[int, ...]] = {
 
 SOURCE_COL: dict[str, int] = {
     "WACC": 3,
-    "Scenarios": 3,
-    "NOPAT Bridge": 3,
-    "Comps": 3,
-    "DCF": 3,
+    "Scenarios": 2,
+    "NOPAT Bridge": 8,
+    "Comps": 8,
+    "DCF": 8,
     "Revenue Drivers": 10,
 }
 

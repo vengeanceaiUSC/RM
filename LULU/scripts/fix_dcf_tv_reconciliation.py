@@ -39,7 +39,7 @@ FIXES: dict[str, str | None] = {
     "B94": "=B57",
     "C94": "=B87",
     "D94": "=B94-C94",
-    "A95": "Sanity check: multiples within ±1.5 turns?",
+    "A95": "Exit multiple check (±1.5x)",
     "B95": '=IF(ABS(D92)<=1.5,"PASS","REVIEW")',
     "C95": '=TEXT(D92,"0.0")&"x spread vs Gordon-implied exit"',
     "D95": "Selected exit is the Gordon identity, so spread should be 0",

@@ -204,6 +204,18 @@ def _align_repurchase_prices(wb) -> int:
                 scn[f"{col}{row}"] = f"={col}{prev}-{bb}/$B${198 + i}"
                 n += 1
 
+    # Bull case: % of FCF buybacks at same price path as base
+    for i, row in enumerate(range(183, 188)):
+        price = f"$B${198 + i}"
+        fcf_row = 153 + i
+        if i == 0:
+            want = f"=$B$197-ROUND(E22*E{fcf_row},0)/{price}"
+        else:
+            want = f"=E{row - 1}-ROUND(E22*E{fcf_row},0)/{price}"
+        if scn[f"E{row}"].value != want:
+            scn[f"E{row}"] = want
+            n += 1
+
     return n
 
 

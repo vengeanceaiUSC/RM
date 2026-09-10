@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Remove openpyxl / Microsoft Excel metadata fingerprint from docProps.
+"""Replace openpyxl metadata fingerprint with Microsoft Excel in docProps.
 
 User should Save As from native Excel to set their author name.
 
@@ -20,17 +20,28 @@ TARGET = ROOT / "unbeiesgbar_final.xlsx"
 
 CP_NS = "{http://schemas.openxmlformats.org/package/2006/metadata/core-properties}"
 DC_NS = "{http://purl.org/dc/elements/1.1/}"
+DCTERMS_NS = "{http://purl.org/dc/terms/}"
+XSI_NS = "{http://www.w3.org/2001/XMLSchema-instance}"
+
+EXCEL_CREATOR = "Microsoft Excel"
 
 
 def _patch_core_xml(data: bytes) -> bytes:
     root = ET.fromstring(data)
-    for tag in ("creator", "lastModifiedBy"):
+
+    # cp:creator / cp:lastModifiedBy
+    for tag, value in (("creator", EXCEL_CREATOR), ("lastModifiedBy", EXCEL_CREATOR)):
         el = root.find(f"{CP_NS}{tag}")
-        if el is not None:
-            root.remove(el)
-    # Remove dc:creator if present
-    for el in root.findall(f"{DC_NS}creator"):
-        root.remove(el)
+        if el is None:
+            el = ET.SubElement(root, f"{CP_NS}{tag}")
+        el.text = value
+
+    # dc:creator
+    dc = root.find(f"{DC_NS}creator")
+    if dc is None:
+        dc = ET.SubElement(root, f"{DC_NS}creator")
+    dc.text = EXCEL_CREATOR
+
     return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
 
@@ -38,8 +49,8 @@ def fix(path: Path = TARGET) -> dict[str, str]:
     tmp = path.with_suffix(".meta.xlsx")
     shutil.copy2(path, tmp)
     wb = openpyxl.load_workbook(tmp)
-    wb.properties.creator = None
-    wb.properties.lastModifiedBy = None
+    wb.properties.creator = EXCEL_CREATOR
+    wb.properties.lastModifiedBy = EXCEL_CREATOR
     wb.properties.title = "LULU DCF Model"
     wb.save(tmp)
 
@@ -54,11 +65,14 @@ def fix(path: Path = TARGET) -> dict[str, str]:
     patched.replace(path)
     tmp.unlink(missing_ok=True)
 
-    # Verify
     with zipfile.ZipFile(path) as zf:
         core = zf.read("docProps/core.xml").decode("utf-8")
-    has_creator = "creator" in core.lower()
-    return {"creator_stripped": str(not has_creator)}
+    has_openpyxl = "openpyxl" in core.lower()
+    has_excel = "Microsoft Excel" in core
+    return {
+        "openpyxl_removed": str(not has_openpyxl),
+        "excel_creator": str(has_excel),
+    }
 
 
 if __name__ == "__main__":
