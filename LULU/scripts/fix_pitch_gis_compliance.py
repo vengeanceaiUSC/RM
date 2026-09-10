@@ -119,35 +119,96 @@ def _compact_table_rows(table, total_h_in: float) -> None:
 
 
 def _fix_slide17(prs: Presentation) -> None:
+    """Slide 17 — two-column GIS grid (matches slide 20): left 0.50×6.15, right 6.85×6.00."""
     slide = prs.slides[16]
-    # Restore MODEL SOURCE MAP tables to reference geometry (never delete)
+    left, lwide = Inches(0.50), Inches(6.15)
+    right, rwide = Inches(6.85), Inches(6.00)
+
     for shape in slide.shapes:
+        if shape.has_text_frame:
+            t = shape.text_frame.text.strip()
+            if t == "CAPITAL STACK (US$ M)":
+                shape.left = int(left)
+                shape.top = int(Inches(1.24))
+                shape.width = int(lwide)
+                shape.height = int(Inches(0.22))
+            elif t == "WACC BUILD (CAPM)":
+                shape.left = int(right)
+                shape.top = int(Inches(1.24))
+                shape.width = int(rwide)
+                shape.height = int(Inches(0.22))
+            elif t.startswith("EV BRIDGE"):
+                shape.left = int(left)
+                shape.top = int(Inches(2.86))
+                shape.width = int(lwide)
+                shape.height = int(Inches(0.20))
+            elif t.startswith("No funded bank debt"):
+                shape.left = int(left)
+                shape.top = int(Inches(4.22))
+                shape.width = int(lwide)
+                shape.height = int(Inches(0.48))
+            elif t.startswith("\u03b2:") or t.startswith("β:"):
+                shape.left = int(right)
+                shape.top = int(Inches(3.88))
+                shape.width = int(rwide)
+                shape.height = int(Inches(0.24))
+            elif t == "MODEL SOURCE MAP":
+                shape.left = int(left)
+                shape.top = int(Inches(5.06))
+                shape.width = int(Inches(12.35))
+                shape.height = int(Inches(0.20))
+            elif t.startswith("WACC ="):
+                shape.left = int(right)
+                shape.top = int(Inches(4.14))
+                shape.width = int(rwide)
+                shape.height = int(Inches(0.84))
+            elif (
+                not t
+                and str(shape.fill.type) == "SOLID (1)"
+                and shape.top is not None
+                and Inches(1.4) < shape.top < Inches(1.6)
+                and shape.left > Inches(6.0)
+            ):
+                # Grey WACC panel behind the input table
+                shape.left = int(right)
+                shape.top = int(Inches(1.50))
+                shape.width = int(rwide)
+                shape.height = int(Inches(3.53))
         if not shape.has_table:
             continue
         h0 = shape.table.rows[0].cells[0].text.strip()
-        if h0 == "Cap stack line item":
-            shape.left = int(Inches(0.50))
+        if h0 == "Component" and shape.top < Inches(2.5):
+            shape.left = int(left)
+            shape.top = int(Inches(1.48))
+            shape.width = int(lwide)
+            shape.height = int(Inches(1.35))
+            _compact_table_rows(shape.table, 1.35)
+        elif h0 == "Component" and shape.top > Inches(2.5):
+            shape.left = int(left)
+            shape.top = int(Inches(3.08))
+            shape.width = int(lwide)
+            shape.height = int(Inches(0.78))
+            _compact_table_rows(shape.table, 0.78)
+        elif h0 == "Input":
+            shape.left = int(right)
+            shape.top = int(Inches(1.56))
+            shape.width = int(rwide)
+            shape.height = int(Inches(2.22))
+            _compact_table_rows(shape.table, 2.22)
+        elif h0 == "Cap stack line item":
+            shape.left = int(left)
             shape.top = int(Inches(5.26))
-            shape.width = int(Inches(6.05))
+            shape.width = int(lwide)
             shape.height = int(Inches(0.72))
             _compact_table_rows(shape.table, 0.72)
             _shrink_table_font(shape.table, 7.0)
         elif h0 == "WACC input":
-            shape.left = int(Inches(6.78))
+            shape.left = int(right)
             shape.top = int(Inches(5.26))
-            shape.width = int(Inches(5.98))
+            shape.width = int(rwide)
             shape.height = int(Inches(1.08))
             _compact_table_rows(shape.table, 1.08)
             _shrink_table_font(shape.table, 7.0)
-    for shape in slide.shapes:
-        if shape.has_table and shape.table.rows[0].cells[0].text.strip() == "Component":
-            # EV bridge table — reference height
-            if shape.top > Inches(2.5):
-                shape.height = int(Inches(0.78))
-                _compact_table_rows(shape.table, 0.78)
-        if shape.has_text_frame and shape.text_frame.text.startswith("No funded bank debt"):
-            shape.top = int(Inches(4.22))
-            shape.height = int(Inches(0.48))
     for shape in _footer_shapes(slide):
         if not shape.text_frame.text.strip().isdigit():
             _set_footer(shape, "Source: LULU_DCF_Valuation_Model.xlsx, WACC tab (col E) · 10-K cap stack")
