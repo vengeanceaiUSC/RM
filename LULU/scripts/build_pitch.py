@@ -30,6 +30,13 @@ from gis_pitch import (
     GREEN,
 )
 import data as D
+from pitch_narrative import (
+    MODEL as _MODEL_FILE,
+    NARRATIVE_SLIDES,
+    TIMELINE_DESCRIPTOR,
+    TIMELINE_EVENTS,
+    TIMELINE_FOOTNOTES,
+)
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "LULU_Investment_Pitch_Deck.pptx")
 PITCH_VALUES_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "pitch_values.json")
@@ -70,10 +77,11 @@ def _pct(v, d=1):
 _BASE_DCF = 133.64
 _BASE_UPSIDE = 33.6
 _WACC_PCT = 9.0
-_MODEL = "LULU_DCF_Valuation_Model.xlsx"
-_Q2_SUPP = "https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf"
-_LULU_PR = "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733"
-_TIKR = "https://www.tikr.com/blog/lululemon-stock-crashed-17-on-friday-the-guidance-cut-was-the-real-story"
+_MODEL = _MODEL_FILE
+_SPOT = 100.61
+_Q2_SUPP = "Lululemon Q2 FY26 earnings supplement"
+_LULU_PR = "Lululemon Q2 FY26 press release"
+_TIKR = "TIKR post-earnings note (Sep 2026)"
 _CONTENT_TOP = 1.28
 _FOOTER_Y = 7.08  # GIS footer line (page number)
 _LINK_GAP = 0.16  # clearance between body content and sources block
@@ -92,16 +100,21 @@ def _content_bottom(n_links: int) -> float:
     return _links_top(n_links) - _LINK_GAP
 
 
+def _strip_inline_cites(text: str) -> str:
+    return re.sub(r"\s*\[\d+\]", "", text).strip()
+
+
 def _add_links_box(slide, links, top=None):
-    """Numbered source list tucked above the slide footer."""
+    """Numbered source footnotes (no raw URLs)."""
     n = len(links)
     height = _links_block_height(n)
     if top is None:
         top = _links_top(n)
     tb, tf = textbox(slide, Inches(0.5), Inches(top), Inches(12.35), Inches(height))
-    add_para(tf, "Links & Sources", 8, CARD, bold=True, first=True, space_after=1)
+    add_para(tf, "Sources", 8, CARD, bold=True, first=True, space_after=1)
     for num, text in links:
-        add_para(tf, f"[{num}] {text}", 6.5, INK, bullet=True, space_after=1)
+        line = re.sub(r"https?://\S+", "", text).strip(" /;")
+        add_para(tf, f"{num}. {line}", 6.5, INK, bullet=False, space_after=1)
 
 
 def _add_rich_runs(p, text, size=12, color=INK, default_bold=False):
@@ -148,7 +161,10 @@ def _narrative_slide(title, descriptor, bullets, links, body_top=_CONTENT_TOP):
     band = max(0.8, bottom - body_top)
     card_h = (band - (n - 1) * _CARD_GAP) / n
     text_w = 12.35 - _CARD_PAD_L - _CARD_PAD_R
-    plain = [b[0] + ": " + b[1] if isinstance(b, tuple) else b for b in bullets]
+    plain = [
+        b[0] + ": " + b[1] if isinstance(b, tuple) else _strip_inline_cites(b)
+        for b in bullets
+    ]
     size = fit_font_size(plain, text_w, card_h - 0.30)
 
     for i, bullet in enumerate(bullets):
@@ -166,7 +182,7 @@ def _narrative_slide(title, descriptor, bullets, links, body_top=_CONTENT_TOP):
         if isinstance(bullet, tuple):
             _add_labeled_bullet(tf, bullet[0], bullet[1], size=size, first=True)
         else:
-            add_para(tf, bullet, size, INK, first=True, space_after=0)
+            add_para(tf, _strip_inline_cites(bullet), size, INK, first=True, space_after=0)
     _add_links_box(s, links)
     return s
 
@@ -236,196 +252,12 @@ for col_i, entries in enumerate((_DECK_TOC[:_toc_split], _DECK_TOC[_toc_split:])
         text_cols=(1,),
     )
 
-# Slide 2 - Situation Overview
-_narrative_slide(
-    "Situation Overview and Current Investment Setup",
-    "This slide outlines why this investment opportunity exists and the historical financial context driving the current setup",
-    [
-        "The recent guidance cut triggered a massive cyclical panic pushing Lululemon down to roughly 100 dollars [1]",
-        "Despite historically compounding double digit growth the market capitulated over a guidance cut of 5 to 7 percent [2]",
-        "Near-term Americas stagnation is modeled via FY26-FY30 US averages of approximately flat same-store comps and only 6 annual gross store openings, offset by China Mainland averages of 10.2% comps and 16 gross store openings [4]",
-        "Lululemon still retains durable cash flows with clean run rate operating margins of 13.2 percent [3]",
-    ],
-    [
-        (1, f"TIKR LULU Stock Crashed 17%: {_TIKR}"),
-        (2, f"Lululemon Q2 FY2026 Guidance Release: {_Q2_SUPP}"),
-        (3, f"Provided Valuation Model: {_MODEL}"),
-        (4, f"{_MODEL}, Revenue Drivers Schedule (Americas & China comps & store openings)"),
-    ],
-)
+# Slide 2-12 — humanized narrative (see pitch_narrative.py)
+for title, descriptor, bullets, links in NARRATIVE_SLIDES:
+    _narrative_slide(title, descriptor, bullets, links)
 
-# Slide 3 - Market Narrative
-_narrative_slide(
-    "Market Narrative and Analyst Sentiment Surrounding the Stock",
-    "This slide breaks down current market sentiment and exactly what analysts are saying about the recent guidance cut",
-    [
-        "Morgan Stanley issued a highly pessimistic forecast after management aggressively cut 2026 revenue guidance to 10.35 billion [1]",
-        "Analysts are paralyzed by cyclical fears as the consensus price target was slashed from 176 dollars to 136 dollars [2]",
-        "Firms like BTIG maintain neutral ratings due to short-term turbulence but ignore the durable competitive advantage we see [3]",
-    ],
-    [
-        (1, "MarketBeat: Morgan Stanley Issues Pessimistic Forecast for lululemon athletica: https://www.marketbeat.com/instant-alerts/analyst-morgan-stanley-issues-pessimistic-forecast-for-lululemon-athletica-nasdaq-lulu-stock-price-2026-09-04/"),
-        (2, "Simply Wall St: lululemon athletica Stock Analysis: https://simplywall.st/stocks/us/consumer-durables/nasdaq-lulu/lululemon-athletica"),
-        (3, "GuruFocus: LULU Reiterates by BTIG - Rating Maintained at Neutral: https://www.gurufocus.com/news/9068272/lulu-reiterates-by-btig-rating-maintained-at-neutral"),
-    ],
-)
-
-# Slide 4 - Investment Thesis Summary
-_narrative_slide(
-    "Investment Thesis Summary and Target Price",
-    "This slide breaks down our $133.64 intrinsic DCF fair value, our $140 twelve-month target price, and the three core pillars supporting our overweight recommendation",
-    [
-        "Our base-case DCF yields an intrinsic fair value of $133.64 per share (+33.6% upside), supporting our 12-month target price of $140.00 as market multiples modestly re-rate [1]",
-        "The first pillar is profitability because the base case models an approximately 14.4 percent average EBIT margin across FY26-FY30 as clean margins recover from 13.2 percent toward 15.5 percent by FY30 [2]",
-        "The second pillar is our mathematically sound 9.0 percent WACC which strictly bounds our 2.3 percent long-term revenue growth assumption [3]",
-        "Finally, international expansion remains the crucial growth engine, as FY25 China segment revenue grew approximately 29% year-over-year versus flat Americas, and modeled China growth offsets this stagnation with FY26-FY30 averages of 10.2% same-store comps and 16 annual gross store openings [4]",
-    ],
-    [
-        (1, f"Provided Valuation Model (Base Case Implied Value): {_MODEL}"),
-        (2, f"Provided Valuation Model (FY26-FY30 EBIT Margin Path): {_MODEL}"),
-        (3, f"Provided Valuation Model (WACC & Revenue Drivers): {_MODEL}"),
-        (4, f"Lululemon Q2 FY2026 Earnings Release (International Growth): {_Q2_SUPP}"),
-    ],
-)
-
-# Slide 5 - Geographic segments. The user copy gives no title, so the title bar
-# reuses the table-of-contents entry rather than leaving the bar blank.
-_narrative_slide(
-    _DECK_TOC[4][1],
-    "This slide outlines Lululemon's geographic segments and revenue breakdown while detailing why China growth offsets temporary US declines",
-    [
-        "Lululemon generated 11.1 billion dollars in total revenue with Americas contributing 7.85 billion dollars or 70.68 percent [1]",
-        "Americas comparable sales fell 3 percent due to temporary cyclical macro pressure rather than structural brand degradation [2]",
-        "China Mainland reached 1.75 billion dollars in segment revenue on +20% FY25 comparable sales growth, proving high-growth international expansion easily offsets US temporary weakness [3]",
-    ],
-    [
-        (1, f"Lululemon FY2025 Form 10-K (Segment Revenue and Percentages): {_Q2_SUPP}"),
-        (2, f"Lululemon FY2025 Form 10-K (Americas Comparable Sales): {_Q2_SUPP}"),
-        (3, f"Provided Valuation Model (China Mainland Growth & Revenue Driver): {_MODEL}"),
-    ],
-)
-
-# Slide 6 - Unit economics
-_narrative_slide(
-    "Business Model Unit Economics and Competitive Moats",
-    "This slide analyzes Lululemon's unit economics and competitive moats that protect its long-term market leadership",
-    [
-        "Lululemon sustains a 56.6 percent gross margin providing a massive competitive moat against retail price competition [1]",
-        "E-commerce unit economics remain elite with direct-to-consumer EBIT margins hitting 23.6 percent without retail occupancy drag [2]",
-        "Company-operated stores generate 1,426 dollars per square foot and an 18.6 percent EBIT margin establishing high capital efficiency [3]",
-    ],
-    [
-        (1, f"Provided Valuation Model (Gross Margin): {_MODEL}"),
-        (2, f"Provided Valuation Model (E-commerce EBIT Margin Driver): {_MODEL}"),
-        (3, f"Provided Valuation Model (Store EBIT Margin & SPSF): {_MODEL}"),
-    ],
-)
-
-# Slide 7 - Industry overview
-_narrative_slide(
-    "Industry Overview - Trends and Structure",
-    "This slide explores the ongoing athleisure industry trends including market fragmentation and the barriers to entry",
-    [
-        "The global athleisure market remains highly fragmented, meaning most players lack a durable competitive advantage [1]",
-        "The premium segment maintains high barriers to entry protecting global champions from temporary cyclical noise [2]",
-        "Lululemon mathematically proves its moat by generating a 30.25 percent ROE far outpacing the 6.81 percent industry median [3]",
-    ],
-    [
-        (1, "Market.us Media (Athleisure Market Fragmentation): https://media.market.us/athleisure-industry-statistics/"),
-        (2, "Fortune Business Insights (Premium Athleisure Trends): https://www.fortunebusinessinsights.com/athleisure-market-110642"),
-        (3, "FinanceCharts (Lululemon ROE & Retail Median): https://www.financecharts.com/stocks/LULU/growth/roe"),
-    ],
-)
-
-# Slide 8 - Industry margins (Slide 7 Part 2)
-_narrative_slide(
-    "Industry Overview - Barriers to Entry and Profitability",
-    "This slide dissects capital efficiency metrics comparing Lululemon's gross margin directly against legacy apparel competitors",
-    [
-        "Lululemon commands a 56.6 percent gross margin far exceeding traditional athletic apparel peers like Nike and Under Armour [1]",
-        "Nike struggles to maintain a 43 percent margin while Under Armour hovers around 46 percent reflecting their wholesale dependence [2]",
-        "Lululemon's direct-to-consumer scale prevents this structural margin compression and forms an impenetrable economic moat against industry price wars [3]",
-    ],
-    [
-        (1, f"Provided Valuation Model (Gross Margin Assumptions): {_MODEL}"),
-        (2, "Investing.com (Nike & Under Armour Historical Gross Margins): https://www.investing.com/pro/NYSE:NKE/explorer/gp_margin"),
-        (3, "ProAnalyst LULU Market Report (Competitor Margins & DTC Moat): https://lulu.proanalyst.ai/business"),
-    ],
-)
-
-# Slide 9 - Investment Thesis I
-_narrative_slide(
-    "Investment Thesis I",
-    "This slide outlines the core contrarian investment thesis utilizing numerical evidence from the valuation model",
-    [
-        "The 2026 price drop exceeding 50% has left Lululemon critically undervalued despite durable cash flows [1]",
-        "Its premium Direct-to-Consumer revenue mix protects a massive 54.9% adjusted gross margin, mathematically supporting our intrinsic valuation thesis [2]",
-        "Furthermore, even with Americas growth stagnating, sheer cash flow generation creates a robust intrinsic valuation buffer, where a conservative 2.25% terminal growth rate still yields over 30% upside to our $133.64 target price [3]",
-    ],
-    [
-        (1, "https://everythingmoney.com/blog/lululemon-is-collapsing-burry-s-biggest-bet-4334"),
-        (2, "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733"),
-        (3, f"{_MODEL}, DCF Terminal Value & Valuation Summary Schedule"),
-    ],
-)
-
-# Slide 10 - Investment Thesis II
-_narrative_slide(
-    "Investment Thesis II  Partial Margin Recovery & Brand Loyalty Floor",
-    "This slide details how partial margin recovery supported by core brand loyalty still drives a highly compelling valuation",
-    [
-        "Historical pandemic-era peak EBIT margins reached 23.7% in FY24 showing prior peak earnings power [1]",
-        "Our valuation assumes a floor built on resilient baseline brand loyalty, proving Lululemon does not need to remain the hottest viral trend 100% of the time to sustain at minimum a 13.2% trough EBIT margin [2]",
-        "A modest partial recovery to just 15.5% EBIT margin by FY30 still yields $133.64 per share [3]",
-        "This proves returning to peak COVID profitability is completely unnecessary to unlock substantial market upside [4]",
-    ],
-    [
-        (1, f"{_MODEL} / SEC EDGAR Form 10-K (FY24 Peak Margins)"),
-        (2, f"{_MODEL}, Clean Run-Rate EBIT Margin & Brand Royalty Assumptions"),
-        (3, f"{_MODEL}, Base Case DCF Valuation Summary"),
-        (4, f"{_MODEL}, Discounted Cash Flow Valuation Summary"),
-    ],
-)
-
-# Slide 11 - Investment Thesis III
-_narrative_slide(
-    "Investment Thesis III: Geographic Growth Divergence",
-    "This slide examines how Lululemon's top-line projections rely disproportionately on Chinese market expansion to conceal domestic North American stagnation.",
-    [
-        "The revenue build reveals Americas facing near-term contraction with -4.0% comps in FY26 flatlining at a terminal 2.0% growth rate by FY30 [1]",
-        "To offset this domestic anchor, the model assumes FY26-FY30 China footprint expansion averaging 16 gross store openings annually versus 6 in Americas, plus 10.2% average same-store comp growth (14% to 7% FY26-FY30) on existing doors [2]",
-        "Consequently, if the Chinese consumer softens, this model's core top-line projections will not be optimal enough to meet our target [3]",
-    ],
-    [
-        (1, f"{_MODEL}, Americas FY26-FY30 Comparable Sales Growth Assumptions"),
-        (2, f"{_MODEL}, FY26 Store Openings & Mainland China Revenue Build"),
-        (3, f"{_MODEL}, Revenue Drivers Schedule"),
-    ],
-)
-
-# Slide 12 - Risk & Mitigants
-_narrative_slide(
-    "Risk & Mitigants",
-    "This slide evaluates core downside risks and demonstrates how share repurchases compound EPS to drive share price recovery",
-    [
-        "China deceleration risks a $56.00 bear floor, but $45.64 cumulative cash per share recovers 45% of entry price [1]",
-        "CapEx fading from a 7% FY26 guide toward 5.5% of revenue, plus FY26 inventory normalization and a capital-light 23.6% e-commerce EBIT margin, support free cash flow even if China comps moderate [2]",
-        "Deploying $750M annually into buybacks retires 32.9 million shares, compounding EPS to $14.57, more than enough to recover our $133.64 DCF-implied share price [3]",
-    ],
-    [
-        (1, f"{_MODEL}, Bear Case DCF Valuation Summary / https://www.barrons.com/articles/lululemon-stock-earnings-guidance-a7a7c5c0"),
-        (2, f"{_MODEL}, CapEx Fade & NWC Schedule / NOPAT Bridge (E-Commerce EBIT Margin) / {_LULU_PR}"),
-        (3, f"{_MODEL}, Share Repurchase & EPS Accretion Schedule / {_LULU_PR}"),
-    ],
-)
-
-# Slide 13 - Timeline of Recovery (last narrative slide before 3-statement financials on slide 14)
-_timeline_links = [
-    (1, f"{_MODEL}, Scenarios & Revenue Drivers / {_LULU_PR}"),
-    (2, f"{_MODEL}, NOPAT Bridge & Scenarios / {_LULU_PR}"),
-    (3, f"{_MODEL}, Scenarios & Unlevered Free Cash Flow Schedule / {_LULU_PR}"),
-    (4, f"{_MODEL}, Revenue Drivers & DCF Valuation Summary / https://stockanalysis.com/stocks/lulu/forecast/"),
-]
+# Slide 13 - Timeline of Recovery
+_timeline_links = TIMELINE_FOOTNOTES
 _timeline_top = 1.28
 _timeline_rows = 4
 _timeline_row_gap = 0.06
@@ -437,28 +269,11 @@ _timeline_step = _timeline_row_h + _timeline_row_gap
 
 s = slide_base(
     "Timeline of Recovery",
-    " ",
+    TIMELINE_DESCRIPTOR,
     page=pg(),
     sources=" ",
 )
-cats = [
-    (
-        "2026 (Q3 FY2026 Trough)",
-        "Q3 FY2026 revenue laps guidance trough while China Double 11 sales confirm holiday store traffic floor stabilization across key markets [1]",
-    ),
-    (
-        "2027 (FY2026 Year-End)",
-        "First full-year reset absorbs steep prior declines while $134.5M tariff refunds and targeted SG&A cost actions protect earnings per share [2]",
-    ),
-    (
-        "2027 (FY2027 Margin Inflection)",
-        "Operating margins expand to 13.8% (+60 bps) as promotional headwinds anniversary, while $750M annual buybacks compound EPS to $10.09 to boost sentiment [3]",
-    ),
-    (
-        "2028 (FY2027-FY2028 Multiple Re-Rating)",
-        "China adds ~17 net stores in FY27 while +12% FY27 and +10% FY28 same-store comps offset Americas -4% FY26 comps, driving re-rating toward $133.64 [4]",
-    ),
-]
+cats = list(TIMELINE_EVENTS)
 _timeline_label_w = 3.55
 _timeline_body_l = 4.2
 _timeline_body_w = 8.65
@@ -481,7 +296,7 @@ for when, what in cats:
     bt2 = b2.text_frame
     bt2.word_wrap = True
     bt2.vertical_anchor = MSO_ANCHOR.MIDDLE
-    add_para(bt2, what, _timeline_body_size, INK, first=True, space_after=0)
+    add_para(bt2, _strip_inline_cites(what), _timeline_body_size, INK, first=True, space_after=0)
     top += _timeline_step
 _add_links_box(s, _timeline_links)
 
@@ -491,36 +306,35 @@ def m(v):
 
 HY = ["FY2022", "FY2023", "FY2024", "FY2025"]
 DCF_MODEL = _MODEL
-SCEN_TAB = "Scenarios"
-SCEN_G = f"{DCF_MODEL}: {SCEN_TAB}, col G (base)"
-HIST_10K = "SEC Form 10-K (FY2022-FY2025)"
+SCEN_TAB = "Scenarios (base case)"
+HIST_10K = "FY2022-FY2025 Form 10-K"
 FIN_FOOTNOTE = (
-    "Hist = 10-K. Forecast (26-30) = DCF Scenarios pitch-bridge block, col G (base case only). "
-    "Per-row forecast sources shown under line items."
+    f"Historical: {HIST_10K}. Forecast: {DCF_MODEL}, Scenarios tab (base case). "
+    "Line-item sources in table below."
 )
 
 _FCST_SRC = {
-    "revenue": "Scenarios tab, col G (revenue yrs 1-5)",
-    "gross_margin": "Scenarios tab, col G (gross margin %)",
-    "ebit": "Scenarios tab, col G (EBIT yrs 1-5)",
-    "net_income": "Scenarios tab, col G (net income bridge)",
-    "eps": "Scenarios tab, col G (EPS after buybacks)",
-    "cash": "Scenarios tab, col G (cash roll-forward)",
-    "inventories": "Scenarios tab, col G (NWC schedule)",
-    "total_assets": "Scenarios tab, col G (balance sheet)",
-    "total_liab": "Scenarios tab, col G (balance sheet)",
-    "total_equity": "Scenarios tab, col G (balance sheet)",
-    "cfo": "Scenarios tab, col G (CFO bridge)",
-    "dna": "Scenarios tab, col G (D&A yrs 1-5)",
-    "capex": "Scenarios tab, col G (capex yrs 1-5)",
-    "fcf": "Scenarios tab, col G (FCF bridge)",
-    "buybacks": "Scenarios tab, col G ($750M/yr buybacks)",
+    "revenue": f"{DCF_MODEL}, Scenarios — revenue",
+    "gross_margin": f"{DCF_MODEL}, Scenarios — gross margin",
+    "ebit": f"{DCF_MODEL}, Scenarios — EBIT",
+    "net_income": f"{DCF_MODEL}, Scenarios — net income",
+    "eps": f"{DCF_MODEL}, DCF — EPS (post buyback)",
+    "cash": f"{DCF_MODEL}, Scenarios — cash roll-forward",
+    "inventories": f"{DCF_MODEL}, Scenarios — NWC",
+    "total_assets": f"{DCF_MODEL}, Scenarios — balance sheet",
+    "total_liab": f"{DCF_MODEL}, Scenarios — balance sheet",
+    "total_equity": f"{DCF_MODEL}, Scenarios — balance sheet",
+    "cfo": f"{DCF_MODEL}, Scenarios — CFO bridge",
+    "dna": f"{DCF_MODEL}, Scenarios — D&A",
+    "capex": f"{DCF_MODEL}, Scenarios — capex",
+    "fcf": f"{DCF_MODEL}, DCF — unlevered FCF",
+    "buybacks": f"{DCF_MODEL}, Scenarios — $750M/yr repurchases",
 }
 
 
 def _fcst_src(key, detail=""):
-    """Human-readable forecast source (no raw Excel cell ranges)."""
-    base = _FCST_SRC.get(key, f"Scenarios tab, col G ({key})")
+    """Human-readable forecast source (no cell ranges or formula paths)."""
+    base = _FCST_SRC.get(key, f"{DCF_MODEL}, Scenarios ({key})")
     return f"{base}{detail}"
 
 
@@ -576,7 +390,7 @@ def _hist_line(label, detail):
 
 
 def _base_fcst_line(label, v26, v30, fmt="num"):
-    """One explainer bullet: base case FY26 to FY30 (Scenarios col G)."""
+    """One explainer bullet: base case FY26 to FY30."""
     if fmt == "pct":
         return f"{label}: FY26 {v26} to FY30 {v30}"
     if fmt == "eps":
@@ -629,7 +443,7 @@ def _fmt_cell(v, fmt="num"):
 
 
 def _fin_source_table(slide, source_rows, top=5.92, col0w=1.85, height=0.95):
-    """Per-line model source: Hist | Fcst (Scenarios G)."""
+    """Per-line source attribution: 10-K history | model forecast."""
     headers = ["Line item", "Hist source (22-25)", "Forecast Source"]
     rows = [[line, hist, fcst] for line, hist, fcst in source_rows]
     stmt_table(
@@ -656,7 +470,7 @@ def pitch_financial_slide(
     table_height=1.98,
     explainer_height=2.32,
 ):
-    """Build one financial slide: historicals + 5yr base-case forecast (Scenarios G)."""
+    """Build one financial slide: historicals + 5yr base-case forecast."""
     hdr = _fin_headers()
     footnote = FIN_FOOTNOTE
     if italic_note:
@@ -774,17 +588,17 @@ _CF_HIST, _CF_FCST = _aligned_explainers([
 
 _IS_SOURCES = [
     ("Net revenue", "10-K IS, Net revenue", _fcst_src("revenue")),
-    ("Gross profit", "10-K IS, Gross profit", "Revenue x gross margin (Scenarios col G)"),
+    ("Gross profit", "10-K IS, Gross profit", f"{DCF_MODEL}, gross margin on revenue"),
     ("Operating income", "10-K IS, Operating income", _fcst_src("ebit")),
-    ("Operating margin %", "10-K IS, OI / revenue", "EBIT / revenue (Scenarios col G)"),
+    ("Operating margin %", "10-K IS, OI / revenue", f"{DCF_MODEL}, EBIT / revenue"),
     ("Net income", "10-K IS, Net income", _fcst_src("net_income")),
-    ("Diluted EPS", "10-K IS, Diluted EPS", "Net income / diluted shares ($750M/yr buybacks)"),
+    ("Diluted EPS", "10-K IS, Diluted EPS", _fcst_src("eps")),
 ]
 _IS_NOTES = [
     _row_note("10-K IS, Net revenue", _fcst_src("revenue")),
-    _row_note("10-K IS, Gross profit", "Revenue x gross margin (Scenarios col G)"),
+    _row_note("10-K IS, Gross profit", f"{DCF_MODEL}, gross margin assumption"),
     _row_note("10-K IS, Operating income", _fcst_src("ebit")),
-    _row_note("10-K IS, OI / revenue", "EBIT / revenue (Scenarios col G)"),
+    _row_note("10-K IS, OI / revenue", f"{DCF_MODEL}, margin bridge"),
     _row_note("10-K IS, Net income", _fcst_src("net_income")),
     _row_note("10-K IS, Diluted EPS", _fcst_src("eps")),
 ]
@@ -835,13 +649,13 @@ pitch_financial_slide(
     row_notes=_IS_NOTES,
     hist_title="HISTORICALS (FY2022-FY2025) | SEC 10-K",
     hist_bullets=_IS_HIST,
-    fcst_title="FORECAST (FY2026E-FY2030E) | base case (Scenarios col G)",
+    fcst_title=f"FORECAST (FY2026E-FY2030E) | {DCF_MODEL} base case",
     fcst_bullets=_IS_FCST,
     source_rows=_IS_SOURCES,
     bold_rows=(0, 2, 5),
     italic_note=(
-        f"Forecast: {DCF_MODEL}, Scenarios col G. EPS = net income / diluted shares after "
-        "$750M/yr repurchases (DCF $134 still uses 111.4M day-one basic shares)."
+        f"Forecast: {DCF_MODEL}, Scenarios & DCF tabs. EPS reflects net income / "
+        "diluted shares after $750M/yr repurchases."
     ),
 )
 
@@ -859,13 +673,12 @@ pitch_financial_slide(
     row_notes=_BS_NOTES,
     hist_title="HISTORICALS (FY2022-FY2025) | SEC 10-K",
     hist_bullets=_BS_HIST,
-    fcst_title="FORECAST (FY2026E-FY2030E) | base case (Scenarios col G)",
+    fcst_title=f"FORECAST (FY2026E-FY2030E) | {DCF_MODEL} base case",
     fcst_bullets=_BS_FCST,
     source_rows=_BS_SOURCES,
     bold_rows=(2, 4, 5),
     italic_note=(
-        "BS forecast: cash roll-forward includes $750M/yr buybacks; equity scales with revenue "
-        "(buyback-driven equity reduction shown via CF / IS share count, not TE line)."
+        f"Balance sheet forecast: {DCF_MODEL}. Cash roll-forward net of $750M/yr buybacks."
     ),
 )
 
@@ -882,12 +695,12 @@ pitch_financial_slide(
     row_notes=_CF_NOTES,
     hist_title="HISTORICALS (FY2022-FY2025) | SEC 10-K",
     hist_bullets=_CF_HIST,
-    fcst_title="FORECAST (FY2026E-FY2030E) | base case (Scenarios col G)",
+    fcst_title=f"FORECAST (FY2026E-FY2030E) | {DCF_MODEL} base case",
     fcst_bullets=_CF_FCST,
     source_rows=_CF_SOURCES,
     bold_rows=(3,),
     italic_note=(
-        "Buybacks: $750M/yr fixed (Scenarios col G). Cash roll-forward = prior cash + FCF \u2212 buybacks."
+        f"FCF = CFO less capex ({DCF_MODEL}, DCF tab). Buybacks: $750M/yr fixed in base case."
     ),
 )
 
@@ -895,8 +708,23 @@ pitch_financial_slide(
 # 16. FINANCIALS: CAPITAL STRUCTURE & WACC
 # =====================================================================
 def _wacc_ref(key):
-    r = WR.get(key)
-    return f"WACC!E{r}" if r else f"{DCF_MODEL}: WACC tab"
+    labels = {
+        "mkt_eq": f"{DCF_MODEL}, WACC — market equity",
+        "lease_d": f"{DCF_MODEL}, WACC — ASC 842 leases",
+        "fund_d": f"{DCF_MODEL}, WACC — funded debt",
+        "debt_tot": f"{DCF_MODEL}, WACC — total capital",
+        "rf": f"{DCF_MODEL}, WACC — risk-free rate",
+        "erp": f"{DCF_MODEL}, WACC — equity risk premium",
+        "tax": f"{DCF_MODEL}, WACC — tax rate",
+        "beta": f"{DCF_MODEL}, WACC — relevered beta",
+        "coe": f"{DCF_MODEL}, WACC — cost of equity",
+        "kd": f"{DCF_MODEL}, WACC — pre-tax Kd",
+        "kd_at": f"{DCF_MODEL}, WACC — after-tax Kd",
+        "we": f"{DCF_MODEL}, WACC — equity weight",
+        "wd": f"{DCF_MODEL}, WACC — debt weight",
+        "wacc": f"{DCF_MODEL}, WACC — summary",
+    }
+    return labels.get(key, f"{DCF_MODEL}, WACC tab")
 
 
 def _pct_wb(v, d=2):
@@ -1001,7 +829,7 @@ btf.vertical_anchor = MSO_ANCHOR.MIDDLE
 add_para(btf, f"WACC = {_pct_wb(WB['wacc'])}", 17, WHITE, bold=True, first=True, space_after=2)
 add_para(
     btf,
-    f"Base-case discount rate: Scenarios col G \u00b7 implied price {_d(V['base_dcf'])}",
+    f"Base-case discount rate ({DCF_MODEL}, WACC tab) · implied price {_d(V['base_dcf'])}",
     9, WHITE, space_after=0,
 )
 
@@ -1011,7 +839,7 @@ add_para(
 tb, tf = textbox(s, Inches(0.5), Inches(5.06), Inches(12.35), Inches(0.2))
 add_para(tf, "MODEL SOURCE MAP", 9, CARD, bold=True, first=True, space_after=0)
 _SRC_MAP_TOP = 5.26
-_SRC_MAP_HDR = "DCF model source (WACC tab, col E)"
+_SRC_MAP_HDR = f"Source ({DCF_MODEL})"
 stmt_table(
     s, [[a, b] for a, b in _cap_src_rows],
     ["Cap stack line item", _SRC_MAP_HDR],
@@ -1047,7 +875,7 @@ ff_methods = [
     ("EV / EBITDA (5.0-8.0x FY30E)", round(FF["EV / EBITDA"]["low"]), round(FF["EV / EBITDA"]["high"])),
     ("Geographic SOTP (FY30E; Gordon anchor)", _sotp_lo, _sotp_hi),
     ("Unlevered DCF (base / Gordon g)", _base_px, _base_px),
-    ("52-week range", 100, 226),
+    ("52-week range", int(_SPOT), 226),
 ]
 chart_l, chart_r = 3.35, 12.5
 vmin, vmax = 50, 240
@@ -1086,12 +914,12 @@ for name, lo, hi in ff_methods:
         add_para(tf2, f"${hi}", 9.5, NAVY, bold=True, first=True, space_after=0)
     top += 0.72
 
-cp_x = _xpos(100)
+cp_x = _xpos(int(_SPOT))
 pt_x = _xpos(140)
 rect(s, Inches(cp_x), Inches(1.45), Pt(2), Inches(4.25), fill=INK)
 rect(s, Inches(pt_x), Inches(1.45), Pt(2), Inches(4.25), fill=CARD)
 tb, tf = textbox(s, Inches(cp_x - 0.6), Inches(1.22), Inches(1.2), Inches(0.24))
-add_para(tf, "Current $100", 8.5, INK, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
+add_para(tf, f"Current ${_SPOT:.0f}", 8.5, INK, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
 tb, tf = textbox(s, Inches(pt_x - 0.7), Inches(1.22), Inches(1.2), Inches(0.24))
 add_para(tf, "Target $140", 8.5, CARD, bold=True, align=PP_ALIGN.CENTER, first=True, space_after=0)
 
@@ -1103,7 +931,7 @@ add_para(
 )
 add_para(
     tf,
-    f"DCF row = Scenarios col G (Gordon growth). Bear {_d(V['bear'])} / bull {_d(V['bull'])} bracket scenario range from the model.",
+    f"Base-case DCF ({DCF_MODEL}): Gordon growth terminal. Bear {_d(V['bear'])} / bull {_d(V['bull'])} from Scenarios.",
     11, INK, italic=True, space_after=0,
 )
 
@@ -1114,7 +942,7 @@ s = slide_base(
     "Sum of the Parts",
     f"Geographic segments on FY30E base revenue: EV/EBITDA spreads vs Gordon-implied exit ({_gordon_exit:.1f}x)",
     page=pg(),
-    sources="Segment revenue: FY2025 10-K geography; FY30E scaled to base-case consolidated revenue (Scenarios col G)",
+    sources=f"Segment revenue: FY2025 Form 10-K; FY30E from {DCF_MODEL}, Scenarios base case",
 )
 seg_rows = []
 for seg in SOTP.get("segments", []):
@@ -1158,7 +986,7 @@ tb, tf = textbox(s, Inches(0.5), Inches(4.38), Inches(7.8), Inches(1.85))
 add_para(tf, "Methodology", 12, CARD, bold=True, first=True, space_after=3)
 for t in [
     "Single-brand retailer: geography is the cleanest SOTP cut (Americas / China / RoW per 10-K)",
-    "FY30E segment revenue = FY25 geo mix \u00d7 base-case consolidated FY30 revenue (Scenarios col G)",
+    f"FY30E segment revenue = FY25 geographic mix applied to {DCF_MODEL} consolidated FY30 base revenue",
     f"Segment EV/EBITDA spreads anchor to Gordon-implied exit {_gordon_exit:.1f}x (selected DCF TV identity: not the 5-8x comps football-field band)",
     "Americas: Gordon \u2212 1.0x to \u2212 0.25x (mature); China: +0.5x to +2.0x (growth); RoW: \u22120.25x to +0.75x",
     f"Consolidated base-case DCF {_d(_base_px)} uses Gordon growth (g={DCF_BASE.get('terminal_g', 0.0225)*100:.2f}%); SOTP is terminal-year EBITDA triangulation only",
@@ -1184,9 +1012,9 @@ _tv_pct = DCF_BASE.get("tv_pct_ev", 0.735)
 
 s = slide_base(
     "DCF Valuation",
-    f"Base-case unlevered DCF (Scenarios col G): Gordon growth terminal value; {_exit_m:.1f}x is implied exit identity",
+    f"Base-case unlevered DCF ({DCF_MODEL}): Gordon growth TV; {_exit_m:.1f}x implied exit multiple",
     page=pg(),
-    sources=f"Source: {DCF_MODEL}, Scenarios col G + DCF tab",
+    sources=f"Source: {DCF_MODEL}, DCF & Scenarios tabs",
 )
 
 # --- Assumptions (left) ---
