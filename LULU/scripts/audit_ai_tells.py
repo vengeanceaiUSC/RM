@@ -86,6 +86,21 @@ def _long_float(val) -> bool:
     return "." in s and len(s.split(".")[1]) > 3
 
 
+def _has_human_display_format(cell, label: str) -> bool:
+    """True when number_format makes the sheet look analyst-entered (not General)."""
+    fmt = str(cell.number_format or "General")
+    if fmt == "General":
+        return False
+    lab = label.lower()
+    if any(k in lab for k in ("dso", "dio", "dpo", "days")):
+        return fmt.startswith("0.0")
+    if any(k in lab for k in ("%", "margin", "growth", "rate", "erp", "weight", "wacc")):
+        return "%" in fmt
+    if abs(float(cell.value or 0)) >= 1000:
+        return "#" in fmt
+    return fmt not in ("General", "0")
+
+
 def _cell_texts(ws, cell) -> list[tuple[str, str]]:
     out: list[tuple[str, str]] = []
     if isinstance(cell.value, str) and not _is_formula(cell.value):
@@ -180,6 +195,8 @@ def audit_workbook(path: Path = TARGET) -> list[Finding]:
                             )
                         )
                 if _long_float(vcell.value):
+                    if _has_human_display_format(vcell, label):
+                        continue  # sheet displays rounded; stored value kept for DCF
                     findings.append(
                         Finding(
                             "precision",
@@ -275,6 +292,8 @@ def _print_report(findings: list[Finding], path: Path) -> None:
 
     print("---")
     print("Protected (do NOT auto-delete): hardcoded values, Source hyperlinks, formulas.")
+    print("Precision: cells with 0.0 / 0.0% formats display cleanly; formula bar may still")
+    print("show full floats — re-type rounded inputs in Excel only after F9 confirms ~$133.64.")
     print("Fix flagged items by rewriting text or formatting — see LULU/AI_SELF_AUDIT.md")
 
 

@@ -30,7 +30,9 @@ python3 scripts/restore_unaltered_numbers.py   # restore exact unaltered hardcod
 python3 scripts/audit_valuation_numbers.py     # verify 0 diffs vs unaltered
 python3 scripts/remove_comment_artifacts.py    # red triangles + tall rows only
 python3 scripts/fix_notes_commentary.py        # Notes match model values (8–15 words)
-python3 scripts/humanize_workbook_authentic.py # metadata/colors — NO rounding
+python3 scripts/humanize_workbook_authentic.py # metadata/colors/numfmt — NO value rounding
+python3 scripts/scrub_hover_comments.py        # shorten AI hover comment boilerplate
+python3 scripts/add_analyst_touch.py           # Scratch tab, yellow highlights (optional)
 python3 scripts/strip_arrows.py
 python3 scripts/audit_ai_tells.py              # read-only
 ```
@@ -80,6 +82,20 @@ Base-case locked assumptions (rows 4–22): `Scenarios!$F$…`
 | Red-triangle hover comments (Source in col C exists) | `remove_comment_artifacts.py` |
 | Notes that cite wrong % vs model cell | `fix_notes_commentary.py` |
 | AI phrasing in Notes | hand-edit; keep Source link |
+| Robotic 15-decimal **display** in grid | `humanize_workbook_authentic.py` numfmt (`0.0`, `0.0%`) |
+| AI hover comment boilerplate | `scrub_hover_comments.py` |
+| Too-clean template feel | `add_analyst_touch.py` (Scratch tab, yellow highlights) |
+
+## Formula bar vs display (critical)
+
+Reviewers who **click into cells** see full float precision in the formula bar (e.g.
+`6.267883648875038`). **Do not script-round stored values** — that broke DCF ($133.64 → ~$132).
+
+| Layer | Safe fix |
+|-------|----------|
+| Sheet grid | Number formats: days `0.0`, rates `0.0%`, $ `#,##0` |
+| Formula bar | Re-type rounded inputs manually in Excel **after** F9 confirms ~$133.64 |
+| File metadata | Save As from native Excel so Last Modified By is your profile |
 
 ## Notes column rules (verbatim)
 

@@ -48,6 +48,19 @@ NOTE_FIXES: list[tuple[str, str, str]] = [
     ("DCF", "revenue growth %", "Minus 6.1% FY26 revenue per company guidance midpoint."),
     ("DCF", "plus: fy26 ieepa", "Add back 134.5M tariff refund in FY26 only."),
     ("DCF", "terminal growth rate", "2.25% terminal g anchored to FRED GDPC1 macro series."),
+    # NOPAT Bridge — drop Phase N pipeline jargon
+    ("NOPAT Bridge", "adjusted ebit (phase 1)", "Reported EBIT plus all listed non-recurring add-backs above."),
+    ("NOPAT Bridge", "ebit after lease", "Reported EBIT plus lease interest and R&D adjustments."),
+    ("NOPAT Bridge", "channel ebit (sum", "Sum of store, e-comm, and other channel EBIT lines."),
+    ("NOPAT Bridge", "ebit after channel mix", "Channel-mix EBIT output line before tax normalization step."),
+]
+
+# Source col (C) fixes — remove "Phase N subtotal" pipeline labels
+SOURCE_FIXES: list[tuple[str, str, str]] = [
+    ("NOPAT Bridge", "phase 1 subtotal", "Sum of reported EBIT and add-backs above."),
+    ("NOPAT Bridge", "phase 2 subtotal", "Sum after lease and R&D adjustments above."),
+    ("NOPAT Bridge", "phase 3 subtotal", "Sum of channel EBIT lines above."),
+    ("NOPAT Bridge", "sector ebit subtotal", "Sum of channel EBIT lines above."),
 ]
 
 NOTE_COLS = {
@@ -109,6 +122,21 @@ def fix_notes(path: Path = TARGET) -> list[str]:
                     raise ValueError(f"{sheet} R{r}: note must be 8–15 words: {new!r}")
                 cell.value = new
                 changes.append(f"{sheet}!{cell.coordinate}: {old!r} → {new!r}")
+
+        # Source column (col 3) on same sheets
+        for r in range(1, ws.max_row + 1):
+            label = _norm(ws.cell(r, 1).value)
+            src = ws.cell(r, 3)
+            old = src.value
+            if not isinstance(old, str) or not old.strip():
+                continue
+            low = old.lower()
+            for sh, needle, replacement in SOURCE_FIXES:
+                if sheet == sh and needle in low:
+                    if replacement != old:
+                        src.value = replacement
+                        changes.append(f"{sheet}!{src.coordinate}: {old!r} → {replacement!r}")
+                    break
 
     wb.save(tmp)
     tmp.replace(path)

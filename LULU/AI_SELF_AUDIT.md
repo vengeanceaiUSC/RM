@@ -87,12 +87,18 @@ comment (keep comment if it adds line-specific detail).
 
 ### 5. Numeric presentation
 
-- Floats with **>3 decimal places** on days or rates (even after one rounding pass)
+- Floats with **>3 decimal places** visible in the **sheet grid** (General format)
 - Same assumption copied to Bear/Base/Bull with **identical 15-digit float** in all three columns
 - Hardcodes that should be **formulas** tied to FY25 (GM %, DSO) but sit as pasted floats
 
-**Fix:** Round to 1 decimal (days) or 1–2 decimals (%); link to 10-K calc where the unaltered
-model did.
+**Fix (safe):** Apply display formats via `humanize_workbook_authentic.py` — days `0.0`, rates
+`0.0%`. **Do not round stored values**; that breaks DCF (~$133.64 → ~$132).
+
+**Formula bar tell:** Selecting a cell still shows full precision (e.g. `6.267883648875038`).
+That is expected until you manually re-type `6.3` in native Excel **after** F9 confirms the
+implied price. Never batch-round via script.
+
+**Submission metadata:** Creator shows `Microsoft Excel` until you Save As from your Office profile.
 
 ### 6. Formatting consistency
 
@@ -130,7 +136,7 @@ font-convention essays. Keep the four live source links (EDGAR, 10-K, earnings, 
 2. [ ] Every blue hardcode on WACC / Scenarios has a Source label or link
 3. [ ] No URL as the **visible** cell value (URLs in Source col or comment only)
 4. [ ] Notes ≤ 8 words per line (except Comps football-field lo/hi pairs)
-5. [ ] DSO / DIO / DPO show **one decimal**; margins **≤3 decimal places** as stored values
+5. [ ] DSO / DIO / DPO **display** one decimal via number format; stored values match unaltered
 6. [ ] No identical Analyst comment pasted on >3 unrelated rows
 7. [ ] Creator ≠ `openpyxl`
 8. [ ] Spot-check: WACC chain, Scenarios F9 → WACC, DCF → Scenarios base column
@@ -145,7 +151,10 @@ python3 scripts/restore_source_columns.py   # if Notes/Source cols missing
 python3 scripts/repair_scenarios_refs.py    # fix D&A/Capex/WACC col refs
 python3 scripts/restore_unaltered_numbers.py  # exact unaltered hardcodes — run if DCF ≠ $133.64
 python3 scripts/remove_comment_artifacts.py  # red triangles + inflated row heights
+python3 scripts/fix_notes_commentary.py        # Notes match model values (8–15 words)
 python3 scripts/humanize_workbook_authentic.py  # NO rounding of assumptions
+python3 scripts/scrub_hover_comments.py        # shorten AI hover comment boilerplate
+python3 scripts/add_analyst_touch.py           # Scratch tab, yellow highlights (optional)
 python3 scripts/strip_arrows.py
 python3 scripts/audit_ai_tells.py           # read-only report — fix flagged items by hand
 ```

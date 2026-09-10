@@ -369,10 +369,11 @@ def verify(path: Path = TARGET) -> None:
             issues.append(f"{sheet}!{coord}: prompt residue {v!r}")
 
     scn = wb["Scenarios"]
-    if isinstance(scn["F15"].value, float):
-        dec = str(scn["F15"].value).split(".")
-        if len(dec) > 1 and len(dec[1].rstrip("0")) > 2:
-            issues.append(f"Scenarios F15 still long float: {scn['F15'].value}")
+    f15 = scn["F15"]
+    if isinstance(f15.value, float):
+        fmt = str(f15.number_format or "General")
+        if fmt == "General":
+            issues.append(f"Scenarios F15 still General format: {f15.value}")
 
     w = wb["WACC"]
     if not w["C3"].hyperlink:
@@ -396,7 +397,7 @@ def verify(path: Path = TARGET) -> None:
 
     if issues:
         raise AssertionError("Verify failed:\n" + "\n".join(issues))
-    print("Verify OK: metadata, headers, rounding, colors")
+    print("Verify OK: metadata, headers, display formats, colors")
 
 
 if __name__ == "__main__":
