@@ -142,6 +142,7 @@ font-convention essays. Keep the four live source links (EDGAR, 10-K, earnings, 
 cd LULU
 python3 scripts/restore_source_columns.py   # if Notes/Source cols missing
 python3 scripts/repair_scenarios_refs.py    # fix D&A/Capex/WACC col refs
+python3 scripts/remove_comment_artifacts.py  # red triangles + inflated row heights
 python3 scripts/humanize_workbook_authentic.py
 python3 scripts/strip_arrows.py
 python3 scripts/audit_ai_tells.py           # read-only report — fix flagged items by hand

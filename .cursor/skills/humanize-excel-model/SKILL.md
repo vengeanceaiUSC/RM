@@ -24,6 +24,7 @@ Run from `LULU/` in this order:
 ```bash
 python3 scripts/restore_source_columns.py   # if Notes/Source cols missing
 python3 scripts/repair_scenarios_refs.py    # fix $H$→$F$ base-case locks
+python3 scripts/remove_comment_artifacts.py  # drop red-triangle comments; reset tall rows
 python3 scripts/humanize_workbook_authentic.py
 python3 scripts/strip_arrows.py
 python3 scripts/audit_ai_tells.py           # read-only — fix flagged items by hand
