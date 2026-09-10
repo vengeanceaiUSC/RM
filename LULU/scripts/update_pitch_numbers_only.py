@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update ONLY numeric values in the pitch deck to match model18 DCF.
+"""Update ONLY numeric values in the pitch deck to match recalculated Excel DCF.
 
 Preserves all original slide copy verbatim — no narrative rewrites.
 Run:  cd LULU && python3 scripts/update_pitch_numbers_only.py
@@ -9,7 +9,6 @@ from __future__ import annotations
 import re
 import shutil
 import sys
-from copy import copy
 from pathlib import Path
 
 from pptx import Presentation
@@ -18,80 +17,78 @@ SCRIPTS = Path(__file__).resolve().parent
 ROOT = SCRIPTS.parent
 sys.path.insert(0, str(SCRIPTS))
 
-from eval_model18 import _col_inputs, _eval_scenario, evaluate
+from recalc_model18 import read_dcf_outputs, recalc_workbook
 
 SRC = ROOT / "LULU_Investment_Pitch_Deck.pptx"
-# Prefer branch deck with original GIS copy if present
 FALLBACK = Path("/tmp/orig_deck.pptx")
 OUT = ROOT / "LULU_Investment_Pitch_Deck.pptx"
-
-
-def _sensitivity_grid() -> dict[tuple[str, str], int]:
-    from openpyxl import load_workbook
-
-    wb = load_workbook(ROOT / "model18_wsp_formulas.xlsx", data_only=False)
-    scn, dcf = wb["Scenarios"], wb["DCF"]
-    inp = _col_inputs(scn, dcf, "C")
-    base_w = evaluate(ROOT / "model18_wsp_formulas.xlsx")["wacc"]
-    grid = {}
-    for w in (0.095, 0.10, 0.105, 0.11):
-        for g in (0.015, 0.02, 0.0225, 0.025, 0.03):
-            gi = dict(inp)
-            gi["wacc"] = w
-            gi["g10"] = g
-            px = round(_eval_scenario(gi, base_w)["implied_px"])
-            grid[(f"{w*100:.1f}%", f"{g*100:.2f}%".rstrip("0").rstrip(".") + "%" if g != 0.0225 else "2.25%")] = px
-    # normalize keys for 2.25%
-    out = {}
-    for (w, g), px in grid.items():
-        gkey = "2.25%" if abs(float(g.rstrip("%")) - 2.25) < 0.01 else g
-        out[(w, gkey)] = px
-    return out
 
 
 def _replace_text(text: str, mapping: list[tuple[str, str]]) -> str:
     for old, new in mapping:
         text = text.replace(old, new)
-    # $134 that is NOT $134.5M (DCF rounded references)
     text = re.sub(r"\$134(?!\.\d)", "$133.52", text)
     return text
 
 
-def main() -> None:
-    ev = evaluate(ROOT / "model18_wsp_formulas.xlsx")
-    base = ev["scenarios"]["base"]
-    bear = round(ev["scenarios"]["bear"]["implied_px"])
-    bull = round(ev["scenarios"]["bull"]["implied_px"])
-    upside = round(base["upside_pct"], 1)
-    px = f"{base['implied_px']:.2f}"
-    eps = base["eps"]
+def _fmt_m(v: int) -> str:
+    return f"{v:,}"
 
-    dcf_cash = 1_807_202
-    debt = 1_798_441
-    eq_m = round((base["ev"] + dcf_cash - debt) / 1000)
+
+def main() -> None:
+    wb = recalc_workbook(ROOT / "model18_wsp_formulas.xlsx")
+    data = read_dcf_outputs(wb)
+    base = data["scenarios"]["base"]
+    bear = data["scenarios"]["bear"]
+    bull = data["scenarios"]["bull"]
+    bridge = data["bridge"]
+    b = data["base"]
+
+    px = f"{base['implied_px']:.2f}"
+    bear_px = f"{bear['implied_px']:.2f}"
+    bull_px = f"{bull['implied_px']:.2f}"
+    upside = f"{base['upside_pct']:.1f}"
+    eps = b["eps"]
 
     mapping = [
+        # base DCF
         ("$133.64", f"${px}"),
         ("133.64", px),
         ("(+33.6% upside)", f"(+{upside}% upside)"),
         ("33.6% upside", f"{upside}% upside"),
+        # bear / bull — exact Excel recalc (rows 131–133)
+        ("$54.00 bear", f"${bear_px} bear"),
+        ("$54 bear", f"${bear_px} bear"),
+        ("$56.00 bear", f"${bear_px} bear"),
+        ("$56 bear", f"${bear_px} bear"),
+        ("Bear $54", f"Bear ${bear_px}"),
+        ("Bear $56", f"Bear ${bear_px}"),
+        ("bear $54", f"bear ${bear_px}"),
+        ("bear $56", f"bear ${bear_px}"),
+        ("$54 / bull", f"${bear_px} / bull"),
+        ("Bear $54 / bull $208", f"Bear ${bear_px} / bull ${bull_px}"),
+        ("Bear $56 / bull $202", f"Bear ${bear_px} / bull ${bull_px}"),
+        ("bull $208", f"bull ${bull_px}"),
+        ("bull $202", f"bull ${bull_px}"),
+        ("$208", f"${bull_px}"),
+        # EPS
         ("$14.57", f"${eps[4]:.2f}"),
         ("14.57", f"{eps[4]:.2f}"),
         ("$10.09", f"${eps[1]:.2f}"),
         ("10.09", f"{eps[1]:.2f}"),
-        ("$56.00 bear", f"${bear}.00 bear"),
-        ("Bear $56", f"Bear ${bear}"),
-        ("bull $202", f"bull ${bull}"),
-        ("$202 bracket", f"${bull} bracket"),
-        ("3,944", f"{round(base['pv_explicit']/1000):,}"),
-        ("14,876", f"{round(base['ev']/1000):,}"),
-        ("14,885", f"{eq_m:,}"),
-        ("1,087", "1,086"),
-        ("1,057", "1,056"),  # FY27 NI rounds to $1,056M in model
+        # EV bridge
+        ("3,944", _fmt_m(bridge["pv_fcf_m"])),
+        ("14,876", _fmt_m(bridge["ev_m"])),
+        ("14,885", _fmt_m(bridge["equity_m"])),
+        # IS / CF tables
+        ("1,087", _fmt_m(b["ni_m"][0])),
+        ("1,057", _fmt_m(b["ni_m"][1])),
+        ("1,056", _fmt_m(b["fcf_m"][3])),
     ]
 
-    src = FALLBACK if FALLBACK.exists() else SRC
-    shutil.copy2(src, OUT)
+    # Update in place when deck exists; otherwise seed from GIS fallback copy.
+    if not OUT.exists() and FALLBACK.exists():
+        shutil.copy2(FALLBACK, OUT)
     prs = Presentation(str(OUT))
 
     for slide in prs.slides:
@@ -107,30 +104,35 @@ def main() -> None:
                         if cell.text:
                             cell.text = _replace_text(cell.text, mapping)
 
-    # EPS table row (slide 14) — precise
-    is_slide = prs.slides[13]
-    for shape in is_slide.shapes:
+    # Slide 14 — income statement forecast cols FY26-30
+    for shape in prs.slides[13].shapes:
         if shape.has_table and shape.table.rows[0].cells[0].text == "US$ M":
-            cells = shape.table.rows[6].cells
-            for ci, val in enumerate(eps, start=5):
-                cells[ci].text = f"{val:.2f}"
+            t = shape.table
+            rows_map = {
+                1: b["revenue_m"],
+                3: b["ebit_m"],
+                5: b["ni_m"],
+                6: eps,
+            }
+            for ri, vals in rows_map.items():
+                for ci, val in enumerate(vals, start=5):
+                    if ri == 6:
+                        t.cell(ri, ci).text = f"{val:.2f}"
+                    else:
+                        t.cell(ri, ci).text = _fmt_m(int(val))
 
-    # Sensitivity table slide 20
-    sens = _sensitivity_grid()
-    dcf_slide = prs.slides[19]
-    for shape in dcf_slide.shapes:
-        if shape.has_table and shape.table.cell(0, 0).text.startswith("WACC"):
-            for ri in range(1, 5):
-                w = shape.table.cell(ri, 0).text
-                for ci, g in enumerate(["1.5%", "2.0%", "2.25%", "2.5%", "3.0%"], start=1):
-                    key = (w, g)
-                    if key in sens:
-                        shape.table.cell(ri, ci).text = f"${sens[key]}"
+    # Slide 16 — cash flow FCF row
+    for shape in prs.slides[15].shapes:
+        if shape.has_table and shape.table.rows[0].cells[0].text == "US$ M":
+            t = shape.table
+            for ci, val in enumerate(b["fcf_m"], start=5):
+                t.cell(4, ci).text = _fmt_m(val)
 
     prs.save(str(OUT))
     print(f"Updated numbers only → {OUT}")
-    print(f"  Base DCF ${px} (+{upside}%) | Bear ${bear} | Bull ${bull}")
-    print(f"  EPS FY26-FY30: {[round(x,2) for x in eps]}")
+    print(f"  Base ${px} (+{upside}%) | Bear ${bear_px} | Bull ${bull_px}")
+    print(f"  EPS FY26-FY30: {eps}")
+    print(f"  FCF FY29: {b['fcf_m'][3]}M | NI FY27: {b['ni_m'][1]}M")
 
 
 if __name__ == "__main__":
