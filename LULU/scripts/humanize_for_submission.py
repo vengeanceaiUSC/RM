@@ -173,9 +173,10 @@ def _link_assumption_anchors(wb) -> int:
     nb["B20"] = 62203
     nb["B20"].comment = Comment("FY25 SBC per 10-K cash flow stmt.", "Analyst")
     nb["B23"] = 1028
+    sbc_pct = "$B$20/DCF!$B$6"
     for col in FCOLS:
-        nb[f"{col}20"] = f"=Scenarios!{col}25/{FY25_REV}*$B$20*$B$7"
-        nb[f"{col}23"] = f"=$B$23*(Scenarios!{col}25/{FY25_REV})"
+        nb[f"{col}20"] = f"=IF($B$7=1,DCF!{col}6*{sbc_pct},0)"
+        nb[f"{col}23"] = f"=$B$23*(DCF!{col}6/DCF!$B$6)"
         nb[f"{col}39"] = f"=$B$39+({col}$12-$B$39)*{FCOLS.index(col)+1}/5"
         n += 3
 

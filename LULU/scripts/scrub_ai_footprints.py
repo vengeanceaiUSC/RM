@@ -27,6 +27,7 @@ STEPS = [
     "align_model_to_pitch.py",
     "trim_model_labels.py",
     "humanize_for_club_submission.py",
+    "fix_model_structure.py",
     "fix_file_metadata.py",
     "strip_programmatic_colors.py",
     "audit_valuation_numbers.py",

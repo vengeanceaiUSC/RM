@@ -42,7 +42,7 @@ FIXES: dict[str, str | None] = {
     "A95": "Exit multiple check (±1.5x)",
     "B95": '=IF(ABS(D92)<=1.5,"PASS","REVIEW")',
     "C95": '=TEXT(D92,"0.0")&"x spread vs Gordon-implied exit"',
-    "D95": "Selected exit is the Gordon identity, so spread should be 0",
+    "D95": "Exit multiple = Gordon-implied (FY30 EBITDA)",
     "B84": "=B45*B83",
     "B87": "=(B86+B51+B52)/B56",
 }
