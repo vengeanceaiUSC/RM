@@ -91,7 +91,7 @@ def build_nopat_bridge(wb, scen_base_col, rev_rows, ebit_rows, drv, sc_tariff_ce
 
     hdr("Reported EBIT \u2192 Normalized NOPAT (5-phase pipeline)")
     write(ws, f"A{rr[0]}",
-          "Phases 1\u20134 clean and forecast operating profit; Phase 5 is the agent workflow summary below.",
+          "Phases 1\u20134 clean and forecast operating profit; Phase 5 summarizes the reconciliation workflow below.",
           S.BLACK, italic=True, size=8, align=S.left_indent)
     rr[0] += 2
 
@@ -200,7 +200,7 @@ def build_nopat_bridge(wb, scen_base_col, rev_rows, ebit_rows, drv, sc_tariff_ce
     p4_end = rr[0] - 1
 
     rr[0] += 1
-    sub("Phase 5 — Agent workflow (execution steps)")
+    sub("Phase 5 — Reconciliation workflow (execution steps)")
     write(ws, f"B{rr[0]}", "Source", S.ACCENT, bold=True, size=8, align=S.left_indent)
     write(ws, f"C{rr[0]}", "Without applied (FY26 DCF)", S.ACCENT, bold=True, size=8, align=S.left_indent)
     write(ws, f"D{rr[0]}", "With applied (FY26 DCF)", S.ACCENT, bold=True, size=8, align=S.left_indent)

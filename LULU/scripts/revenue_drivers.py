@@ -88,7 +88,7 @@ def build_revenue_drivers(wb, scen_base_col, rev_row_map, deq=DEQ, dj=DJ, ds=DS,
 
     hdr("BOTTOM-UP REVENUE DRIVER SCHEDULE (FY2026E–FY2030E)")
     write(ws, f"A{rr[0]}",
-          "FY2025A = Firecrawl-ingested 10-K anchors (blue). FY26–30 = red operational assumptions. "
+          "FY2025A = sourced 10-K anchors (blue). FY26–30 = red operational assumptions. "
           "Consolidated revenue cross-checks to Scenarios base case.",
           S.BLACK, italic=True, size=8, align=S.left_indent)
     rr[0] += 1
