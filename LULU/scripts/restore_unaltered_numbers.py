@@ -33,6 +33,9 @@ SHEET_COL_MAP: dict[str, tuple[int, int]] = {
     "Revenue Drivers": (5, 3),  # col C forecast anchor — spot-check only
 }
 
+# Extra hardcode columns on DCF (forecast + sensitivity): unalt F–J → final E–I
+DCF_EXTRA_COLS = [(c, c - 1) for c in range(6, 11)]
+
 SCEN_SCENARIO_COLS = (
     (6, 5),  # Bear F → E
     (7, 6),  # Base G → F
@@ -148,6 +151,14 @@ def restore_numbers(
         sf = tgt_wb["Scenarios"]
         sm, tm = _build_label_map(su), _build_label_map(sf)
         for src_col, tgt_col in SCEN_SCENARIO_COLS:
+            all_changes.extend(_copy_hardcodes(su, sf, src_col, tgt_col, sm, tm))
+
+    # DCF: summary col + forecast/sensitivity cols
+    if "DCF" in src_wb.sheetnames and "DCF" in tgt_wb.sheetnames:
+        su = src_wb["DCF"]
+        sf = tgt_wb["DCF"]
+        sm, tm = _build_label_map(su), _build_label_map(sf)
+        for src_col, tgt_col in [(5, 4), *DCF_EXTRA_COLS]:
             all_changes.extend(_copy_hardcodes(su, sf, src_col, tgt_col, sm, tm))
 
     tgt_wb.save(tmp)

@@ -27,6 +27,7 @@ Run from `LULU/` in this order:
 python3 scripts/restore_source_columns.py      # if Notes/Source cols missing
 python3 scripts/repair_scenarios_refs.py       # fix $H$→$F$ base-case locks
 python3 scripts/restore_unaltered_numbers.py   # restore exact unaltered hardcodes
+python3 scripts/audit_valuation_numbers.py     # verify 0 diffs vs unaltered
 python3 scripts/remove_comment_artifacts.py    # red triangles + tall rows only
 python3 scripts/humanize_workbook_authentic.py # metadata/colors — NO rounding
 python3 scripts/strip_arrows.py
