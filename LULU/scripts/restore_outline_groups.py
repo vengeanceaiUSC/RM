@@ -11,7 +11,6 @@ SHEET_COL_GROUPS: dict[str, list[tuple[str, str]]] = {
 # Row groups: (start_row, end_row, summary_below)
 SHEET_ROW_GROUPS: dict[str, list[tuple[int, int, bool]]] = {
     "DCF": [(20, 32, False)],
-    "NOPAT Bridge": [(15, 40, True)],
 }
 
 
