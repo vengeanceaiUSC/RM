@@ -1,16 +1,11 @@
-"""Restore Excel outline (+/-) controls for collapsible column/row groups."""
+"""Restore Excel outline (+/-) controls for collapsible row/column groups."""
 from __future__ import annotations
 
 from openpyxl.utils import column_index_from_string, get_column_letter
 
-# Column groups after humanization: hide doc columns only; keep Source (C) visible.
+# Post-humanization: only contiguous groups. Source col C stays visible; B/D are empty.
 SHEET_COL_GROUPS: dict[str, list[tuple[str, str]]] = {
-    "WACC": [("B", "B"), ("D", "D")],
-    "Scenarios": [("B", "B"), ("D", "D")],
-    "NOPAT Bridge": [("B", "B"), ("D", "D")],
-    "Comps": [("B", "B"), ("D", "D")],
     "Revenue Drivers": [("J", "K")],
-    "DCF": [("B", "B"), ("D", "D")],
 }
 
 # Row groups: (start_row, end_row, summary_below)
@@ -96,14 +91,17 @@ def remove_outline_groups(wb) -> int:
 
 def restore_outline_groups(wb, *, col_hidden: bool = True) -> int:
     """Re-apply outline metadata and show +/- controls on every grouped sheet."""
+    for ws in wb.worksheets:
+        clear_sheet_outlines(ws)
+
     restored = 0
-    for sheet_name, col_ranges in SHEET_COL_GROUPS.items():
+    grouped_sheets = set(SHEET_COL_GROUPS) | set(SHEET_ROW_GROUPS)
+    for sheet_name in grouped_sheets:
         if sheet_name not in wb.sheetnames:
             continue
         ws = wb[sheet_name]
-        clear_sheet_outlines(ws)
         enable_outline_symbols(ws)
-        for start, end in col_ranges:
+        for start, end in SHEET_COL_GROUPS.get(sheet_name, []):
             group_columns(ws, start, end, hidden=col_hidden)
         for start, end, summary_below in SHEET_ROW_GROUPS.get(sheet_name, []):
             group_rows(ws, start, end, hidden=col_hidden, summary_below=summary_below)

@@ -270,6 +270,30 @@ def refactor_workbook(src: Path = INPUT, dst: Path = OUTPUT) -> list[dict]:
 
     restore_outline_groups(wb)
 
+    # Fix invalid label formulas and broken internal-link text before save.
+    import re
+    from openpyxl.worksheet.hyperlink import Hyperlink
+
+    label_formula = re.compile(r"^=\s+(.+)$")
+    if "NOPAT Bridge" in wb.sheetnames:
+        ws = wb["NOPAT Bridge"]
+        for row in ws.iter_rows():
+            for cell in row:
+                v = cell.value
+                if isinstance(v, str) and (m := label_formula.match(v)):
+                    cell.value = m.group(1).strip()
+    for sheet, coord, text, location in [
+        ("DCF", "C4", "NOPAT Bridge tab", "'NOPAT Bridge'!A1"),
+        ("DCF", "D4", "Revenue Drivers tab", "'Revenue Drivers'!A1"),
+        ("Revenue Drivers", "K56", "Scenarios tab: base revenue", "'Scenarios'!G25"),
+    ]:
+        if sheet not in wb.sheetnames:
+            continue
+        cell = wb[sheet][coord]
+        if isinstance(cell.value, str) and "!" in cell.value and not cell.value.startswith("="):
+            cell.value = text
+            cell.hyperlink = Hyperlink(ref=cell.coordinate, location=location)
+
     wb.save(tmp)
     tmp.replace(dst)
     return changes
