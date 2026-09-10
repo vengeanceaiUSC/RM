@@ -81,6 +81,9 @@ def humanize(path: Path = TARGET) -> Path:
                 if URLISH.search(cell.value) or cell.value.strip().startswith("http"):
                     _clear_cell(cell)
                     changed += 1
+            elif cell.hyperlink:
+                cell.hyperlink = None
+                changed += 1
 
     # --- Comps ---
     comps = wb["Comps"]
@@ -90,6 +93,9 @@ def humanize(path: Path = TARGET) -> Path:
                 if URLISH.search(cell.value) or cell.value.strip().startswith("http"):
                     _clear_cell(cell)
                     changed += 1
+            elif cell.hyperlink:
+                cell.hyperlink = None
+                changed += 1
     _clear_cell(comps["A32"])
     _set_or_clear(comps["A41"], "Peer multiples illustrative; terminal value from DCF exit multiple.")
 
