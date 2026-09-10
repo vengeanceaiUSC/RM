@@ -2,13 +2,13 @@
 
 **Right-click → Save link as** (or click to download).
 
-> **Model18 cleaned deliverables** (Analyst notes, no manual columns) live on branch
+> **Model18 cleaned deliverables** (Notes + Source links in cols B/C, 166 Analyst hover notes) live on branch
 > `cursor/fix-altered-model18-hardcodes-bd53` — not on `main` yet. Filename is
 > **`unbeiesgbar_final.xlsx`** (not `unbesiegbar`).
 
 | File | Direct download |
 |------|-----------------|
-| **Final cleaned model (166 Analyst notes)** | https://github.com/vengeanceaiUSC/RM/raw/cursor/fix-altered-model18-hardcodes-bd53/LULU/unbeiesgbar_final.xlsx |
+| **Final cleaned model (Notes + Source links + Analyst notes)** | https://github.com/vengeanceaiUSC/RM/raw/cursor/fix-altered-model18-hardcodes-bd53/LULU/unbeiesgbar_final.xlsx |
 | Cleaned model (no notes) | https://github.com/vengeanceaiUSC/RM/raw/cursor/fix-altered-model18-hardcodes-bd53/LULU/unbeiesgbar2model.xlsx |
 | Original unaltered model | https://github.com/vengeanceaiUSC/RM/raw/cursor/fix-altered-model18-hardcodes-bd53/LULU/model18unaltered.xlsx |
 | DCF valuation model | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/LULU_DCF_Valuation_Model.xlsx |
