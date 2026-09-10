@@ -41,6 +41,7 @@ Notes column: **≤ 8 words**, analyst shorthand (`Current 10Y UST`, not `FRED D
 - `humanize_workbook_authentic.py` — metadata, prompt headers, rounding, blue/black/green fonts
 - `strip_arrows.py` — Unicode `→`
 - `restore_source_columns.py` — visible Notes + Source columns (+ auto `repair_scenarios_refs`)
+- `restore_unaltered_numbers.py` — copies exact hardcodes from `model18unaltered (12).xlsx` (never round)
 - `repair_scenarios_refs.py` — fixes Scenarios `$H$` → `$F$` base-case locks (D&A, Capex, WACC)
 - `humanize_final_model.py` — AI tutorial rows, mangled in-cell URLs (do **not** re-run if it
   would strip col C links)
@@ -142,8 +143,9 @@ font-convention essays. Keep the four live source links (EDGAR, 10-K, earnings, 
 cd LULU
 python3 scripts/restore_source_columns.py   # if Notes/Source cols missing
 python3 scripts/repair_scenarios_refs.py    # fix D&A/Capex/WACC col refs
+python3 scripts/restore_unaltered_numbers.py  # exact unaltered hardcodes — run if DCF ≠ $133.64
 python3 scripts/remove_comment_artifacts.py  # red triangles + inflated row heights
-python3 scripts/humanize_workbook_authentic.py
+python3 scripts/humanize_workbook_authentic.py  # NO rounding of assumptions
 python3 scripts/strip_arrows.py
 python3 scripts/audit_ai_tells.py           # read-only report — fix flagged items by hand
 ```

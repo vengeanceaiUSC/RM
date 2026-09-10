@@ -229,25 +229,11 @@ def _humanize_notes(wb) -> int:
 
 
 def _round_hardcodes(wb) -> int:
-    n = 0
-    for sheet, cols in VALUE_COLS.items():
-        ws = wb[sheet]
-        for r in range(1, ws.max_row + 1):
-            label = str(ws.cell(r, 1).value or "")
-            for col in cols:
-                cell = ws.cell(r, col)
-                if _is_formula(cell.value) or cell.value is None:
-                    continue
-                if isinstance(cell.value, float) and _is_long_float(cell.value):
-                    cell.value = _round_value(cell.value, label)
-                    n += 1
-                elif isinstance(cell.value, float):
-                    # Normalize shorter floats too (e.g. 0.0480000001)
-                    rounded = _round_value(cell.value, label)
-                    if rounded != cell.value:
-                        cell.value = rounded
-                        n += 1
-    return n
+    """Disabled — rounding assumptions changes DCF output (e.g. $133.64 → ~$132).
+
+    Run restore_unaltered_numbers.py if numbers drift from model18unaltered (12).xlsx.
+    """
+    return 0
 
 
 def _apply_finance_colors(wb) -> int:
