@@ -17,12 +17,15 @@ SCRIPTS = Path(__file__).resolve().parent
 STEPS = [
     "backfill_source_comments.py",
     "fix_decimal_display.py",
-    "rebuild_dcf_local_formulas.py",
+    "fix_human_analyst_structure.py",
     "trim_model_labels.py",
     "fix_file_metadata.py",
     "strip_programmatic_colors.py",
     "audit_valuation_numbers.py",
 ]
+
+# Superseded by fix_human_analyst_structure.py (draggable drivers + local P&L):
+# rebuild_dcf_local_formulas.py
 
 # One-time structural step (already applied on current workbook):
 # move_sources_to_comments.py — delete cols B-C; use backfill on re-runs
