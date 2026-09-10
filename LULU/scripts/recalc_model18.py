@@ -84,7 +84,22 @@ def read_dcf_outputs(wb: openpyxl.Workbook) -> dict:
     out["base"]["dna_m"] = [round(v / 1000) for v in row5(55)]
     out["base"]["capex_m"] = [round(abs(scn.cell(60 + i, 3).value or 0) / 1000) for i in range(5)]
     out["base"]["buy_m"] = [round(abs(scn.cell(158 + i, 3).value or 0) / 1000) for i in range(5)]
+    out["sensitivity"] = read_sensitivity_grid(dcf)
     return out
+
+
+def read_sensitivity_grid(dcf) -> list[dict]:
+    """DCF rows 99–103: WACC × terminal g implied share price."""
+    sens: list[dict] = []
+    for r in range(99, 104):
+        w = dcf.cell(r, 1).value
+        if not isinstance(w, (int, float)):
+            continue
+        prices = [dcf.cell(r, c).value for c in range(6, 11)]
+        if not all(isinstance(p, (int, float)) for p in prices):
+            continue
+        sens.append({"wacc": f"{w * 100:.1f}%", "prices": [round(p) for p in prices]})
+    return sens
 
 
 def _pv_tv_from_wb(wb):

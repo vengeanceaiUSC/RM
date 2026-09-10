@@ -490,12 +490,13 @@ def extract():
     cash_bull = ev["scenarios"]["bull"]["cash_flow"]
 
     sens = []
-    for r in range(98, 103):
-        w = dcf.cell(r, 1).value
+    dcf_vals = openpyxl.load_workbook(DCF_PATH, data_only=True)["DCF"]
+    for r in range(99, 104):
+        w = dcf_vals.cell(r, 1).value
         if isinstance(w, (int, float)):
-            prices = [dcf.cell(r, c).value for c in range(6, 11)]
+            prices = [dcf_vals.cell(r, c).value for c in range(6, 11)]
             if all(isinstance(p, (int, float)) for p in prices):
-                sens.append({"wacc": f"{w * 100:.1f}%", "prices": prices})
+                sens.append({"wacc": f"{w * 100:.1f}%", "prices": [round(p) for p in prices]})
     if not sens:
         from eval_model18 import _col_inputs, _eval_scenario
 

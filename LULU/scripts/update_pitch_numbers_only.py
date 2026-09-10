@@ -19,6 +19,8 @@ SCRIPTS = Path(__file__).resolve().parent
 ROOT = SCRIPTS.parent
 sys.path.insert(0, str(SCRIPTS))
 
+from copy import deepcopy
+
 from recalc_model18 import read_dcf_outputs, recalc_workbook
 
 MODEL = "LULU_DCF_Valuation_Model.xlsx"
@@ -103,6 +105,19 @@ def _standardize_sources(text: str) -> str:
     text = text.replace("pitch-bridge block, col G", "pitch-bridge block, col C")
     text = re.sub(r", col G\b", ", col C", text)
     return text
+
+
+def _update_sensitivity_table(table, sens: list[dict]) -> None:
+    """Slide 20 WACC × g grid — sync all five rows from recalced DCF."""
+    need_rows = 1 + len(sens)
+    while len(table.rows) < need_rows:
+        table._tbl.append(deepcopy(table._tbl.tr_lst[-1]))
+    while len(table.rows) > need_rows:
+        table._tbl.remove(table._tbl.tr_lst[-1])
+    for ri, row in enumerate(sens, start=1):
+        table.cell(ri, 0).text = row["wacc"]
+        for ci, px in enumerate(row["prices"], start=1):
+            table.cell(ri, ci).text = f"${px}"
 
 
 def _update_fin_table(table, row_map: dict[int, list], eps_row: int | None = None) -> None:
@@ -224,6 +239,11 @@ def main() -> None:
                 shape.table,
                 {1: b["cash_m"], 2: b["inv_m"], 3: b["ta_m"], 4: b["tl_m"], 5: b["te_m"]},
             )
+
+    # Slide 20 — DCF sensitivity grid
+    for shape in prs.slides[19].shapes:
+        if shape.has_table and shape.table.rows[0].cells[0].text.strip() == "WACC vs g":
+            _update_sensitivity_table(shape.table, data["sensitivity"])
 
     # Slide 16 — cash flow
     for shape in prs.slides[15].shapes:
