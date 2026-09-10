@@ -14,10 +14,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 AUTHOR = "Christian Gardner"
 EXCEL_TITLE = "LULU DCF Valuation Model"
-PPT_TITLE = "LULU Investment Pitch Deck"
+PPT_TITLE = "GIS IR LULU"
+MODEL_CANONICAL = ROOT / "LULU_DCF_Valuation_Model.xlsx"
+DECK_CANONICAL = ROOT / "GIS IR LULU.pptx"
 TARGETS = [
     ROOT / "model18_wsp_formulas.xlsx",
     ROOT / "LULU_Investment_Pitch_Deck.pptx",
+    MODEL_CANONICAL,
+    DECK_CANONICAL,
 ]
 
 

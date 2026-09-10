@@ -277,7 +277,17 @@ def main() -> None:
 
     apply_garamond(ROOT / "model18_wsp_formulas.xlsx")
 
+    import shutil
+
+    model_out = ROOT / MODEL
+    deck_out = ROOT / "GIS IR LULU.pptx"
+    shutil.copy2(ROOT / "model18_wsp_formulas.xlsx", model_out)
+    shutil.copy2(OUT, deck_out)
+    fix_meta(model_out)
+    fix_meta(deck_out)
+
     print(f"Updated numbers + sources → {OUT}")
+    print(f"  Deliverables → {model_out.name}, {deck_out.name}")
     print(f"  Base ${px} (+{upside}%) | Bear ${bear_px} | Bull ${bull_px}")
     print(f"  EPS FY26-FY30: {eps}")
     print(f"  BS TA FY26-FY30: {b['ta_m']}")
