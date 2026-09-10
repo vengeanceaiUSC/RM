@@ -88,7 +88,7 @@ write(cov, 'B22', "ASSUMPTIONS GUIDE (PDF — every tab)", S.DARK, bold=True, si
 write_link(cov, 'B23', "LULU_Assumptions_Memo.pdf — full guide: every red assumption on WACC, Scenarios, Revenue Drivers, DCF, Comps & 3-Statement",
            "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=10,
            hint="Open for justification, clickable source links, and Ctrl+F proof for every assumption.")
-write(cov, 'B25', "Built from scratch for the GIS IR selection assignment. Units: US$ thousands unless noted.", S.BLACK, italic=True, size=9)
+write(cov, 'B25', "Units: US$ thousands unless noted.", S.BLACK, italic=True, size=9)
 
 # ---------------------------------------------------------------- SCENARIOS BASE (mirror of DCF Scenarios column G)
 mir = wb.create_sheet(MIRROR_SHEET)

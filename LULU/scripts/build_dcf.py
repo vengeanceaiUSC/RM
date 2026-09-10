@@ -65,8 +65,6 @@ write_link(cov, 'B22', "Market data & Q2 FY2026 results (Sep 3, 2026 earnings re
            color=S.BLUE, size=10, hint=D.COVER_HINTS["earnings_sep2026"])
 write_link(cov, 'B23', "Current share price (NASDAQ: LULU)", D.SOURCES["nasdaq_quote"],
            color=S.BLUE, size=10, hint=D.COVER_HINTS["nasdaq_quote"])
-write(cov, 'B25', "Built from scratch for the GIS IR selection assignment.", S.BLACK, italic=True, size=9)
-
 # ------------------------------------------------------------------ WACC
 wacc = wb.create_sheet("WACC")
 wacc.sheet_view.showGridLines = False
