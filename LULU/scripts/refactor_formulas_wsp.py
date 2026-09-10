@@ -265,6 +265,11 @@ def refactor_workbook(src: Path = INPUT, dst: Path = OUTPUT) -> list[dict]:
                     )
 
     clear_formula_meta(wb, changes)
+
+    from restore_outline_groups import restore_outline_groups  # noqa: E402
+
+    restore_outline_groups(wb)
+
     wb.save(tmp)
     tmp.replace(dst)
     return changes

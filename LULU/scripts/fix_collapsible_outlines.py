@@ -18,6 +18,9 @@ ROOT = SCRIPTS.parent
 TARGETS = [
     ROOT / "model18unaltered.xlsx",
     ROOT / "model18unaltered (12).xlsx",
+    ROOT / "model18_humanized.xlsx",
+    ROOT / "model18_humanized (1).xlsx",
+    ROOT / "model18_wsp_formulas.xlsx",
     ROOT / "unbeiesgbar2model.xlsx",
     ROOT / "unbesiegbarmodel1.xlsx",
     ROOT / "model18altered.xlsx",
