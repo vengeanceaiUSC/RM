@@ -76,6 +76,14 @@ def read_dcf_outputs(wb: openpyxl.Workbook) -> dict:
     out["base"]["fcf_m"] = [round(v / 1000) for v in row5(153)]
     out["base"]["ebit_m"] = [round(v / 1000) for v in row5(45)]
     out["base"]["gp_m"] = [round(float(scn.cell(25 + i, 3).value or 0) * float(scn.cell(30 + i, 3).value or 0) / 1000) for i in range(5)]
+    out["base"]["cash_m"] = [round(v / 1000) for v in row5(163)]
+    out["base"]["inv_m"] = [round(scn.cell(80 + i, 3).value / 1000) for i in range(5)]
+    out["base"]["ta_m"] = [round(v / 1000) for v in row5(168)]
+    out["base"]["tl_m"] = [round(v / 1000) for v in row5(173)]
+    out["base"]["te_m"] = [round(v / 1000) for v in row5(178)]
+    out["base"]["dna_m"] = [round(v / 1000) for v in row5(55)]
+    out["base"]["capex_m"] = [round(abs(scn.cell(60 + i, 3).value or 0) / 1000) for i in range(5)]
+    out["base"]["buy_m"] = [round(abs(scn.cell(158 + i, 3).value or 0) / 1000) for i in range(5)]
     return out
 
 

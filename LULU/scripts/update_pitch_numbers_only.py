@@ -2,6 +2,8 @@
 """Update ONLY numeric values in the pitch deck to match recalculated Excel DCF.
 
 Preserves all original slide copy verbatim — no narrative rewrites.
+Also standardizes model source labels (filename + Scenarios col C).
+
 Run:  cd LULU && python3 scripts/update_pitch_numbers_only.py
 """
 from __future__ import annotations
@@ -19,7 +21,7 @@ sys.path.insert(0, str(SCRIPTS))
 
 from recalc_model18 import read_dcf_outputs, recalc_workbook
 
-SRC = ROOT / "LULU_Investment_Pitch_Deck.pptx"
+MODEL = "LULU_DCF_Valuation_Model.xlsx"
 FALLBACK = Path("/tmp/orig_deck.pptx")
 OUT = ROOT / "LULU_Investment_Pitch_Deck.pptx"
 
@@ -35,8 +37,21 @@ def _fmt_m(v: int) -> str:
     return f"{v:,}"
 
 
+def _patch_range(text: str, label: str, vals: list[int], *, money: bool = True) -> str:
+    """Patch 'Label: FY26 Xm to FY30 Ym' forecast bullets."""
+    fy26, fy30 = vals[0], vals[-1]
+    if money:
+        repl = f"{label}: FY26 {_fmt_m(fy26)}M to FY30 {_fmt_m(fy30)}M"
+        return re.sub(
+            rf"{re.escape(label)}: FY26 [\d,]+M to FY30 [\d,]+M",
+            repl,
+            text,
+            count=1,
+        )
+    return text
+
+
 def _patch_eps_narratives(text: str, eps: list[float]) -> str:
-    """Patch EPS callouts and FY26–FY30 ranges without touching other numbers."""
     text = re.sub(
         r"(compounding EPS to )\$[\d.]+",
         rf"\g<1>${eps[4]:.2f}",
@@ -59,12 +74,59 @@ def _patch_eps_narratives(text: str, eps: list[float]) -> str:
 
 
 def _patch_bear_bull_line(text: str, bear_px: str, bull_px: str) -> str:
-    text = re.sub(r"202\.17\.17+", f"{bull_px}", text)
+    text = re.sub(r"202\.17\.17+", bull_px, text)
     text = re.sub(
         r"Bear \$[\d.]+ / bull \$[\d.]+",
         f"Bear ${bear_px} / bull ${bull_px}",
         text,
     )
+    return text
+
+
+def _standardize_sources(text: str) -> str:
+    """One model filename; Scenarios base case is col C (post layout compact)."""
+
+    def _provided(m: re.Match[str]) -> str:
+        detail = m.group(1)
+        if detail:
+            return f"{MODEL}, {detail}"
+        return MODEL
+
+    text = re.sub(
+        r"Provided Valuation Model(?: \(([^)]+)\))?: LULU_DCF_Valuation_Model\.xlsx",
+        _provided,
+        text,
+    )
+    text = text.replace("Scenarios col G", "Scenarios col C")
+    text = text.replace("Scenarios tab, col G", "Scenarios tab, col C")
+    text = text.replace("base case (Scenarios col G)", "base case (Scenarios col C)")
+    text = text.replace("pitch-bridge block, col G", "pitch-bridge block, col C")
+    text = re.sub(r", col G\b", ", col C", text)
+    return text
+
+
+def _update_fin_table(table, row_map: dict[int, list], eps_row: int | None = None) -> None:
+    for ri, vals in row_map.items():
+        for ci, val in enumerate(vals, start=5):
+            if ri == eps_row:
+                table.cell(ri, ci).text = f"{val:.2f}"
+            else:
+                table.cell(ri, ci).text = _fmt_m(int(val))
+
+
+def _patch_forecast_narratives(text: str, b: dict) -> str:
+    text = _patch_range(text, "Net revenue", b["revenue_m"])
+    text = _patch_range(text, "Gross profit", b["gp_m"])
+    text = _patch_range(text, "Operating income", b["ebit_m"])
+    text = _patch_range(text, "Net income", b["ni_m"])
+    text = _patch_range(text, "Cash & equivalents", b["cash_m"])
+    text = _patch_range(text, "Inventories", b["inv_m"])
+    text = _patch_range(text, "Total assets", b["ta_m"])
+    text = _patch_range(text, "Total liabilities", b["tl_m"])
+    text = _patch_range(text, "Total equity", b["te_m"])
+    text = _patch_range(text, "Cash from operations", b["cfo_m"])
+    text = _patch_range(text, "D&A (add-back)", b["dna_m"])
+    text = _patch_range(text, "Free cash flow", b["fcf_m"])
     return text
 
 
@@ -84,12 +146,10 @@ def main() -> None:
     eps = b["eps"]
 
     mapping = [
-        # base DCF
         ("$133.64", f"${px}"),
         ("133.64", px),
         ("(+33.6% upside)", f"(+{upside}% upside)"),
         ("33.6% upside", f"{upside}% upside"),
-        # bear / bull — exact Excel recalc (rows 131–133)
         ("$54.00 bear", f"${bear_px} bear"),
         ("$54 bear", f"${bear_px} bear"),
         ("$56.00 bear", f"${bear_px} bear"),
@@ -103,7 +163,6 @@ def main() -> None:
         ("Bear $56 / bull $202", f"Bear ${bear_px} / bull ${bull_px}"),
         ("bull $208", f"bull ${bull_px}"),
         ("$208", f"${bull_px}"),
-        # legacy EPS (stale deck copies)
         ("$14.57", f"${eps[4]:.2f}"),
         ("14.57", f"{eps[4]:.2f}"),
         ("$14.87", f"${eps[4]:.2f}"),
@@ -112,14 +171,18 @@ def main() -> None:
         ("10.09", f"{eps[1]:.2f}"),
         ("$10.11", f"${eps[1]:.2f}"),
         ("10.11", f"{eps[1]:.2f}"),
-        # EV bridge
         ("3,944", _fmt_m(bridge["pv_fcf_m"])),
         ("14,876", _fmt_m(bridge["ev_m"])),
         ("14,885", _fmt_m(bridge["equity_m"])),
-        # IS / CF tables
         ("1,087", _fmt_m(b["ni_m"][0])),
         ("1,057", _fmt_m(b["ni_m"][1])),
         ("1,056", _fmt_m(b["fcf_m"][3])),
+        # stale BS total assets (pre-recalc)
+        ("7,691", _fmt_m(b["ta_m"][0])),
+        ("7,624", _fmt_m(b["ta_m"][1])),
+        ("7,560", _fmt_m(b["ta_m"][2])),
+        ("7,502", _fmt_m(b["ta_m"][3])),
+        ("7,447", _fmt_m(b["ta_m"][4])),
     ]
 
     if not OUT.exists() and FALLBACK.exists():
@@ -131,45 +194,52 @@ def main() -> None:
             if shape.has_text_frame:
                 for para in shape.text_frame.paragraphs:
                     for run in para.runs:
-                        if run.text:
-                            run.text = _replace_text(run.text, mapping)
-                            run.text = _patch_eps_narratives(run.text, eps)
-                            run.text = _patch_bear_bull_line(run.text, bear_px, bull_px)
+                        if not run.text:
+                            continue
+                        run.text = _replace_text(run.text, mapping)
+                        run.text = _patch_eps_narratives(run.text, eps)
+                        run.text = _patch_bear_bull_line(run.text, bear_px, bull_px)
+                        run.text = _patch_forecast_narratives(run.text, b)
+                        run.text = _standardize_sources(run.text)
             if shape.has_table:
                 for row in shape.table.rows:
                     for cell in row.cells:
                         if cell.text:
                             cell.text = _replace_text(cell.text, mapping)
+                            cell.text = _standardize_sources(cell.text)
 
-    # Slide 14 — income statement forecast cols FY26-30
+    # Slide 14 — income statement
     for shape in prs.slides[13].shapes:
         if shape.has_table and shape.table.rows[0].cells[0].text == "US$ M":
-            t = shape.table
-            rows_map = {
-                1: b["revenue_m"],
-                3: b["ebit_m"],
-                5: b["ni_m"],
-                6: eps,
-            }
-            for ri, vals in rows_map.items():
-                for ci, val in enumerate(vals, start=5):
-                    if ri == 6:
-                        t.cell(ri, ci).text = f"{val:.2f}"
-                    else:
-                        t.cell(ri, ci).text = _fmt_m(int(val))
+            _update_fin_table(
+                shape.table,
+                {1: b["revenue_m"], 2: b["gp_m"], 3: b["ebit_m"], 5: b["ni_m"], 6: eps},
+                eps_row=6,
+            )
 
-    # Slide 16 — cash flow FCF row
+    # Slide 15 — balance sheet
+    for shape in prs.slides[14].shapes:
+        if shape.has_table and shape.table.rows[0].cells[0].text == "US$ M":
+            _update_fin_table(
+                shape.table,
+                {1: b["cash_m"], 2: b["inv_m"], 3: b["ta_m"], 4: b["tl_m"], 5: b["te_m"]},
+            )
+
+    # Slide 16 — cash flow
     for shape in prs.slides[15].shapes:
         if shape.has_table and shape.table.rows[0].cells[0].text == "US$ M":
             t = shape.table
-            for ci, val in enumerate(b["fcf_m"], start=5):
-                t.cell(4, ci).text = _fmt_m(val)
+            _update_fin_table(t, {1: b["cfo_m"], 2: b["dna_m"], 4: b["fcf_m"]})
+            for ci, val in enumerate(b["capex_m"], start=5):
+                t.cell(3, ci).text = f"({val:,})"
+            for ci, val in enumerate(b["buy_m"], start=5):
+                t.cell(5, ci).text = f"({val:,})"
 
     prs.save(str(OUT))
-    print(f"Updated numbers only → {OUT}")
+    print(f"Updated numbers + sources → {OUT}")
     print(f"  Base ${px} (+{upside}%) | Bear ${bear_px} | Bull ${bull_px}")
     print(f"  EPS FY26-FY30: {eps}")
-    print(f"  FCF FY29: {b['fcf_m'][3]}M | NI FY27: {b['ni_m'][1]}M")
+    print(f"  BS TA FY26-FY30: {b['ta_m']}")
 
 
 if __name__ == "__main__":
