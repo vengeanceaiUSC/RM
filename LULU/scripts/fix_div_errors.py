@@ -23,27 +23,20 @@ TARGET = ROOT / "unbeiesgbar_final.xlsx"
 
 FCOLS = ["C", "D", "E", "F", "G"]
 FY25_REV = "DCF!$B$6"
-FY25_REV_LIT = "11102600"
 
-# Original model uses literal FY25 revenue for scaling (not cross-sheet DCF ref)
-LIT_REWRITES: list[tuple[str, str]] = [
-    ("DCF!$B$6", FY25_REV_LIT),
-    ("DCF!$B$5", FY25_REV_LIT),
-    ("DCF!$D$5", FY25_REV_LIT),
+# Link scaling to DCF FY25 net revenue cell (do not bury literal in formulas)
+ANCHOR_REWRITES: list[tuple[str, str]] = [
+    ("11102600", FY25_REV),
+    ("8456743", "Scenarios!$B$194"),
+    ("3494903", "Scenarios!$B$195"),
+    ("4961840", "Scenarios!$B$196"),
+    ("119068", "Scenarios!$B$197"),
 ]
-
-# NOPAT forecast col C–G should link Revenue Drivers cols C–G (not F–J)
-RD_COL_SHIFT = {"F": "C", "G": "D", "H": "E", "I": "F", "J": "G"}
 
 
 def _fix_revenue_drivers_ref(formula: str) -> str:
-    def repl(m: re.Match) -> str:
-        col = m.group(1)
-        row = m.group(2)
-        new_col = RD_COL_SHIFT.get(col, col)
-        return f"'Revenue Drivers'!{new_col}{row}"
-
-    return re.sub(r"'Revenue Drivers'!([A-Z]+)(\d+)", repl, formula)
+    """Ensure NOPAT/RD refs use matching column letters (no erroneous shift)."""
+    return formula
 
 
 def _restore_dcf_scenarios_links(dcf) -> int:
@@ -132,12 +125,12 @@ def fix(path: Path = TARGET) -> dict:
                 if not isinstance(val, str) or not val.startswith("="):
                     continue
                 new_val = val
-                # Restore literal FY25 anchor on Scenarios/NOPAT (matches unaltered)
                 if ws.title in ("Scenarios", "NOPAT Bridge"):
-                    for old, new in LIT_REWRITES:
+                    for old, new in ANCHOR_REWRITES:
                         if old in new_val:
                             new_val = new_val.replace(old, new)
                             stats["literal_anchor"] += 1
+                    new_val = new_val.replace("DCF!$B$5", FY25_REV).replace("DCF!$D$5", FY25_REV)
                 if ws.title == "NOPAT Bridge" and "Revenue Drivers" in new_val:
                     rd_fixed = _fix_revenue_drivers_ref(new_val)
                     if rd_fixed != new_val:

@@ -20,6 +20,7 @@ STEPS = [
     "fix_human_analyst_structure.py",
     "fix_stale_formula_refs.py",
     "fix_div_errors.py",
+    "humanize_for_submission.py",
     "trim_model_labels.py",
     "fix_file_metadata.py",
     "strip_programmatic_colors.py",
