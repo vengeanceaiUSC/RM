@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Make unbeiesgbar_final.xlsx look analyst-built, not openpyxl-generated.
 
+Before editing, read ../AI_SELF_AUDIT.md and run audit_ai_tells.py (read-only).
+Never delete hardcoded assumptions or Source column links when fixing flagged items.
+
 - Excel metadata (creator / lastModifiedBy)
 - Prompt residue in headers (Justification, click +, etc.)
 - Robotic float precision on hardcodes

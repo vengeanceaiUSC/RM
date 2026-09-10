@@ -9,6 +9,7 @@
 | File | Direct download |
 |------|-----------------|
 | **Final cleaned model (Notes + Source links + Analyst notes)** | https://github.com/vengeanceaiUSC/RM/raw/cursor/fix-altered-model18-hardcodes-bd53/LULU/unbeiesgbar_final.xlsx |
+| AI self-audit rules (for agents) | [AI_SELF_AUDIT.md](AI_SELF_AUDIT.md) |
 | Cleaned model (no notes) | https://github.com/vengeanceaiUSC/RM/raw/cursor/fix-altered-model18-hardcodes-bd53/LULU/unbeiesgbar2model.xlsx |
 | Original unaltered model | https://github.com/vengeanceaiUSC/RM/raw/cursor/fix-altered-model18-hardcodes-bd53/LULU/model18unaltered.xlsx |
 | DCF valuation model | https://github.com/vengeanceaiUSC/RM/raw/cursor/lulu-dcf-3statement-pitch-be44/LULU/LULU_DCF_Valuation_Model.xlsx |
