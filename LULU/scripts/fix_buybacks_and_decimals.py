@@ -34,6 +34,7 @@ SCN_WC_FORMULAS: dict[int, tuple[str, str]] = {
 # DCF FY25A WC driver rows (col E)
 DCF_FY25_FORMULAS: dict[int, tuple[str, str]] = {
     7: ("=(E5-E8)/E5", PCT_FMT),
+    12: ("=E11/E5", PCT_FMT),
     20: ("=(E21/E5)*365", DAY_FMT),
     22: ("=(E23/E8)*365", DAY_FMT),
     24: ("=(E25/E8)*365", DAY_FMT),
