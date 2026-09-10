@@ -87,7 +87,7 @@ def main() -> None:
         ("14,876", f"{round(base['ev']/1000):,}"),
         ("14,885", f"{eq_m:,}"),
         ("1,087", "1,086"),
-        ("1,056", "1,057"),
+        ("1,057", "1,056"),  # FY27 NI rounds to $1,056M in model
     ]
 
     src = FALLBACK if FALLBACK.exists() else SRC
