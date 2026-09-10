@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Repair model18altered.xlsx after polish row/column deletes broke formulas.
 
-Restores correct Hamada beta chain (β used ≈ 0.84), rebinding WACC / Revenue
-Drivers / DCF / Scenarios refs, then bakes WACC col D to hardcoded numbers so
-link-sourced inputs display without recalc.
+Restores correct Hamada beta chain (β used ≈ 0.84 via formulas), rebinding WACC
+/ Revenue Drivers / DCF / Scenarios refs. Only external link-sourced inputs
+(Yahoo, FRED, 10-K, NASDAQ) are hardcoded; computed rows stay as formulas
+(matching model18unaltered col E → altered col D mapping).
 
 Run:  cd LULU/scripts && python3 fix_model18_altered.py
 """
@@ -89,10 +90,7 @@ def _fix_wacc(wacc) -> None:
     wacc["D33"].value = "=D10/(D10+D13)"
     wacc["D34"].value = "=D13/(D10+D13)"
     wacc["D35"].value = "=D33*D26+D34*D30"
-
-    computed = _eval_wacc_col(wacc)
-    for row, num in computed.items():
-        wacc.cell(row, 4).value = num
+    # Computed rows (D10, D13, D19, D21, D22, D24, D26, D30, D33–D35) stay formulas.
 
 
 def _fix_revenue_drivers(rd) -> None:
@@ -170,16 +168,24 @@ def fix_workbook(path: Path = TARGET) -> Path:
         raise AssertionError("Circular refs remain:\n" + "\n".join(issues))
 
     wacc = wb2["WACC"]
-    beta_used = wacc["D24"].value
-    wacc_val = wacc["D35"].value
-    if not isinstance(beta_used, (int, float)) or not (0.83 <= beta_used <= 0.86):
-        raise AssertionError(f"Beta used out of range: {beta_used!r}")
-    if not isinstance(wacc_val, (int, float)) or not (0.085 <= wacc_val <= 0.095):
-        raise AssertionError(f"WACC out of range: {wacc_val!r}")
+    for addr in ("D24", "D35"):
+        val = wacc[addr].value
+        if not isinstance(val, str) or not val.startswith("="):
+            raise AssertionError(f"{addr} must be a formula, got {val!r}")
+
+    computed = _eval_wacc_col(wacc)
+    beta_used = computed[24]
+    wacc_val = computed[35]
+    if not (0.83 <= beta_used <= 0.86):
+        raise AssertionError(f"Beta used out of range: {beta_used}")
+    if not (0.085 <= wacc_val <= 0.095):
+        raise AssertionError(f"WACC out of range: {wacc_val}")
 
     print(f"Fixed {path}")
-    print(f"  WACC D24 (beta used) = {beta_used:.4f}")
-    print(f"  WACC D35 (WACC)      = {wacc_val:.4f}")
+    print(f"  WACC D24 formula     = {wacc['D24'].value}")
+    print(f"  WACC D35 formula     = {wacc['D35'].value}")
+    print(f"  Evaluated beta used  = {beta_used:.4f}")
+    print(f"  Evaluated WACC       = {wacc_val:.4f}")
     print(f"  Circular refs        = 0")
     return path
 
