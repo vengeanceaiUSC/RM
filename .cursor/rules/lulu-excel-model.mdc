@@ -1,0 +1,38 @@
+---
+description: LULU Excel model edits must preserve unaltered hardcodes and DCF ~$133.64/sh
+globs: LULU/**/*.xlsx,LULU/scripts/**/*.py,LULU/AI_SELF_AUDIT.md
+alwaysApply: false
+---
+
+# LULU Excel Model — Never Break Valuation
+
+Numeric source of truth: **`LULU/model18unaltered (12).xlsx`**. Base-case implied value must stay **~$133.64/sh** (DCF D56 after F9).
+
+## Do not change
+
+- Hardcoded blue inputs (rates, days, shares, prices) — exact floats from unaltered
+- Cross-sheet formulas that feed DCF rows 42–56
+- Source column hyperlinks on assumption rows
+
+## Safe humanization only
+
+| OK | Not OK |
+|----|--------|
+| Number **formats** (`0.0`, `0.0%`) so grid shows 6.3 / 2.3% | Script-rounding stored values (DSO 6.267… → 6.3 broke DCF) |
+| Complete truncated Notes (8–15 words) | Deleting hardcodes or Source links |
+| Blank Source on pure formula rows | Changing terminal g, Capex, share price |
+| Fix broken column refs (e.g. TV recon E→D) | Running `strip_model_manual.py` on finished file |
+
+## After any edit
+
+```bash
+cd LULU
+python3 scripts/audit_valuation_numbers.py   # must show 0 diffs
+python3 scripts/fix_dcf_tv_reconciliation.py # if DCF recon shows zeros
+```
+
+Re-read `.cursor/skills/humanize-excel-model/SKILL.md` before editing.
+
+## Formula bar vs display
+
+Full precision in the formula bar (e.g. `6.267883648875038`) is expected until the user manually re-types rounded inputs in Excel **after** F9 confirms ~$133.64.
