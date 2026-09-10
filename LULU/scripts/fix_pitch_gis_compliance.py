@@ -287,6 +287,23 @@ def _apply_garamond(prs: Presentation) -> int:
                             color = run.font.color.rgb
                         except AttributeError:
                             color = INK
+                        # Preserve white text on navy table headers
+                        parent = run._r.getparent()
+                        while parent is not None:
+                            if parent.tag.endswith("}tc"):
+                                break
+                            parent = parent.getparent()
+                        if parent is not None:
+                            try:
+                                from pptx.oxml.ns import qn
+
+                                solid = parent.find(f".//{qn('a:solidFill')}")
+                                if solid is not None:
+                                    srgb = solid.find(qn("a:srgbClr"))
+                                    if srgb is not None and srgb.get("val", "").upper() == "1F2A44":
+                                        color = WHITE
+                            except Exception:
+                                pass
                         _set_font(
                             run,
                             run.font.size.pt if run.font.size else 10,
