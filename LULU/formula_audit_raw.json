@@ -1,0 +1,6761 @@
+{
+  "workbook": "model18_humanized (1).xlsx",
+  "generated_at": "2026-09-10T16:05:29.519309+00:00",
+  "total_formulas": 979,
+  "formulas_per_sheet": {
+    "Cover": 0,
+    "WACC": 11,
+    "Scenarios": 475,
+    "Revenue Drivers": 108,
+    "NOPAT Bridge": 96,
+    "DCF": 260,
+    "Comps": 29
+  },
+  "issue_counts": {
+    "self_referencing_sheet_name": 0,
+    "lowercase_function_names": 0,
+    "iferror_or_round_wrappers": 10,
+    "inline_numeric_hardcodes": 102,
+    "text_cells_explaining_formulas": 17
+  },
+  "formulas": [
+    {
+      "sheet": "WACC",
+      "cell": "E10",
+      "formula": "=E8*E9",
+      "issues": []
+    },
+    {
+      "sheet": "WACC",
+      "cell": "E14",
+      "formula": "=E11+E13",
+      "issues": []
+    },
+    {
+      "sheet": "WACC",
+      "cell": "E20",
+      "formula": "=E18/E19",
+      "issues": []
+    },
+    {
+      "sheet": "WACC",
+      "cell": "E22",
+      "formula": "=E17/(1+(1-E5)*E20)",
+      "issues": []
+    },
+    {
+      "sheet": "WACC",
+      "cell": "E23",
+      "formula": "=E14/E10",
+      "issues": []
+    },
+    {
+      "sheet": "WACC",
+      "cell": "E25",
+      "formula": "=E22*(1+(1-E5)*E23)",
+      "issues": []
+    },
+    {
+      "sheet": "WACC",
+      "cell": "E32",
+      "formula": "=E3+E25*E4",
+      "issues": []
+    },
+    {
+      "sheet": "WACC",
+      "cell": "E36",
+      "formula": "=E35*(1-E5)",
+      "issues": []
+    },
+    {
+      "sheet": "WACC",
+      "cell": "E39",
+      "formula": "=E10/(E10+E14)",
+      "issues": []
+    },
+    {
+      "sheet": "WACC",
+      "cell": "E40",
+      "formula": "=E14/(E10+E14)",
+      "issues": []
+    },
+    {
+      "sheet": "WACC",
+      "cell": "E41",
+      "formula": "=E39*E32+E40*E36",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G9",
+      "formula": "=WACC!E41",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F25",
+      "formula": "=11102600*(1+F4)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G25",
+      "formula": "=11102600*(1+G4)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H25",
+      "formula": "=11102600*(1+H4)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F26",
+      "formula": "=F25*(1+F5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G26",
+      "formula": "=G25*(1+G5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H26",
+      "formula": "=H25*(1+H5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F27",
+      "formula": "=F26*(1+F5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G27",
+      "formula": "=G26*(1+G5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H27",
+      "formula": "=H26*(1+H5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F28",
+      "formula": "=F27*(1+F5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G28",
+      "formula": "=G27*(1+G5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H28",
+      "formula": "=H27*(1+H5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F29",
+      "formula": "=F28*(1+F5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G29",
+      "formula": "=G28*(1+G5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H29",
+      "formula": "=H28*(1+H5)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F30",
+      "formula": "=F14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G30",
+      "formula": "=G14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H30",
+      "formula": "=H14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F31",
+      "formula": "=F14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G31",
+      "formula": "=G14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H31",
+      "formula": "=H14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F32",
+      "formula": "=F14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G32",
+      "formula": "=G14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H32",
+      "formula": "=H14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F33",
+      "formula": "=F14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G33",
+      "formula": "=G14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H33",
+      "formula": "=H14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F34",
+      "formula": "=F14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G34",
+      "formula": "=G14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H34",
+      "formula": "=H14",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F35",
+      "formula": "=F25*(1-F30)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G35",
+      "formula": "=G25*(1-G30)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H35",
+      "formula": "=H25*(1-H30)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F36",
+      "formula": "=F26*(1-F31)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G36",
+      "formula": "=G26*(1-G31)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H36",
+      "formula": "=H26*(1-H31)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F37",
+      "formula": "=F27*(1-F32)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G37",
+      "formula": "=G27*(1-G32)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H37",
+      "formula": "=H27*(1-H32)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F38",
+      "formula": "=F28*(1-F33)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G38",
+      "formula": "=G28*(1-G33)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H38",
+      "formula": "=H28*(1-H33)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F39",
+      "formula": "=F29*(1-F34)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G39",
+      "formula": "=G29*(1-G34)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H39",
+      "formula": "=H29*(1-H34)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F40",
+      "formula": "=F6+(F8-F6)*0/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G40",
+      "formula": "=G6+(G8-G6)*0/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H40",
+      "formula": "=H6+(H8-H6)*0/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F41",
+      "formula": "=F6+(F8-F6)*1/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G41",
+      "formula": "=G6+(G8-G6)*1/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H41",
+      "formula": "=H6+(H8-H6)*1/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F42",
+      "formula": "=F6+(F8-F6)*2/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G42",
+      "formula": "=G6+(G8-G6)*2/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H42",
+      "formula": "=H6+(H8-H6)*2/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F43",
+      "formula": "=F6+(F8-F6)*3/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G43",
+      "formula": "=G6+(G8-G6)*3/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H43",
+      "formula": "=H6+(H8-H6)*3/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F44",
+      "formula": "=F6+(F8-F6)*4/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G44",
+      "formula": "=G6+(G8-G6)*4/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H44",
+      "formula": "=H6+(H8-H6)*4/4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F45",
+      "formula": "=F25*F40+F7",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G45",
+      "formula": "=G25*G40+G7",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H45",
+      "formula": "=H25*H40+H7",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F46",
+      "formula": "=F26*F41",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G46",
+      "formula": "=G26*G41",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H46",
+      "formula": "=H26*H41",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F47",
+      "formula": "=F27*F42",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G47",
+      "formula": "=G27*G42",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H47",
+      "formula": "=H27*H42",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F48",
+      "formula": "=F28*F43",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G48",
+      "formula": "=G28*G43",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H48",
+      "formula": "=H28*H43",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F49",
+      "formula": "=F29*F44",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G49",
+      "formula": "=G29*G44",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H49",
+      "formula": "=H29*H44",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F50",
+      "formula": "=F45*(1-'NOPAT Bridge'!F$39)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G50",
+      "formula": "='NOPAT Bridge'!F41",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H50",
+      "formula": "=H45*(1-'NOPAT Bridge'!F$39)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F51",
+      "formula": "=F46*(1-'NOPAT Bridge'!G$39)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G51",
+      "formula": "='NOPAT Bridge'!G41",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H51",
+      "formula": "=H46*(1-'NOPAT Bridge'!G$39)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F52",
+      "formula": "=F47*(1-'NOPAT Bridge'!H$39)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G52",
+      "formula": "='NOPAT Bridge'!H41",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H52",
+      "formula": "=H47*(1-'NOPAT Bridge'!H$39)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F53",
+      "formula": "=F48*(1-'NOPAT Bridge'!I$39)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G53",
+      "formula": "='NOPAT Bridge'!I41",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H53",
+      "formula": "=H48*(1-'NOPAT Bridge'!I$39)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F54",
+      "formula": "=F49*(1-'NOPAT Bridge'!J$39)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G54",
+      "formula": "='NOPAT Bridge'!J41",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H54",
+      "formula": "=H49*(1-'NOPAT Bridge'!J$39)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F55",
+      "formula": "=F25*F12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G55",
+      "formula": "=G25*G12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H55",
+      "formula": "=H25*H12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F56",
+      "formula": "=F26*F12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G56",
+      "formula": "=G26*G12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H56",
+      "formula": "=H26*H12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F57",
+      "formula": "=F27*F12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G57",
+      "formula": "=G27*G12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H57",
+      "formula": "=H27*H12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F58",
+      "formula": "=F28*F12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G58",
+      "formula": "=G28*G12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H58",
+      "formula": "=H28*H12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F59",
+      "formula": "=F29*F12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G59",
+      "formula": "=G29*G12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H59",
+      "formula": "=H29*H12",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F60",
+      "formula": "=F25*F13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G60",
+      "formula": "=G25*G13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H60",
+      "formula": "=H25*H13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F61",
+      "formula": "=F26*F13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G61",
+      "formula": "=G26*G13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H61",
+      "formula": "=H26*H13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F62",
+      "formula": "=F27*F13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G62",
+      "formula": "=G27*G13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H62",
+      "formula": "=H27*H13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F63",
+      "formula": "=F28*F13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G63",
+      "formula": "=G28*G13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H63",
+      "formula": "=H28*H13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F64",
+      "formula": "=F29*F13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G64",
+      "formula": "=G29*G13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H64",
+      "formula": "=H29*H13",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F65",
+      "formula": "=F15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G65",
+      "formula": "=G15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H65",
+      "formula": "=H15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F66",
+      "formula": "=F15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G66",
+      "formula": "=G15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H66",
+      "formula": "=H15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F67",
+      "formula": "=F15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G67",
+      "formula": "=G15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H67",
+      "formula": "=H15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F68",
+      "formula": "=F15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G68",
+      "formula": "=G15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H68",
+      "formula": "=H15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F69",
+      "formula": "=F15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G69",
+      "formula": "=G15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H69",
+      "formula": "=H15",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F70",
+      "formula": "=(F65/365)*F25",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G70",
+      "formula": "=(G65/365)*G25",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H70",
+      "formula": "=(H65/365)*H25",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F71",
+      "formula": "=(F66/365)*F26",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G71",
+      "formula": "=(G66/365)*G26",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H71",
+      "formula": "=(H66/365)*H26",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F72",
+      "formula": "=(F67/365)*F27",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G72",
+      "formula": "=(G67/365)*G27",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H72",
+      "formula": "=(H67/365)*H27",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F73",
+      "formula": "=(F68/365)*F28",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G73",
+      "formula": "=(G68/365)*G28",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H73",
+      "formula": "=(H68/365)*H28",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F74",
+      "formula": "=(F69/365)*F29",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G74",
+      "formula": "=(G69/365)*G29",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H74",
+      "formula": "=(H69/365)*H29",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F75",
+      "formula": "=F16-F17*1",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G75",
+      "formula": "=G16-G17*1",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H75",
+      "formula": "=H16-H17*1",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F76",
+      "formula": "=F16-F17*2",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G76",
+      "formula": "=G16-G17*2",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H76",
+      "formula": "=H16-H17*2",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F77",
+      "formula": "=F16-F17*3",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G77",
+      "formula": "=G16-G17*3",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H77",
+      "formula": "=H16-H17*3",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F78",
+      "formula": "=F16-F17*4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G78",
+      "formula": "=G16-G17*4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H78",
+      "formula": "=H16-H17*4",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F79",
+      "formula": "=F16-F17*5",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G79",
+      "formula": "=G16-G17*5",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H79",
+      "formula": "=H16-H17*5",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F80",
+      "formula": "=(F75/365)*F35",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G80",
+      "formula": "=(G75/365)*G35",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H80",
+      "formula": "=(H75/365)*H35",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F81",
+      "formula": "=(F76/365)*F36",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G81",
+      "formula": "=(G76/365)*G36",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H81",
+      "formula": "=(H76/365)*H36",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F82",
+      "formula": "=(F77/365)*F37",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G82",
+      "formula": "=(G77/365)*G37",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H82",
+      "formula": "=(H77/365)*H37",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F83",
+      "formula": "=(F78/365)*F38",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G83",
+      "formula": "=(G78/365)*G38",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H83",
+      "formula": "=(H78/365)*H38",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F84",
+      "formula": "=(F79/365)*F39",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G84",
+      "formula": "=(G79/365)*G39",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H84",
+      "formula": "=(H79/365)*H39",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F85",
+      "formula": "=F18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G85",
+      "formula": "=G18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H85",
+      "formula": "=H18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F86",
+      "formula": "=F18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G86",
+      "formula": "=G18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H86",
+      "formula": "=H18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F87",
+      "formula": "=F18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G87",
+      "formula": "=G18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H87",
+      "formula": "=H18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F88",
+      "formula": "=F18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G88",
+      "formula": "=G18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H88",
+      "formula": "=H18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F89",
+      "formula": "=F18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G89",
+      "formula": "=G18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H89",
+      "formula": "=H18",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F90",
+      "formula": "=(F85/365)*F35",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G90",
+      "formula": "=(G85/365)*G35",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H90",
+      "formula": "=(H85/365)*H35",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F91",
+      "formula": "=(F86/365)*F36",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G91",
+      "formula": "=(G86/365)*G36",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H91",
+      "formula": "=(H86/365)*H36",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F92",
+      "formula": "=(F87/365)*F37",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G92",
+      "formula": "=(G87/365)*G37",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H92",
+      "formula": "=(H87/365)*H37",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F93",
+      "formula": "=(F88/365)*F38",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G93",
+      "formula": "=(G88/365)*G38",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H93",
+      "formula": "=(H88/365)*H38",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F94",
+      "formula": "=(F89/365)*F39",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G94",
+      "formula": "=(G89/365)*G39",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H94",
+      "formula": "=(H89/365)*H39",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F95",
+      "formula": "=F25*F19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G95",
+      "formula": "=G25*G19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H95",
+      "formula": "=H25*H19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F96",
+      "formula": "=F26*F19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G96",
+      "formula": "=G26*G19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H96",
+      "formula": "=H26*H19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F97",
+      "formula": "=F27*F19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G97",
+      "formula": "=G27*G19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H97",
+      "formula": "=H27*H19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F98",
+      "formula": "=F28*F19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G98",
+      "formula": "=G28*G19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H98",
+      "formula": "=H28*H19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F99",
+      "formula": "=F29*F19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G99",
+      "formula": "=G29*G19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H99",
+      "formula": "=H29*H19",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F100",
+      "formula": "=F25*F20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G100",
+      "formula": "=G25*G20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H100",
+      "formula": "=H25*H20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F101",
+      "formula": "=F26*F20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G101",
+      "formula": "=G26*G20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H101",
+      "formula": "=H26*H20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F102",
+      "formula": "=F27*F20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G102",
+      "formula": "=G27*G20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H102",
+      "formula": "=H27*H20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F103",
+      "formula": "=F28*F20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G103",
+      "formula": "=G28*G20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H103",
+      "formula": "=H28*H20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F104",
+      "formula": "=F29*F20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G104",
+      "formula": "=G29*G20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H104",
+      "formula": "=H29*H20",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F105",
+      "formula": "=F70+F80+F95",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G105",
+      "formula": "=G70+G80+G95",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H105",
+      "formula": "=H70+H80+H95",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F106",
+      "formula": "=F71+F81+F96",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G106",
+      "formula": "=G71+G81+G96",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H106",
+      "formula": "=H71+H81+H96",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F107",
+      "formula": "=F72+F82+F97",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G107",
+      "formula": "=G72+G82+G97",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H107",
+      "formula": "=H72+H82+H97",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F108",
+      "formula": "=F73+F83+F98",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G108",
+      "formula": "=G73+G83+G98",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H108",
+      "formula": "=H73+H83+H98",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F109",
+      "formula": "=F74+F84+F99",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G109",
+      "formula": "=G74+G84+G99",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H109",
+      "formula": "=H74+H84+H99",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F110",
+      "formula": "=F90+F100",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G110",
+      "formula": "=G90+G100",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H110",
+      "formula": "=H90+H100",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F111",
+      "formula": "=F91+F101",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G111",
+      "formula": "=G91+G101",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H111",
+      "formula": "=H91+H101",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F112",
+      "formula": "=F92+F102",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G112",
+      "formula": "=G92+G102",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H112",
+      "formula": "=H92+H102",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F113",
+      "formula": "=F93+F103",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G113",
+      "formula": "=G93+G103",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H113",
+      "formula": "=H93+H103",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F114",
+      "formula": "=F94+F104",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G114",
+      "formula": "=G94+G104",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H114",
+      "formula": "=H94+H104",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F115",
+      "formula": "=F105-F110",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G115",
+      "formula": "=G105-G110",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H115",
+      "formula": "=H105-H110",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F116",
+      "formula": "=F106-F111",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G116",
+      "formula": "=G106-G111",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H116",
+      "formula": "=H106-H111",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F117",
+      "formula": "=F107-F112",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G117",
+      "formula": "=G107-G112",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H117",
+      "formula": "=H107-H112",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F118",
+      "formula": "=F108-F113",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G118",
+      "formula": "=G108-G113",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H118",
+      "formula": "=H108-H113",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F119",
+      "formula": "=F109-F114",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G119",
+      "formula": "=G109-G114",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H119",
+      "formula": "=H109-H114",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F120",
+      "formula": "=1461096-F115",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G120",
+      "formula": "=1461096-G115",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H120",
+      "formula": "=1461096-H115",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F121",
+      "formula": "=F115-F116",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G121",
+      "formula": "=G115-G116",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H121",
+      "formula": "=H115-H116",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F122",
+      "formula": "=F116-F117",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G122",
+      "formula": "=G116-G117",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H122",
+      "formula": "=H116-H117",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F123",
+      "formula": "=F117-F118",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G123",
+      "formula": "=G117-G118",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H123",
+      "formula": "=H117-H118",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F124",
+      "formula": "=F118-F119",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G124",
+      "formula": "=G118-G119",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H124",
+      "formula": "=H118-H119",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F125",
+      "formula": "=F50+F55-F60+F120",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G125",
+      "formula": "=G50+G55-G60+G120",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H125",
+      "formula": "=H50+H55-H60+H120",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F126",
+      "formula": "=F51+F56-F61+F121",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G126",
+      "formula": "=G51+G56-G61+G121",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H126",
+      "formula": "=H51+H56-H61+H121",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F127",
+      "formula": "=F52+F57-F62+F122",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G127",
+      "formula": "=G52+G57-G62+G122",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H127",
+      "formula": "=H52+H57-H62+H122",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F128",
+      "formula": "=F53+F58-F63+F123",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G128",
+      "formula": "=G53+G58-G63+G123",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H128",
+      "formula": "=H53+H58-H63+H123",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F129",
+      "formula": "=F54+F59-F64+F124",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G129",
+      "formula": "=G54+G59-G64+G124",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H129",
+      "formula": "=H54+H59-H64+H124",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F131",
+      "formula": "=NPV(F9,F125,F126,F127,F128,F129)+(F129*(1+F10)/(F9-F10))/(1+F9)^5",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G131",
+      "formula": "=NPV(G9,G125,G126,G127,G128,G129)+(G129*(1+G10)/(G9-G10))/(1+G9)^5",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H131",
+      "formula": "=NPV(H9,H125,H126,H127,H128,H129)+(H129*(1+H10)/(H9-H10))/(1+H9)^5",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F132",
+      "formula": "=(F131+1807202-1798441)/111380",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G132",
+      "formula": "=(G131+1807202-1798441)/111380",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H132",
+      "formula": "=(H131+1807202-1798441)/111380",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F133",
+      "formula": "=F132/100.0-1",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G133",
+      "formula": "=G132/100.0-1",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H133",
+      "formula": "=H132/100.0-1",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F143",
+      "formula": "=(F45+F138)*(1-F11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G143",
+      "formula": "=(G45+G138)*(1-G11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H143",
+      "formula": "=(H45+H138)*(1-H11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F144",
+      "formula": "=(F46+F139)*(1-F11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G144",
+      "formula": "=(G46+G139)*(1-G11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H144",
+      "formula": "=(H46+H139)*(1-H11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F145",
+      "formula": "=(F47+F140)*(1-F11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G145",
+      "formula": "=(G47+G140)*(1-G11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H145",
+      "formula": "=(H47+H140)*(1-H11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F146",
+      "formula": "=(F48+F141)*(1-F11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G146",
+      "formula": "=(G48+G141)*(1-G11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H146",
+      "formula": "=(H48+H141)*(1-H11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F147",
+      "formula": "=(F49+F142)*(1-F11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G147",
+      "formula": "=(G49+G142)*(1-G11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H147",
+      "formula": "=(H49+H142)*(1-H11)",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F148",
+      "formula": "=F143+F55+F120",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G148",
+      "formula": "=G143+G55+G120",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H148",
+      "formula": "=H143+H55+H120",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F149",
+      "formula": "=F144+F56+F121",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G149",
+      "formula": "=G144+G56+G121",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H149",
+      "formula": "=H144+H56+H121",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F150",
+      "formula": "=F145+F57+F122",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G150",
+      "formula": "=G145+G57+G122",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H150",
+      "formula": "=H145+H57+H122",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F151",
+      "formula": "=F146+F58+F123",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G151",
+      "formula": "=G146+G58+G123",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H151",
+      "formula": "=H146+H58+H123",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F152",
+      "formula": "=F147+F59+F124",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G152",
+      "formula": "=G147+G59+G124",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H152",
+      "formula": "=H147+H59+H124",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F153",
+      "formula": "=F148-F60",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G153",
+      "formula": "=G148-G60",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H153",
+      "formula": "=H148-H60",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F154",
+      "formula": "=F149-F61",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G154",
+      "formula": "=G149-G61",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H154",
+      "formula": "=H149-H61",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F155",
+      "formula": "=F150-F62",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G155",
+      "formula": "=G150-G62",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H155",
+      "formula": "=H150-H62",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F156",
+      "formula": "=F151-F63",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G156",
+      "formula": "=G151-G63",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H156",
+      "formula": "=H151-H63",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F157",
+      "formula": "=F152-F64",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G157",
+      "formula": "=G152-G64",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H157",
+      "formula": "=H152-H64",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F158",
+      "formula": "=-F21",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G158",
+      "formula": "=-G21",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H158",
+      "formula": "=-ROUND(H22*H153,0)",
+      "issues": [
+        "iferror_or_round_wrappers"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F159",
+      "formula": "=-F21",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G159",
+      "formula": "=-G21",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H159",
+      "formula": "=-ROUND(H22*H154,0)",
+      "issues": [
+        "iferror_or_round_wrappers"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F160",
+      "formula": "=-F21",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G160",
+      "formula": "=-G21",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H160",
+      "formula": "=-ROUND(H22*H155,0)",
+      "issues": [
+        "iferror_or_round_wrappers"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F161",
+      "formula": "=-F21",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G161",
+      "formula": "=-G21",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H161",
+      "formula": "=-ROUND(H22*H156,0)",
+      "issues": [
+        "iferror_or_round_wrappers"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F162",
+      "formula": "=-F21",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G162",
+      "formula": "=-G21",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H162",
+      "formula": "=-ROUND(H22*H157,0)",
+      "issues": [
+        "iferror_or_round_wrappers"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F163",
+      "formula": "=1807202+F153+F158",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G163",
+      "formula": "=1807202+G153+G158",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H163",
+      "formula": "=1807202+H153+H158",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F164",
+      "formula": "=F163+F154+F159",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G164",
+      "formula": "=G163+G154+G159",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H164",
+      "formula": "=H163+H154+H159",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F165",
+      "formula": "=F164+F155+F160",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G165",
+      "formula": "=G164+G155+G160",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H165",
+      "formula": "=H164+H155+H160",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F166",
+      "formula": "=F165+F156+F161",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G166",
+      "formula": "=G165+G156+G161",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H166",
+      "formula": "=H165+H156+H161",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F167",
+      "formula": "=F166+F157+F162",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G167",
+      "formula": "=G166+G157+G162",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H167",
+      "formula": "=H166+H157+H162",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F168",
+      "formula": "=8456743*F25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G168",
+      "formula": "=8456743*G25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H168",
+      "formula": "=8456743*H25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F169",
+      "formula": "=8456743*F26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G169",
+      "formula": "=8456743*G26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H169",
+      "formula": "=8456743*H26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F170",
+      "formula": "=8456743*F27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G170",
+      "formula": "=8456743*G27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H170",
+      "formula": "=8456743*H27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F171",
+      "formula": "=8456743*F28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G171",
+      "formula": "=8456743*G28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H171",
+      "formula": "=8456743*H28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F172",
+      "formula": "=8456743*F29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G172",
+      "formula": "=8456743*G29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H172",
+      "formula": "=8456743*H29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F173",
+      "formula": "=3494903*F25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G173",
+      "formula": "=3494903*G25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H173",
+      "formula": "=3494903*H25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F174",
+      "formula": "=3494903*F26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G174",
+      "formula": "=3494903*G26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H174",
+      "formula": "=3494903*H26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F175",
+      "formula": "=3494903*F27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G175",
+      "formula": "=3494903*G27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H175",
+      "formula": "=3494903*H27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F176",
+      "formula": "=3494903*F28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G176",
+      "formula": "=3494903*G28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H176",
+      "formula": "=3494903*H28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F177",
+      "formula": "=3494903*F29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G177",
+      "formula": "=3494903*G29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H177",
+      "formula": "=3494903*H29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F178",
+      "formula": "=4961840*F25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G178",
+      "formula": "=4961840*G25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H178",
+      "formula": "=4961840*H25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F179",
+      "formula": "=4961840*F26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G179",
+      "formula": "=4961840*G26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H179",
+      "formula": "=4961840*H26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F180",
+      "formula": "=4961840*F27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G180",
+      "formula": "=4961840*G27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H180",
+      "formula": "=4961840*H27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F181",
+      "formula": "=4961840*F28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G181",
+      "formula": "=4961840*G28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H181",
+      "formula": "=4961840*H28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F182",
+      "formula": "=4961840*F29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G182",
+      "formula": "=4961840*G29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H182",
+      "formula": "=4961840*H29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F183",
+      "formula": "=119068-F21/100",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G183",
+      "formula": "=119068-G21/100",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H183",
+      "formula": "=119068-ROUND(H22*H153,0)/100",
+      "issues": [
+        "iferror_or_round_wrappers",
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F184",
+      "formula": "=F183-F21/108",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G184",
+      "formula": "=G183-G21/108",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H184",
+      "formula": "=H183-ROUND(H22*H154,0)/108",
+      "issues": [
+        "iferror_or_round_wrappers",
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F185",
+      "formula": "=F184-F21/115",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G185",
+      "formula": "=G184-G21/115",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H185",
+      "formula": "=H184-ROUND(H22*H155,0)/115",
+      "issues": [
+        "iferror_or_round_wrappers",
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F186",
+      "formula": "=F185-F21/122",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G186",
+      "formula": "=G185-G21/122",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H186",
+      "formula": "=H185-ROUND(H22*H156,0)/122",
+      "issues": [
+        "iferror_or_round_wrappers",
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F187",
+      "formula": "=F186-F21/130",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G187",
+      "formula": "=G186-G21/130",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H187",
+      "formula": "=H186-ROUND(H22*H157,0)/130",
+      "issues": [
+        "iferror_or_round_wrappers",
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F188",
+      "formula": "=F143/F183",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G188",
+      "formula": "=G143/G183",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H188",
+      "formula": "=H143/H183",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F189",
+      "formula": "=F144/F184",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G189",
+      "formula": "=G144/G184",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H189",
+      "formula": "=H144/H184",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F190",
+      "formula": "=F145/F185",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G190",
+      "formula": "=G145/G185",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H190",
+      "formula": "=H145/H185",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F191",
+      "formula": "=F146/F186",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G191",
+      "formula": "=G146/G186",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H191",
+      "formula": "=H146/H186",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F192",
+      "formula": "=F147/F187",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "G192",
+      "formula": "=G147/G187",
+      "issues": []
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H192",
+      "formula": "=H147/H187",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C6",
+      "formula": "=B9",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D6",
+      "formula": "=C9",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E6",
+      "formula": "=D9",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F6",
+      "formula": "=E9",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G6",
+      "formula": "=F9",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C9",
+      "formula": "=C6+C7-C8",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D9",
+      "formula": "=D6+D7-D8",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E9",
+      "formula": "=E6+E7-E8",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F9",
+      "formula": "=F6+F7-F8",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G9",
+      "formula": "=G6+G7-G8",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C10",
+      "formula": "=B13",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D10",
+      "formula": "=C13",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E10",
+      "formula": "=D13",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F10",
+      "formula": "=E13",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G10",
+      "formula": "=F13",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C13",
+      "formula": "=C10+C11-C12",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D13",
+      "formula": "=D10+D11-D12",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E13",
+      "formula": "=E10+E11-E12",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F13",
+      "formula": "=F10+F11-F12",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G13",
+      "formula": "=G10+G11-G12",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C14",
+      "formula": "=B17",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D14",
+      "formula": "=C17",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E14",
+      "formula": "=D17",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F14",
+      "formula": "=E17",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G14",
+      "formula": "=F17",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C17",
+      "formula": "=C14+C15-C16",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D17",
+      "formula": "=D14+D15-D16",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E17",
+      "formula": "=E14+E15-E16",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F17",
+      "formula": "=F14+F15-F16",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G17",
+      "formula": "=G14+G15-G16",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C18",
+      "formula": "=C9+C13+C17",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D18",
+      "formula": "=D9+D13+D17",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E18",
+      "formula": "=E9+E13+E17",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F18",
+      "formula": "=F9+F13+F17",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G18",
+      "formula": "=G9+G13+G17",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "B20",
+      "formula": "=B18*B19",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C20",
+      "formula": "=C18*C19",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D20",
+      "formula": "=D18*D19",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E20",
+      "formula": "=E18*E19",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F20",
+      "formula": "=F18*F19",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G20",
+      "formula": "=G18*G19",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C28",
+      "formula": "=B31",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D28",
+      "formula": "=C31",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E28",
+      "formula": "=D31",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F28",
+      "formula": "=E31",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G28",
+      "formula": "=F31",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C29",
+      "formula": "=B28*0.71*(1+C25)+B28*0.16*(1+C26)+B28*0.13*(1+C27)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D29",
+      "formula": "=C28*0.71*(1+D25)+C28*0.16*(1+D26)+C28*0.13*(1+D27)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E29",
+      "formula": "=D28*0.71*(1+E25)+D28*0.16*(1+E26)+D28*0.13*(1+E27)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F29",
+      "formula": "=E28*0.71*(1+F25)+E28*0.16*(1+F26)+E28*0.13*(1+F27)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G29",
+      "formula": "=F28*0.71*(1+G25)+F28*0.16*(1+G26)+F28*0.13*(1+G27)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C30",
+      "formula": "=(C7-C8+C11-C12+C15-C16)*C19*C24/1000*0.55",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D30",
+      "formula": "=(D7-D8+D11-D12+D15-D16)*D19*D24/1000*0.55",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E30",
+      "formula": "=(E7-E8+E11-E12+E15-E16)*E19*E24/1000*0.55",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F30",
+      "formula": "=(F7-F8+F11-F12+F15-F16)*F19*F24/1000*0.55",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G30",
+      "formula": "=(G7-G8+G11-G12+G15-G16)*G19*G24/1000*0.55",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C31",
+      "formula": "=C29+C30",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D31",
+      "formula": "=D29+D30",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E31",
+      "formula": "=E29+E30",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F31",
+      "formula": "=F29+F30",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G31",
+      "formula": "=G29+G30",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C41",
+      "formula": "=C38*1000000*C39*C40/1000",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D41",
+      "formula": "=D38*1000000*D39*D40/1000",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E41",
+      "formula": "=E38*1000000*E39*E40/1000",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F41",
+      "formula": "=F38*1000000*F39*F40/1000",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G41",
+      "formula": "=G38*1000000*G39*G40/1000",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C45",
+      "formula": "=B45*(1+-0.02)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D45",
+      "formula": "=C45*(1+0.0)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E45",
+      "formula": "=D45*(1+0.02)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F45",
+      "formula": "=E45*(1+0.02)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G45",
+      "formula": "=F45*(1+0.02)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C46",
+      "formula": "=B46*(C31+C41+C45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D46",
+      "formula": "=B46*(D31+D41+D45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E46",
+      "formula": "=B46*(E31+E41+E45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F46",
+      "formula": "=B46*(F31+F41+F45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G46",
+      "formula": "=B46*(G31+G41+G45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C47",
+      "formula": "=B47*(C31+C41+C45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D47",
+      "formula": "=B47*(D31+D41+D45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E47",
+      "formula": "=B47*(E31+E41+E45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F47",
+      "formula": "=B47*(F31+F41+F45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G47",
+      "formula": "=B47*(G31+G41+G45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C48",
+      "formula": "=B48*(C31+C41+C45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D48",
+      "formula": "=B48*(D31+D41+D45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E48",
+      "formula": "=B48*(E31+E41+E45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F48",
+      "formula": "=B48*(F31+F41+F45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G48",
+      "formula": "=B48*(G31+G41+G45)/(B31+B41+B45)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C55",
+      "formula": "=C31+C41+C45",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D55",
+      "formula": "=D31+D41+D45",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E55",
+      "formula": "=E31+E41+E45",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F55",
+      "formula": "=F31+F41+F45",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G55",
+      "formula": "=G31+G41+G45",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C56",
+      "formula": "=Scenarios!G25",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D56",
+      "formula": "=Scenarios!G26",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E56",
+      "formula": "=Scenarios!G27",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F56",
+      "formula": "=Scenarios!G28",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G56",
+      "formula": "=Scenarios!G29",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "B57",
+      "formula": "=B55-B56",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C57",
+      "formula": "=C55-C56",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D57",
+      "formula": "=D55-D56",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E57",
+      "formula": "=E55-E56",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F57",
+      "formula": "=F55-F56",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G57",
+      "formula": "=G55-G56",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "B58",
+      "formula": "=IF(B56=0,\"\",B57/B56)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C58",
+      "formula": "=IF(C56=0,\"\",C57/C56)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D58",
+      "formula": "=IF(D56=0,\"\",D57/D56)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E58",
+      "formula": "=IF(E56=0,\"\",E57/E56)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F58",
+      "formula": "=IF(F56=0,\"\",F57/F56)",
+      "issues": []
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G58",
+      "formula": "=IF(G56=0,\"\",G57/G56)",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F16",
+      "formula": "=Scenarios!G45",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G16",
+      "formula": "=Scenarios!G46",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H16",
+      "formula": "=Scenarios!G47",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I16",
+      "formula": "=Scenarios!G48",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J16",
+      "formula": "=Scenarios!G49",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "E20",
+      "formula": "=62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F20",
+      "formula": "=Scenarios!G25/11102600*62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G20",
+      "formula": "=Scenarios!G26/11102600*62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H20",
+      "formula": "=Scenarios!G27/11102600*62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I20",
+      "formula": "=Scenarios!G28/11102600*62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J20",
+      "formula": "=Scenarios!G29/11102600*62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "A21",
+      "formula": "= Adjusted EBIT (Phase 1)",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F21",
+      "formula": "=F16+F17+F18+F19+F20",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G21",
+      "formula": "=G16+G17+G18+G19+G20",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H21",
+      "formula": "=H16+H17+H18+H19+H20",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I21",
+      "formula": "=I16+I17+I18+I19+I20",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J21",
+      "formula": "=J16+J17+J18+J19+J20",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F23",
+      "formula": "=1028*(Scenarios!G25/11102600)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G23",
+      "formula": "=1028*(Scenarios!G26/11102600)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H23",
+      "formula": "=1028*(Scenarios!G27/11102600)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I23",
+      "formula": "=1028*(Scenarios!G28/11102600)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J23",
+      "formula": "=1028*(Scenarios!G29/11102600)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "A26",
+      "formula": "= EBIT after lease & capitalization (Phase 2)",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F26",
+      "formula": "=F21+F23+F24-F25",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G26",
+      "formula": "=G21+G23+G24-G25",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H26",
+      "formula": "=H21+H23+H24-H25",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I26",
+      "formula": "=I21+I23+I24-I25",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J26",
+      "formula": "=J21+J23+J24-J25",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F28",
+      "formula": "='Revenue Drivers'!C31",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G28",
+      "formula": "='Revenue Drivers'!D31",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H28",
+      "formula": "='Revenue Drivers'!E31",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I28",
+      "formula": "='Revenue Drivers'!F31",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J28",
+      "formula": "='Revenue Drivers'!G31",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F29",
+      "formula": "='Revenue Drivers'!C41",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G29",
+      "formula": "='Revenue Drivers'!D41",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H29",
+      "formula": "='Revenue Drivers'!E41",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I29",
+      "formula": "='Revenue Drivers'!F41",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J29",
+      "formula": "='Revenue Drivers'!G41",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F30",
+      "formula": "='Revenue Drivers'!C45",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G30",
+      "formula": "='Revenue Drivers'!D45",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H30",
+      "formula": "='Revenue Drivers'!E45",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I30",
+      "formula": "='Revenue Drivers'!F45",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J30",
+      "formula": "='Revenue Drivers'!G45",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F31",
+      "formula": "=F28*E$9",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G31",
+      "formula": "=G28*E$9",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H31",
+      "formula": "=H28*E$9",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I31",
+      "formula": "=I28*E$9",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J31",
+      "formula": "=J28*E$9",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F32",
+      "formula": "=F29*E$10",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G32",
+      "formula": "=G29*E$10",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H32",
+      "formula": "=H29*E$10",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I32",
+      "formula": "=I29*E$10",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J32",
+      "formula": "=J29*E$10",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F33",
+      "formula": "=F30*E$11",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G33",
+      "formula": "=G30*E$11",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H33",
+      "formula": "=H30*E$11",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I33",
+      "formula": "=I30*E$11",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J33",
+      "formula": "=J30*E$11",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F34",
+      "formula": "=F31+F32+F33+Scenarios!G7",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G34",
+      "formula": "=G31+G32+G33",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H34",
+      "formula": "=H31+H32+H33",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I34",
+      "formula": "=I31+I32+I33",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J34",
+      "formula": "=J31+J32+J33",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "A35",
+      "formula": "= EBIT after channel mix (Phase 3)",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F35",
+      "formula": "=F34",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G35",
+      "formula": "=G34",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H35",
+      "formula": "=H34",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I35",
+      "formula": "=I34",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J35",
+      "formula": "=J34",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "A36",
+      "formula": "= Normalized EBIT (tax base for NOPAT)",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "E36",
+      "formula": "=E21+E23+E24-E25",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F36",
+      "formula": "=Scenarios!G45",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G36",
+      "formula": "=Scenarios!G46",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H36",
+      "formula": "=Scenarios!G47",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I36",
+      "formula": "=Scenarios!G48",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J36",
+      "formula": "=Scenarios!G49",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F37",
+      "formula": "=F36-Scenarios!G45",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G37",
+      "formula": "=G36-Scenarios!G46",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H37",
+      "formula": "=H36-Scenarios!G47",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I37",
+      "formula": "=I36-Scenarios!G48",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J37",
+      "formula": "=J36-Scenarios!G49",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F39",
+      "formula": "=0.29468476492135026+(F$12-0.29468476492135026)*1/5",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G39",
+      "formula": "=0.29468476492135026+(G$12-0.29468476492135026)*2/5",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H39",
+      "formula": "=0.29468476492135026+(H$12-0.29468476492135026)*3/5",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I39",
+      "formula": "=0.29468476492135026+(I$12-0.29468476492135026)*4/5",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J39",
+      "formula": "=0.29468476492135026+(J$12-0.29468476492135026)*5/5",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F40",
+      "formula": "=F36*F39",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G40",
+      "formula": "=G36*G39",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H40",
+      "formula": "=H36*H39",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I40",
+      "formula": "=I36*I39",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J40",
+      "formula": "=J36*J39",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F41",
+      "formula": "=F36-F40",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G41",
+      "formula": "=G36-G40",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H41",
+      "formula": "=H36-H40",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I41",
+      "formula": "=I36-I40",
+      "issues": []
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J41",
+      "formula": "=J36-J40",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F5",
+      "formula": "=Scenarios!G25",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G5",
+      "formula": "=Scenarios!G26",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H5",
+      "formula": "=Scenarios!G27",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I5",
+      "formula": "=Scenarios!G28",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J5",
+      "formula": "=Scenarios!G29",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F6",
+      "formula": "=F5/E5-1",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G6",
+      "formula": "=G5/F5-1",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H6",
+      "formula": "=H5/G5-1",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I6",
+      "formula": "=I5/H5-1",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J6",
+      "formula": "=J5/I5-1",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F7",
+      "formula": "=Scenarios!$G$14",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G7",
+      "formula": "=Scenarios!$G$14",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H7",
+      "formula": "=Scenarios!$G$14",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I7",
+      "formula": "=Scenarios!$G$14",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J7",
+      "formula": "=Scenarios!$G$14",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F8",
+      "formula": "=Scenarios!G35",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G8",
+      "formula": "=Scenarios!G36",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H8",
+      "formula": "=Scenarios!G37",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I8",
+      "formula": "=Scenarios!G38",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J8",
+      "formula": "=Scenarios!G39",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F9",
+      "formula": "=Scenarios!G40",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G9",
+      "formula": "=Scenarios!G41",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H9",
+      "formula": "=Scenarios!G42",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I9",
+      "formula": "=Scenarios!G43",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J9",
+      "formula": "=Scenarios!G44",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F10",
+      "formula": "=Scenarios!$G$7",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F11",
+      "formula": "=Scenarios!G45",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G11",
+      "formula": "=Scenarios!G46",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H11",
+      "formula": "=Scenarios!G47",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I11",
+      "formula": "=Scenarios!G48",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J11",
+      "formula": "=Scenarios!G49",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F12",
+      "formula": "=F11/F5",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G12",
+      "formula": "=G11/G5",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H12",
+      "formula": "=H11/H5",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I12",
+      "formula": "=I11/I5",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J12",
+      "formula": "=J11/J5",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F13",
+      "formula": "=-'NOPAT Bridge'!F40",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G13",
+      "formula": "=-'NOPAT Bridge'!G40",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H13",
+      "formula": "=-'NOPAT Bridge'!H40",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I13",
+      "formula": "=-'NOPAT Bridge'!I40",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J13",
+      "formula": "=-'NOPAT Bridge'!J40",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F14",
+      "formula": "=Scenarios!G50",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G14",
+      "formula": "=Scenarios!G51",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H14",
+      "formula": "=Scenarios!G52",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I14",
+      "formula": "=Scenarios!G53",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J14",
+      "formula": "=Scenarios!G54",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F15",
+      "formula": "=Scenarios!$G$12",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G15",
+      "formula": "=Scenarios!$G$12",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H15",
+      "formula": "=Scenarios!$G$12",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I15",
+      "formula": "=Scenarios!$G$12",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J15",
+      "formula": "=Scenarios!$G$12",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F16",
+      "formula": "=Scenarios!G55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G16",
+      "formula": "=Scenarios!G56",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H16",
+      "formula": "=Scenarios!G57",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I16",
+      "formula": "=Scenarios!G58",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J16",
+      "formula": "=Scenarios!G59",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F17",
+      "formula": "=Scenarios!$G$13",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G17",
+      "formula": "=Scenarios!$G$13",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H17",
+      "formula": "=Scenarios!$G$13",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I17",
+      "formula": "=Scenarios!$G$13",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J17",
+      "formula": "=Scenarios!$G$13",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F18",
+      "formula": "=-Scenarios!G60",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G18",
+      "formula": "=-Scenarios!G61",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H18",
+      "formula": "=-Scenarios!G62",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I18",
+      "formula": "=-Scenarios!G63",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J18",
+      "formula": "=-Scenarios!G64",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F20",
+      "formula": "=Scenarios!G65",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G20",
+      "formula": "=Scenarios!G66",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H20",
+      "formula": "=Scenarios!G67",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I20",
+      "formula": "=Scenarios!G68",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J20",
+      "formula": "=Scenarios!G69",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F21",
+      "formula": "=Scenarios!G70",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G21",
+      "formula": "=Scenarios!G71",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H21",
+      "formula": "=Scenarios!G72",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I21",
+      "formula": "=Scenarios!G73",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J21",
+      "formula": "=Scenarios!G74",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F22",
+      "formula": "=Scenarios!G75",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G22",
+      "formula": "=Scenarios!G76",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H22",
+      "formula": "=Scenarios!G77",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I22",
+      "formula": "=Scenarios!G78",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J22",
+      "formula": "=Scenarios!G79",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F23",
+      "formula": "=Scenarios!G80",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G23",
+      "formula": "=Scenarios!G81",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H23",
+      "formula": "=Scenarios!G82",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I23",
+      "formula": "=Scenarios!G83",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J23",
+      "formula": "=Scenarios!G84",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F24",
+      "formula": "=Scenarios!G85",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G24",
+      "formula": "=Scenarios!G86",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H24",
+      "formula": "=Scenarios!G87",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I24",
+      "formula": "=Scenarios!G88",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J24",
+      "formula": "=Scenarios!G89",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F25",
+      "formula": "=Scenarios!G90",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G25",
+      "formula": "=Scenarios!G91",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H25",
+      "formula": "=Scenarios!G92",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I25",
+      "formula": "=Scenarios!G93",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J25",
+      "formula": "=Scenarios!G94",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F26",
+      "formula": "=Scenarios!$G$19",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G26",
+      "formula": "=Scenarios!$G$19",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H26",
+      "formula": "=Scenarios!$G$19",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I26",
+      "formula": "=Scenarios!$G$19",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J26",
+      "formula": "=Scenarios!$G$19",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F27",
+      "formula": "=Scenarios!G95",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G27",
+      "formula": "=Scenarios!G96",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H27",
+      "formula": "=Scenarios!G97",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I27",
+      "formula": "=Scenarios!G98",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J27",
+      "formula": "=Scenarios!G99",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F28",
+      "formula": "=Scenarios!$G$20",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G28",
+      "formula": "=Scenarios!$G$20",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H28",
+      "formula": "=Scenarios!$G$20",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I28",
+      "formula": "=Scenarios!$G$20",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J28",
+      "formula": "=Scenarios!$G$20",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F29",
+      "formula": "=Scenarios!G100",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G29",
+      "formula": "=Scenarios!G101",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H29",
+      "formula": "=Scenarios!G102",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I29",
+      "formula": "=Scenarios!G103",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J29",
+      "formula": "=Scenarios!G104",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F30",
+      "formula": "=Scenarios!G105",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G30",
+      "formula": "=Scenarios!G106",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H30",
+      "formula": "=Scenarios!G107",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I30",
+      "formula": "=Scenarios!G108",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J30",
+      "formula": "=Scenarios!G109",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F31",
+      "formula": "=Scenarios!G110",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G31",
+      "formula": "=Scenarios!G111",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H31",
+      "formula": "=Scenarios!G112",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I31",
+      "formula": "=Scenarios!G113",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J31",
+      "formula": "=Scenarios!G114",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F32",
+      "formula": "=Scenarios!G115",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G32",
+      "formula": "=Scenarios!G116",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H32",
+      "formula": "=Scenarios!G117",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I32",
+      "formula": "=Scenarios!G118",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J32",
+      "formula": "=Scenarios!G119",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F33",
+      "formula": "=Scenarios!G120",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G33",
+      "formula": "=Scenarios!G121",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H33",
+      "formula": "=Scenarios!G122",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I33",
+      "formula": "=Scenarios!G123",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J33",
+      "formula": "=Scenarios!G124",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F35",
+      "formula": "=Scenarios!G125",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G35",
+      "formula": "=Scenarios!G126",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H35",
+      "formula": "=Scenarios!G127",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I35",
+      "formula": "=Scenarios!G128",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J35",
+      "formula": "=Scenarios!G129",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F37",
+      "formula": "=1/(1+Scenarios!$G$9)^F36",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G37",
+      "formula": "=1/(1+Scenarios!$G$9)^G36",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H37",
+      "formula": "=1/(1+Scenarios!$G$9)^H36",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I37",
+      "formula": "=1/(1+Scenarios!$G$9)^I36",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J37",
+      "formula": "=1/(1+Scenarios!$G$9)^J36",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F38",
+      "formula": "=F35*F37",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G38",
+      "formula": "=G35*G37",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H38",
+      "formula": "=H35*H37",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I38",
+      "formula": "=I35*I37",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J38",
+      "formula": "=J35*J37",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E42",
+      "formula": "=SUM(F38:J38)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E43",
+      "formula": "=Scenarios!$G$10",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E44",
+      "formula": "=J11+J16",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E45",
+      "formula": "=J35*(1+Scenarios!$G$10)/(Scenarios!$G$9-Scenarios!$G$10)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E46",
+      "formula": "=E45/E44",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E47",
+      "formula": "=J35/E44*(1+Scenarios!$G$10)/(Scenarios!$G$9-Scenarios!$G$10)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E48",
+      "formula": "=E45/(1+Scenarios!$G$9)^J36",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E49",
+      "formula": "=E42+E48",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E54",
+      "formula": "=E49+E50+E51",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E56",
+      "formula": "=E54/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E58",
+      "formula": "=E56/E57-1",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E59",
+      "formula": "=E48/E49",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F65",
+      "formula": "=$E$65",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G65",
+      "formula": "=$E$65",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H65",
+      "formula": "=$E$65",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I65",
+      "formula": "=$E$65",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J65",
+      "formula": "=$E$65",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F66",
+      "formula": "=$E$66",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G66",
+      "formula": "=$E$66",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H66",
+      "formula": "=$E$66",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I66",
+      "formula": "=$E$66",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J66",
+      "formula": "=$E$66",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F68",
+      "formula": "=F35",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G68",
+      "formula": "=G35",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H68",
+      "formula": "=H35",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I68",
+      "formula": "=I35",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J68",
+      "formula": "=J35",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F69",
+      "formula": "=F65",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G69",
+      "formula": "=G65",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H69",
+      "formula": "=H65",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I69",
+      "formula": "=I65",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J69",
+      "formula": "=J65",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F70",
+      "formula": "=F69/F68",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G70",
+      "formula": "=G69/G68",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H70",
+      "formula": "=H69/H68",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I70",
+      "formula": "=I69/I68",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J70",
+      "formula": "=J69/J68",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F72",
+      "formula": "=E72*(1+$E$66)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G72",
+      "formula": "=F72*(1+$E$66)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H72",
+      "formula": "=G72*(1+$E$66)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I72",
+      "formula": "=H72*(1+$E$66)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J72",
+      "formula": "=I72*(1+$E$66)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F73",
+      "formula": "=F69/F72",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G73",
+      "formula": "=G69/G72",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H73",
+      "formula": "=H69/H72",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I73",
+      "formula": "=I69/I72",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J73",
+      "formula": "=J69/J72",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F74",
+      "formula": "=$E$74",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G74",
+      "formula": "=F75",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H74",
+      "formula": "=G75",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I74",
+      "formula": "=H75",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J74",
+      "formula": "=I75",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F75",
+      "formula": "=F74-F73",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G75",
+      "formula": "=G74-G73",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H75",
+      "formula": "=H74-H73",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I75",
+      "formula": "=I74-I73",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J75",
+      "formula": "=J74-J73",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F77",
+      "formula": "=('NOPAT Bridge'!F36-'NOPAT Bridge'!F23)*(1-'NOPAT Bridge'!F$39)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G77",
+      "formula": "=('NOPAT Bridge'!G36-'NOPAT Bridge'!G23)*(1-'NOPAT Bridge'!G$39)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H77",
+      "formula": "=('NOPAT Bridge'!H36-'NOPAT Bridge'!H23)*(1-'NOPAT Bridge'!H$39)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I77",
+      "formula": "=('NOPAT Bridge'!I36-'NOPAT Bridge'!I23)*(1-'NOPAT Bridge'!I$39)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J77",
+      "formula": "=('NOPAT Bridge'!J36-'NOPAT Bridge'!J23)*(1-'NOPAT Bridge'!J$39)",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F78",
+      "formula": "=F77/F75",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G78",
+      "formula": "=G77/G75",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H78",
+      "formula": "=H77/H75",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I78",
+      "formula": "=I77/I75",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J78",
+      "formula": "=J77/J75",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E82",
+      "formula": "=E46",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E83",
+      "formula": "=E44*E82",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E84",
+      "formula": "=E83/(1+Scenarios!$G$9)^J36",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E85",
+      "formula": "=E42+E84",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "E86",
+      "formula": "=(E85+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "B90",
+      "formula": "=E45",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "C90",
+      "formula": "=E83",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "D90",
+      "formula": "=B90-C90",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "B91",
+      "formula": "=E46",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "C91",
+      "formula": "=E82",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "D91",
+      "formula": "=B91-C91",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "D92",
+      "formula": "=(B90-C90)/B90",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "B93",
+      "formula": "=E56",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "C93",
+      "formula": "=E86",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "D93",
+      "formula": "=B93-C93",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "B94",
+      "formula": "=IF(ABS(D91)<=1.5,\"PASS\",\"REVIEW\")",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "C94",
+      "formula": "=TEXT(D91,\"0.0\")&\"x spread vs Gordon-implied exit\"",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F99",
+      "formula": "=(NPV(0.095,F35:J35)+(J35*(1+0.015)/(0.095-0.015))/(1+0.095)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G99",
+      "formula": "=(NPV(0.095,F35:J35)+(J35*(1+0.02)/(0.095-0.02))/(1+0.095)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H99",
+      "formula": "=(NPV(0.095,F35:J35)+(J35*(1+0.0225)/(0.095-0.0225))/(1+0.095)^5+E50+E51)/E55",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I99",
+      "formula": "=(NPV(0.095,F35:J35)+(J35*(1+0.025)/(0.095-0.025))/(1+0.095)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J99",
+      "formula": "=(NPV(0.095,F35:J35)+(J35*(1+0.03)/(0.095-0.03))/(1+0.095)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F100",
+      "formula": "=(NPV(0.1,F35:J35)+(J35*(1+0.015)/(0.1-0.015))/(1+0.1)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G100",
+      "formula": "=(NPV(0.1,F35:J35)+(J35*(1+0.02)/(0.1-0.02))/(1+0.1)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H100",
+      "formula": "=(NPV(0.1,F35:J35)+(J35*(1+0.0225)/(0.1-0.0225))/(1+0.1)^5+E50+E51)/E55",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I100",
+      "formula": "=(NPV(0.1,F35:J35)+(J35*(1+0.025)/(0.1-0.025))/(1+0.1)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J100",
+      "formula": "=(NPV(0.1,F35:J35)+(J35*(1+0.03)/(0.1-0.03))/(1+0.1)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F101",
+      "formula": "=(NPV(0.105,F35:J35)+(J35*(1+0.015)/(0.105-0.015))/(1+0.105)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G101",
+      "formula": "=(NPV(0.105,F35:J35)+(J35*(1+0.02)/(0.105-0.02))/(1+0.105)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H101",
+      "formula": "=(NPV(0.105,F35:J35)+(J35*(1+0.0225)/(0.105-0.0225))/(1+0.105)^5+E50+E51)/E55",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I101",
+      "formula": "=(NPV(0.105,F35:J35)+(J35*(1+0.025)/(0.105-0.025))/(1+0.105)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J101",
+      "formula": "=(NPV(0.105,F35:J35)+(J35*(1+0.03)/(0.105-0.03))/(1+0.105)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F102",
+      "formula": "=(NPV(0.11,F35:J35)+(J35*(1+0.015)/(0.11-0.015))/(1+0.11)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G102",
+      "formula": "=(NPV(0.11,F35:J35)+(J35*(1+0.02)/(0.11-0.02))/(1+0.11)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H102",
+      "formula": "=(NPV(0.11,F35:J35)+(J35*(1+0.0225)/(0.11-0.0225))/(1+0.11)^5+E50+E51)/E55",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I102",
+      "formula": "=(NPV(0.11,F35:J35)+(J35*(1+0.025)/(0.11-0.025))/(1+0.11)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J102",
+      "formula": "=(NPV(0.11,F35:J35)+(J35*(1+0.03)/(0.11-0.03))/(1+0.11)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "F103",
+      "formula": "=(NPV(0.115,F35:J35)+(J35*(1+0.015)/(0.115-0.015))/(1+0.115)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "G103",
+      "formula": "=(NPV(0.115,F35:J35)+(J35*(1+0.02)/(0.115-0.02))/(1+0.115)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H103",
+      "formula": "=(NPV(0.115,F35:J35)+(J35*(1+0.0225)/(0.115-0.0225))/(1+0.115)^5+E50+E51)/E55",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "DCF",
+      "cell": "I103",
+      "formula": "=(NPV(0.115,F35:J35)+(J35*(1+0.025)/(0.115-0.025))/(1+0.115)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "DCF",
+      "cell": "J103",
+      "formula": "=(NPV(0.115,F35:J35)+(J35*(1+0.03)/(0.115-0.03))/(1+0.115)^5+E50+E51)/E55",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E5",
+      "formula": "=2210615+496228",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ]
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E6",
+      "formula": "=DCF!E44",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E11",
+      "formula": "=(E10*E9-E8)/E5",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E12",
+      "formula": "=E10/E7",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E19",
+      "formula": "=IF(J19<=0,\"n.m.\",I19/J19)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E20",
+      "formula": "=IF(J20<=0,\"n.m.\",I20/J20)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E21",
+      "formula": "=IF(J21<=0,\"n.m.\",I21/J21)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E22",
+      "formula": "=IF(J22<=0,\"n.m.\",I22/J22)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E23",
+      "formula": "=IF(J23<=0,\"n.m.\",I23/J23)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E24",
+      "formula": "=IF(J24<=0,\"n.m.\",I24/J24)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E25",
+      "formula": "=IF(J25<=0,\"n.m.\",I25/J25)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E26",
+      "formula": "=IF(J26<=0,\"n.m.\",I26/J26)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E27",
+      "formula": "=IF(J27<=0,\"n.m.\",I27/J27)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E28",
+      "formula": "=IF(J28<=0,\"n.m.\",I28/J28)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E29",
+      "formula": "=IF(J29<=0,\"n.m.\",I29/J29)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E35",
+      "formula": "=E33/E34",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E39",
+      "formula": "=AVERAGE(E19,E22,E21,E23,E25,E27,E29)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E40",
+      "formula": "=AVERAGE(E19,E21,E22,E23,E24,E25,E26,E27,E28,E29)",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E44",
+      "formula": "=DCF!E46",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E45",
+      "formula": "=DCF!E82",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E46",
+      "formula": "=E45-E44",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "G57",
+      "formula": "=(E6*E57+E8)/E9",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "H57",
+      "formula": "=(E6*F57+E8)/E9",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E58",
+      "formula": "=DCF!E82",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "G58",
+      "formula": "=(E6*E58+E8)/E9",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "G59",
+      "formula": "=E7*E59",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "H59",
+      "formula": "=E7*F59",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "G60",
+      "formula": "=Scenarios!F132",
+      "issues": []
+    },
+    {
+      "sheet": "Comps",
+      "cell": "H60",
+      "formula": "=Scenarios!H132",
+      "issues": []
+    }
+  ],
+  "text_cells_explaining_formulas": [
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J6",
+      "text": "Revenue Drivers: beginning-stores formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J9",
+      "text": "Revenue Drivers: ending-stores formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J10",
+      "text": "Revenue Drivers: beginning-stores formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J13",
+      "text": "Revenue Drivers: ending-stores formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J14",
+      "text": "Revenue Drivers: beginning-stores formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J17",
+      "text": "Revenue Drivers: ending-stores formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J18",
+      "text": "Revenue Drivers: total-stores formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J20",
+      "text": "Revenue Drivers: total-sqft formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J28",
+      "text": "Revenue Drivers: prior store-rev formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J29",
+      "text": "Revenue Drivers: comp-store formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J30",
+      "text": "Revenue Drivers: net-new-store formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J31",
+      "text": "Revenue Drivers: store-channel formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J41",
+      "text": "Revenue Drivers: e-comm formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J55",
+      "text": "Revenue Drivers: total-rev formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J57",
+      "text": "Revenue Drivers: variance formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "J58",
+      "text": "Revenue Drivers: variance % formula",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    },
+    {
+      "sheet": "Comps",
+      "cell": "A48",
+      "text": "• Selected exit = Gordon TV / FY30 EBITDA. Identity: (UFCF/EBITDA)×(1+g)/(WACC−g). Live formula, not a typed 8.0x",
+      "issues": [
+        "text_cells_explaining_formulas"
+      ]
+    }
+  ],
+  "top_50_refactor_candidates": [
+    {
+      "sheet": "Scenarios",
+      "cell": "H183",
+      "formula": "=119068-ROUND(H22*H153,0)/100",
+      "issues": [
+        "iferror_or_round_wrappers",
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Remove IFERROR/ROUND wrapper; fix upstream precision or number format instead. Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "iferror_or_round_wrappers; inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H184",
+      "formula": "=H183-ROUND(H22*H154,0)/108",
+      "issues": [
+        "iferror_or_round_wrappers",
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Remove IFERROR/ROUND wrapper; fix upstream precision or number format instead. Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "iferror_or_round_wrappers; inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H185",
+      "formula": "=H184-ROUND(H22*H155,0)/115",
+      "issues": [
+        "iferror_or_round_wrappers",
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Remove IFERROR/ROUND wrapper; fix upstream precision or number format instead. Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "iferror_or_round_wrappers; inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H186",
+      "formula": "=H185-ROUND(H22*H156,0)/122",
+      "issues": [
+        "iferror_or_round_wrappers",
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Remove IFERROR/ROUND wrapper; fix upstream precision or number format instead. Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "iferror_or_round_wrappers; inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "H187",
+      "formula": "=H186-ROUND(H22*H157,0)/130",
+      "issues": [
+        "iferror_or_round_wrappers",
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Remove IFERROR/ROUND wrapper; fix upstream precision or number format instead. Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "iferror_or_round_wrappers; inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Comps",
+      "cell": "E5",
+      "formula": "=2210615+496228",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H100",
+      "formula": "=(NPV(0.1,F35:J35)+(J35*(1+0.0225)/(0.1-0.0225))/(1+0.1)^5+E50+E51)/E55",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H101",
+      "formula": "=(NPV(0.105,F35:J35)+(J35*(1+0.0225)/(0.105-0.0225))/(1+0.105)^5+E50+E51)/E55",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H102",
+      "formula": "=(NPV(0.11,F35:J35)+(J35*(1+0.0225)/(0.11-0.0225))/(1+0.11)^5+E50+E51)/E55",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H103",
+      "formula": "=(NPV(0.115,F35:J35)+(J35*(1+0.0225)/(0.115-0.0225))/(1+0.115)^5+E50+E51)/E55",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "DCF",
+      "cell": "H99",
+      "formula": "=(NPV(0.095,F35:J35)+(J35*(1+0.0225)/(0.095-0.0225))/(1+0.095)^5+E50+E51)/E55",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "E20",
+      "formula": "=62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F20",
+      "formula": "=Scenarios!G25/11102600*62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F23",
+      "formula": "=1028*(Scenarios!G25/11102600)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "F39",
+      "formula": "=0.29468476492135026+(F$12-0.29468476492135026)*1/5",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G20",
+      "formula": "=Scenarios!G26/11102600*62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G23",
+      "formula": "=1028*(Scenarios!G26/11102600)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "G39",
+      "formula": "=0.29468476492135026+(G$12-0.29468476492135026)*2/5",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H20",
+      "formula": "=Scenarios!G27/11102600*62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H23",
+      "formula": "=1028*(Scenarios!G27/11102600)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "H39",
+      "formula": "=0.29468476492135026+(H$12-0.29468476492135026)*3/5",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I20",
+      "formula": "=Scenarios!G28/11102600*62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I23",
+      "formula": "=1028*(Scenarios!G28/11102600)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "I39",
+      "formula": "=0.29468476492135026+(I$12-0.29468476492135026)*4/5",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J20",
+      "formula": "=Scenarios!G29/11102600*62203*$E$7",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J23",
+      "formula": "=1028*(Scenarios!G29/11102600)",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "NOPAT Bridge",
+      "cell": "J39",
+      "formula": "=0.29468476492135026+(J$12-0.29468476492135026)*5/5",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "C41",
+      "formula": "=C38*1000000*C39*C40/1000",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "D41",
+      "formula": "=D38*1000000*D39*D40/1000",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "E41",
+      "formula": "=E38*1000000*E39*E40/1000",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "F41",
+      "formula": "=F38*1000000*F39*F40/1000",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Revenue Drivers",
+      "cell": "G41",
+      "formula": "=G38*1000000*G39*G40/1000",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F120",
+      "formula": "=1461096-F115",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F132",
+      "formula": "=(F131+1807202-1798441)/111380",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F163",
+      "formula": "=1807202+F153+F158",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F168",
+      "formula": "=8456743*F25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F169",
+      "formula": "=8456743*F26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F170",
+      "formula": "=8456743*F27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F171",
+      "formula": "=8456743*F28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F172",
+      "formula": "=8456743*F29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F173",
+      "formula": "=3494903*F25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F174",
+      "formula": "=3494903*F26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F175",
+      "formula": "=3494903*F27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F176",
+      "formula": "=3494903*F28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F177",
+      "formula": "=3494903*F29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F178",
+      "formula": "=4961840*F25/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F179",
+      "formula": "=4961840*F26/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F180",
+      "formula": "=4961840*F27/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F181",
+      "formula": "=4961840*F28/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    },
+    {
+      "sheet": "Scenarios",
+      "cell": "F182",
+      "formula": "=4961840*F29/11102600",
+      "issues": [
+        "inline_numeric_hardcodes"
+      ],
+      "suggested_fix_pattern": "Replace embedded numeric literal with assumption/input anchor cell reference.",
+      "reason": "inline_numeric_hardcodes"
+    }
+  ]
+}
