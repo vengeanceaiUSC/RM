@@ -171,6 +171,8 @@ def main() -> None:
         ("10.09", f"{eps[1]:.2f}"),
         ("$10.11", f"${eps[1]:.2f}"),
         ("10.11", f"{eps[1]:.2f}"),
+        ("$9.61", f"${eps[0]:.2f}"),
+        ("9.61", f"{eps[0]:.2f}"),
         ("$134", f"${px}"),
         ("gives $134", f"gives ${px}"),
         ("3,944", _fmt_m(bridge["pv_fcf_m"])),
@@ -226,6 +228,11 @@ def main() -> None:
                 shape.table,
                 {1: b["cash_m"], 2: b["inv_m"], 3: b["ta_m"], 4: b["tl_m"], 5: b["te_m"]},
             )
+
+    # Slide 21 — comps implied P/E uses FY26 EPS
+    for shape in prs.slides[20].shapes:
+        if shape.has_table and shape.table.rows[0].cells[0].text.strip() == "Metric":
+            shape.table.cell(4, 2).text = f"${eps[0]:.2f}"
 
     # Slide 16 — cash flow
     for shape in prs.slides[15].shapes:

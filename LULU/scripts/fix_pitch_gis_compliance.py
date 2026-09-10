@@ -203,12 +203,12 @@ def _fix_slide20(prs: Presentation) -> None:
                 shape.left = int(right)
                 shape.top = int(Inches(1.48))
                 shape.width = int(rwide)
-                shape.height = int(Inches(2.55))
+                shape.height = int(Inches(2.75))
             if t.startswith("TV = 73%"):
                 shape.left = int(right)
-                shape.top = int(Inches(4.05))
+                shape.top = int(Inches(4.58))
                 shape.width = int(rwide)
-                shape.height = int(Inches(1.25))
+                shape.height = int(Inches(0.92))
                 _shrink_text_frame(shape.text_frame, 8.0)
             if t.strip().startswith("Base-case cell"):
                 shape.left = int(Inches(8.10))
