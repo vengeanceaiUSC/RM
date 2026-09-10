@@ -39,7 +39,7 @@ PROMPT_RE = re.compile(
 # Robotic NOTES → human shorthand (substring replace on col B / I).
 NOTE_SHORTHAND: list[tuple[str, str]] = [
     ("FRED DGS10 anchor (4.8%).", "Current 10Y UST"),
-    ("Damodaran implied ERP + 177bps overlay.", "Damodaran ERP + overlay"),
+    ("Damodaran implied ERP + 177bps overlay.", "Damodaran ERP plus 177 bps US risk premium."),
     ("FY26 mgmt guidance (~30%).", "Q2 FY26 guide ~30%"),
     ("NASDAQ last sale (~$100.61).", "NASDAQ last sale"),
     ("NASDAQ last sale (~$100).", "NASDAQ last sale"),
@@ -67,7 +67,8 @@ NOTE_SHORTHAND: list[tuple[str, str]] = [
     ("Lease-adjusted CAPM (WACC tab).", "Links to WACC tab"),
     ("FRED GDPC1 anchor (~2.1%).", "FRED GDPC1 ~2.1%"),
     ("FY25 D&A run-rate vs sales.", "FY25 D&A / sales"),
-    ("FY26 guide fade to 5.5%.", "Capex fade to 5.5%"),
+    ("FY26 guide fade to 5.5%.", "5.5% model rate; FY26 7% capex guide fades down."),
+    ("Capex fade to 5.5%", "5.5% model rate; FY26 7% capex guide fades down."),
     ("Held flat vs FY25 actuals.", "Flat vs FY25"),
     ("Flat vs FY25 actuals.", "Flat vs FY25"),
     ("FY25 anchor minus 1 day/yr.", "FY25 DIO −1d/yr"),

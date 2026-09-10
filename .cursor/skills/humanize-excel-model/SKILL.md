@@ -29,6 +29,7 @@ python3 scripts/repair_scenarios_refs.py       # fix $H$→$F$ base-case locks
 python3 scripts/restore_unaltered_numbers.py   # restore exact unaltered hardcodes
 python3 scripts/audit_valuation_numbers.py     # verify 0 diffs vs unaltered
 python3 scripts/remove_comment_artifacts.py    # red triangles + tall rows only
+python3 scripts/fix_notes_commentary.py        # Notes match model values (8–15 words)
 python3 scripts/humanize_workbook_authentic.py # metadata/colors — NO rounding
 python3 scripts/strip_arrows.py
 python3 scripts/audit_ai_tells.py              # read-only
@@ -77,7 +78,16 @@ Base-case locked assumptions (rows 4–22): `Scenarios!$F$…`
 | Blue/black/green font colors | same |
 | Unicode `→` arrows | `strip_arrows.py` |
 | Red-triangle hover comments (Source in col C exists) | `remove_comment_artifacts.py` |
+| Notes that cite wrong % vs model cell | `fix_notes_commentary.py` |
 | AI phrasing in Notes | hand-edit; keep Source link |
+
+## Notes column rules (verbatim)
+
+- **8–15 words max** on assumption rows.
+- State the **model value actually used** (e.g. **5.5%** Capex), not only the FY26 guide (**7%**).
+- If the guide differs from the plug, one line: *"5.5% model rate; FY26 7% capex guide fades down."*
+- No truncated sentences (`not.`, `for.`, `÷.`), no `overlay`, `read-through`, `→`, or double periods.
+- Write like a bank analyst note, not AI boilerplate.
 
 ## What NOT to touch
 
