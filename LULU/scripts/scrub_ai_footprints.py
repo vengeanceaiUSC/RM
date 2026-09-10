@@ -19,12 +19,14 @@ STEPS = [
     "fix_decimal_display.py",
     "fix_human_analyst_structure.py",
     "fix_stale_formula_refs.py",
-    "fix_dcf_valuation_refs.py",
+    "fix_div_errors.py",
     "trim_model_labels.py",
     "fix_file_metadata.py",
     "strip_programmatic_colors.py",
     "audit_valuation_numbers.py",
 ]
+
+# fix_dcf_valuation_refs.py runs inside fix_div_errors.py
 
 # Superseded by fix_human_analyst_structure.py (draggable drivers + local P&L):
 # rebuild_dcf_local_formulas.py
