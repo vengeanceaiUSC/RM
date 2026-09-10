@@ -98,8 +98,10 @@ def sync(path: Path = DECK, model: Path = MODEL) -> dict:
     headers, rows = read_dcf_sensitivity(wb["DCF"])
     px = f"{data['scenarios']['base']['implied_px']:.2f}"
 
+    from add_gis_cover_slide import cover_offset
+
     prs = Presentation(str(path))
-    slide = prs.slides[19]
+    slide = prs.slides[19 + cover_offset(prs)]
     for shape in list(slide.shapes):
         if _is_sensitivity_table(shape):
             _delete_shape(shape)

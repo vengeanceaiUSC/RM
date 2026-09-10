@@ -162,8 +162,10 @@ def _apply_garamond_deck(prs: Presentation) -> int:
 
 
 def main() -> None:
+    from add_gis_cover_slide import cover_offset
+
     prs = Presentation(str(DECK))
-    _rebuild_toc(prs.slides[0])
+    _rebuild_toc(prs.slides[cover_offset(prs)])
     runs = _apply_garamond_deck(prs)
     prs.save(str(DECK))
     print(f"GIS formatting applied → {DECK}")

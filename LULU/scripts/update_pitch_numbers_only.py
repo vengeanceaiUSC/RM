@@ -212,8 +212,12 @@ def main() -> None:
                             cell.text = _replace_text(cell.text, mapping)
                             cell.text = _standardize_sources(cell.text)
 
-    # Slide 14 — income statement
-    for shape in prs.slides[13].shapes:
+    from add_gis_cover_slide import cover_offset
+
+    off = cover_offset(prs)
+
+    # Income statement
+    for shape in prs.slides[13 + off].shapes:
         if shape.has_table and shape.table.rows[0].cells[0].text == "US$ M":
             _update_fin_table(
                 shape.table,
@@ -221,21 +225,21 @@ def main() -> None:
                 eps_row=6,
             )
 
-    # Slide 15 — balance sheet
-    for shape in prs.slides[14].shapes:
+    # Balance sheet
+    for shape in prs.slides[14 + off].shapes:
         if shape.has_table and shape.table.rows[0].cells[0].text == "US$ M":
             _update_fin_table(
                 shape.table,
                 {1: b["cash_m"], 2: b["inv_m"], 3: b["ta_m"], 4: b["tl_m"], 5: b["te_m"]},
             )
 
-    # Slide 21 — comps implied P/E uses FY26 EPS
-    for shape in prs.slides[20].shapes:
+    # Comps implied P/E uses FY26 EPS
+    for shape in prs.slides[20 + off].shapes:
         if shape.has_table and shape.table.rows[0].cells[0].text.strip() == "Metric":
             shape.table.cell(4, 2).text = f"${eps[0]:.2f}"
 
-    # Slide 16 — cash flow
-    for shape in prs.slides[15].shapes:
+    # Cash flow
+    for shape in prs.slides[15 + off].shapes:
         if shape.has_table and shape.table.rows[0].cells[0].text == "US$ M":
             t = shape.table
             _update_fin_table(t, {1: b["cfo_m"], 2: b["dna_m"], 4: b["fcf_m"]})
@@ -266,9 +270,10 @@ def main() -> None:
     from fix_pitch_gis_formatting import _read_toc_entries
 
     prs_toc = Presentation(str(OUT))
-    entries = _read_toc_entries(prs_toc.slides[0])
+    toc_off = cover_offset(prs_toc)
+    entries = _read_toc_entries(prs_toc.slides[toc_off])
     if entries:
-        _rebuild_toc(prs_toc.slides[0], entries)
+        _rebuild_toc(prs_toc.slides[toc_off], entries)
         prs_toc.save(str(OUT))
     fix_meta(OUT)
     fix_meta(ROOT / "model18_wsp_formulas.xlsx")

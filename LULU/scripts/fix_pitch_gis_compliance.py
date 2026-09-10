@@ -18,6 +18,9 @@ from pptx.util import Inches, Pt
 ROOT = Path(__file__).resolve().parents[1]
 DECK = ROOT / "LULU_Investment_Pitch_Deck.pptx"
 
+
+from add_gis_cover_slide import cover_offset as _cover_offset  # noqa: E402
+
 sys.path.insert(0, str(ROOT.parent / "GIS"))
 from gis_pitch import CARD, FONT, GREY, INK, LGREY, NAVY, WHITE, _set_font  # noqa: E402
 
@@ -90,7 +93,8 @@ def _fix_financial_slides(prs: Presentation) -> None:
     src_top = Inches(5.74)
     src_h = Inches(0.95)
 
-    for si in (14, 15, 16):
+    off = _cover_offset(prs)
+    for si in (14 + off, 15 + off, 16 + off):
         slide = prs.slides[si - 1]
         for shape in slide.shapes:
             if shape.has_table:
@@ -119,8 +123,9 @@ def _compact_table_rows(table, total_h_in: float) -> None:
 
 
 def _fix_slide17(prs: Presentation) -> None:
-    """Slide 17 — two-column GIS grid (matches slide 20): left 0.50×6.15, right 6.85×6.00."""
-    slide = prs.slides[16]
+    """Capital structure slide — two-column GIS grid: left 0.50×6.15, right 6.85×6.00."""
+    off = _cover_offset(prs)
+    slide = prs.slides[16 + off]
     left, lwide = Inches(0.50), Inches(6.15)
     right, rwide = Inches(6.85), Inches(6.00)
 
@@ -227,8 +232,9 @@ def _align_sensitivity_table(table) -> None:
 
 
 def _fix_slide20(prs: Presentation) -> None:
-    """Slide 20 — GIS grid: left col 0.50×6.15, right col 6.85×6.00, sensitivity + callout."""
-    slide = prs.slides[19]
+    """DCF slide — GIS grid: left col 0.50×6.15, right col 6.85×6.00, sensitivity + callout."""
+    off = _cover_offset(prs)
+    slide = prs.slides[19 + off]
     left, lwide = Inches(0.50), Inches(6.15)
     right, rwide = Inches(6.85), Inches(6.00)
 
@@ -321,7 +327,8 @@ def _shrink_text_frame(tf, size: float = 8.5) -> None:
 
 
 def _fix_slide22(prs: Presentation) -> None:
-    slide = prs.slides[21]
+    off = _cover_offset(prs)
+    slide = prs.slides[21 + off]
     for shape in slide.shapes:
         if shape.has_table and shape.table.rows[0].cells[0].text.strip() == "Target":
             shape.top = int(Inches(1.28))
@@ -350,10 +357,11 @@ def _fix_slide22(prs: Presentation) -> None:
 
 
 def _fix_other_footers(prs: Presentation) -> None:
+    off = _cover_offset(prs)
     shorts = {
-        18: "Source: LULU_DCF_Valuation_Model.xlsx, Comps / football field · SOTP FY30E",
-        19: "Source: LULU_DCF_Valuation_Model.xlsx, SOTP · 10-K geo mix · Scenarios col C",
-        21: "Source: PitchBook comps 04-Sep-2026 · LULU_DCF_Valuation_Model.xlsx",
+        18 + off: "Source: LULU_DCF_Valuation_Model.xlsx, Comps / football field · SOTP FY30E",
+        19 + off: "Source: LULU_DCF_Valuation_Model.xlsx, SOTP · 10-K geo mix · Scenarios col C",
+        21 + off: "Source: PitchBook comps 04-Sep-2026 · LULU_DCF_Valuation_Model.xlsx",
     }
     for si, text in shorts.items():
         for shape in _footer_shapes(prs.slides[si - 1]):
@@ -442,11 +450,15 @@ def _rebuild_toc(slide, entries: list[tuple[str, str]] | None = None) -> None:
 
 
 def main() -> None:
+    from add_gis_cover_slide import add_cover
+
+    add_cover(DECK)
     prs = Presentation(str(DECK))
     toc_entries = None
     from fix_pitch_gis_formatting import _read_toc_entries
 
-    toc_entries = _read_toc_entries(prs.slides[0])
+    off = _cover_offset(prs)
+    toc_entries = _read_toc_entries(prs.slides[off])
     _fix_financial_slides(prs)
     _fix_slide17(prs)
     _fix_slide20(prs)
@@ -454,7 +466,7 @@ def main() -> None:
     _fix_other_footers(prs)
     _global_replacements(prs)
     runs = _apply_garamond(prs)
-    _rebuild_toc(prs.slides[0], toc_entries)
+    _rebuild_toc(prs.slides[off], toc_entries)
     prs.save(str(DECK))
     print(f"GIS compliance pass → {DECK} ({runs} runs set to Garamond)")
 
