@@ -57,13 +57,13 @@ def fix_workbook(path: Path) -> dict[str, int]:
     stats = {"buyback": 0, "wc_formulas": 0, "rounded": 0}
 
     scn = wb["Scenarios"]
-    for col in ("F", "G"):
+    for col in ("B", "C"):
         if scn[f"{col}21"].value != BUYBACK_K:
             scn[f"{col}21"] = BUYBACK_K
             stats["buyback"] += 1
 
     dcf = wb["DCF"]
-    want_budget = "=Scenarios!$G$21"
+    want_budget = "=Scenarios!$C$21"
     if dcf["E65"].value != want_budget:
         dcf["E65"] = want_budget
         dcf["E65"].number_format = "#,##0;(#,##0)"

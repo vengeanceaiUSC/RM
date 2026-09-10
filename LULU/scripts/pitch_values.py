@@ -500,7 +500,7 @@ def extract():
         from eval_model18 import _col_inputs, _eval_scenario
 
         scn = dcf_wb["Scenarios"]
-        inp = _col_inputs(scn, dcf, "G")
+        inp = _col_inputs(scn, dcf, "C")
         base_w = ev["wacc"]
         g_grid = [0.015, 0.02, 0.0225, 0.025, 0.03]
         for w in [0.095, 0.10, 0.105, 0.11]:
