@@ -103,12 +103,33 @@ def _rewrite_formula_refs(val: str, sheet: str, col_shift: dict[str, str]) -> st
     return pat.sub(repl, val)
 
 
+def _rewrite_internal_cell_refs(val: str, col_shift: dict[str, str]) -> str:
+    """Shift bare cell refs after a column delete, e.g. =G25*(1+G4) -> =F25*(1+F4)."""
+    if not isinstance(val, str) or not val.startswith("="):
+        return val
+
+    def repl(m: re.Match) -> str:
+        before, d1, col, d2, row = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
+        new_col = col_shift.get(col, col)
+        return f"{before}{d1}{new_col}{d2}{row}"
+
+    pat = re.compile(r"(^|[^A-Za-z0-9_'!])(\$?)([A-Z]{1,3})(\$?)(\d+)")
+    return pat.sub(repl, val)
+
+
 def _rewrite_all_formulas(wb, sheet: str, col_shift: dict[str, str]) -> None:
     for ws in wb.worksheets:
         for row in ws.iter_rows():
             for cell in row:
                 if isinstance(cell.value, str) and cell.value.startswith("="):
                     cell.value = _rewrite_formula_refs(cell.value, sheet, col_shift)
+
+
+def _rewrite_sheet_internal_formulas(ws, col_shift: dict[str, str]) -> None:
+    for row in ws.iter_rows():
+        for cell in row:
+            if isinstance(cell.value, str) and cell.value.startswith("="):
+                cell.value = _rewrite_internal_cell_refs(cell.value, col_shift)
 
 
 def _delete_col_and_fix_refs(wb, sheet_name: str, col_letter: str) -> None:
@@ -121,6 +142,110 @@ def _delete_col_and_fix_refs(wb, sheet_name: str, col_letter: str) -> None:
         col_shift[old] = new
     ws.delete_cols(idx, 1)
     _rewrite_all_formulas(wb, sheet_name, col_shift)
+    _rewrite_sheet_internal_formulas(ws, col_shift)
+
+
+def _dcf_label_row(dcf, *prefixes: str) -> int | None:
+    for r in range(1, dcf.max_row + 1):
+        label = str(dcf.cell(r, 1).value or "").strip()
+        for prefix in prefixes:
+            if label.startswith(prefix) or label == prefix:
+                return r
+    return None
+
+
+def _fix_dcf_valuation_formulas(dcf) -> None:
+    """Rebind Gordon / exit-method / per-share rows after DCF memo-row deletes."""
+    sum_pv = _dcf_label_row(dcf, "Sum of PV of explicit FCF")
+    ebitda = _dcf_label_row(dcf, "Terminal EBITDA")
+    tv = _dcf_label_row(dcf, "Terminal value = FCF")
+    exit_implied = _dcf_label_row(dcf, "Implied exit EV/EBITDA")
+    pv_tv = _dcf_label_row(dcf, "PV of terminal value")
+    ev = _dcf_label_row(dcf, "Enterprise value")
+    cash = _dcf_label_row(dcf, "Plus: cash")
+    debt = _dcf_label_row(dcf, "Less: total debt")
+    eq = _dcf_label_row(dcf, "Equity value")
+    sh = _dcf_label_row(dcf, "Shares outstanding (000)")
+    pt = _dcf_label_row(dcf, "Implied value per share")
+    px = _dcf_label_row(dcf, "Current share price")
+    up = _dcf_label_row(dcf, "Implied upside / (downside)")
+
+    if all(x is not None for x in (sum_pv, ebitda, tv, exit_implied, pv_tv, ev, cash, debt, eq, sh, pt, px, up)):
+        dcf[f"E{exit_implied}"] = f"=E{tv}/E{ebitda}"
+        dcf[f"E{pv_tv}"] = f"=E{tv}/(1+Scenarios!$F$9)^J36"
+        dcf[f"E{ev}"] = f"=E{sum_pv}+E{pv_tv}"
+        dcf[f"E{eq}"] = f"=E{ev}+E{cash}+E{debt}"
+        dcf[f"E{pt}"] = f"=E{eq}/E{sh}"
+        dcf[f"E{up}"] = f"=E{pt}/E{px}-1"
+
+    exit_mult = None
+    tv_exit = pv_exit = ev_exit = pt_exit = None
+    in_exit = False
+    for r in range(1, dcf.max_row + 1):
+        label = str(dcf.cell(r, 1).value or "").strip()
+        if "CROSS-CHECK — EXIT MULTIPLE" in label:
+            in_exit = True
+            continue
+        if not in_exit:
+            continue
+        if label.startswith("Selected exit EV/EBITDA"):
+            exit_mult = r
+        elif label.startswith("Terminal value = Terminal EBITDA"):
+            tv_exit = r
+        elif label == "PV of terminal value" and tv_exit:
+            pv_exit = r
+        elif label == "Enterprise value (exit method)":
+            ev_exit = r
+        elif label.startswith("Implied value per share (exit method)"):
+            pt_exit = r
+            break
+
+    if all(x is not None for x in (exit_mult, tv_exit, pv_exit, ev_exit, pt_exit, ebitda, sum_pv, sh, cash, debt)):
+        dcf[f"E{tv_exit}"] = f"=E{ebitda}*E{exit_mult}"
+        dcf[f"E{pv_exit}"] = f"=E{tv_exit}/(1+Scenarios!$F$9)^J36"
+        dcf[f"E{ev_exit}"] = f"=E{sum_pv}+E{pv_exit}"
+        dcf[f"E{pt_exit}"] = f"=(E{ev_exit}+E{cash}+E{debt})/E{sh}"
+
+    if sh and cash and debt:
+        sh_ref = f"E{sh}"
+        cash_debt = f"E{cash}+E{debt}"
+        for row in dcf.iter_rows():
+            for cell in row:
+                v = cell.value
+                if not isinstance(v, str) or not v.startswith("="):
+                    continue
+                if "E55" in v or "E50+E51" in v:
+                    cell.value = v.replace("E50+E51", cash_debt).replace("/E55", f"/{sh_ref}")
+
+    for r in range(1, dcf.max_row + 1):
+        v = dcf.cell(r, 5).value
+        if isinstance(v, str) and v.startswith("http"):
+            dcf.cell(r, 5).value = None
+        a = dcf.cell(r, 1).value
+        if isinstance(a, str) and "E55 = 111,380k" in a and sh:
+            dcf.cell(r, 1).value = a.replace("E55", f"E{sh}")
+
+
+def _fix_revenue_reconciliation_formulas(rd) -> None:
+    """Rebind variance rows after memo/note row deletes shifted consolidated section up."""
+    rows: dict[str, int] = {}
+    for r in range(1, rd.max_row + 1):
+        label = str(rd.cell(r, 1).value or "")
+        if "Bottom-up total revenue" in label:
+            rows["total"] = r
+        elif "Scenarios base-case revenue" in label:
+            rows["scen"] = r
+        elif "Variance (bottom-up" in label:
+            rows["var"] = r
+        elif label.strip() == "Variance (%)":
+            rows["pct"] = r
+    if not all(k in rows for k in ("total", "scen", "var", "pct")):
+        return
+    for col in ("B", "C", "D", "E", "F", "G"):
+        rd[f"{col}{rows['var']}"] = f"={col}{rows['total']}-{col}{rows['scen']}"
+        rd[f"{col}{rows['pct']}"] = (
+            f'=IF({col}{rows["scen"]}=0,"",{col}{rows["var"]}/{col}{rows["scen"]})'
+        )
 
 
 def _clear_col(ws, col: str) -> None:
@@ -317,6 +442,7 @@ def polish_workbook(path: Path = TARGET) -> Path:
     for col in ("I", "J", "L"):
         _delete_col_and_fix_refs(wb, "Revenue Drivers", col)
     _delete_rows_matching(rd, "memo:", "Note: DCF / Scenarios")
+    _fix_revenue_reconciliation_formulas(rd)
     for r in range(1, rd.max_row + 1):
         for c in range(1, rd.max_column + 1):
             v = rd.cell(r, c).value
@@ -333,6 +459,7 @@ def polish_workbook(path: Path = TARGET) -> Path:
     # --- 6. DCF (clear B/D/M — keep column C as standardized sources) ---
     dcf = wb["DCF"]
     _clean_dcf_tab(dcf)
+    _fix_dcf_valuation_formulas(dcf)
 
     # --- 7. Comps ---
     comps = wb["Comps"]
@@ -388,6 +515,48 @@ def _verify(path: Path) -> None:
         txt = str(npb.cell(r, 1).value or "")
         if "Phase 5" in txt or "Reconciliation workflow" in txt:
             issues.append(f"NOPAT row {r} still has Phase 5 block")
+
+    rd = wb["Revenue Drivers"]
+    rows: dict[str, int] = {}
+    for r in range(1, rd.max_row + 1):
+        label = str(rd.cell(r, 1).value or "")
+        if "Bottom-up total revenue" in label:
+            rows["total"] = r
+        elif "Scenarios base-case revenue" in label:
+            rows["scen"] = r
+        elif "Variance (bottom-up" in label:
+            rows["var"] = r
+        elif label.strip() == "Variance (%)":
+            rows["pct"] = r
+    if rows:
+        for col in ("B", "C"):
+            expected_var = f"={col}{rows['total']}-{col}{rows['scen']}"
+            if rd[f"{col}{rows['var']}"].value != expected_var:
+                issues.append(
+                    f"Revenue Drivers {col}{rows['var']} variance formula not rebound: "
+                    f"{rd[f'{col}{rows['var']}'].value}"
+                )
+
+    scn = wb["Scenarios"]
+    if str(scn["F25"].value) != "=11102600*(1+F4)":
+        issues.append(f"Scenarios F25 internal ref not shifted: {scn['F25'].value}")
+
+    dcf = wb["DCF"]
+    dcf_rows: dict[str, int] = {}
+    for r in range(1, dcf.max_row + 1):
+        label = str(dcf.cell(r, 1).value or "").strip()
+        if label == "Equity value":
+            dcf_rows["eq"] = r
+        elif label == "Shares outstanding (000)":
+            dcf_rows["sh"] = r
+        elif label == "Implied value per share":
+            dcf_rows["pt"] = r
+    if dcf_rows:
+        expected_pt = f"=E{dcf_rows['eq']}/E{dcf_rows['sh']}"
+        if dcf[f"E{dcf_rows['pt']}"].value != expected_pt:
+            issues.append(
+                f"DCF per-share formula not rebound: {dcf[f'E{dcf_rows['pt']}'].value}"
+            )
 
     if issues:
         raise AssertionError("\n".join(issues))
