@@ -243,13 +243,11 @@ def build_nopat_bridge(wb, scen_base_col, rev_rows, ebit_rows, drv, sc_tariff_ce
         rr[0] += 1
 
     write(ws, f"A{rr[0]}",
-          "Steps 1–4: DCF unchanged on FY26. Step 5 changes NOPAT only (tax). Step 6 changes FY26 EBIT (+ tariff).",
+          "FY26 EBIT adjusted for one-time tariff refund. "
+          "Base/Bear/Bull paths link to normalized NOPAT using a flat operating tax rate.",
           S.BLACK, italic=True, size=8, align=S.left_indent)
     rr[0] += 1
-    write(ws, f"A{rr[0]}",
-          "Scenarios base-case NOPAT (col G) links to NORMALIZED NOPAT above. "
-          "Bear/bull apply the same t_operating to their EBIT paths.",
-          S.BLACK, italic=True, size=8, align=S.left_indent)
+    ws[f"A{rr[0]}"].value = None
 
     group_columns(ws, DJ, DC)
     group_rows(ws, p1_start, p1_end, hidden=True)
