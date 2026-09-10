@@ -52,11 +52,7 @@ write(cov, 'B11', "Black font  =  calculations / formulas", S.BLACK, bold=True, 
 write(cov, 'B12', "Red font  =  analyst assumptions — cols B/C/D on every tab: Justification | Source | Ctrl+F", S.RED, bold=True, size=11)
 write(cov, 'B14', "TABS", S.DARK, bold=True, size=12)
 write(cov, 'B15', "WACC  \u2022  Revenue Drivers  \u2022  NOPAT Bridge  \u2022  Scenarios  \u2022  DCF  \u2022  Comps / Football Field", S.BLACK, size=10)
-write(cov, 'B16', "ASSUMPTIONS GUIDE (PDF — every tab)", S.DARK, bold=True, size=12)
-write_link(cov, 'B17', "LULU_Assumptions_Memo.pdf — full guide: every red assumption on WACC, Scenarios, Revenue Drivers, NOPAT Bridge, DCF, Comps & 3-Statement",
-           "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=10,
-           hint="Open for justification, clickable source links, and Ctrl+F proof for every assumption.")
-write(cov, 'B19', "SOURCES", S.DARK, bold=True, size=12)
+write(cov, 'B17', "SOURCES", S.DARK, bold=True, size=12)
 write_link(cov, 'B20', "SEC EDGAR filings, CIK 0001397187 (Form 10-K, FY2025)", D.SOURCES["edgar_xbrl"],
            color=S.BLUE, size=10, hint=D.COVER_HINTS["edgar_xbrl"])
 write_link(cov, 'B21', "FY2025 Form 10-K (ended Feb 1, 2026)", D.filing_url("FY2025"),
@@ -566,8 +562,6 @@ write_ctrl_f(dcf, f'{DS}3', D.COVER_HINTS["filing_fy2025"])
 for y in FY:
     write(dcf, f'{FCOL[y]}2', y, S.WHITE, bold=True, size=10, align=S.center, fillc=S.ACCENT)
 write(dcf, 'A3', "Forecast drivers linked to Scenarios tab \u2192 Base case (column G)", S.GREY, italic=True, size=9, align=S.left_indent)
-write_link(dcf, 'A4', "Full Assumptions Guide (PDF)", "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=9, italic=True,
-           hint="Every red assumption on every tab — justification, source link, Ctrl+F proof.")
 write_internal_link(dcf, 'C4', 'NOPAT Bridge tab', "'NOPAT Bridge'!A1",
                     hint="5-phase EBIT normalization → normalized NOPAT (base case).")
 write_internal_link(dcf, 'D4', 'Revenue Drivers tab', "'Revenue Drivers'!A1",

@@ -84,10 +84,6 @@ write_link(cov, 'B18', "Q2 FY2026 results & FY2026 guidance (Sep 3, 2026 earning
            color=S.BLUE, size=10, hint=D.COVER_HINTS["earnings_sep2026"])
 write(cov, 'B19', "TABS", S.DARK, bold=True, size=12)
 write(cov, 'B20', "Assumptions  \u2022  Revenue Drivers  \u2022  Income Statement  \u2022  Balance Sheet  \u2022  Cash Flow", S.BLACK, size=10)
-write(cov, 'B22', "ASSUMPTIONS GUIDE (PDF — every tab)", S.DARK, bold=True, size=12)
-write_link(cov, 'B23', "LULU_Assumptions_Memo.pdf — full guide: every red assumption on WACC, Scenarios, Revenue Drivers, DCF, Comps & 3-Statement",
-           "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=10,
-           hint="Open for justification, clickable source links, and Ctrl+F proof for every assumption.")
 write(cov, 'B25', "Units: US$ thousands unless noted.", S.BLACK, italic=True, size=9)
 
 # ---------------------------------------------------------------- SCENARIOS BASE (mirror of DCF Scenarios column G)
