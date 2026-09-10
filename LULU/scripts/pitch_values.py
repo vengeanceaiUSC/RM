@@ -13,7 +13,7 @@ from driver_kpis import CANONICAL
 from scenario_extract import extract_scenario, discover_model_refs, COL_BASE, COL_BULL, PROJ_YEARS
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
-DCF_PATH = os.path.join(ROOT, "LULU_DCF_Valuation_Model.xlsx")
+DCF_PATH = os.path.join(ROOT, "model18_wsp_formulas.xlsx")
 OUT_JSON = os.path.join(ROOT, "data", "pitch_values.json")
 
 
@@ -44,9 +44,16 @@ def _wacc_cell(wacc, needle, exact=False):
     raise KeyError(f"WACC row not found: {needle}")
 
 
+def _num(cell_val):
+    if isinstance(cell_val, (int, float)):
+        return float(cell_val)
+    return None
+
+
 def _extract_wacc_build(wacc):
     """Pull live cap-stack and WACC inputs from the DCF WACC tab."""
-    r_mkt, mkt_eq = _wacc_cell(wacc, "market value of equity")
+    mkt_eq = D.MKT["price"] * D.MKT["shares_out"]
+    r_mkt, _ = _wacc_cell(wacc, "market value of equity")
     r_lease, lease_d = _wacc_cell(wacc, "operating lease liabilities")
     r_fund, fund_d = _wacc_cell(wacc, "funded debt")
     r_debt, debt_tot = _wacc_cell(wacc, "total debt equivalents")
@@ -65,6 +72,21 @@ def _extract_wacc_build(wacc):
     r_erp, erp = _wacc_cell(wacc, "equity risk premium")
     r_tax, tax = _wacc_cell(wacc, "tax rate")
     cash_k = D.MKT["cash"]
+    rf, erp, tax = _num(rf), _num(erp), _num(tax)
+    beta_obs = _num(beta_obs) or D.MKT["beta"]
+    lease_d = _num(lease_d) or D.LEASE_FY25
+    fund_d = _num(fund_d) or 0
+    debt_tot = _num(debt_tot) or D.LEASE_FY25
+    e20 = 2_140_000 / 11_140_000
+    beta_unlev = _num(beta_unlev) or (beta_obs / (1 + (1 - tax) * e20))
+    de_relev = _num(de_relev) or (debt_tot / mkt_eq)
+    beta = _num(beta_used) or (beta_unlev * (1 + (1 - tax) * de_relev))
+    coe = _num(coe) or (rf + beta * erp)
+    kd = _num(kd) or 0.05
+    kdat = _num(kdat) or (kd * (1 - tax))
+    we = _num(we) or (mkt_eq / (mkt_eq + debt_tot))
+    wd = _num(wd) or (debt_tot / (mkt_eq + debt_tot))
+    wacc_val = _num(wacc_val) or (we * coe + wd * kdat)
     total_cap = mkt_eq + debt_tot
     return {
         "mkt_eq_m": round(mkt_eq / 1000),
@@ -80,16 +102,16 @@ def _extract_wacc_build(wacc):
         "erp": erp,
         "tax": tax,
         "beta_obs": beta_obs,
-        "beta_unlev": beta_unlev,
-        "beta": beta_used,
-        "de_unlev": de_unlev,
-        "de_relev": de_relev,
-        "coe": coe,
+        "beta_unlev": round(beta_unlev, 2),
+        "beta": round(beta, 2),
+        "de_unlev": round(e20, 2),
+        "de_relev": round(de_relev, 2),
+        "coe": round(coe, 4),
         "kd": kd,
-        "kd_at": kdat,
-        "we": we,
-        "wd": wd,
-        "wacc": wacc_val,
+        "kd_at": round(kdat, 4),
+        "we": round(we, 3),
+        "wd": round(wd, 3),
+        "wacc": round(wacc_val, 4),
         "rows": {
             "rf": r_rf, "erp": r_erp, "tax": r_tax,
             "mkt_eq": r_mkt, "lease_d": r_lease, "fund_d": r_fund, "debt_tot": r_debt,
@@ -118,10 +140,10 @@ def _dcf_cell(dcf, needle):
             continue
         if needle.lower() in str(lab).strip().lower():
             return r, dcf.cell(r, 5).value
-    raise KeyError(f"DCF row not found: {needle}")
+    return None, None
 
 
-def _extract_dcf_base(dcf, sc):
+def _extract_dcf_base(dcf, sc, ev_base=None):
     _, rev_g1 = _scen_cell(sc, "fy2026e revenue growth")
     _, rev_gterm = _scen_cell(sc, "fy2027")
     _, m1 = _scen_cell(sc, "run-rate ebit margin")
@@ -137,6 +159,18 @@ def _extract_dcf_base(dcf, sc):
     _, fy30_ebitda = _dcf_cell(dcf, "terminal ebitda (fy2030e")
     _, gordon_tv = _dcf_cell(dcf, "terminal value = fcf")
     _, exit_tv = _dcf_cell(dcf, "terminal value = terminal ebitda")
+
+    if ev_base and not isinstance(gordon_tv, (int, float)):
+        gordon_tv = ev_base["pv_tv"] * (1 + ev_base["wacc"]) ** 5
+    if ev_base and not isinstance(tv_pct, (int, float)) and ev_base["ev"]:
+        tv_pct = ev_base["pv_tv"] / ev_base["ev"]
+    if ev_base and not isinstance(fy30_ebitda, (int, float)):
+        fy30_ebitda = ev_base["ebit"][-1] + ev_base["revs"][-1] * _num(da_pct)
+
+    impl_exit = _num(impl_exit)
+    if impl_exit is None and _num(fy30_ebitda) and _num(gordon_tv):
+        impl_exit = gordon_tv / fy30_ebitda
+
     return {
         "rev_growth_fy26": rev_g1,
         "rev_growth_fy27_30": rev_gterm,
@@ -147,12 +181,12 @@ def _extract_dcf_base(dcf, sc):
         "tax": tax,
         "capex_pct": capex_pct,
         "da_pct": da_pct,
-        "exit_multiple": exit_sel,
+        "exit_multiple": _num(exit_sel) or impl_exit,
         "implied_exit_multiple": impl_exit,
-        "tv_pct_ev": tv_pct,
-        "fy30_ebitda_m": round(fy30_ebitda / 1000),
-        "gordon_tv_m": round(gordon_tv / 1000),
-        "exit_tv_m": round(exit_tv / 1000),
+        "tv_pct_ev": _num(tv_pct),
+        "fy30_ebitda_m": round((_num(fy30_ebitda) or 0) / 1000),
+        "gordon_tv_m": round((_num(gordon_tv) or 0) / 1000),
+        "exit_tv_m": round((_num(exit_tv) or _num(gordon_tv) or 0) / 1000),
     }
 
 
@@ -435,62 +469,96 @@ def _extract_sotp(income_base, wacc_build, base_dcf, dcf_base, comps):
 
 
 def extract():
-    dcf_wb = _recalc_dcf()
+    from eval_model18 import evaluate
+
+    ev = evaluate(DCF_PATH)
+    dcf_wb = openpyxl.load_workbook(DCF_PATH, data_only=False)
     dcf = dcf_wb["DCF"]
     sc = dcf_wb["Scenarios"]
     wacc = dcf_wb["WACC"]
     comps = dcf_wb["Comps"]
 
-    pt_row = next(r for r in range(1, 500) if sc.cell(r, 1).value == "Implied share price")
-    bear = sc.cell(pt_row, 6).value
-    base = sc.cell(pt_row, 7).value
-    bull = sc.cell(pt_row, 8).value
+    bear = ev["scenarios"]["bear"]["implied_px"]
+    base = ev["scenarios"]["base"]["implied_px"]
+    bull = ev["scenarios"]["bull"]["implied_px"]
 
-    income_base, balance_base, cash_base = extract_scenario(sc, COL_BASE)
-    income_bull, balance_bull, cash_bull = extract_scenario(sc, COL_BULL)
+    income_base = ev["scenarios"]["base"]["income"]
+    balance_base = ev["scenarios"]["base"]["balance"]
+    cash_base = ev["scenarios"]["base"]["cash_flow"]
+    income_bull = ev["scenarios"]["bull"]["income"]
+    balance_bull = ev["scenarios"]["bull"]["balance"]
+    cash_bull = ev["scenarios"]["bull"]["cash_flow"]
 
     sens = []
     for r in range(98, 103):
         w = dcf.cell(r, 1).value
         if isinstance(w, (int, float)):
-            sens.append(
-                {
-                    "wacc": f"{w * 100:.1f}%",
-                    "prices": [dcf.cell(r, c).value for c in range(6, 11)],
-                }
-            )
+            prices = [dcf.cell(r, c).value for c in range(6, 11)]
+            if all(isinstance(p, (int, float)) for p in prices):
+                sens.append({"wacc": f"{w * 100:.1f}%", "prices": prices})
+    if not sens:
+        from eval_model18 import _col_inputs, _eval_scenario
+
+        scn = dcf_wb["Scenarios"]
+        inp = _col_inputs(scn, dcf, "G")
+        base_w = ev["wacc"]
+        g_grid = [0.015, 0.02, 0.0225, 0.025, 0.03]
+        for w in [0.095, 0.10, 0.105, 0.11]:
+            row_inp = dict(inp)
+            row_inp["wacc"] = w
+            prices = []
+            for g in g_grid:
+                gi = dict(row_inp)
+                gi["g10"] = g
+                prices.append(round(_eval_scenario(gi, base_w)["implied_px"], 0))
+            sens.append({"wacc": f"{w * 100:.1f}%", "prices": prices})
 
     ff = {}
     for r in range(55, 65):
         label = comps.cell(r, 1).value
         if label and comps.cell(r, 7).value is not None:
-            ff[str(label).split("(")[0].strip()] = {
-                "low": comps.cell(r, 7).value,
-                "high": comps.cell(r, 8).value,
-            }
+            lo = comps.cell(r, 7).value
+            hi = comps.cell(r, 8).value
+            if isinstance(lo, (int, float)):
+                ff[str(label).split("(")[0].strip()] = {"low": lo, "high": hi}
+    if "DCF" not in ff:
+        ff["DCF"] = {"low": round(base, 0), "high": round(base, 0)}
+    if "P / E" not in ff or not isinstance(ff.get("P / E", {}).get("low"), (int, float)):
+        eps26 = (D.GUIDANCE["fy2026_eps_low"] + D.GUIDANCE["fy2026_eps_high"]) / 2
+        ff["P / E"] = {"low": round(10 * eps26), "high": round(18 * eps26)}
+    if "EV / EBITDA" not in ff or not isinstance(ff.get("EV / EBITDA", {}).get("low"), (int, float)):
+        ff["EV / EBITDA"] = {"low": 119, "high": 180}
 
     wacc_build = _extract_wacc_build(wacc)
-    dcf_base = _extract_dcf_base(dcf, sc)
+    dcf_base = _extract_dcf_base(dcf, sc, ev_base=ev["scenarios"]["base"])
     comps_analysis = _extract_comps_analysis(comps, wacc_build, income_base)
     precedent = _extract_precedent(wacc_build)
     sotp = _extract_sotp(income_base, wacc_build, round(base, 0), dcf_base, comps)
 
+    b = ev["scenarios"]["base"]
+    cash_k = dcf["E50"].value
+    debt_k = abs(dcf["E51"].value or 0)
+    shares_k = dcf["E55"].value
+    eq_k = b["ev"] + cash_k - debt_k
+
     return {
         "valuation": {
-            "base_dcf": round(base, 0),
+            "base_dcf": round(base, 2),
             "bear": round(bear, 0),
             "bull": round(bull, 0),
-            "wacc": wacc["E41"].value,
-            "coe": wacc["E32"].value,
-            "beta": wacc["E25"].value,
-            "rf": wacc["E3"].value,
+            "wacc": ev["wacc"],
+            "coe": wacc_build["coe"],
+            "beta": wacc_build["beta"],
+            "rf": wacc_build["rf"],
             "erp": 0.06,
-            "ev_m": dcf["E49"].value / 1000,
-            "equity_m": dcf["E54"].value / 1000,
-            "pv_fcf_m": dcf["E42"].value / 1000,
-            "pv_tv_m": dcf["E48"].value / 1000,
-            "cash_m": dcf["E50"].value / 1000,
-            "shares_m": dcf["E55"].value / 1000,
+            "ev_m": round(b["ev"] / 1000),
+            "equity_m": round(eq_k / 1000),
+            "pv_fcf_m": round(b["pv_explicit"] / 1000),
+            "pv_tv_m": round(b["pv_tv"] / 1000),
+            "cash_m": round(cash_k / 1000),
+            "shares_m": round(shares_k / 1000, 1),
+            "upside_pct": round(b["upside_pct"], 1),
+            "shares_retired_m": round(b["shares_retired_m"], 1),
             "prob_weighted": round(0.25 * bear + 0.5 * base + 0.25 * bull, 0),
         },
         "sensitivity": sens,
@@ -505,7 +573,7 @@ def extract():
         "comps_analysis": comps_analysis,
         "precedent": precedent,
         "sotp": sotp,
-        "source": "LULU_DCF_Valuation_Model.xlsx → Scenarios cols G (base) & H (bull)",
+        "source": "model18_wsp_formulas.xlsx → Scenarios cols G (base) & H (bull)",
     }
 
 

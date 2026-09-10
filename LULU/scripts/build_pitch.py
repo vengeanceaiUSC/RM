@@ -61,6 +61,14 @@ def _d(v):
     return f"${int(round(v))}"
 
 
+def _px(v):
+    """Share price — keep cents when model outputs them (e.g. $133.52)."""
+    v = float(v)
+    if abs(v - round(v)) < 0.01:
+        return f"${int(round(v))}"
+    return f"${v:.2f}"
+
+
 def _m(v):
     return f"{v:,.0f}"
 
@@ -74,8 +82,8 @@ def _up(px, base=100):
 def _pct(v, d=1):
     return f"{v * 100:.{d}f}%"
 
-_BASE_DCF = 133.64
-_BASE_UPSIDE = 33.6
+_BASE_DCF = 133.52
+_BASE_UPSIDE = 33.5
 _WACC_PCT = 9.0
 _MODEL = _MODEL_FILE
 _SPOT = 100.61
@@ -829,7 +837,7 @@ btf.vertical_anchor = MSO_ANCHOR.MIDDLE
 add_para(btf, f"WACC = {_pct_wb(WB['wacc'])}", 17, WHITE, bold=True, first=True, space_after=2)
 add_para(
     btf,
-    f"Base-case discount rate ({DCF_MODEL}, WACC tab) · implied price {_d(V['base_dcf'])}",
+    f"Base-case discount rate ({DCF_MODEL}, WACC tab) · implied price {_px(V['base_dcf'])}",
     9, WHITE, space_after=0,
 )
 
@@ -866,7 +874,8 @@ s = slide_base(
     sources=f"Source: {DCF_MODEL}, Comps / football field tab; geographic SOTP on FY30E base revenue mix",
 )
 
-_base_px = int(V["base_dcf"])
+_base_px = float(V["base_dcf"])
+_base_px_chart = round(_base_px)
 _sotp_lo = SOTP.get("implied_px_lo", _base_px)
 _sotp_hi = SOTP.get("implied_px_hi", _base_px)
 _gordon_exit = SOTP.get("gordon_exit_multiple", DCF_BASE.get("exit_multiple", 7.36))
@@ -874,7 +883,7 @@ ff_methods = [
     ("P / E (10-18x FY2026E)", round(FF["P / E"]["low"]), round(FF["P / E"]["high"])),
     ("EV / EBITDA (5.0-8.0x FY30E)", round(FF["EV / EBITDA"]["low"]), round(FF["EV / EBITDA"]["high"])),
     ("Geographic SOTP (FY30E; Gordon anchor)", _sotp_lo, _sotp_hi),
-    ("Unlevered DCF (base / Gordon g)", _base_px, _base_px),
+    ("Unlevered DCF (base / Gordon g)", _base_px_chart, _base_px_chart),
     ("52-week range", int(_SPOT), 226),
 ]
 chart_l, chart_r = 3.35, 12.5
@@ -926,7 +935,7 @@ add_para(tf, "Target $140", 8.5, CARD, bold=True, align=PP_ALIGN.CENTER, first=T
 tb, tf = textbox(s, Inches(0.5), Inches(6.12), Inches(12.35), Inches(0.88))
 add_para(
     tf,
-    f"12-month target $140 sits above base-case DCF {_d(_base_px)} and inside the comps/SOTP ranges: a partial re-rating, not a return to peak multiples.",
+    f"12-month target $140 sits above base-case DCF {_px(_base_px)} and inside the comps/SOTP ranges: a partial re-rating, not a return to peak multiples.",
     12.5, NAVY, bold=True, first=True, space_after=4,
 )
 add_para(
@@ -989,7 +998,7 @@ for t in [
     f"FY30E segment revenue = FY25 geographic mix applied to {DCF_MODEL} consolidated FY30 base revenue",
     f"Segment EV/EBITDA spreads anchor to Gordon-implied exit {_gordon_exit:.1f}x (selected DCF TV identity: not the 5-8x comps football-field band)",
     "Americas: Gordon \u2212 1.0x to \u2212 0.25x (mature); China: +0.5x to +2.0x (growth); RoW: \u22120.25x to +0.75x",
-    f"Consolidated base-case DCF {_d(_base_px)} uses Gordon growth (g={DCF_BASE.get('terminal_g', 0.0225)*100:.2f}%); SOTP is terminal-year EBITDA triangulation only",
+    f"Consolidated base-case DCF {_px(_base_px)} uses Gordon growth (g={DCF_BASE.get('terminal_g', 0.0225)*100:.2f}%); SOTP is terminal-year EBITDA triangulation only",
 ]:
     add_para(tf, t, 10.5, INK, bullet=True, space_after=3)
 
@@ -998,7 +1007,7 @@ btf = box.text_frame
 btf.word_wrap = True
 add_para(btf, "SOTP vs DCF", 12, CARD, bold=True, first=True, space_after=4)
 add_para(btf, f"SOTP range: ${_sotp_lo}-${_sotp_hi}", 13, NAVY, bold=True, space_after=3)
-add_para(btf, f"Base-case DCF: {_d(_base_px)}", 13, NAVY, bold=True, space_after=3)
+add_para(btf, f"Base-case DCF: {_px(_base_px)}", 13, NAVY, bold=True, space_after=3)
 add_para(btf, "Overlap is expected: SOTP applies FY30 EBITDA multiples; DCF discounts explicit FCF + Gordon growth TV.", 9.5, INK, space_after=0)
 
 # =====================================================================
@@ -1080,7 +1089,7 @@ for t2, v in [
 p = btf.add_paragraph()
 p.space_before = Pt(4)
 r = p.add_run()
-r.text = f"Implied value:  {_d(_base_px)} / share"
+r.text = f"Implied value:  {_px(_base_px)} / share"
 _set_font(r, 15, GREEN, bold=True)
 
 box2 = rect(s, Inches(6.85), Inches(4.05), Inches(6.0), Inches(1.25), fill=NAVY)
@@ -1118,7 +1127,7 @@ tb, tf = textbox(s, Inches(8.1), Inches(5.80), Inches(4.75), Inches(1.08))
 add_para(tf, "Base-case cell", 9, CARD, bold=True, first=True, space_after=2)
 add_para(
     tf,
-    f"WACC {_pct(V['wacc'])} \u00d7 g {_tg*100:.2f}% gives {_d(_base_px)}. Grid brackets \u00b1100bps WACC and 1.5-3.0% g.",
+    f"WACC {_pct(V['wacc'])} \u00d7 g {_tg*100:.2f}% gives {_px(_base_px)}. Grid brackets \u00b1100bps WACC and 1.5-3.0% g.",
     9, INK, space_after=0,
 )
 
@@ -1223,7 +1232,7 @@ for title, body in [
     ),
     (
         "Conservative target price re-rating",
-        f"Our {_d(_base_px)} base-case DCF and ${_tgt_px} 12-month target (+{_tgt_px - int(_base_px)} vs DCF, ~{round((_tgt_px/int(_base_px)-1)*100)}% "
+        f"Our {_px(_base_px)} base-case DCF and ${_tgt_px} 12-month target (+{_tgt_px - round(_base_px)} vs DCF, ~{round((_tgt_px/_base_px-1)*100)}% "
         f"above model fair value) reflect undervaluation with only a modest re-rating: not Nike-level multiples.",
     ),
 ]:
@@ -1300,7 +1309,7 @@ box = rect(s, Inches(8.5), Inches(3.55), Inches(4.35), Inches(1.35), fill=LGREY)
 btf = box.text_frame
 btf.word_wrap = True
 add_para(btf, "Valuation anchors", 11, CARD, bold=True, first=True, space_after=4)
-add_para(btf, f"DCF base: {_d(_base_px)}  |  Target: $140", 12, NAVY, bold=True, space_after=3)
+add_para(btf, f"DCF base: {_px(_base_px)}  |  Target: $140", 12, NAVY, bold=True, space_after=3)
 add_para(
     btf,
     "Private precedents inform strategic context only; public comps on the prior slide.",

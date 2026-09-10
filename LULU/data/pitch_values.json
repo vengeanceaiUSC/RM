@@ -1,0 +1,742 @@
+{
+  "valuation": {
+    "base_dcf": 133.52,
+    "bear": 54.0,
+    "bull": 208.0,
+    "wacc": 0.08977953763117218,
+    "coe": 0.0986,
+    "beta": 0.84,
+    "rf": 0.048,
+    "erp": 0.06,
+    "ev_m": 14862,
+    "equity_m": 14871,
+    "pv_fcf_m": 3930,
+    "pv_tv_m": 10933,
+    "cash_m": 1807,
+    "shares_m": 111.4,
+    "upside_pct": 33.5,
+    "shares_retired_m": 32.9,
+    "prob_weighted": 132.0
+  },
+  "sensitivity": [
+    {
+      "wacc": "9.5%",
+      "prices": [
+        115.0,
+        121.0,
+        124.0,
+        127.0,
+        135.0
+      ]
+    },
+    {
+      "wacc": "10.0%",
+      "prices": [
+        108.0,
+        113.0,
+        116.0,
+        119.0,
+        125.0
+      ]
+    },
+    {
+      "wacc": "10.5%",
+      "prices": [
+        102.0,
+        106.0,
+        109.0,
+        111.0,
+        117.0
+      ]
+    },
+    {
+      "wacc": "11.0%",
+      "prices": [
+        97.0,
+        100.0,
+        102.0,
+        105.0,
+        109.0
+      ]
+    }
+  ],
+  "football_field": {
+    "DCF": {
+      "low": 134.0,
+      "high": 134.0
+    },
+    "P / E": {
+      "low": 96,
+      "high": 173
+    },
+    "EV / EBITDA": {
+      "low": 119,
+      "high": 180
+    }
+  },
+  "income_statement": {
+    "base": {
+      "FY2026E": {
+        "revenue": 10425,
+        "gross_profit": 5901,
+        "operating_income": 1511,
+        "operating_margin": "14.5%",
+        "net_income": 1089,
+        "eps": 9.76
+      },
+      "FY2027E": {
+        "revenue": 10665,
+        "gross_profit": 6036,
+        "operating_income": 1469,
+        "operating_margin": "13.8%",
+        "net_income": 1056,
+        "eps": 10.1
+      },
+      "FY2028E": {
+        "revenue": 10910,
+        "gross_profit": 6175,
+        "operating_income": 1566,
+        "operating_margin": "14.4%",
+        "net_income": 1120,
+        "eps": 11.42
+      },
+      "FY2029E": {
+        "revenue": 11161,
+        "gross_profit": 6317,
+        "operating_income": 1666,
+        "operating_margin": "14.9%",
+        "net_income": 1187,
+        "eps": 12.91
+      },
+      "FY2030E": {
+        "revenue": 11418,
+        "gross_profit": 6463,
+        "operating_income": 1770,
+        "operating_margin": "15.5%",
+        "net_income": 1256,
+        "eps": 14.58
+      }
+    },
+    "bull": {
+      "FY2026E": {
+        "revenue": 10658,
+        "gross_profit": 6129,
+        "operating_income": 1680,
+        "operating_margin": "15.8%",
+        "net_income": 1242,
+        "eps": 10.43
+      },
+      "FY2027E": {
+        "revenue": 11298,
+        "gross_profit": 6496,
+        "operating_income": 1765,
+        "operating_margin": "15.6%",
+        "net_income": 1300,
+        "eps": 10.92
+      },
+      "FY2028E": {
+        "revenue": 11976,
+        "gross_profit": 6886,
+        "operating_income": 2006,
+        "operating_margin": "16.8%",
+        "net_income": 1469,
+        "eps": 12.34
+      },
+      "FY2029E": {
+        "revenue": 12694,
+        "gross_profit": 7299,
+        "operating_income": 2269,
+        "operating_margin": "17.9%",
+        "net_income": 1655,
+        "eps": 13.9
+      },
+      "FY2030E": {
+        "revenue": 13456,
+        "gross_profit": 7737,
+        "operating_income": 2557,
+        "operating_margin": "19.0%",
+        "net_income": 1859,
+        "eps": 15.61
+      }
+    }
+  },
+  "balance_sheet": {
+    "base": {
+      "cash": {
+        "FY2026E": 2143,
+        "FY2027E": 2325,
+        "FY2028E": 2567,
+        "FY2029E": 2874,
+        "FY2030E": 3247
+      },
+      "inventories": {
+        "FY2026E": 1585,
+        "FY2027E": 1608,
+        "FY2028E": 1632,
+        "FY2029E": 1657,
+        "FY2030E": 1681
+      },
+      "total_assets": {
+        "FY2026E": 7941,
+        "FY2027E": 8124,
+        "FY2028E": 8310,
+        "FY2029E": 8502,
+        "FY2030E": 8697
+      },
+      "total_liab": {
+        "FY2026E": 3282,
+        "FY2027E": 3357,
+        "FY2028E": 3434,
+        "FY2029E": 3513,
+        "FY2030E": 3594
+      },
+      "total_equity": {
+        "FY2026E": 4659,
+        "FY2027E": 4766,
+        "FY2028E": 4876,
+        "FY2029E": 4988,
+        "FY2030E": 5103
+      }
+    },
+    "bull": {
+      "cash": {
+        "FY2026E": 3147,
+        "FY2027E": 4378,
+        "FY2028E": 5776,
+        "FY2029E": 7356,
+        "FY2030E": 9136
+      },
+      "inventories": {
+        "FY2026E": 1586,
+        "FY2027E": 1669,
+        "FY2028E": 1755,
+        "FY2029E": 1845,
+        "FY2030E": 1940
+      },
+      "total_assets": {
+        "FY2026E": 8118,
+        "FY2027E": 8606,
+        "FY2028E": 9122,
+        "FY2029E": 9669,
+        "FY2030E": 10249
+      },
+      "total_liab": {
+        "FY2026E": 3355,
+        "FY2027E": 3556,
+        "FY2028E": 3770,
+        "FY2029E": 3996,
+        "FY2030E": 4236
+      },
+      "total_equity": {
+        "FY2026E": 4763,
+        "FY2027E": 5049,
+        "FY2028E": 5352,
+        "FY2029E": 5673,
+        "FY2030E": 6014
+      }
+    }
+  },
+  "cash_flow": {
+    "base": {
+      "cfo": {
+        "FY2026E": 1660,
+        "FY2027E": 1518,
+        "FY2028E": 1593,
+        "FY2029E": 1670,
+        "FY2030E": 1751
+      },
+      "capex": {
+        "FY2026E": -573,
+        "FY2027E": -587,
+        "FY2028E": -600,
+        "FY2029E": -614,
+        "FY2030E": -628
+      },
+      "fcf": {
+        "FY2026E": 1086,
+        "FY2027E": 931,
+        "FY2028E": 993,
+        "FY2029E": 1057,
+        "FY2030E": 1123
+      },
+      "buybacks": {
+        "FY2026E": -750,
+        "FY2027E": -750,
+        "FY2028E": -750,
+        "FY2029E": -750,
+        "FY2030E": -750
+      },
+      "dna": {
+        "FY2026E": 469,
+        "FY2027E": 480,
+        "FY2028E": 491,
+        "FY2029E": 502,
+        "FY2030E": 514
+      }
+    },
+    "bull": {
+      "cfo": {
+        "FY2026E": 1820,
+        "FY2027E": 1740,
+        "FY2028E": 1936,
+        "FY2029E": 2151,
+        "FY2030E": 2385
+      },
+      "capex": {
+        "FY2026E": -480,
+        "FY2027E": -508,
+        "FY2028E": -539,
+        "FY2029E": -571,
+        "FY2030E": -606
+      },
+      "fcf": {
+        "FY2026E": 1340,
+        "FY2027E": 1231,
+        "FY2028E": 1398,
+        "FY2029E": 1580,
+        "FY2030E": 1780
+      },
+      "buybacks": {
+        "FY2026E": 0,
+        "FY2027E": 0,
+        "FY2028E": 0,
+        "FY2029E": 0,
+        "FY2030E": 0
+      },
+      "dna": {
+        "FY2026E": 480,
+        "FY2027E": 508,
+        "FY2028E": 539,
+        "FY2029E": 571,
+        "FY2030E": 606
+      }
+    }
+  },
+  "proj_years": [
+    "FY2026E",
+    "FY2027E",
+    "FY2028E",
+    "FY2029E",
+    "FY2030E"
+  ],
+  "model_refs": {
+    "revenue": {
+      "r1": 25,
+      "r5": 29,
+      "label": "Revenue \u2013 year 1"
+    },
+    "gross_margin": {
+      "r1": 30,
+      "r5": 34,
+      "label": "Gross margin % \u2013 year 1"
+    },
+    "ebit": {
+      "r1": 45,
+      "r5": 49,
+      "label": "EBIT \u2013 year 1"
+    },
+    "net_income": {
+      "r1": 143,
+      "r5": 147,
+      "label": "Net income \u2013 year 1"
+    },
+    "cfo": {
+      "r1": 148,
+      "r5": 152,
+      "label": "Cash from operations \u2013 year 1"
+    },
+    "fcf": {
+      "r1": 153,
+      "r5": 157,
+      "label": "Free cash flow (CFS) \u2013 year 1"
+    },
+    "buybacks": {
+      "r1": 158,
+      "r5": 162,
+      "label": "Share repurchases \u2013 year 1"
+    },
+    "cash": {
+      "r1": 163,
+      "r5": 167,
+      "label": "Cash & equivalents \u2013 year 1"
+    },
+    "inventories": {
+      "r1": 80,
+      "r5": 84,
+      "label": "Inventories \u2013 year 1"
+    },
+    "total_assets": {
+      "r1": 168,
+      "r5": 172,
+      "label": "Total assets \u2013 year 1"
+    },
+    "total_liab": {
+      "r1": 173,
+      "r5": 177,
+      "label": "Total liabilities \u2013 year 1"
+    },
+    "total_equity": {
+      "r1": 178,
+      "r5": 182,
+      "label": "Total equity \u2013 year 1"
+    },
+    "dna": {
+      "r1": 55,
+      "r5": 59,
+      "label": "D&A \u2013 year 1"
+    },
+    "capex": {
+      "r1": 60,
+      "r5": 64,
+      "label": "Capex \u2013 year 1"
+    },
+    "eps": {
+      "r1": 188,
+      "r5": 192,
+      "label": "Diluted EPS ($) \u2013 year 1"
+    }
+  },
+  "wacc_build": {
+    "mkt_eq_m": 11138,
+    "lease_debt_m": 1798,
+    "funded_debt_m": 0,
+    "total_debt_m": 1798,
+    "cash_m": 1807,
+    "net_debt_m": -9,
+    "total_cap_m": 12936,
+    "equity_pct": 86.1,
+    "debt_pct": 13.9,
+    "rf": 0.048,
+    "erp": 0.06,
+    "tax": 0.3,
+    "beta_obs": 0.86,
+    "beta_unlev": 0.76,
+    "beta": 0.84,
+    "de_unlev": 0.19,
+    "de_relev": 0.16,
+    "coe": 0.0986,
+    "kd": 0.05,
+    "kd_at": 0.035,
+    "we": 0.861,
+    "wd": 0.139,
+    "wacc": 0.0898,
+    "rows": {
+      "rf": 3,
+      "erp": 4,
+      "tax": 5,
+      "mkt_eq": 10,
+      "lease_d": 11,
+      "fund_d": 13,
+      "debt_tot": 14,
+      "beta_obs": 17,
+      "beta_unlev": 22,
+      "beta": 25,
+      "de_unlev": 20,
+      "de_relev": 23,
+      "coe": 32,
+      "kd": 35,
+      "kd_at": 36,
+      "we": 39,
+      "wd": 40,
+      "wacc": 41
+    }
+  },
+  "dcf_base": {
+    "rev_growth_fy26": -0.061,
+    "rev_growth_fy27_30": 0.023,
+    "ebit_margin_clean": 0.132,
+    "ebit_margin_terminal": 0.155,
+    "tariff_refund_k": 134500,
+    "terminal_g": 0.0225,
+    "tax": 0.3,
+    "capex_pct": 0.055,
+    "da_pct": 0.045,
+    "exit_multiple": 7.358555283651634,
+    "implied_exit_multiple": 7.358555283651634,
+    "tv_pct_ev": 0.735582089818151,
+    "fy30_ebitda_m": 2284,
+    "gordon_tv_m": 16804,
+    "exit_tv_m": 16804
+  },
+  "comps_analysis": {
+    "peers": [
+      {
+        "name": "lululemon (LULU)",
+        "core": true,
+        "ev_m": 11129,
+        "ev_rev": 1.07,
+        "ev_ebitda": 4.1,
+        "ev_ebit": 5.0,
+        "pe_fwd": 10.4
+      },
+      {
+        "name": "Under Armour (UAA)",
+        "core": false,
+        "ev_m": 3208,
+        "ev_rev": 0.62,
+        "ev_ebitda": null,
+        "ev_ebit": null,
+        "pe_fwd": null
+      },
+      {
+        "name": "adidas (ADS)",
+        "core": true,
+        "ev_m": 35662,
+        "ev_rev": 1.51,
+        "ev_ebitda": 9.2,
+        "ev_ebit": 18.6,
+        "pe_fwd": 19.1
+      },
+      {
+        "name": "Nike (NKE)",
+        "core": true,
+        "ev_m": 58972,
+        "ev_rev": 1.27,
+        "ev_ebitda": 12.7,
+        "ev_ebit": 15.9,
+        "pe_fwd": 18.3
+      },
+      {
+        "name": "Deckers (DECK)",
+        "core": true,
+        "ev_m": 10556,
+        "ev_rev": 2.47,
+        "ev_ebitda": 7.9,
+        "ev_ebit": 9.8,
+        "pe_fwd": 12.1
+      },
+      {
+        "name": "Williams-Sonoma (WSM)",
+        "core": false,
+        "ev_m": 27284,
+        "ev_rev": 3.5,
+        "ev_ebitda": 15.4,
+        "ev_ebit": 18.8,
+        "pe_fwd": 15.4
+      },
+      {
+        "name": "Crocs (CROX)",
+        "core": true,
+        "ev_m": 7154,
+        "ev_rev": 1.74,
+        "ev_ebitda": 7.8,
+        "ev_ebit": 7.8,
+        "pe_fwd": 10.3
+      },
+      {
+        "name": "Levi Strauss (LEVI)",
+        "core": true,
+        "ev_m": 9423,
+        "ev_rev": 1.52,
+        "ev_ebitda": 9.6,
+        "ev_ebit": 18.1,
+        "pe_fwd": 15.0
+      },
+      {
+        "name": "Kontoor (KTB)",
+        "core": true,
+        "ev_m": 5236,
+        "ev_rev": 2.01,
+        "ev_ebitda": 12.8,
+        "ev_ebit": 15.4,
+        "pe_fwd": 18.0
+      }
+    ],
+    "core_stats": {
+      "ev_rev": {
+        "median": 1.63,
+        "low": 1.27,
+        "high": 2.47
+      },
+      "ev_ebitda": {
+        "median": 9.4,
+        "low": 7.8,
+        "high": 12.8
+      },
+      "ev_ebit": {
+        "median": 15.7,
+        "low": 7.8,
+        "high": 18.6
+      },
+      "pe_fwd": {
+        "median": 16.5,
+        "low": 10.3,
+        "high": 19.1
+      }
+    },
+    "implied": [
+      {
+        "metric": "EV / Revenue",
+        "lulu_base": 10425.0,
+        "lulu_base_label": "FY2026E revenue ($M)",
+        "peer_median": 1.63,
+        "peer_low": 1.27,
+        "peer_high": 2.47,
+        "implied_ev_m": 16993,
+        "implied_px_median": 153,
+        "implied_px_low": 119,
+        "implied_px_high": 231
+      },
+      {
+        "metric": "EV / EBITDA",
+        "lulu_base": 2707,
+        "lulu_base_label": "FY2025 EBITDA ($M, TTM anchor)",
+        "peer_median": 9.4,
+        "peer_low": 7.8,
+        "peer_high": 12.8,
+        "implied_ev_m": 25444,
+        "implied_px_median": 229,
+        "implied_px_low": 190,
+        "implied_px_high": 311
+      },
+      {
+        "metric": "EV / EBIT",
+        "lulu_base": 2211,
+        "lulu_base_label": "FY2025 EBIT ($M)",
+        "peer_median": 15.7,
+        "peer_low": 7.8,
+        "peer_high": 18.6,
+        "implied_ev_m": 34596,
+        "implied_px_median": 311,
+        "implied_px_low": 155,
+        "implied_px_high": 369
+      },
+      {
+        "metric": "P / E",
+        "lulu_base": 9.61,
+        "lulu_base_label": "FY2026E EPS ($)",
+        "peer_median": 16.5,
+        "peer_low": 10.3,
+        "peer_high": 19.1,
+        "implied_ev_m": null,
+        "implied_px_median": 158,
+        "implied_px_low": 99,
+        "implied_px_high": 183
+      }
+    ],
+    "lulu_trading": {
+      "price": 100.0,
+      "ev_rev": 1.07,
+      "ev_ebitda": 4.1,
+      "ev_ebit": 5.0,
+      "pe_fwd": 10.4,
+      "ev_m": 11129,
+      "ebitda_discount_vs_median_pct": 56
+    },
+    "source": "PitchBook Comps Set 04-Sep-2026 (EV, TTM EBITDA); revenue/EBIT from company filings; forward P/E from consensus"
+  },
+  "precedent": {
+    "deals": [
+      {
+        "target": "Sweaty Betty",
+        "year": "2021",
+        "deal_type": "Closed acquisition",
+        "acquirer": "Wolverine Worldwide (WWW)",
+        "ev_usd_m": 410,
+        "revenue_usd_m": 250,
+        "ev_sales": 1.64,
+        "ev_ebitda": 16.0,
+        "status": "Closed Aug-2021; ~16x FY21E EBITDA",
+        "source": "Wolverine IR / SEC investor deck (Aug-2021)",
+        "use": "Closed strategic comp; premium DTC activewear at scale"
+      },
+      {
+        "target": "Gymshark",
+        "year": "2020",
+        "deal_type": "Minority growth round",
+        "acquirer": "General Atlantic (21% stake)",
+        "ev_usd_m": 1300,
+        "revenue_usd_m": 258,
+        "ev_sales": 5.0,
+        "ev_ebitda": null,
+        "status": "Closed Aug-2020; $1.3bn EV (minority)",
+        "source": "Bloomberg Aug-2020; ~\u00a3258M FY20 sales cited",
+        "use": "Private growth valuation marker; UK DTC fitness apparel"
+      },
+      {
+        "target": "Vuori",
+        "year": "2021",
+        "deal_type": "Growth investment",
+        "acquirer": "SoftBank Vision Fund 2",
+        "ev_usd_m": 4000,
+        "revenue_usd_m": null,
+        "ev_sales": null,
+        "ev_ebitda": null,
+        "status": "Closed Oct-2021; $4bn post-money",
+        "source": "BusinessWire / Reuters Oct-2021",
+        "use": "Private athleisure unicorn valuation; profitable DTC since 2017"
+      },
+      {
+        "target": "Alo Yoga (Color Image)",
+        "year": "2023",
+        "deal_type": "Unclosed sale process",
+        "acquirer": "Strategic / PE (Moelis sale process)",
+        "ev_usd_m": 10000,
+        "revenue_usd_m": 2000,
+        "ev_sales": 5.0,
+        "ev_ebitda": null,
+        "status": "Unclosed; no deal per Reuters Jun-2026",
+        "source": "Reuters Oct-2023 Moelis ask; Forbes parent sales ~$2bn",
+        "use": "Private precedent only; unclosed ask; not a premium to LULU stock"
+      }
+    ],
+    "lulu_ev_sales": 1.07,
+    "lulu_price": 100.0,
+    "lulu_ev_m": 11129,
+    "note": "Private precedents inform what strategics/PE may pay for premium athleisure assets. We do not derive a control premium from an unclosed ask vs LULU's public trading multiple. Valuation anchors remain DCF and public comps (prior slide)."
+  },
+  "sotp": {
+    "segments": [
+      {
+        "segment": "Americas",
+        "fy30_rev_m": 8070,
+        "ebitda_margin_pct": 16.5,
+        "fy30_ebitda_m": 1551,
+        "ev_ebitda_lo": 6.4,
+        "ev_ebitda_hi": 7.1,
+        "ev_lo_m": 9924,
+        "ev_hi_m": 11010,
+        "multiple_note": "Mature discount vs Gordon 7.4x; near LULU trough"
+      },
+      {
+        "segment": "China Mainland",
+        "fy30_rev_m": 1805,
+        "ebitda_margin_pct": 19.5,
+        "fy30_ebitda_m": 410,
+        "ev_ebitda_lo": 7.9,
+        "ev_ebitda_hi": 9.4,
+        "ev_lo_m": 3238,
+        "ev_hi_m": 3852,
+        "multiple_note": "Growth premium vs Americas; still below NKE/adidas TTM (PitchBook comps)"
+      },
+      {
+        "segment": "Rest of World",
+        "fy30_rev_m": 1543,
+        "ebitda_margin_pct": 18.0,
+        "fy30_ebitda_m": 324,
+        "ev_ebitda_lo": 7.1,
+        "ev_ebitda_hi": 8.1,
+        "ev_lo_m": 2297,
+        "ev_hi_m": 2621,
+        "multiple_note": "Near Gordon anchor (7.4x); expansion markets between Americas and China"
+      }
+    ],
+    "total_ev_lo_m": 15459,
+    "total_ev_hi_m": 17483,
+    "cash_m": 1807,
+    "debt_m": 1798,
+    "equity_lo_m": 15468,
+    "equity_hi_m": 17492,
+    "implied_px_lo": 139,
+    "implied_px_hi": 157,
+    "consolidated_dcf_px": 134,
+    "fy30_rev_m": 11418,
+    "fy30_ebitda_m": 2284,
+    "gordon_exit_multiple": 7.36,
+    "consolidated_multiple_lo": 6.8,
+    "consolidated_multiple_hi": 7.7,
+    "ff_ev_ebitda_band": "5.0\u20138.0x",
+    "multiple_source": "Segment spreads vs Gordon-implied exit 7.4x (FCF\u2085\u00d7(1+g)/(WACC\u2212g) \u00f7 FY30 EBITDA \u2014 selected TV in DCF). 5.0\u20138.0x Comps football-field band is a separate check, not the SOTP anchor. Peer tape: PitchBook pubcomps (Comps tab)."
+  },
+  "source": "model18_wsp_formulas.xlsx \u2192 Scenarios cols G (base) & H (bull)"
+}

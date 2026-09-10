@@ -41,9 +41,9 @@ NARRATIVE_SLIDES: list[tuple[str, str, list[str], list[tuple[int, str]]]] = [
     ),
     (
         "Investment Thesis Summary and Target Price",
-        "Base DCF $133.64; 12-month target $140 on modest multiple re-rating",
+        "Base DCF $133.52; 12-month target $140 on modest multiple re-rating",
         [
-            "Base-case DCF: $133.64/sh (+33.6% vs. ~$100 spot); 12-mo target $140.00.",
+            "Base-case DCF: $133.52/sh (+33.5% vs. ~$100 spot); 12-mo target $140.00.",
             "FY26–FY30 avg EBIT margin ~14.4%; path from 13.2% clean margin to 15.5% by FY30.",
             "Lease-adjusted WACC 9.0%; revenue CAGR 2.3% in base case.",
             "FY25 China segment +29% y/y vs. flat Americas; model offsets US softness via China comps/openings.",
@@ -115,9 +115,9 @@ NARRATIVE_SLIDES: list[tuple[str, str, list[str], list[tuple[int, str]]]] = [
         "Investment Thesis I",
         "Share price dislocation vs. normalized cash generation",
         [
-            "2026 drawdown >50% from 52-wk high; spot ~$100 vs. base intrinsic ~$134.",
+            "2026 drawdown >50% from 52-wk high; spot ~$100 vs. base intrinsic ~$133.52.",
             "DTC mix supports ~54.9% adjusted gross margin in base case.",
-            "2.25% terminal growth still implies >30% upside to $133.64 base value.",
+            "2.25% terminal growth still implies >30% upside to $133.52 base value.",
         ],
         [
             (1, "Everything Money — 2026 price dislocation (context)"),
@@ -131,7 +131,7 @@ NARRATIVE_SLIDES: list[tuple[str, str, list[str], list[tuple[int, str]]]] = [
         [
             "Peak EBIT margin 23.7% (FY24 10-K); not required for base case.",
             "Base case floors at 13.2% clean EBIT; brand retention supports trough margin.",
-            "15.5% FY30 EBIT margin → $133.64/sh in base DCF.",
+            "15.5% FY30 EBIT margin → $133.52/sh in base DCF.",
             "Full reversion to COVID-era peak margins not in base case.",
         ],
         [
@@ -161,7 +161,7 @@ NARRATIVE_SLIDES: list[tuple[str, str, list[str], list[tuple[int, str]]]] = [
         [
             "Bear-case DCF floor ~$56/sh; cumulative cash ~$45.64/sh (~45% of entry).",
             "CapEx fades 7.0% → 5.5% of revenue; 23.6% e-commerce EBIT supports FCF if China comps soften.",
-            "$750M/yr repurchases → ~32.9M shares retired; base EPS ~$14.57 by FY30 schedule.",
+            "$750M/yr repurchases → ~32.9M shares retired; base EPS ~$14.58 by FY30 schedule.",
         ],
         [
             (1, f"{MODEL}, Scenarios bear case; Barron's — guide context"),
@@ -184,7 +184,7 @@ TIMELINE_EVENTS: list[tuple[str, str]] = [
     ),
     (
         "2027 (FY2027 Margin Inflection)",
-        "EBIT margin ~13.8% (+60 bps); $750M buybacks → EPS ~$10.09 (base schedule).",
+        "EBIT margin ~13.8% (+60 bps); $750M buybacks → EPS ~$10.10 (base schedule).",
     ),
     (
         "2028 (FY2027–FY2028 Multiple Re-Rating)",
