@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-"""Fix DCF terminal-value reconciliation block — stale E-col refs and mangled rows.
+"""Fix DCF terminal-value reconciliation block — point at column B outputs (not empty D refs).
 
-After the growth-driver insert and Notes column delete, the Gordon vs exit-multiple
-reconciliation block (rows 90–95) must point at column D outputs:
-  D46 = Gordon TV, D47 = Gordon implied exit, D57 = Gordon implied price
-  D82/D83/D87 = exit-method multiple, TV, and price
+Rows 90–95 compare Gordon growth vs exit-multiple method. Outputs live in column B
+after the Notes-column delete (B46 TV, B47 multiple, B57/B87 share prices, B84 exit TV).
 
 Run:  cd LULU && python3 scripts/fix_dcf_tv_reconciliation.py
 """
@@ -20,31 +18,32 @@ TARGET = ROOT / "unbeiesgbar_final.xlsx"
 
 # Row 89 = section title (col A only). Headers + data rows 90–95.
 FIXES: dict[str, str | None] = {
+    "B82": None,
     "A90": None,
     "B90": "Gordon Growth",
     "C90": "Exit Multiple",
     "D90": "Variance",
     "A91": "Terminal value ($)",
-    "B91": "=D46",
-    "C91": "=D83",
+    "B91": "=B46",
+    "C91": "=B84",
     "D91": "=B91-C91",
     "A92": "Exit EV/EBITDA (implied vs selected)",
-    "B92": "=D47",
-    "C92": "=D82",
+    "B92": "=B47",
+    "C92": "=B83",
     "D92": "=B92-C92",
     "A93": "Terminal value variance (%)",
     "B93": None,
     "C93": None,
     "D93": "=(B91-C91)/B91",
     "A94": "Implied share price",
-    "B94": "=D57",
-    "C94": "=D87",
+    "B94": "=B57",
+    "C94": "=B87",
     "D94": "=B94-C94",
     "A95": "Sanity check: multiples within ±1.5 turns?",
     "B95": '=IF(ABS(D92)<=1.5,"PASS","REVIEW")',
     "C95": '=TEXT(D92,"0.0")&"x spread vs Gordon-implied exit"',
     "D95": "Selected exit is the Gordon identity, so spread should be 0",
-    # Exit-method per-share should use enterprise value row, not PV of TV
+    "B84": "=B45*B83",
     "B87": "=(B86+B51+B52)/B56",
 }
 
@@ -73,12 +72,13 @@ def verify(path: Path = TARGET) -> None:
     issues: list[str] = []
 
     for coord, expected in [
-        ("B91", "=D46"),
-        ("C91", "=D83"),
+        ("B91", "=B46"),
+        ("C91", "=B84"),
         ("D91", "=B91-C91"),
-        ("B94", "=D57"),
-        ("C94", "=D87"),
+        ("B94", "=B57"),
+        ("C94", "=B87"),
         ("B87", "=(B86+B51+B52)/B56"),
+        ("B84", "=B45*B83"),
     ]:
         if ws[coord].value != expected:
             issues.append(f"{coord} expected {expected!r}, got {ws[coord].value!r}")
@@ -88,7 +88,7 @@ def verify(path: Path = TARGET) -> None:
 
     if issues:
         raise AssertionError("Verify failed:\n" + "\n".join(issues))
-    print("Verify OK: TV reconciliation refs point to column D")
+    print("Verify OK: TV reconciliation refs point to column B")
 
 
 if __name__ == "__main__":

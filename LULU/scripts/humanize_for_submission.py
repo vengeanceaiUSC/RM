@@ -284,6 +284,9 @@ def humanize(path: Path = TARGET) -> dict:
     from fix_dcf_tv_reconciliation import fix as fix_tv_recon
 
     stats["tv_recon"] = fix_tv_recon(path=tmp)
+    from fix_financial_number_formats import fix as fix_numfmt
+
+    stats["numfmt"] = fix_numfmt(path=tmp)
     stats["metadata"] = fix_meta(path=tmp)
 
     tmp.replace(path)
