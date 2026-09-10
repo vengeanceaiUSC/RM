@@ -35,6 +35,21 @@ TARGETS = [
 FY25_REV = 11102600
 
 
+# Naive DCF!$E$5 → $B$198 replace corrupted DCF!$E$50/51/55 into $B$1980/81/85.
+_CORRUPT_RE = re.compile(r"\$B\$198([0-9])")
+_CORRUPT_MAP = {"0": "DCF!$E$50", "1": "DCF!$E$51", "5": "DCF!$E$55"}
+
+IMPLIED_PX = {
+    "F": "=(F131+DCF!$E$50+DCF!$E$51)/DCF!$E$55",
+    "G": "=(G131+DCF!$E$50+DCF!$E$51)/DCF!$E$55",
+    "H": "=(H131+DCF!$E$50+DCF!$E$51)/DCF!$E$55",
+}
+
+
+def _repair_corrupt_dcf_refs(formula: str) -> str:
+    return _CORRUPT_RE.sub(lambda m: _CORRUPT_MAP[m.group(1)], formula)
+
+
 def fix_scenarios_div(wb) -> int:
     if "Scenarios" not in wb.sheetnames:
         return 0
@@ -42,6 +57,20 @@ def fix_scenarios_div(wb) -> int:
     ws["A198"] = "FY25 net revenue ($000)"
     ws["B198"] = FY25_REV
     n = 0
+
+    for col, formula in IMPLIED_PX.items():
+        cell = ws[f"{col}132"]
+        if cell.value != formula:
+            cell.value = formula
+            n += 1
+
+    for col in ("F", "G", "H"):
+        cell = ws[f"{col}163"]
+        want = f"=DCF!$E$50+{col}153+{col}158"
+        if cell.value != want:
+            cell.value = want
+            n += 1
+
     for row in ws.iter_rows():
         for cell in row:
             val = cell.value
@@ -49,7 +78,9 @@ def fix_scenarios_div(wb) -> int:
                 continue
             new = val
             new = new.replace("Scenarios!$B$", "$B$")
-            new = new.replace("DCF!$E$5", "$B$198")
+            # Only replace exact DCF!$E$5 (revenue), not $E$50/$E$51/$E$55.
+            new = re.sub(r"DCF!\$E\$5(?!\d)", "$B$198", new)
+            new = _repair_corrupt_dcf_refs(new)
             if new != val:
                 cell.value = new
                 n += 1
