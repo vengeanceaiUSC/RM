@@ -52,7 +52,6 @@ write(cov, 'B11', "Black font  =  calculations / formulas", S.BLACK, bold=True, 
 write(cov, 'B12', "Red font  =  analyst assumptions — cols B/C/D on every tab: Justification | Source | Ctrl+F", S.RED, bold=True, size=11)
 write(cov, 'B14', "TABS", S.DARK, bold=True, size=12)
 write(cov, 'B15', "WACC  \u2022  Revenue Drivers  \u2022  NOPAT Bridge  \u2022  Scenarios  \u2022  DCF  \u2022  Comps / Football Field", S.BLACK, size=10)
-write(cov, 'B17', "SOURCES", S.DARK, bold=True, size=12)
 write_link(cov, 'B20', "SEC EDGAR filings, CIK 0001397187 (Form 10-K, FY2025)", D.SOURCES["edgar_xbrl"],
            color=S.BLUE, size=10, hint=D.COVER_HINTS["edgar_xbrl"])
 write_link(cov, 'B21', "FY2025 Form 10-K (ended Feb 1, 2026)", D.filing_url("FY2025"),
