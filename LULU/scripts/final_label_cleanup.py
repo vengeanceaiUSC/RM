@@ -16,8 +16,14 @@ ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "unbeiesgbar_final.xlsx"
 
 LABEL_SUBS = [
+    (re.compile(r"NOPAT NORMALIZATION PIPELINE.*", re.I), "EBIT to NOPAT walk"),
     (re.compile(r"Reported EBIT\s*(?:[→\-]|to)\s*Normalized NOPAT\s*\(5-phase pipeline\)", re.I),
      "NOPAT bridge"),
+    (re.compile(r"Phases 1[–-]4 clean and forecast.*", re.I), None),
+    (re.compile(r"Phase \d:\s*", re.I), ""),
+    (re.compile(r"Phase \d —.*", re.I), None),
+    (re.compile(r"Guardrail:.*", re.I), None),
+    (re.compile(r".*Firecrawl.*", re.I), None),
     (re.compile(r"Channel-mix EBIT output \(Phase 3\)", re.I), "Channel EBIT total"),
     (re.compile(r"Phase 1\s*[—\-]\s*Operating normalization", re.I), "Reported EBIT adjustments"),
     (re.compile(r"Phase 2\s*[—\-].*", re.I), "Lease & R&D adjustments"),
@@ -49,7 +55,11 @@ COVER_CLEAR = {
 
 URL_RE = re.compile(r"https?://", re.I)
 
-COMPS_CLEAR_PREFIXES = ("•", "That tape is a check", "Alo Yoga", "Memo:")
+COMPS_CLEAR_PREFIXES = (
+    "•", "That tape is a check", "Alo Yoga", "ALO YOGA", "Memo:",
+    "PitchBook pubcomps", "Note: pubcomps", "No Ctrl+F for EV",
+    "No public HTML",
+)
 
 SOURCE_FALLBACKS: dict[tuple[str, str], tuple[str, str | None]] = {
     ("Scenarios", "Fixed buyback"): ("Pitch deck: $750M/yr buyback", None),

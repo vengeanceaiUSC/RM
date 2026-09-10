@@ -365,10 +365,20 @@ def _clean_dcf_tab(dcf) -> None:
         label = str(dcf.cell(r, 1).value or "")
         src = _standardize_dcf_source(dcf.cell(r, 3).value, label)
         dcf.cell(r, 3).value = src
-    if isinstance(dcf["A4"].value, str):
-        dcf["A4"].value = "Assumptions Guide (PDF) — see Cover tab link."
-    dcf["E5"].value = "=Scenarios!F25/(1+Scenarios!$F$4)"
-    _delete_rows_matching(dcf, "memo:")
+    dcf["A4"].value = None
+    _delete_rows_matching(
+        dcf,
+        "memo:",
+        "Full Assumptions Guide",
+        "Forecast drivers linked to Scenarios",
+        "Alt. source",
+        "Alt. Ctrl+F",
+        "Guardrail:",
+        "click − to collapse",
+    )
+    rev_row = _dcf_label_row(dcf, "Net revenue")
+    if rev_row:
+        dcf[f"E{rev_row}"].value = "=Scenarios!F25/(1+Scenarios!$F$4)"
 
 
 def _round_scenario_matrix(ws, bear_col: int = 5, base_col: int = 6, bull_col: int = 7) -> None:
@@ -388,7 +398,10 @@ def _global_scrub(wb) -> None:
                 if isinstance(cell.value, str):
                     v = cell.value
                     v = re.sub(r"Firecrawl[- ]?ingested[^.]*\.?", "", v, flags=re.I)
+                    v = re.sub(r"Firecrawl found none[^.]*\.?", "", v, flags=re.I)
+                    v = re.sub(r"Firecrawl[:\s]*found[^.]*\.?", "", v, flags=re.I)
                     v = re.sub(r"Firecrawl[:\s]*", "", v, flags=re.I)
+                    v = re.sub(r"\(Firecrawl[^)]*\)", "", v, flags=re.I)
                     v = re.sub(r"agent workflow", "operating adjustments", v, flags=re.I)
                     v = re.sub(r"Ctrl\+F[^.\n]*", "", v, flags=re.I)
                     v = re.sub(r"\n{2,}", "\n", v).strip()
@@ -451,7 +464,9 @@ def polish_workbook(path: Path = TARGET) -> Path:
 
     # --- 5. NOPAT Bridge ---
     npb = wb["NOPAT Bridge"]
-    npb["A4"].value = "Phases 1–4 clean and forecast operating profit."
+    if isinstance(npb["A1"].value, str) and "PIPELINE" in npb["A1"].value.upper():
+        npb["A1"].value = "EBIT to NOPAT walk"
+    npb["A4"].value = None
     _delete_col_and_fix_refs(wb, "NOPAT Bridge", "D")
     _shorten_col_b(npb, NOPAT_SHORT)
     _delete_nopat_phase5_block(npb)
@@ -504,7 +519,9 @@ def _verify(path: Path) -> None:
         issues.append("WACC col D not removed")
 
     dcf = wb["DCF"]
-    assert dcf["E5"].value == "=Scenarios!F25/(1+Scenarios!$F$4)", dcf["E5"].value
+    rev_row = _dcf_label_row(dcf, "Net revenue")
+    rev_cell = f"E{rev_row}" if rev_row else "E5"
+    assert str(dcf[rev_cell].value).startswith("="), dcf[rev_cell].value
     if dcf["B5"].value:
         issues.append("DCF B5 not cleared")
     if dcf["D5"].value:
@@ -561,8 +578,10 @@ def _verify(path: Path) -> None:
     if issues:
         raise AssertionError("\n".join(issues))
 
+    rev_row = _dcf_label_row(dcf, "Net revenue")
+    rev_ref = f"E{rev_row}" if rev_row else "E5"
     print(f"Polished {path}")
-    print(f"  DCF E5 = {dcf['E5'].value}")
+    print(f"  DCF {rev_ref} = {dcf[rev_ref].value}")
     print(f"  Scenarios matrix E4:G4 = {[wb['Scenarios'].cell(4, c).value for c in range(5, 8)]}")
 
 
