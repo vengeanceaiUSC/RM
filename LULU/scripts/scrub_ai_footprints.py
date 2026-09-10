@@ -18,6 +18,7 @@ STEPS = [
     "backfill_source_comments.py",
     "fix_decimal_display.py",
     "fix_human_analyst_structure.py",
+    "fix_dcf_valuation_refs.py",
     "trim_model_labels.py",
     "fix_file_metadata.py",
     "strip_programmatic_colors.py",
