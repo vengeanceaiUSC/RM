@@ -48,6 +48,15 @@ NOTE_REPLACEMENTS: dict[str, str] = {
     "No page prints Alo or Color Image EBITDA..": (
         "Alo Yoga excluded from comp set; no reliable EBITDA on pages."
     ),
+    "βu = 0.86 ÷ [1 + 0.70 ×.": (
+        "Hamada unlever beta using Yahoo market D/E and tax rate."
+    ),
+    "Yahoo Market Cap = $11.14B on the same.": (
+        "Yahoo market cap from same page as beta and debt."
+    ),
+    "Unlever D/E = Yahoo debt (mrq) ÷ Yahoo.": (
+        "Yahoo total debt divided by Yahoo market cap ratio."
+    ),
 }
 
 NOTE_COLS: dict[str, int] = {

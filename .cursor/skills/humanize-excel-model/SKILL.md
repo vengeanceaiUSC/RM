@@ -32,6 +32,10 @@ python3 scripts/remove_comment_artifacts.py    # red triangles + tall rows only
 python3 scripts/fix_notes_commentary.py        # Notes match model values (8–15 words)
 python3 scripts/fix_truncated_notes.py         # complete vs. minus. as. endings
 python3 scripts/clear_formula_sources.py       # blank Source on internal formula rows
+python3 scripts/fix_dcf_tv_reconciliation.py   # DCF Gordon vs Exit recon column refs
+python3 scripts/fix_nopat_label_formulas.py     # NOPAT labels (fixes Excel repair error)
+python3 scripts/remove_spot_check.py           # clear Scenarios col I artifact
+python3 scripts/fix_formula_references.py      # link FY25 rev in formulas (same values)
 python3 scripts/humanize_workbook_authentic.py # metadata/colors/numfmt — NO value rounding
 python3 scripts/scrub_hover_comments.py        # shorten AI hover comment boilerplate
 python3 scripts/add_analyst_touch.py           # Scratch tab, yellow highlights (optional)
@@ -85,6 +89,8 @@ Base-case locked assumptions (rows 4–22): `Scenarios!$F$…`
 | Notes that cite wrong % vs model cell | `fix_notes_commentary.py` |
 | AI phrasing in Notes | hand-edit; keep Source link |
 | Robotic 15-decimal **display** in grid | `humanize_workbook_authentic.py` numfmt (`0.0`, `0.0%`) |
+| Truncated Notes (`vs.`, `minus.`, `..`) | `fix_truncated_notes.py` |
+| Robotic Source on formula rows | `clear_formula_sources.py` |
 | AI hover comment boilerplate | `scrub_hover_comments.py` |
 | Too-clean template feel | `add_analyst_touch.py` (Scratch tab, yellow highlights) |
 

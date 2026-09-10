@@ -61,15 +61,8 @@ def add_touch(path: Path = TARGET) -> dict[str, int]:
         cell.fill = YELLOW
         stats["highlights"] += 1
 
-    # Side working column on Scenarios (does not feed the model)
-    scn = wb["Scenarios"]
-    if scn["I4"].value is None:
-        scn["I3"] = "spot check"
-        scn["I3"].font = Font(name=FONT_NAME, size=9, italic=True, color="808080")
-        scn["I4"] = "=F25*F4"
-        scn["I4"].font = Font(name=FONT_NAME, size=9, color="808080")
-        scn.column_dimensions["I"].width = 11
-        stats["side_calc"] = 1
+    # Side working column on Scenarios — removed (looked like AI spot-check artifact)
+    # Scratch tab retains sanity checks instead.
 
     wb.save(tmp)
     tmp.replace(path)
