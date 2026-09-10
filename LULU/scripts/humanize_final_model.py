@@ -37,7 +37,9 @@ AI_PHRASES = [
     r"col g\) links",
     r"not a peer pick",
     r"not the exit",
-    r"not a peer average",
+    r"sanity check",
+    r"pitch deck reads",
+    r"live excel average",
 ]
 AI_SCRUB = re.compile("|".join(AI_PHRASES), re.I)
 CONVERSATIONAL = re.compile(
@@ -92,6 +94,21 @@ def _strip_conversational_notes(wb) -> int:
         n += 1
     if comps["A47"].value and "Rationale for selected exit" in str(comps["A47"].value):
         comps["A47"].value = "Selected exit multiple (Gordon growth)"
+        n += 1
+    if comps["A38"].value and "live Excel AVERAGE" in str(comps["A38"].value):
+        comps["A38"].value = "Averages"
+        n += 1
+    if comps["A31"].value and "ALO YOGA BUILD" in str(comps["A31"].value):
+        comps["A31"].value = "Alo Yoga implied valuation (reference only)"
+        n += 1
+
+    if dcf["A94"].value and "Sanity check" in str(dcf["A94"].value):
+        _clear_cell(dcf["A94"])
+        n += 1
+
+    scn = wb["Scenarios"]
+    if scn["A193"].value and "pitch deck" in str(scn["A193"].value).lower():
+        _clear_cell(scn["A193"])
         n += 1
 
     dcf_renames = {
@@ -235,7 +252,11 @@ def verify(path: Path = TARGET) -> None:
         ("DCF", "A4", None),
         ("Scenarios", "A135", None),
         ("Comps", "A17", None),
+        ("Comps", "A31", "Alo Yoga implied valuation (reference only)"),
+        ("Comps", "A38", "Averages"),
         ("Comps", "A63", None),
+        ("DCF", "A94", None),
+        ("Scenarios", "A193", None),
         ("WACC", "B8", SHARE_PRICE),
     ]
     for sheet, coord, expected in checks:
