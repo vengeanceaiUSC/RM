@@ -250,7 +250,7 @@ for col_i, entries in enumerate((_DECK_TOC[:_toc_split], _DECK_TOC[_toc_split:])
         s,
         [[str(num), title] for num, title in entries],
         ["#", "Slide"],
-        col0w=0.58,
+        col0w=0.72,
         top=_toc_tbl_top,
         height=_toc_tbl_h,
         left=0.5 + col_i * 6.3,
