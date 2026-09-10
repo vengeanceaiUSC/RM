@@ -258,7 +258,11 @@ def main() -> None:
     prs.save(str(OUT))
 
     from fix_file_metadata import fix as fix_meta
+    from fix_pitch_gis_compliance import main as fix_gis_layout
+
+    fix_gis_layout()
     fix_meta(OUT)
+    fix_meta(ROOT / "model18_wsp_formulas.xlsx")
 
     print(f"Updated numbers + sources → {OUT}")
     print(f"  Base ${px} (+{upside}%) | Bear ${bear_px} | Bull ${bull_px}")

@@ -49,12 +49,33 @@ def _footer_shapes(slide):
     ]
 
 
+def _run_color(run) -> object:
+    try:
+        return run.font.color.rgb
+    except AttributeError:
+        return INK
+
+
+def _shrink_table_font(table, size: float = 8.0) -> None:
+    for row in table.rows:
+        for cell in row.cells:
+            for p in cell.text_frame.paragraphs:
+                for r in p.runs:
+                    if not r.text.strip():
+                        continue
+                    _set_font(
+                        r, size, _run_color(r),
+                        bold=bool(r.font.bold),
+                        italic=bool(r.font.italic),
+                    )
+
+
 def _fix_financial_slides(prs: Presentation) -> None:
     """Slides 14–16: gap between data table and source table."""
-    main_h = Inches(1.90)
+    main_h = Inches(1.82)
     main_top = Inches(3.72)
-    src_top = Inches(5.74)
-    src_h = Inches(1.12)
+    src_top = Inches(5.72)
+    src_h = Inches(0.90)
 
     for si in (14, 15, 16):
         slide = prs.slides[si - 1]
@@ -67,10 +88,8 @@ def _fix_financial_slides(prs: Presentation) -> None:
                 elif h0 == "Line item":
                     shape.top = int(src_top)
                     shape.height = int(src_h)
-                    n = len(shape.table.rows)
-                    rh = int(src_h / n)
-                    for row in shape.table.rows:
-                        row.height = rh
+                    _compact_table_rows(shape.table, 0.90)
+                    _shrink_table_font(shape.table, 8.0)
             if shape.has_text_frame and shape.top >= FOOTER_Y - 1000:
                 t = shape.text_frame.text
                 if t and not t.strip().isdigit():
@@ -133,47 +152,33 @@ def _fix_slide20(prs: Presentation) -> None:
                 while len(shape.text_frame.paragraphs) > len(paras):
                     shape.text_frame._txBody.remove(shape.text_frame.paragraphs[-1]._p)
             if "SENSITIVITY" in t:
-                shape.top = int(Inches(5.48))
+                shape.top = int(Inches(5.42))
                 shape.left = int(Inches(0.50))
                 shape.width = int(Inches(12.35))
-                shape.height = int(Inches(0.20))
+                shape.height = int(Inches(0.18))
             if t.startswith("TV = 73%"):
-                shape.top = int(Inches(4.74))
+                shape.top = int(Inches(4.82))
                 shape.left = int(Inches(6.85))
                 shape.width = int(Inches(6.00))
-                shape.height = int(Inches(0.68))
+                shape.height = int(Inches(0.52))
+                _shrink_text_frame(shape.text_frame, 7.5)
         if shape.has_table:
             h0 = shape.table.rows[0].cells[0].text.strip()
             if h0 == "Method":
                 shape.top = int(Inches(4.02))
                 shape.left = int(Inches(6.85))
                 shape.width = int(Inches(6.00))
-                shape.height = int(Inches(0.54))
-                _compact_table_rows(shape.table, 0.54)
-                for row in shape.table.rows:
-                    for cell in row.cells:
-                        for p in cell.text_frame.paragraphs:
-                            for r in p.runs:
-                                _set_font(
-                                    r, 8,
-                                    r.font.color.rgb if r.font.color and r.font.color.rgb else INK,
-                                    bold=bool(r.font.bold),
-                                )
+                shape.height = int(Inches(0.46))
+                _compact_table_rows(shape.table, 0.46)
+                _shrink_table_font(shape.table, 7.5)
             if h0 == "WACC vs g":
-                shape.top = int(Inches(5.70))
+                grid_h = 0.50
+                shape.top = int(Inches(5.62))
                 shape.left = int(Inches(0.50))
                 shape.width = int(Inches(12.35))
-                shape.height = int(Inches(0.52))
-                _compact_table_rows(shape.table, 0.52)
-                for row in shape.table.rows:
-                    for cell in row.cells:
-                        for p in cell.text_frame.paragraphs:
-                            for r in p.runs:
-                                _set_font(
-                                    r, 8,
-                                    r.font.color.rgb if r.font.color and r.font.color.rgb else INK,
-                                    bold=bool(r.font.bold),
-                                )
+                shape.height = int(Inches(grid_h))
+                _compact_table_rows(shape.table, grid_h)
+                _shrink_table_font(shape.table, 7.5)
     for shape in _footer_shapes(slide):
         if not shape.text_frame.text.strip().isdigit():
             _set_footer(
@@ -188,8 +193,7 @@ def _shrink_text_frame(tf, size: float = 8.5) -> None:
             if not r.text.strip():
                 continue
             _set_font(
-                r, size,
-                r.font.color.rgb if r.font.color and r.font.color.rgb else INK,
+                r, size, _run_color(r),
                 bold=bool(r.font.bold),
                 italic=bool(r.font.italic),
             )
@@ -208,13 +212,13 @@ def _fix_slide22(prs: Presentation) -> None:
         if shape.has_text_frame:
             t = shape.text_frame.text
             if "Private precedent framework" in t:
-                shape.top = int(Inches(3.52))
+                shape.top = int(Inches(3.72))
                 shape.left = int(Inches(0.50))
                 shape.width = int(Inches(7.55))
                 shape.height = int(Inches(2.35))
                 _shrink_text_frame(shape.text_frame, 8.5)
             if t.strip().startswith("Valuation anchors"):
-                shape.top = int(Inches(3.52))
+                shape.top = int(Inches(3.72))
                 shape.left = int(Inches(8.30))
                 shape.width = int(Inches(4.55))
                 shape.height = int(Inches(2.35))
