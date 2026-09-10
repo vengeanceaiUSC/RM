@@ -84,11 +84,11 @@ def _fix_navy_header_row(table, size: float = 9.0) -> None:
 
 
 def _fix_financial_slides(prs: Presentation) -> None:
-    """Slides 14–16: gap between data table and source table."""
-    main_h = Inches(1.82)
+    """Slides 14–16: restore reference table heights and source-map spacing."""
+    main_h = Inches(1.98)
     main_top = Inches(3.72)
-    src_top = Inches(5.72)
-    src_h = Inches(0.90)
+    src_top = Inches(5.74)
+    src_h = Inches(0.95)
 
     for si in (14, 15, 16):
         slide = prs.slides[si - 1]
@@ -98,11 +98,12 @@ def _fix_financial_slides(prs: Presentation) -> None:
                 if h0 == "US$ M":
                     shape.height = int(main_h)
                     shape.top = int(main_top)
+                    _compact_table_rows(shape.table, 1.98)
                 elif h0 == "Line item":
                     shape.top = int(src_top)
                     shape.height = int(src_h)
-                    _compact_table_rows(shape.table, 0.90)
-                    _shrink_table_font(shape.table, 8.0)
+                    _compact_table_rows(shape.table, 0.95)
+                    _shrink_table_font(shape.table, 7.0)
             if shape.has_text_frame and shape.top >= FOOTER_Y - 1000:
                 t = shape.text_frame.text
                 if t and not t.strip().isdigit():
@@ -119,22 +120,31 @@ def _compact_table_rows(table, total_h_in: float) -> None:
 
 def _fix_slide17(prs: Presentation) -> None:
     slide = prs.slides[16]
-    # Keep MODEL SOURCE MAP — shrink tables so they fit (never delete)
+    # Restore MODEL SOURCE MAP tables to reference geometry (never delete)
     for shape in slide.shapes:
         if not shape.has_table:
             continue
         h0 = shape.table.rows[0].cells[0].text.strip()
-        if h0 in ("Cap stack line item", "WACC input"):
-            shape.width = int(Inches(6.0))
-            shape.height = int(Inches(1.05))
-            _compact_table_rows(shape.table, 1.05)
+        if h0 == "Cap stack line item":
+            shape.left = int(Inches(0.50))
+            shape.top = int(Inches(5.26))
+            shape.width = int(Inches(6.05))
+            shape.height = int(Inches(0.72))
+            _compact_table_rows(shape.table, 0.72)
+            _shrink_table_font(shape.table, 7.0)
+        elif h0 == "WACC input":
+            shape.left = int(Inches(6.78))
+            shape.top = int(Inches(5.26))
+            shape.width = int(Inches(5.98))
+            shape.height = int(Inches(1.08))
+            _compact_table_rows(shape.table, 1.08)
             _shrink_table_font(shape.table, 7.0)
     for shape in slide.shapes:
         if shape.has_table and shape.table.rows[0].cells[0].text.strip() == "Component":
-            # EV bridge table — cap height so note below clears
+            # EV bridge table — reference height
             if shape.top > Inches(2.5):
-                shape.height = int(Inches(0.72))
-                _compact_table_rows(shape.table, 0.72)
+                shape.height = int(Inches(0.78))
+                _compact_table_rows(shape.table, 0.78)
         if shape.has_text_frame and shape.text_frame.text.startswith("No funded bank debt"):
             shape.top = int(Inches(4.22))
             shape.height = int(Inches(0.48))
@@ -154,33 +164,33 @@ def _fix_slide20(prs: Presentation) -> None:
                     for r in p.runs:
                         r.text = r.text.replace("SCENARIOS COL G", "SCENARIOS COL C")
             if t.strip().startswith("TERMINAL VALUE"):
-                shape.top = int(Inches(4.28))
-                shape.height = int(Inches(0.22))
+                shape.top = int(Inches(4.32))
+                shape.height = int(Inches(0.25))
             if "SENSITIVITY" in t and "Base-case" in t:
                 # Strip duplicate base-case line added by prior runs
                 paras = [p for p in shape.text_frame.paragraphs if "Base-case" not in p.text]
                 while len(shape.text_frame.paragraphs) > len(paras):
                     shape.text_frame._txBody.remove(shape.text_frame.paragraphs[-1]._p)
-            if "SENSITIVITY" in t:
-                shape.top = int(Inches(5.42))
+            if "SENSITIVITY" in t and "IMPLIED" in t:
+                shape.top = int(Inches(5.58))
                 shape.left = int(Inches(0.50))
                 shape.width = int(Inches(12.35))
-                shape.height = int(Inches(0.18))
+                shape.height = int(Inches(0.20))
             if t.startswith("TV = 73%"):
-                shape.top = int(Inches(4.82))
+                shape.top = int(Inches(4.05))
                 shape.left = int(Inches(6.85))
                 shape.width = int(Inches(6.00))
-                shape.height = int(Inches(0.52))
-                _shrink_text_frame(shape.text_frame, 7.5)
+                shape.height = int(Inches(1.25))
+                _shrink_text_frame(shape.text_frame, 8.0)
         if shape.has_table:
             h0 = shape.table.rows[0].cells[0].text.strip()
             if h0 == "Method":
-                shape.top = int(Inches(4.02))
-                shape.left = int(Inches(6.85))
-                shape.width = int(Inches(6.00))
-                shape.height = int(Inches(0.46))
-                _compact_table_rows(shape.table, 0.46)
-                _shrink_table_font(shape.table, 7.5)
+                shape.top = int(Inches(4.58))
+                shape.left = int(Inches(0.50))
+                shape.width = int(Inches(6.15))
+                shape.height = int(Inches(0.92))
+                _compact_table_rows(shape.table, 0.92)
+                _shrink_table_font(shape.table, 8.0)
             if h0 == "WACC vs g":
                 shape.top = int(Inches(5.80))
                 shape.left = int(Inches(0.50))
@@ -214,8 +224,8 @@ def _fix_slide22(prs: Presentation) -> None:
     for shape in slide.shapes:
         if shape.has_table and shape.table.rows[0].cells[0].text.strip() == "Target":
             shape.top = int(Inches(1.28))
-            shape.height = int(Inches(1.68))
-            _compact_table_rows(shape.table, 1.68)
+            shape.height = int(Inches(2.15))
+            _compact_table_rows(shape.table, 2.15)
             for row in shape.table.rows:
                 for cell in row.cells:
                     _shrink_text_frame(cell.text_frame, 8.5)
