@@ -132,7 +132,7 @@ def fix_dcf_native(wb) -> int:
     r_cogs = _row(dcf, "cogs") or 8
     r_em = _row(dcf, "ebit margin") or 9
     r_tar = _row(dcf, "tariff") or 10
-    r_ebit = _row(dcf, "ebit") or 11
+    r_ebit = _row(dcf, exact="EBIT") or 11
     r_ebit_m = _row(dcf, "reported ebit margin") or 12
     r_tax = _row(dcf, "less: taxes") or 13
     r_nopat = _row(dcf, "nopat") or 14
