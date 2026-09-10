@@ -34,10 +34,6 @@ TARGET_PRICE = "$140"
 UPSIDE = "+39% Upside"
 DATE_LINE = "September 2026"
 DIVISION = "Investment Research Division"
-DISCLAIMER = (
-    "Content slides can be added / removed depending on the "
-    "investment opportunity (PM discretion)."
-)
 
 
 def cover_offset(prs: Presentation) -> int:
@@ -144,16 +140,12 @@ def _build_cover_slide(slide, prs: Presentation) -> None:
     p4.space_before = Pt(4)
     _add_run(p4, f"Price Target: {TARGET_PRICE} ({UPSIDE})", 17, WHITE)
 
-    # Bottom-left division + disclaimer
-    lb = slide.shapes.add_textbox(Inches(0.55), Inches(6.35), Inches(8.5), Inches(0.95))
+    # Bottom-left division
+    lb = slide.shapes.add_textbox(Inches(0.55), Inches(6.72), Inches(5.5), Inches(0.35))
     ltf = lb.text_frame
     ltf.clear()
-    ltf.word_wrap = True
     lp1 = ltf.paragraphs[0]
     _add_run(lp1, DIVISION, 12, WHITE, bold=True)
-    lp2 = ltf.add_paragraph()
-    lp2.space_before = Pt(4)
-    _add_run(lp2, DISCLAIMER, 9.5, WHITE, italic=True)
 
     # Bottom-right date
     rb = slide.shapes.add_textbox(Inches(10.2), Inches(6.72), Inches(2.6), Inches(0.35))

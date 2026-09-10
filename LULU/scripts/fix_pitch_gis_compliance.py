@@ -451,8 +451,10 @@ def _rebuild_toc(slide, entries: list[tuple[str, str]] | None = None) -> None:
 
 def main() -> None:
     from add_gis_cover_slide import add_cover
+    from scrub_deck_nopat import scrub as scrub_nopat
 
     add_cover(DECK)
+    scrub_nopat(DECK)
     prs = Presentation(str(DECK))
     toc_entries = None
     from fix_pitch_gis_formatting import _read_toc_entries
