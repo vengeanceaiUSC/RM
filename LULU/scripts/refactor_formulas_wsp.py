@@ -123,15 +123,14 @@ def refactor_sensitivity(dcf, changes: list[dict]) -> None:
         wacc_cell = dcf[f"A{row}"].value
         if not isinstance(wacc_cell, (int, float)):
             continue
-        for col_idx in range(3, 9):  # C-H
-            col = openpyxl.utils.get_column_letter(col_idx)
+        for col in ("F", "G", "H", "I", "J"):
             cell = dcf[f"{col}{row}"]
             old = cell.value
             if not isinstance(old, str) or "NPV(" not in old.upper():
                 continue
             new = (
                 f"=(NPV($A{row},$F$35:$J$35)+($J$35*(1+{col}$98)/($A{row}-{col}$98))"
-                f"/(1+$A{row})^$E$36+$E$50+$E$51)/$E$55"
+                f"/(1+$A{row})^$J$36+$E$50+$E$51)/$E$55"
             )
             if new != old:
                 cell.value = new
