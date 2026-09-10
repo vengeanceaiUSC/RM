@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 
 from pptx import Presentation
-from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
 from pptx.util import Inches, Pt
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,7 +22,7 @@ DECK = ROOT / "LULU_Investment_Pitch_Deck.pptx"
 sys.path.insert(0, str(ROOT.parent / "GIS"))
 from gis_pitch import FONT, INK, LGREY, NAVY, WHITE, _set_font  # noqa: E402
 
-TOC_COL0_W = 0.72  # inches — fits two-digit slide numbers in Garamond 9pt
+TOC_COL0_W = 1.08  # inches — wide enough for two-digit # in Garamond 9pt (no wrap)
 TOC_FONT = 9.0
 TOC_HDR_FONT = 9.5
 TOC_TOP = 1.32
@@ -56,6 +56,7 @@ def _style_cell(cell, text: str, size: float, color, bold: bool = False, align=P
     cell.text = ""
     tf = cell.text_frame
     tf.word_wrap = False
+    tf.auto_size = MSO_AUTO_SIZE.NONE
     tf.vertical_anchor = MSO_ANCHOR.MIDDLE
     cell.margin_left = Pt(4)
     cell.margin_right = Pt(4)

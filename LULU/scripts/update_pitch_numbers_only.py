@@ -250,6 +250,14 @@ def main() -> None:
     fix_table_headers(OUT)
     fix_meta(OUT)
     repair_and_repackage(OUT)
+    from fix_pitch_gis_compliance import _rebuild_toc
+    from fix_pitch_gis_formatting import _read_toc_entries
+
+    prs_toc = Presentation(str(OUT))
+    entries = _read_toc_entries(prs_toc.slides[0])
+    if entries:
+        _rebuild_toc(prs_toc.slides[0], entries)
+        prs_toc.save(str(OUT))
     fix_meta(OUT)
     fix_meta(ROOT / "model18_wsp_formulas.xlsx")
 

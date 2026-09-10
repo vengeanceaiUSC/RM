@@ -315,10 +315,11 @@ def _apply_garamond(prs: Presentation) -> int:
     return n
 
 
-def _rebuild_toc(slide) -> None:
+def _rebuild_toc(slide, entries: list[tuple[str, str]] | None = None) -> None:
     from fix_pitch_gis_formatting import _read_toc_entries, _add_toc_table, TOC_LEFTS
 
-    entries = _read_toc_entries(slide)
+    if entries is None:
+        entries = _read_toc_entries(slide)
     if not entries:
         return
     split = (len(entries) + 1) // 2
@@ -331,7 +332,10 @@ def _rebuild_toc(slide) -> None:
 
 def main() -> None:
     prs = Presentation(str(DECK))
-    _rebuild_toc(prs.slides[0])
+    toc_entries = None
+    from fix_pitch_gis_formatting import _read_toc_entries
+
+    toc_entries = _read_toc_entries(prs.slides[0])
     _fix_financial_slides(prs)
     _fix_slide17(prs)
     _fix_slide20(prs)
@@ -339,6 +343,7 @@ def main() -> None:
     _fix_other_footers(prs)
     _global_replacements(prs)
     runs = _apply_garamond(prs)
+    _rebuild_toc(prs.slides[0], toc_entries)
     prs.save(str(DECK))
     print(f"GIS compliance pass → {DECK} ({runs} runs set to Garamond)")
 
