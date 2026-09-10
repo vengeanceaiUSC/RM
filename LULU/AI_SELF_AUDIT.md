@@ -38,7 +38,9 @@ Notes column: **≤ 8 words**, analyst shorthand (`Current 10Y UST`, not `FRED D
 
 ## What scripts already fix
 
-- `humanize_workbook_authentic.py` — metadata, prompt headers, rounding, blue/black/green fonts
+- `humanize_workbook_authentic.py` — metadata, prompt headers, display formats (no color hex; apply Cell Styles manually)
+- `strip_programmatic_colors.py` — reset blue/green hex to default black text
+- `add_revenue_driver_sources.py` — Source citations on Revenue Drivers FY25 hardcode rows
 - `strip_arrows.py` — Unicode `→`
 - `restore_source_columns.py` — visible Notes + Source columns (+ auto `repair_scenarios_refs`)
 - `restore_unaltered_numbers.py` — copies exact hardcodes from `model18unaltered (12).xlsx` (never round)
@@ -152,9 +154,11 @@ python3 scripts/repair_scenarios_refs.py    # fix D&A/Capex/WACC col refs
 python3 scripts/restore_unaltered_numbers.py  # exact unaltered hardcodes — run if DCF ≠ $133.64
 python3 scripts/remove_comment_artifacts.py  # red triangles + inflated row heights
 python3 scripts/fix_notes_commentary.py        # Notes match model values (8–15 words)
-python3 scripts/humanize_workbook_authentic.py  # NO rounding of assumptions
+python3 scripts/humanize_workbook_authentic.py  # NO rounding; NO programmatic colors
+python3 scripts/strip_programmatic_colors.py   # reset any blue/green hex to black
+python3 scripts/add_revenue_driver_sources.py  # Source on RD FY25 hardcode rows
 python3 scripts/scrub_hover_comments.py        # shorten AI hover comment boilerplate
-python3 scripts/add_analyst_touch.py           # Scratch tab, yellow highlights (optional)
+python3 scripts/add_analyst_touch.py           # messy Scratch tab (no model links)
 python3 scripts/strip_arrows.py
 python3 scripts/audit_ai_tells.py           # read-only report — fix flagged items by hand
 ```

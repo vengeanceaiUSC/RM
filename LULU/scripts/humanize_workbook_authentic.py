@@ -7,7 +7,7 @@ Never delete hardcoded assumptions or Source column links when fixing flagged it
 - Excel metadata (creator / lastModifiedBy)
 - Prompt residue in headers (Justification, click +, etc.)
 - Robotic float precision on hardcodes
-- GIS finance font colors: blue inputs, black calcs, green cross-sheet
+- Default black text only (no programmatic blue/green hex — apply Cell Styles manually)
 - Human shorthand in Notes; internal Source labels on derived WACC rows
 
 Run:  cd LULU && python3 scripts/humanize_workbook_authentic.py
@@ -344,7 +344,7 @@ def humanize(path: Path = TARGET) -> Path:
         "notes": _humanize_notes(wb),
         "rounded": _round_hardcodes(wb),
         "numfmt": _apply_number_formats(wb),
-        "colors": _apply_finance_colors(wb),
+        "colors": 0,  # skip _apply_finance_colors — user applies GIS Cell Styles manually
         "wacc_sources": _fill_wacc_sources(wb),
         "comments": _scrub_comments(wb),
     }
@@ -379,25 +379,9 @@ def verify(path: Path = TARGET) -> None:
     if not w["C3"].hyperlink:
         issues.append("WACC C3 missing source link")
 
-    def _rgb(cell) -> str:
-        c = cell.font.color
-        if c is None or c.rgb is None:
-            return ""
-        return str(c.rgb).upper().replace("FF0000CC", "0000CC")
-
-    d3 = _rgb(w["D3"])
-    if d3 not in ("0000CC", "000000CC"):
-        issues.append(f"WACC D3 not blue input: {d3}")
-    d10 = _rgb(w["D10"])
-    if d10 not in ("000000", "FF000000", "00000000"):
-        issues.append(f"WACC D10 formula not black: {d10}")
-    f9 = _rgb(scn["F9"])
-    if f9 not in ("006100", "00006100", "FF006100"):
-        issues.append(f"Scenarios F9 not green cross-sheet: {f9}")
-
     if issues:
         raise AssertionError("Verify failed:\n" + "\n".join(issues))
-    print("Verify OK: metadata, headers, display formats, colors")
+    print("Verify OK: metadata, headers, display formats (colors left for manual Cell Styles)")
 
 
 if __name__ == "__main__":
