@@ -105,16 +105,41 @@ def _standardize_sources(text: str) -> str:
     return text
 
 
-def _update_sensitivity_table(table, sens: list[dict]) -> None:
-    """Slide 20 WACC × g grid — update cells only (never deepcopy rows; breaks PowerPoint)."""
-    for ri, row in enumerate(sens, start=1):
-        if ri >= len(table.rows):
-            break
-        table.cell(ri, 0).text = row["wacc"]
-        for ci, px in enumerate(row["prices"], start=1):
-            if ci >= len(table.columns):
-                break
-            table.cell(ri, ci).text = f"${px}"
+def _delete_shape(shape) -> None:
+    shape.element.getparent().remove(shape.element)
+
+
+def _rebuild_sensitivity_table(slide, sens: list[dict], g_headers: list[str]) -> None:
+    """Replace slide 20 sensitivity grid — fresh table with white header text + all WACC rows."""
+    import sys
+
+    sys.path.insert(0, str(ROOT.parent / "GIS"))
+    from gis_pitch import PitchDeck
+
+    for shape in list(slide.shapes):
+        if not shape.has_table:
+            continue
+        h0 = shape.table.rows[0].cells[0].text.strip().replace("\\", " vs ")
+        if h0 in ("WACC vs g", "WACC  vs g"):
+            _delete_shape(shape)
+
+    rows = [[row["wacc"]] + [f"${p}" for p in row["prices"]] for row in sens]
+    headers = ["WACC vs g"] + g_headers
+    row_count = len(rows) + 1
+    grid_h = round(0.18 * row_count, 2)
+
+    PitchDeck().stmt_table(
+        slide,
+        rows,
+        headers,
+        col0w=1.0,
+        top=5.62,
+        height=grid_h,
+        left=0.5,
+        width=12.35,
+        font_size=9,
+        header_font_size=9,
+    )
 
 
 def _update_fin_table(table, row_map: dict[int, list], eps_row: int | None = None) -> None:
@@ -237,10 +262,12 @@ def main() -> None:
                 {1: b["cash_m"], 2: b["inv_m"], 3: b["ta_m"], 4: b["tl_m"], 5: b["te_m"]},
             )
 
-    # Slide 20 — DCF sensitivity grid
-    for shape in prs.slides[19].shapes:
-        if shape.has_table and shape.table.rows[0].cells[0].text.strip() == "WACC vs g":
-            _update_sensitivity_table(shape.table, data["sensitivity"])
+    # Slide 20 — DCF sensitivity grid (rebuild so headers + all 5 WACC rows match Excel)
+    _rebuild_sensitivity_table(
+        prs.slides[19],
+        data["sensitivity"],
+        data.get("sensitivity_g_headers") or ["1.5%", "2.0%", "2.25%", "2.5%", "3.0%"],
+    )
 
     # Slide 16 — cash flow
     for shape in prs.slides[15].shapes:
@@ -256,10 +283,11 @@ def main() -> None:
 
     from fix_file_metadata import fix as fix_meta
     from fix_pitch_gis_compliance import main as fix_gis_layout
-    from repair_pitch_deck import repair as repair_deck
+    from repair_pitch_deck import repair_and_repackage
 
     fix_gis_layout()
-    repair_deck(OUT)
+    fix_meta(OUT)
+    repair_and_repackage(OUT)
     fix_meta(OUT)
     fix_meta(ROOT / "model18_wsp_formulas.xlsx")
 

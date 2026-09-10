@@ -56,8 +56,10 @@ def _run_color(run) -> object:
         return INK
 
 
-def _shrink_table_font(table, size: float = 8.0) -> None:
-    for row in table.rows:
+def _shrink_table_font(table, size: float = 8.0, *, skip_header: bool = False) -> None:
+    for ri, row in enumerate(table.rows):
+        if skip_header and ri == 0:
+            continue
         for cell in row.cells:
             for p in cell.text_frame.paragraphs:
                 for r in p.runs:
@@ -68,6 +70,17 @@ def _shrink_table_font(table, size: float = 8.0) -> None:
                         bold=bool(r.font.bold),
                         italic=bool(r.font.italic),
                     )
+
+
+def _fix_navy_header_row(table, size: float = 9.0) -> None:
+    for cell in table.rows[0].cells:
+        cell.fill.solid()
+        cell.fill.fore_color.rgb = NAVY
+        for p in cell.text_frame.paragraphs:
+            for r in p.runs:
+                if not r.text.strip():
+                    continue
+                _set_font(r, size, WHITE, bold=True)
 
 
 def _fix_financial_slides(prs: Presentation) -> None:
@@ -172,13 +185,15 @@ def _fix_slide20(prs: Presentation) -> None:
                 _compact_table_rows(shape.table, 0.46)
                 _shrink_table_font(shape.table, 7.5)
             if h0 == "WACC vs g":
-                grid_h = 0.50
+                n_rows = len(shape.table.rows)
+                grid_h = round(0.18 * n_rows, 2)
                 shape.top = int(Inches(5.62))
                 shape.left = int(Inches(0.50))
                 shape.width = int(Inches(12.35))
                 shape.height = int(Inches(grid_h))
                 _compact_table_rows(shape.table, grid_h)
-                _shrink_table_font(shape.table, 7.5)
+                _shrink_table_font(shape.table, 9, skip_header=True)
+                _fix_navy_header_row(shape.table, 9)
     for shape in _footer_shapes(slide):
         if not shape.text_frame.text.strip().isdigit():
             _set_footer(

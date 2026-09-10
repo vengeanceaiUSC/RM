@@ -84,12 +84,26 @@ def read_dcf_outputs(wb: openpyxl.Workbook) -> dict:
     out["base"]["dna_m"] = [round(v / 1000) for v in row5(55)]
     out["base"]["capex_m"] = [round(abs(scn.cell(60 + i, 3).value or 0) / 1000) for i in range(5)]
     out["base"]["buy_m"] = [round(abs(scn.cell(158 + i, 3).value or 0) / 1000) for i in range(5)]
-    out["sensitivity"] = read_sensitivity_grid(dcf)
+    sens = read_sensitivity_grid(dcf)
+    out["sensitivity"] = sens["rows"]
+    out["sensitivity_g_headers"] = sens["g_headers"]
     return out
 
 
-def read_sensitivity_grid(dcf) -> list[dict]:
+def _fmt_g_header(v: float) -> str:
+    pct = float(v) * 100
+    if abs(pct - round(pct, 1)) < 1e-9:
+        return f"{pct:.1f}%"
+    return f"{pct:.2f}%"
+
+
+def read_sensitivity_grid(dcf) -> dict:
     """DCF rows 99–103: WACC × terminal g implied share price."""
+    g_headers = [
+        _fmt_g_header(dcf.cell(98, c).value)
+        for c in range(6, 11)
+        if isinstance(dcf.cell(98, c).value, (int, float))
+    ]
     sens: list[dict] = []
     for r in range(99, 104):
         w = dcf.cell(r, 1).value
@@ -99,7 +113,7 @@ def read_sensitivity_grid(dcf) -> list[dict]:
         if not all(isinstance(p, (int, float)) for p in prices):
             continue
         sens.append({"wacc": f"{w * 100:.1f}%", "prices": [round(p) for p in prices]})
-    return sens
+    return {"g_headers": g_headers, "rows": sens}
 
 
 def _pv_tv_from_wb(wb):

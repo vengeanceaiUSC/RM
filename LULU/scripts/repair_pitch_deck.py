@@ -12,7 +12,9 @@ Run:  cd LULU && python3 scripts/repair_pitch_deck.py
 """
 from __future__ import annotations
 
-from copy import deepcopy
+import shutil
+import subprocess
+import tempfile
 from pathlib import Path
 
 from pptx import Presentation
@@ -23,23 +25,6 @@ AUTHOR = "Christian Gardner"
 TITLE = "LULU Investment Pitch Deck"
 
 
-def _fix_sensitivity_row_clone(table) -> None:
-    """Replace deepcopy-appended row with a clone stripped of extension IDs."""
-    tbl = table._tbl
-    if len(table.rows) < 2:
-        return
-    # Rebuild last row from previous row without Office 2016 extension IDs
-    tbl.remove(tbl.tr_lst[-1])
-    new_tr = deepcopy(tbl.tr_lst[-1])
-    for el in list(new_tr.iter()):
-        tag = el.tag.split("}")[-1]
-        if tag in ("rowId", "colId", "ext"):
-            parent = el.getparent()
-            if parent is not None:
-                parent.remove(el)
-    tbl.append(new_tr)
-
-
 def _core_xml_healthy(data: bytes) -> bool:
     text = data.decode("utf-8")
     return "cp:coreProperties" in text and "ns0:" not in text and text.count("<dc:creator>") == 1
@@ -47,14 +32,6 @@ def _core_xml_healthy(data: bytes) -> bool:
 
 def repair(path: Path = DECK) -> Path:
     prs = Presentation(str(path))
-    for slide in prs.slides:
-        for shape in slide.shapes:
-            if not shape.has_table:
-                continue
-            if shape.table.rows[0].cells[0].text.strip() == "WACC vs g":
-                if len(shape.table.rows) >= 6:
-                    _fix_sensitivity_row_clone(shape.table)
-
     cp = prs.core_properties
     cp.author = AUTHOR
     cp.last_modified_by = AUTHOR
@@ -94,6 +71,30 @@ def repair(path: Path = DECK) -> Path:
         patched.replace(tmp)
 
     tmp.replace(path)
+    return path
+
+
+def repackage(path: Path = DECK) -> Path:
+    """Repack OPC zip the way Office expects (fixes many PowerPoint open failures)."""
+    opc = shutil.which("opc")
+    if opc is None:
+        local = Path.home() / ".local/bin/opc"
+        opc = str(local) if local.exists() else None
+    if opc is None:
+        raise RuntimeError("opc-diag not installed (pip install opc-diag)")
+
+    with tempfile.TemporaryDirectory(prefix="pptx_opc_") as tmp:
+        extract_dir = Path(tmp) / "extract"
+        out = path.with_suffix(".repacked.pptx")
+        subprocess.run([opc, "extract", str(path), str(extract_dir)], check=True)
+        subprocess.run([opc, "repackage", str(extract_dir), str(out)], check=True)
+        out.replace(path)
+    return path
+
+
+def repair_and_repackage(path: Path = DECK) -> Path:
+    repair(path)
+    repackage(path)
     return path
 
 
