@@ -70,9 +70,7 @@ def _pct(v, d=1):
 _BASE_DCF = 133.64
 _BASE_UPSIDE = 33.6
 _WACC_PCT = 9.0
-_MODEL = "LULUMODEL18.xlsx"
-_MODEL3 = "LULUMODEL18_3.xlsx"
-_MODEL6 = "LULUMODEL18_6.xlsx"
+_MODEL = "LULU_DCF_Valuation_Model.xlsx"
 _Q2_SUPP = "https://corporate.lululemon.com/~/media/Files/L/Lululemon/investors/results-center/q2-2026-financial-supplement.pdf"
 _LULU_PR = "https://corporate.lululemon.com/newsroom/press-releases/2026/09-03-2026-210528733"
 _TIKR = "https://www.tikr.com/blog/lululemon-stock-crashed-17-on-friday-the-guidance-cut-was-the-real-story"
@@ -216,7 +214,7 @@ _toc_h = _toc_bottom - _toc_top
 _toc_split = (len(_DECK_TOC) + 1) // 2
 s = slide_base(
     "Table of Contents",
-    "What you will be focusing on during this pitch",
+    "Pitch focus",
     page=pg(),
     sources=" ",
 )
@@ -283,9 +281,9 @@ _narrative_slide(
         "Finally, international expansion remains the crucial growth engine, as FY25 China segment revenue grew approximately 29% year-over-year versus flat Americas, and modeled China growth offsets this stagnation with FY26-FY30 averages of 10.2% same-store comps and 16 annual gross store openings [4]",
     ],
     [
-        (1, f"Provided Valuation Model (Base Case Implied Value): {_MODEL3}"),
-        (2, f"Provided Valuation Model (FY26-FY30 EBIT Margin Path): {_MODEL3}"),
-        (3, f"Provided Valuation Model (WACC & Revenue Drivers): {_MODEL3}"),
+        (1, f"Provided Valuation Model (Base Case Implied Value): {_MODEL}"),
+        (2, f"Provided Valuation Model (FY26-FY30 EBIT Margin Path): {_MODEL}"),
+        (3, f"Provided Valuation Model (WACC & Revenue Drivers): {_MODEL}"),
         (4, f"Lululemon Q2 FY2026 Earnings Release (International Growth): {_Q2_SUPP}"),
     ],
 )
@@ -317,9 +315,9 @@ _narrative_slide(
         "Company-operated stores generate 1,426 dollars per square foot and an 18.6 percent EBIT margin establishing high capital efficiency [3]",
     ],
     [
-        (1, f"Provided Valuation Model (Gross Margin): {_MODEL6}"),
-        (2, f"Provided Valuation Model (E-commerce EBIT Margin Driver): {_MODEL6}"),
-        (3, f"Provided Valuation Model (Store EBIT Margin & SPSF): {_MODEL6}"),
+        (1, f"Provided Valuation Model (Gross Margin): {_MODEL}"),
+        (2, f"Provided Valuation Model (E-commerce EBIT Margin Driver): {_MODEL}"),
+        (3, f"Provided Valuation Model (Store EBIT Margin & SPSF): {_MODEL}"),
     ],
 )
 
@@ -328,7 +326,7 @@ _narrative_slide(
     "Industry Overview - Trends and Structure",
     "This slide explores the ongoing athleisure industry trends including market fragmentation and the barriers to entry",
     [
-        "I argue the global athleisure market remains highly fragmented meaning most players lack a durable competitive advantage [1]",
+        "The global athleisure market remains highly fragmented, meaning most players lack a durable competitive advantage [1]",
         "The premium segment maintains high barriers to entry protecting global champions from temporary cyclical noise [2]",
         "Lululemon mathematically proves its moat by generating a 30.25 percent ROE far outpacing the 6.81 percent industry median [3]",
     ],
@@ -358,10 +356,10 @@ _narrative_slide(
 # Slide 9 - Investment Thesis I
 _narrative_slide(
     "Investment Thesis I",
-    "This slide outlines the core contrarian investment thesis utilizing numerical evidence from the LULUMODEL18.xlsx file",
+    "This slide outlines the core contrarian investment thesis utilizing numerical evidence from the valuation model",
     [
         "The 2026 price drop exceeding 50% has left Lululemon critically undervalued despite durable cash flows [1]",
-        "Its premium Direct-to-Consumer revenue mix protects a massive 54.9% adjusted gross margin, mathematically justifying my intrinsic valuation thesis [2]",
+        "Its premium Direct-to-Consumer revenue mix protects a massive 54.9% adjusted gross margin, mathematically supporting our intrinsic valuation thesis [2]",
         "Furthermore, even with Americas growth stagnating, sheer cash flow generation creates a robust intrinsic valuation buffer, where a conservative 2.25% terminal growth rate still yields over 30% upside to our $133.64 target price [3]",
     ],
     [
@@ -492,20 +490,38 @@ def m(v):
 
 
 HY = ["FY2022", "FY2023", "FY2024", "FY2025"]
-DCF_MODEL = "LULU_DCF_Valuation_Model.xlsx"
+DCF_MODEL = _MODEL
 SCEN_TAB = "Scenarios"
 SCEN_G = f"{DCF_MODEL}: {SCEN_TAB}, col G (base)"
 HIST_10K = "SEC Form 10-K (FY2022-FY2025)"
 FIN_FOOTNOTE = (
     "Hist = 10-K. Forecast (26-30) = DCF Scenarios pitch-bridge block, col G (base case only). "
-    "Per-row model refs shown under line items."
+    "Per-row forecast sources shown under line items."
 )
 
+_FCST_SRC = {
+    "revenue": "Scenarios tab, col G (revenue yrs 1-5)",
+    "gross_margin": "Scenarios tab, col G (gross margin %)",
+    "ebit": "Scenarios tab, col G (EBIT yrs 1-5)",
+    "net_income": "Scenarios tab, col G (net income bridge)",
+    "eps": "Scenarios tab, col G (EPS after buybacks)",
+    "cash": "Scenarios tab, col G (cash roll-forward)",
+    "inventories": "Scenarios tab, col G (NWC schedule)",
+    "total_assets": "Scenarios tab, col G (balance sheet)",
+    "total_liab": "Scenarios tab, col G (balance sheet)",
+    "total_equity": "Scenarios tab, col G (balance sheet)",
+    "cfo": "Scenarios tab, col G (CFO bridge)",
+    "dna": "Scenarios tab, col G (D&A yrs 1-5)",
+    "capex": "Scenarios tab, col G (capex yrs 1-5)",
+    "fcf": "Scenarios tab, col G (FCF bridge)",
+    "buybacks": "Scenarios tab, col G ($750M/yr buybacks)",
+}
 
-def _scen_rng(key):
-    """Excel range for a pitch line item in Scenarios col G."""
-    r = MR[key]
-    return f"{SCEN_TAB}!G{r['r1']}:G{r['r5']}"
+
+def _fcst_src(key, detail=""):
+    """Human-readable forecast source (no raw Excel cell ranges)."""
+    base = _FCST_SRC.get(key, f"Scenarios tab, col G ({key})")
+    return f"{base}{detail}"
 
 
 def _row_note(hist_src, fcst_src):
@@ -614,7 +630,7 @@ def _fmt_cell(v, fmt="num"):
 
 def _fin_source_table(slide, source_rows, top=5.92, col0w=1.85, height=0.95):
     """Per-line model source: Hist | Fcst (Scenarios G)."""
-    headers = ["Line item", "Hist source (22-25)", "Fcst source, Scenarios col G"]
+    headers = ["Line item", "Hist source (22-25)", "Forecast Source"]
     rows = [[line, hist, fcst] for line, hist, fcst in source_rows]
     stmt_table(
         slide, rows, headers, col0w=col0w, top=top, height=height,
@@ -757,52 +773,52 @@ _CF_HIST, _CF_FCST = _aligned_explainers([
 ])
 
 _IS_SOURCES = [
-    ("Net revenue", "10-K IS, Net revenue", f"{_scen_rng('revenue')} (Revenue yr 1-5)"),
-    ("Gross profit", "10-K IS, Gross profit", f"{_scen_rng('revenue')} × {_scen_rng('gross_margin')} (rev × GM%)"),
-    ("Operating income", "10-K IS, Operating income", f"{_scen_rng('ebit')} (EBIT yr 1-5)"),
-    ("Operating margin %", "10-K IS, OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
-    ("Net income", "10-K IS, Net income", f"{_scen_rng('net_income')} (pitch bridge NI)"),
-    ("Diluted EPS", "10-K IS, Diluted EPS", f"NI ÷ buyback-adjusted shares ($750M/yr; {_scen_rng('eps')})"),
+    ("Net revenue", "10-K IS, Net revenue", _fcst_src("revenue")),
+    ("Gross profit", "10-K IS, Gross profit", "Revenue x gross margin (Scenarios col G)"),
+    ("Operating income", "10-K IS, Operating income", _fcst_src("ebit")),
+    ("Operating margin %", "10-K IS, OI / revenue", "EBIT / revenue (Scenarios col G)"),
+    ("Net income", "10-K IS, Net income", _fcst_src("net_income")),
+    ("Diluted EPS", "10-K IS, Diluted EPS", "Net income / diluted shares ($750M/yr buybacks)"),
 ]
 _IS_NOTES = [
-    _row_note("10-K IS, Net revenue", f"{_scen_rng('revenue')}"),
-    _row_note("10-K IS, Gross profit", f"{_scen_rng('revenue')} × {_scen_rng('gross_margin')}"),
-    _row_note("10-K IS, Operating income", f"{_scen_rng('ebit')}"),
-    _row_note("10-K IS, OI ÷ revenue", f"{_scen_rng('ebit')} ÷ {_scen_rng('revenue')}"),
-    _row_note("10-K IS, Net income", f"{_scen_rng('net_income')}"),
-    _row_note("10-K IS, Diluted EPS", f"NI ÷ diluted sh (750M/yr buybacks); {_scen_rng('eps')}"),
+    _row_note("10-K IS, Net revenue", _fcst_src("revenue")),
+    _row_note("10-K IS, Gross profit", "Revenue x gross margin (Scenarios col G)"),
+    _row_note("10-K IS, Operating income", _fcst_src("ebit")),
+    _row_note("10-K IS, OI / revenue", "EBIT / revenue (Scenarios col G)"),
+    _row_note("10-K IS, Net income", _fcst_src("net_income")),
+    _row_note("10-K IS, Diluted EPS", _fcst_src("eps")),
 ]
 
 _BS_SOURCES = [
-    ("Cash & equivalents", "10-K BS, Cash & equivalents", f"{_scen_rng('cash')} (pitch bridge cash roll-forward)"),
-    ("Inventories", "10-K BS, Inventories", f"{_scen_rng('inventories')} (NWC schedule)"),
-    ("Total assets", "10-K BS, Total assets", f"{_scen_rng('total_assets')} (FY25 TA × rev growth)"),
-    ("Total liabilities", "10-K BS, Total liabilities", f"{_scen_rng('total_liab')} (FY25 TL × rev growth)"),
-    ("Total equity", "10-K BS, Total equity", f"{_scen_rng('total_equity')} (FY25 TE × rev growth)"),
+    ("Cash & equivalents", "10-K BS, Cash & equivalents", _fcst_src("cash")),
+    ("Inventories", "10-K BS, Inventories", _fcst_src("inventories")),
+    ("Total assets", "10-K BS, Total assets", _fcst_src("total_assets")),
+    ("Total liabilities", "10-K BS, Total liabilities", _fcst_src("total_liab")),
+    ("Total equity", "10-K BS, Total equity", _fcst_src("total_equity")),
     ("Funded debt", "10-K BS, Long-term debt ($0)", "Model assumption, $0 (no term debt)"),
 ]
 _BS_NOTES = [
-    _row_note("10-K BS, Cash", f"{_scen_rng('cash')}"),
-    _row_note("10-K BS, Inventories", f"{_scen_rng('inventories')}"),
-    _row_note("10-K BS, Total assets", f"{_scen_rng('total_assets')}"),
-    _row_note("10-K BS, Total liabilities", f"{_scen_rng('total_liab')}"),
-    _row_note("10-K BS, Total equity", f"{_scen_rng('total_equity')}"),
+    _row_note("10-K BS, Cash", _fcst_src("cash")),
+    _row_note("10-K BS, Inventories", _fcst_src("inventories")),
+    _row_note("10-K BS, Total assets", _fcst_src("total_assets")),
+    _row_note("10-K BS, Total liabilities", _fcst_src("total_liab")),
+    _row_note("10-K BS, Total equity", _fcst_src("total_equity")),
     _row_note("10-K BS, Debt ($0)", "Model, $0"),
 ]
 
 _CF_SOURCES = [
-    ("Cash from operations", "10-K CF, Operating activities", f"{_scen_rng('cfo')} (pitch bridge CFO)"),
-    ("D&A (add-back)", "10-K CF, Depreciation & amortization", f"{_scen_rng('dna')} (D&A yr 1-5)"),
-    ("Capital expenditures", "10-K CF, Capital expenditures", f"{_scen_rng('capex')} (Capex yr 1-5)"),
-    ("Free cash flow", "10-K CF, CFO − capex", f"{_scen_rng('fcf')} (pitch bridge FCF/CFS)"),
-    ("Share repurchases", "10-K CF, Repurchases (financing)", f"{_scen_rng('buybacks')} (G21=$750M/yr fixed)"),
+    ("Cash from operations", "10-K CF, Operating activities", _fcst_src("cfo")),
+    ("D&A (add-back)", "10-K CF, Depreciation & amortization", _fcst_src("dna")),
+    ("Capital expenditures", "10-K CF, Capital expenditures", _fcst_src("capex")),
+    ("Free cash flow", "10-K CF, CFO - capex", _fcst_src("fcf")),
+    ("Share repurchases", "10-K CF, Repurchases (financing)", _fcst_src("buybacks")),
 ]
 _CF_NOTES = [
-    _row_note("10-K CF, CFO", f"{_scen_rng('cfo')}"),
-    _row_note("10-K CF, D&A", f"{_scen_rng('dna')}"),
-    _row_note("10-K CF, Capex", f"{_scen_rng('capex')}"),
-    _row_note("10-K CF, CFO − capex", f"{_scen_rng('fcf')}"),
-    _row_note("10-K CF, Buybacks", f"{_scen_rng('buybacks')}"),
+    _row_note("10-K CF, CFO", _fcst_src("cfo")),
+    _row_note("10-K CF, D&A", _fcst_src("dna")),
+    _row_note("10-K CF, Capex", _fcst_src("capex")),
+    _row_note("10-K CF, CFO - capex", _fcst_src("fcf")),
+    _row_note("10-K CF, Buybacks", _fcst_src("buybacks")),
 ]
 
 pitch_financial_slide(
@@ -824,7 +840,7 @@ pitch_financial_slide(
     source_rows=_IS_SOURCES,
     bold_rows=(0, 2, 5),
     italic_note=(
-        f"Forecast: {DCF_MODEL}, Scenarios col G. EPS = NI \u00f7 diluted shares after "
+        f"Forecast: {DCF_MODEL}, Scenarios col G. EPS = net income / diluted shares after "
         "$750M/yr repurchases (DCF $134 still uses 111.4M day-one basic shares)."
     ),
 )
@@ -1257,7 +1273,7 @@ add_para(
 tb, tf = textbox(s, Inches(0.5), Inches(5.58), Inches(12.35), Inches(0.20))
 add_para(tf, "SENSITIVITY | IMPLIED SHARE PRICE (WACC vs TERMINAL g)", 10, CARD, bold=True, first=True, space_after=0)
 _g_cols = ["1.5%", "2.0%", "2.25%", "2.5%", "3.0%"]
-sens = [["WACC \\ g"] + _g_cols]
+sens = [["WACC vs g"] + _g_cols]
 _base_wacc_idx = min(
     range(len(PV["sensitivity"])),
     key=lambda i: abs(float(PV["sensitivity"][i]["wacc"].rstrip("%")) - V["wacc"] * 100),
