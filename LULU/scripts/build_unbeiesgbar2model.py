@@ -11,10 +11,15 @@ from __future__ import annotations
 
 import re
 import shutil
+import sys
 from pathlib import Path
 
 import openpyxl
 from openpyxl.comments import Comment
+
+SCRIPTS = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPTS))
+from restore_outline_groups import restore_outline_groups  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "model18unaltered (12).xlsx"
@@ -130,6 +135,8 @@ def process_workbook(src: Path = INPUT, dst: Path = OUTPUT) -> Path:
                     if cleaned != val:
                         cell.value = cleaned if cleaned else None
                         scrubbed_cells += 1
+
+    restore_outline_groups(wb, col_hidden=True)
 
     wb.save(tmp)
     tmp.replace(dst)
