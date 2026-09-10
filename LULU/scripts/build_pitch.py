@@ -450,7 +450,7 @@ def _fmt_cell(v, fmt="num"):
     return _m(v)
 
 
-def _fin_source_table(slide, source_rows, top=5.92, col0w=1.85, height=0.95):
+def _fin_source_table(slide, source_rows, top=5.68, col0w=1.85, height=1.18):
     """Per-line source attribution: 10-K history | model forecast."""
     headers = ["Line item", "Hist source (22-25)", "Forecast Source"]
     rows = [[line, hist, fcst] for line, hist, fcst in source_rows]
@@ -480,15 +480,16 @@ def pitch_financial_slide(
 ):
     """Build one financial slide: historicals + 5yr base-case forecast."""
     hdr = _fin_headers()
-    footnote = FIN_FOOTNOTE
-    if italic_note:
-        footnote = f"{italic_note}  {FIN_FOOTNOTE}"
+    footnote = (
+        "Source: LULU_DCF_Valuation_Model.xlsx · Hist: FY22–25 10-K · "
+        "Forecast: Scenarios col C (base) · Row sources in table below"
+    )
     s = slide_base(title, subtitle, page=pg(), sources=footnote)
     _fin_explainer_boxes(s, hist_title, hist_bullets, fcst_title, fcst_bullets,
                          box_height=explainer_height)
     stmt_table(s, rows, hdr, col0w=col0w, top=table_top, height=table_height,
                bold_rows=bold_rows, font_size=8.5, header_font_size=8)
-    _fin_source_table(s, source_rows, top=5.74, height=0.95)
+    _fin_source_table(s, source_rows, top=5.68, height=1.18)
     return s
 
 
