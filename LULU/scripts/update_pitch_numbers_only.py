@@ -256,6 +256,10 @@ def main() -> None:
                 t.cell(5, ci).text = f"({val:,})"
 
     prs.save(str(OUT))
+
+    from fix_file_metadata import fix as fix_meta
+    fix_meta(OUT)
+
     print(f"Updated numbers + sources → {OUT}")
     print(f"  Base ${px} (+{upside}%) | Bear ${bear_px} | Bull ${bull_px}")
     print(f"  EPS FY26-FY30: {eps}")
