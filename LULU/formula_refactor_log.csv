@@ -1,0 +1,122 @@
+Sheet Name,Cell Reference,Original AI Formula,Humanized WSP Formula,Reason for Change
+Revenue Drivers,C41,=C38*1000000*C39*C40/1000,=C38*$B$3*C39*C40/$C$3,Extract sessions/output unit scalars to explicit driver cells (B3/C3)
+Revenue Drivers,D41,=D38*1000000*D39*D40/1000,=D38*$B$3*D39*D40/$C$3,Extract sessions/output unit scalars to explicit driver cells (B3/C3)
+Revenue Drivers,E41,=E38*1000000*E39*E40/1000,=E38*$B$3*E39*E40/$C$3,Extract sessions/output unit scalars to explicit driver cells (B3/C3)
+Revenue Drivers,F41,=F38*1000000*F39*F40/1000,=F38*$B$3*F39*F40/$C$3,Extract sessions/output unit scalars to explicit driver cells (B3/C3)
+Revenue Drivers,G41,=G38*1000000*G39*G40/1000,=G38*$B$3*G39*G40/$C$3,Extract sessions/output unit scalars to explicit driver cells (B3/C3)
+Comps,E5,=2210615+496228,=DCF!$E$11+DCF!$E$16,Replace inline EBIT+D&A literals with DCF FY25A links
+DCF,F99,"=(NPV(0.095,F35:J35)+(J35*(1+0.015)/(0.095-0.015))/(1+0.095)^5+E50+E51)/E55","=(NPV($A99,$F$35:$J$35)+($J$35*(1+F$98)/($A99-F$98))/(1+$A99)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,G99,"=(NPV(0.095,F35:J35)+(J35*(1+0.02)/(0.095-0.02))/(1+0.095)^5+E50+E51)/E55","=(NPV($A99,$F$35:$J$35)+($J$35*(1+G$98)/($A99-G$98))/(1+$A99)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,H99,"=(NPV(0.095,F35:J35)+(J35*(1+0.0225)/(0.095-0.0225))/(1+0.095)^5+E50+E51)/E55","=(NPV($A99,$F$35:$J$35)+($J$35*(1+H$98)/($A99-H$98))/(1+$A99)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,F100,"=(NPV(0.1,F35:J35)+(J35*(1+0.015)/(0.1-0.015))/(1+0.1)^5+E50+E51)/E55","=(NPV($A100,$F$35:$J$35)+($J$35*(1+F$98)/($A100-F$98))/(1+$A100)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,G100,"=(NPV(0.1,F35:J35)+(J35*(1+0.02)/(0.1-0.02))/(1+0.1)^5+E50+E51)/E55","=(NPV($A100,$F$35:$J$35)+($J$35*(1+G$98)/($A100-G$98))/(1+$A100)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,H100,"=(NPV(0.1,F35:J35)+(J35*(1+0.0225)/(0.1-0.0225))/(1+0.1)^5+E50+E51)/E55","=(NPV($A100,$F$35:$J$35)+($J$35*(1+H$98)/($A100-H$98))/(1+$A100)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,F101,"=(NPV(0.105,F35:J35)+(J35*(1+0.015)/(0.105-0.015))/(1+0.105)^5+E50+E51)/E55","=(NPV($A101,$F$35:$J$35)+($J$35*(1+F$98)/($A101-F$98))/(1+$A101)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,G101,"=(NPV(0.105,F35:J35)+(J35*(1+0.02)/(0.105-0.02))/(1+0.105)^5+E50+E51)/E55","=(NPV($A101,$F$35:$J$35)+($J$35*(1+G$98)/($A101-G$98))/(1+$A101)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,H101,"=(NPV(0.105,F35:J35)+(J35*(1+0.0225)/(0.105-0.0225))/(1+0.105)^5+E50+E51)/E55","=(NPV($A101,$F$35:$J$35)+($J$35*(1+H$98)/($A101-H$98))/(1+$A101)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,F102,"=(NPV(0.11,F35:J35)+(J35*(1+0.015)/(0.11-0.015))/(1+0.11)^5+E50+E51)/E55","=(NPV($A102,$F$35:$J$35)+($J$35*(1+F$98)/($A102-F$98))/(1+$A102)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,G102,"=(NPV(0.11,F35:J35)+(J35*(1+0.02)/(0.11-0.02))/(1+0.11)^5+E50+E51)/E55","=(NPV($A102,$F$35:$J$35)+($J$35*(1+G$98)/($A102-G$98))/(1+$A102)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,H102,"=(NPV(0.11,F35:J35)+(J35*(1+0.0225)/(0.11-0.0225))/(1+0.11)^5+E50+E51)/E55","=(NPV($A102,$F$35:$J$35)+($J$35*(1+H$98)/($A102-H$98))/(1+$A102)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,F103,"=(NPV(0.115,F35:J35)+(J35*(1+0.015)/(0.115-0.015))/(1+0.115)^5+E50+E51)/E55","=(NPV($A103,$F$35:$J$35)+($J$35*(1+F$98)/($A103-F$98))/(1+$A103)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,G103,"=(NPV(0.115,F35:J35)+(J35*(1+0.02)/(0.115-0.02))/(1+0.115)^5+E50+E51)/E55","=(NPV($A103,$F$35:$J$35)+($J$35*(1+G$98)/($A103-G$98))/(1+$A103)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+DCF,H103,"=(NPV(0.115,F35:J35)+(J35*(1+0.0225)/(0.115-0.0225))/(1+0.115)^5+E50+E51)/E55","=(NPV($A103,$F$35:$J$35)+($J$35*(1+H$98)/($A103-H$98))/(1+$A103)^$E$36+$E$50+$E$51)/$E$55",Link sensitivity NPV/Gordon to WACC row and terminal-g header row
+Scenarios,F25,=11102600*(1+F4),=DCF!$E$5*(1+F4),Link FY26 revenue roll-forward to DCF FY25A net revenue
+Scenarios,G25,=11102600*(1+G4),=DCF!$E$5*(1+G4),Link FY26 revenue roll-forward to DCF FY25A net revenue
+Scenarios,H25,=11102600*(1+H4),=DCF!$E$5*(1+H4),Link FY26 revenue roll-forward to DCF FY25A net revenue
+Scenarios,F120,=1461096-F115,=DCF!$E$32-F115,Link NWC bridge to DCF FY25A NWC balance
+Scenarios,G120,=1461096-G115,=DCF!$E$32-G115,Link NWC bridge to DCF FY25A NWC balance
+Scenarios,H120,=1461096-H115,=DCF!$E$32-H115,Link NWC bridge to DCF FY25A NWC balance
+Scenarios,F132,=(F131+1807202-1798441)/111380,=(F131+DCF!$E$50+DCF!$E$51)/DCF!$E$55,Equity bridge: cash plus signed net debt from DCF FY25A; Link per-share bridge to DCF FY25A diluted shares
+Scenarios,G132,=(G131+1807202-1798441)/111380,=(G131+DCF!$E$50+DCF!$E$51)/DCF!$E$55,Equity bridge: cash plus signed net debt from DCF FY25A; Link per-share bridge to DCF FY25A diluted shares
+Scenarios,H132,=(H131+1807202-1798441)/111380,=(H131+DCF!$E$50+DCF!$E$51)/DCF!$E$55,Equity bridge: cash plus signed net debt from DCF FY25A; Link per-share bridge to DCF FY25A diluted shares
+Scenarios,H158,"=-ROUND(H22*H153,0)",=-H22*H153,Remove ROUND wrapper; expose raw repurchase math for audit
+Scenarios,H159,"=-ROUND(H22*H154,0)",=-H22*H154,Remove ROUND wrapper; expose raw repurchase math for audit
+Scenarios,H160,"=-ROUND(H22*H155,0)",=-H22*H155,Remove ROUND wrapper; expose raw repurchase math for audit
+Scenarios,H161,"=-ROUND(H22*H156,0)",=-H22*H156,Remove ROUND wrapper; expose raw repurchase math for audit
+Scenarios,H162,"=-ROUND(H22*H157,0)",=-H22*H157,Remove ROUND wrapper; expose raw repurchase math for audit
+Scenarios,F163,=1807202+F153+F158,=DCF!$E$50+F153+F158,Link bridge cash to DCF FY25A cash
+Scenarios,G163,=1807202+G153+G158,=DCF!$E$50+G153+G158,Link bridge cash to DCF FY25A cash
+Scenarios,H163,=1807202+H153+H158,=DCF!$E$50+H153+H158,Link bridge cash to DCF FY25A cash
+Scenarios,F168,=8456743*F25/11102600,=Scenarios!$B$194*F25/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,G168,=8456743*G25/11102600,=Scenarios!$B$194*G25/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,H168,=8456743*H25/11102600,=Scenarios!$B$194*H25/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,F169,=8456743*F26/11102600,=Scenarios!$B$194*F26/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,G169,=8456743*G26/11102600,=Scenarios!$B$194*G26/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,H169,=8456743*H26/11102600,=Scenarios!$B$194*H26/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,F170,=8456743*F27/11102600,=Scenarios!$B$194*F27/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,G170,=8456743*G27/11102600,=Scenarios!$B$194*G27/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,H170,=8456743*H27/11102600,=Scenarios!$B$194*H27/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,F171,=8456743*F28/11102600,=Scenarios!$B$194*F28/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,G171,=8456743*G28/11102600,=Scenarios!$B$194*G28/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,H171,=8456743*H28/11102600,=Scenarios!$B$194*H28/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,F172,=8456743*F29/11102600,=Scenarios!$B$194*F29/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,G172,=8456743*G29/11102600,=Scenarios!$B$194*G29/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,H172,=8456743*H29/11102600,=Scenarios!$B$194*H29/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total assets driver
+Scenarios,F173,=3494903*F25/11102600,=Scenarios!$B$195*F25/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,G173,=3494903*G25/11102600,=Scenarios!$B$195*G25/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,H173,=3494903*H25/11102600,=Scenarios!$B$195*H25/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,F174,=3494903*F26/11102600,=Scenarios!$B$195*F26/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,G174,=3494903*G26/11102600,=Scenarios!$B$195*G26/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,H174,=3494903*H26/11102600,=Scenarios!$B$195*H26/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,F175,=3494903*F27/11102600,=Scenarios!$B$195*F27/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,G175,=3494903*G27/11102600,=Scenarios!$B$195*G27/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,H175,=3494903*H27/11102600,=Scenarios!$B$195*H27/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,F176,=3494903*F28/11102600,=Scenarios!$B$195*F28/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,G176,=3494903*G28/11102600,=Scenarios!$B$195*G28/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,H176,=3494903*H28/11102600,=Scenarios!$B$195*H28/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,F177,=3494903*F29/11102600,=Scenarios!$B$195*F29/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,G177,=3494903*G29/11102600,=Scenarios!$B$195*G29/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,H177,=3494903*H29/11102600,=Scenarios!$B$195*H29/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total liabilities driver
+Scenarios,F178,=4961840*F25/11102600,=Scenarios!$B$196*F25/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,G178,=4961840*G25/11102600,=Scenarios!$B$196*G25/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,H178,=4961840*H25/11102600,=Scenarios!$B$196*H25/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,F179,=4961840*F26/11102600,=Scenarios!$B$196*F26/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,G179,=4961840*G26/11102600,=Scenarios!$B$196*G26/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,H179,=4961840*H26/11102600,=Scenarios!$B$196*H26/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,F180,=4961840*F27/11102600,=Scenarios!$B$196*F27/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,G180,=4961840*G27/11102600,=Scenarios!$B$196*G27/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,H180,=4961840*H27/11102600,=Scenarios!$B$196*H27/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,F181,=4961840*F28/11102600,=Scenarios!$B$196*F28/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,G181,=4961840*G28/11102600,=Scenarios!$B$196*G28/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,H181,=4961840*H28/11102600,=Scenarios!$B$196*H28/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,F182,=4961840*F29/11102600,=Scenarios!$B$196*F29/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,G182,=4961840*G29/11102600,=Scenarios!$B$196*G29/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,H182,=4961840*H29/11102600,=Scenarios!$B$196*H29/DCF!$E$5,Link FY26 revenue roll-forward to DCF FY25A net revenue; Scale balance sheet off FY25 total equity driver
+Scenarios,F183,=119068-F21/100,=Scenarios!$B$197-F21/100,Link diluted share count to FY25 shares driver
+Scenarios,G183,=119068-G21/100,=Scenarios!$B$197-G21/100,Link diluted share count to FY25 shares driver
+Scenarios,H183,"=119068-ROUND(H22*H153,0)/100",=Scenarios!$B$197-H22*H153/100,Remove ROUND wrapper from repurchase/share schedule; Link diluted share count to FY25 shares driver
+Scenarios,H184,"=H183-ROUND(H22*H154,0)/108",=H183-H22*H154/108,Remove ROUND wrapper from repurchase/share schedule
+Scenarios,H185,"=H184-ROUND(H22*H155,0)/115",=H184-H22*H155/115,Remove ROUND wrapper from repurchase/share schedule
+Scenarios,H186,"=H185-ROUND(H22*H156,0)/122",=H185-H22*H156/122,Remove ROUND wrapper from repurchase/share schedule
+Scenarios,H187,"=H186-ROUND(H22*H157,0)/130",=H186-H22*H157/130,Remove ROUND wrapper from repurchase/share schedule
+NOPAT Bridge,E20,=62203*$E$7,=Scenarios!$B$202*$E$7,Link SBC add-back to FY25 SBC driver
+NOPAT Bridge,F20,=Scenarios!G25/11102600*62203*$E$7,=Scenarios!G25/DCF!$E$5*Scenarios!$B$202*$E$7,Link FY26 revenue roll-forward to DCF FY25A net revenue; Link SBC add-back to FY25 SBC driver
+NOPAT Bridge,G20,=Scenarios!G26/11102600*62203*$E$7,=Scenarios!G26/DCF!$E$5*Scenarios!$B$202*$E$7,Link FY26 revenue roll-forward to DCF FY25A net revenue; Link SBC add-back to FY25 SBC driver
+NOPAT Bridge,H20,=Scenarios!G27/11102600*62203*$E$7,=Scenarios!G27/DCF!$E$5*Scenarios!$B$202*$E$7,Link FY26 revenue roll-forward to DCF FY25A net revenue; Link SBC add-back to FY25 SBC driver
+NOPAT Bridge,I20,=Scenarios!G28/11102600*62203*$E$7,=Scenarios!G28/DCF!$E$5*Scenarios!$B$202*$E$7,Link FY26 revenue roll-forward to DCF FY25A net revenue; Link SBC add-back to FY25 SBC driver
+NOPAT Bridge,J20,=Scenarios!G29/11102600*62203*$E$7,=Scenarios!G29/DCF!$E$5*Scenarios!$B$202*$E$7,Link FY26 revenue roll-forward to DCF FY25A net revenue; Link SBC add-back to FY25 SBC driver
+NOPAT Bridge,F23,=1028*(Scenarios!G25/11102600),=Scenarios!$B$203*(Scenarios!G25/DCF!$E$5),Link FY26 revenue roll-forward to DCF FY25A net revenue; Link lease interest reclass to FY25 lease interest driver
+NOPAT Bridge,G23,=1028*(Scenarios!G26/11102600),=Scenarios!$B$203*(Scenarios!G26/DCF!$E$5),Link FY26 revenue roll-forward to DCF FY25A net revenue; Link lease interest reclass to FY25 lease interest driver
+NOPAT Bridge,H23,=1028*(Scenarios!G27/11102600),=Scenarios!$B$203*(Scenarios!G27/DCF!$E$5),Link FY26 revenue roll-forward to DCF FY25A net revenue; Link lease interest reclass to FY25 lease interest driver
+NOPAT Bridge,I23,=1028*(Scenarios!G28/11102600),=Scenarios!$B$203*(Scenarios!G28/DCF!$E$5),Link FY26 revenue roll-forward to DCF FY25A net revenue; Link lease interest reclass to FY25 lease interest driver
+NOPAT Bridge,J23,=1028*(Scenarios!G29/11102600),=Scenarios!$B$203*(Scenarios!G29/DCF!$E$5),Link FY26 revenue roll-forward to DCF FY25A net revenue; Link lease interest reclass to FY25 lease interest driver
+Cover,B11,Black font = calculations / formulas,,Delete formula/meta explanation text cell
+Revenue Drivers,A2,FY2025A = FY25 reported figures (blue). FY26–30 = red operational assumptions. Consolidated revenue cross-checks to Scenarios base case.,,Delete formula/meta explanation text cell
+Revenue Drivers,J6,Revenue Drivers: beginning-stores formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J9,Revenue Drivers: ending-stores formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J10,Revenue Drivers: beginning-stores formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J13,Revenue Drivers: ending-stores formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J14,Revenue Drivers: beginning-stores formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J17,Revenue Drivers: ending-stores formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J18,Revenue Drivers: total-stores formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J20,Revenue Drivers: total-sqft formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J28,Revenue Drivers: prior store-rev formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J29,Revenue Drivers: comp-store formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J30,Revenue Drivers: net-new-store formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J31,Revenue Drivers: store-channel formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J41,Revenue Drivers: e-comm formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J55,Revenue Drivers: total-rev formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J57,Revenue Drivers: variance formula,,Delete formula/meta explanation text cell
+Revenue Drivers,J58,Revenue Drivers: variance % formula,,Delete formula/meta explanation text cell
+DCF,A80,CROSS-CHECK — EXIT MULTIPLE METHOD,,Delete formula/meta explanation text cell
+Comps,A48,"• Selected exit = Gordon TV / FY30 EBITDA. Identity: (UFCF/EBITDA)×(1+g)/(WACC−g). Live formula, not a typed 8.0x",,Delete formula/meta explanation text cell
