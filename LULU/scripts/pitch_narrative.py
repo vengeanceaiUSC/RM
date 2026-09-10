@@ -165,7 +165,7 @@ NARRATIVE_SLIDES: list[tuple[str, str, list[str], list[tuple[int, str]]]] = [
         ],
         [
             (1, f"{MODEL}, Scenarios bear case; Barron's — guide context"),
-            (2, f"{MODEL}, DCF capex & NWC; Q2 FY26 supplement"),
+            (2, f"{MODEL}, Revenue Drivers & DCF (CapEx/NWC)"),
             (3, f"{MODEL}, DCF share repurchase schedule"),
         ],
     ),
@@ -194,7 +194,7 @@ TIMELINE_EVENTS: list[tuple[str, str]] = [
 
 TIMELINE_FOOTNOTES: list[tuple[int, str]] = [
     (1, f"{MODEL}, Scenarios & Revenue Drivers; Q2 FY26 supplement"),
-    (2, f"{MODEL}, Scenarios & NOPAT reconciliation; Q2 FY26 supplement"),
+    (2, f"{MODEL}, Scenarios col C (tariff refund & EBIT path)"),
     (3, f"{MODEL}, Scenarios & DCF FCF bridge"),
     (4, f"{MODEL}, Revenue Drivers & DCF summary; StockAnalysis consensus"),
 ]
