@@ -299,6 +299,21 @@ def _set_headers(wb) -> None:
             ws.cell(r, 2).value = HEADER_CELLS.get((sheet, r), NOTES_HEADER)
             ws.cell(r, 3).value = SOURCE_HEADER
 
+    # Scrub any leftover prompt-style header text on col B.
+    for sheet in INSERT_BC_SHEETS:
+        ws = wb[sheet]
+        for r in range(1, min(ws.max_row + 1, 50)):
+            b = ws.cell(r, 2)
+            if isinstance(b.value, str) and re.search(
+                r"justification|~20\s*word|click\s*\+|\[cols", b.value, re.I
+            ):
+                b.value = NOTES_HEADER
+            c = ws.cell(r, 3)
+            if isinstance(c.value, str) and re.search(
+                r"justification|source\s*\(click\)|ctrl\+f", c.value, re.I
+            ):
+                c.value = SOURCE_HEADER
+
     rd = wb["Revenue Drivers"]
     rd.cell(RD_HEADER_ROW, RD_NOTES_COL).value = NOTES_HEADER
     rd.cell(RD_HEADER_ROW, RD_SOURCE_COL).value = SOURCE_HEADER
