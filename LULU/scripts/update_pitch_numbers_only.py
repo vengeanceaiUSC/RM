@@ -240,10 +240,12 @@ def main() -> None:
     prs.save(str(OUT))
 
     from fix_file_metadata import fix as fix_meta
+    from fix_pitch_gis_compliance import main as fix_gis_layout
     from fix_table_header_colors import fix as fix_table_headers
     from repair_pitch_deck import repair_and_repackage
     from sync_sensitivity_from_dcf import sync as sync_sensitivity
 
+    fix_gis_layout()
     sync_sensitivity(OUT)
     fix_table_headers(OUT)
     fix_meta(OUT)
