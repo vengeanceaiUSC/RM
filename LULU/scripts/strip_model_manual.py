@@ -25,6 +25,11 @@ from polish_model18_altered import (  # noqa: E402
 )
 from restore_outline_groups import restore_outline_groups  # noqa: E402
 
+try:
+    from sanitize_model_symbols import sanitize_workbook as _sanitize_symbols
+except ImportError:
+    _sanitize_symbols = None
+
 ROOT = SCRIPTS.parent
 INPUT = ROOT / "unbeiesgbar2model.xlsx"
 OUTPUT = ROOT / "unbeiesgbar2model.xlsx"
@@ -287,6 +292,9 @@ def strip_workbook(src: Path = INPUT, dst: Path = OUTPUT) -> Path:
 
     wb.save(tmp)
     tmp.replace(dst)
+
+    if _sanitize_symbols:
+        _sanitize_symbols(dst)
     print(f"Saved {dst}")
     return dst
 
