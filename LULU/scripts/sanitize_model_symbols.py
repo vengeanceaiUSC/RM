@@ -72,7 +72,14 @@ WEIRD_CHAR = re.compile(r"[^\x00-\x7F]")
 def sanitize_text(text: str) -> str:
     if not text or text.startswith("="):
         return text
-    out = text
+    # Protect URLs from slash collapsing (https:// must not become "https: / ").
+    url_slots: list[str] = []
+
+    def _stash_url(match: re.Match[str]) -> str:
+        url_slots.append(match.group(0))
+        return f"__URL_{len(url_slots) - 1}__"
+
+    out = re.sub(r"https?://[^\s\)\]\"']+", _stash_url, text)
     for old, new in REPLACEMENTS:
         out = out.replace(old, new)
     # Collapse repeated separators/spaces left by substitutions.
@@ -80,8 +87,13 @@ def sanitize_text(text: str) -> str:
     out = re.sub(r"\s{2,}", " ", out)
     out = re.sub(r"\s-\s-\s", " - ", out)
     out = re.sub(r"-{2,}", "-", out)
+    out = re.sub(r"\bbetau\b", "beta-u", out, flags=re.I)
+    out = re.sub(r"\bbetaL\b", "beta L", out, flags=re.I)
+    out = re.sub(r"\bbeta u\b", "beta-u", out, flags=re.I)
     out = re.sub(r"^\s*-\s*", "", out)
     out = re.sub(r"\s+\.\s*$", ".", out)
+    for i, url in enumerate(url_slots):
+        out = out.replace(f"__URL_{i}__", url)
     return out.strip()
 
 
