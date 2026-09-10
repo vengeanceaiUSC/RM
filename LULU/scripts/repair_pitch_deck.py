@@ -15,6 +15,7 @@ from __future__ import annotations
 import shutil
 import subprocess
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 
 from pptx import Presentation
@@ -22,7 +23,15 @@ from pptx import Presentation
 ROOT = Path(__file__).resolve().parents[1]
 DECK = ROOT / "LULU_Investment_Pitch_Deck.pptx"
 AUTHOR = "Christian Gardner"
-TITLE = "LULU Investment Pitch Deck"
+TITLE = "GIS IR LULU"
+
+
+def _now_utc() -> datetime:
+    return datetime.now(timezone.utc).replace(microsecond=0)
+
+
+def _w3c(dt: datetime) -> str:
+    return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _core_xml_healthy(data: bytes) -> bool:
@@ -31,12 +40,15 @@ def _core_xml_healthy(data: bytes) -> bool:
 
 
 def repair(path: Path = DECK) -> Path:
+    now = _now_utc()
     prs = Presentation(str(path))
     cp = prs.core_properties
     cp.author = AUTHOR
     cp.last_modified_by = AUTHOR
     cp.title = TITLE
     cp.comments = ""
+    cp.created = now
+    cp.modified = now
 
     tmp = path.with_suffix(".repairing.pptx")
     prs.save(str(tmp))
@@ -48,6 +60,7 @@ def repair(path: Path = DECK) -> Path:
     with zipfile.ZipFile(tmp, "r") as zin:
         core = zin.read("docProps/core.xml")
     if not _core_xml_healthy(core):
+        stamp = _w3c(now)
         healthy = (
             '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
             '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
@@ -57,8 +70,8 @@ def repair(path: Path = DECK) -> Path:
             f"<dc:title>{TITLE}</dc:title><dc:subject/><dc:creator>{AUTHOR}</dc:creator>"
             "<cp:keywords/><dc:description></dc:description>"
             f"<cp:lastModifiedBy>{AUTHOR}</cp:lastModifiedBy><cp:revision>1</cp:revision>"
-            '<dcterms:created xsi:type="dcterms:W3CDTF">2013-01-27T09:14:16Z</dcterms:created>'
-            '<dcterms:modified xsi:type="dcterms:W3CDTF">2013-01-27T09:15:58Z</dcterms:modified>'
+            f'<dcterms:created xsi:type="dcterms:W3CDTF">{stamp}</dcterms:created>'
+            f'<dcterms:modified xsi:type="dcterms:W3CDTF">{stamp}</dcterms:modified>'
             "<cp:category/></cp:coreProperties>"
         ).encode("utf-8")
         patched = path.with_suffix(".corefix.pptx")

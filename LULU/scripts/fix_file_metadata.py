@@ -69,6 +69,8 @@ def fix_xlsx_metadata(path: Path) -> dict[str, str]:
         core = zf.read("docProps/core.xml").decode("utf-8")
         app = zf.read("docProps/app.xml").decode("utf-8")
     bad = [n for n in ("openpyxl", "python-pptx", "Steve Canny") if n.lower() in (core + app).lower()]
+    if "2013" in core:
+        bad.append("stale 2013 dates")
     healthy = "cp:coreProperties" in core and "ns0:" not in core
     return {
         "file": path.name,
@@ -108,6 +110,8 @@ def fix_pptx_metadata(path: Path) -> dict[str, str]:
     with zipfile.ZipFile(path) as zf:
         core = zf.read("docProps/core.xml").decode("utf-8")
     bad = [n for n in ("openpyxl", "python-pptx", "Steve Canny") if n.lower() in core.lower()]
+    if "2013" in core:
+        bad.append("stale 2013 dates")
     healthy = "cp:coreProperties" in core and "ns0:" not in core
     return {
         "file": path.name,
