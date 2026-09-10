@@ -20,23 +20,23 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "model18unaltered (12).xlsx"
 TARGET = ROOT / "unbeiesgbar_final.xlsx"
 
-# (src_col, tgt_col) per sheet — accounts for Notes+Source insert at col B.
+# (src_col, tgt_col) per sheet — after Notes/Source cols B-C deleted (values at B+).
 COL_MAPS: dict[str, list[tuple[int, int]]] = {
-    "WACC": [(5, 4)],
-    "Scenarios": [(6, 5), (7, 6), (8, 7)],
-    "NOPAT Bridge": [(5, 4), (6, 5), (7, 6), (8, 7), (9, 8), (10, 9)],
-    "DCF": [(5, 4), (6, 5), (7, 6), (8, 7), (9, 8), (10, 9)],
-    "Comps": [(5, 4)],
+    "WACC": [(5, 2)],
+    "Scenarios": [(6, 3), (7, 4), (8, 5)],
+    "NOPAT Bridge": [(5, 2), (6, 3), (7, 4), (8, 5), (9, 6), (10, 7)],
+    "DCF": [(5, 2), (6, 3), (7, 4), (8, 5), (9, 6), (10, 7)],
+    "Comps": [(5, 2)],
 }
 
 KEY_CHECKS: list[tuple[str, str, str, object]] = [
-    ("Scenarios", "F10", "Terminal growth", 0.0225),
-    ("Scenarios", "F12", "D&A %", 0.045),
-    ("Scenarios", "F13", "Capex %", 0.055),
-    ("WACC", "D8", "Share price", 100),
-    ("DCF", "D55", "Shares (000)", 111380),
-    ("DCF", "D57", "Spot price", 100),
-    ("DCF", "G98", "Sens grid terminal g", 0.0225),
+    ("Scenarios", "D10", "Terminal growth", 0.0225),
+    ("Scenarios", "D12", "D&A %", 0.045),
+    ("Scenarios", "D13", "Capex %", 0.055),
+    ("WACC", "B8", "Share price", 100),
+    ("DCF", "B55", "Shares (000)", 111380),
+    ("DCF", "B57", "Spot price", 100),
+    ("DCF", "E98", "Sens grid terminal g", 0.0225),
 ]
 
 

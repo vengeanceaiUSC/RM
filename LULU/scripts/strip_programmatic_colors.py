@@ -36,12 +36,7 @@ MODEL_SHEETS = (
 
 # Source columns — preserve blue italic underline links (not stripped to black)
 SOURCE_COLS: dict[str, tuple[int, ...]] = {
-    "WACC": (3,),
-    "Scenarios": (3,),
-    "NOPAT Bridge": (3,),
-    "Comps": (3,),
-    "DCF": (3,),
-    "Revenue Drivers": (10,),
+    # Source columns removed — no cols to preserve after move_sources_to_comments.py
 }
 
 
