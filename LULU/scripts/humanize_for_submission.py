@@ -281,6 +281,9 @@ def humanize(path: Path = TARGET) -> dict:
     from fix_file_metadata import fix as fix_meta
 
     stats["div_fix"] = fix_div(path=tmp)
+    from fix_dcf_tv_reconciliation import fix as fix_tv_recon
+
+    stats["tv_recon"] = fix_tv_recon(path=tmp)
     stats["metadata"] = fix_meta(path=tmp)
 
     tmp.replace(path)

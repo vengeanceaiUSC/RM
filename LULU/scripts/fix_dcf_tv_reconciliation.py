@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Fix DCF terminal-value reconciliation block — E→D column refs after Notes insert.
+"""Fix DCF terminal-value reconciliation block — stale E-col refs and mangled rows.
 
-Rows 90–93 were still pointing at empty column E; outputs live in column D.
-Also restores variance formulas and row 89 headers from unaltered logic.
+After the growth-driver insert and Notes column delete, the Gordon vs exit-multiple
+reconciliation block (rows 90–95) must point at column D outputs:
+  D46 = Gordon TV, D47 = Gordon implied exit, D57 = Gordon implied price
+  D82/D83/D87 = exit-method multiple, TV, and price
 
 Run:  cd LULU && python3 scripts/fix_dcf_tv_reconciliation.py
 """
@@ -16,23 +18,34 @@ import openpyxl
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "unbeiesgbar_final.xlsx"
 
+# Row 89 = section title (col A only). Headers + data rows 90–95.
 FIXES: dict[str, str | None] = {
-    "B89": "Gordon Growth",
-    "C89": "Exit Multiple",
-    "D89": "Variance",
-    "B90": "=D45",
-    "C90": "=D83",
-    "D90": "=B90-C90",
+    "A90": None,
+    "B90": "Gordon Growth",
+    "C90": "Exit Multiple",
+    "D90": "Variance",
+    "A91": "Terminal value ($)",
     "B91": "=D46",
-    "C91": "=D82",
+    "C91": "=D83",
     "D91": "=B91-C91",
-    "D92": "=(B90-C90)/B90",
-    "B93": "=D56",
-    "C93": "=D86",
-    "D93": "=B93-C93",
-    "B94": '=IF(ABS(D91)<=1.5,"PASS","REVIEW")',
-    "C94": '=TEXT(D91,"0.0")&"x spread vs Gordon-implied exit"',
-    "D94": "Selected exit is the Gordon identity, so spread should be 0",
+    "A92": "Exit EV/EBITDA (implied vs selected)",
+    "B92": "=D47",
+    "C92": "=D82",
+    "D92": "=B92-C92",
+    "A93": "Terminal value variance (%)",
+    "B93": None,
+    "C93": None,
+    "D93": "=(B91-C91)/B91",
+    "A94": "Implied share price",
+    "B94": "=D57",
+    "C94": "=D87",
+    "D94": "=B94-C94",
+    "A95": "Sanity check: multiples within ±1.5 turns?",
+    "B95": '=IF(ABS(D92)<=1.5,"PASS","REVIEW")',
+    "C95": '=TEXT(D92,"0.0")&"x spread vs Gordon-implied exit"',
+    "D95": "Selected exit is the Gordon identity, so spread should be 0",
+    # Exit-method per-share should use enterprise value row, not PV of TV
+    "B87": "=(B86+B51+B52)/B56",
 }
 
 
@@ -60,18 +73,18 @@ def verify(path: Path = TARGET) -> None:
     issues: list[str] = []
 
     for coord, expected in [
-        ("B90", "=D45"),
-        ("C90", "=D83"),
-        ("D90", "=B90-C90"),
-        ("B93", "=D56"),
-        ("C93", "=D86"),
+        ("B91", "=D46"),
+        ("C91", "=D83"),
+        ("D91", "=B91-C91"),
+        ("B94", "=D57"),
+        ("C94", "=D87"),
+        ("B87", "=(B86+B51+B52)/B56"),
     ]:
         if ws[coord].value != expected:
             issues.append(f"{coord} expected {expected!r}, got {ws[coord].value!r}")
 
-    # E45 must stay empty (wrong column)
-    if ws["E45"].value is not None:
-        issues.append(f"E45 should be empty, got {ws['E45'].value!r}")
+    if ws["B90"].value != "Gordon Growth":
+        issues.append(f"B90 header wrong: {ws['B90'].value!r}")
 
     if issues:
         raise AssertionError("Verify failed:\n" + "\n".join(issues))

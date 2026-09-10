@@ -21,6 +21,7 @@ STEPS = [
     "fix_stale_formula_refs.py",
     "fix_div_errors.py",
     "humanize_for_submission.py",
+    "fix_dcf_tv_reconciliation.py",
     "trim_model_labels.py",
     "fix_file_metadata.py",
     "strip_programmatic_colors.py",
