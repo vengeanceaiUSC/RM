@@ -279,7 +279,9 @@ def main() -> None:
     fix_meta(ROOT / "model18_wsp_formulas.xlsx")
 
     from apply_garamond_excel import apply as apply_garamond
+    from scrub_model_nopat import scrub as scrub_model_nopat
 
+    scrub_model_nopat(ROOT / "model18_wsp_formulas.xlsx")
     apply_garamond(ROOT / "model18_wsp_formulas.xlsx")
 
     import shutil
@@ -287,6 +289,7 @@ def main() -> None:
     model_out = ROOT / MODEL
     deck_out = ROOT / "GIS IR LULU.pptx"
     shutil.copy2(ROOT / "model18_wsp_formulas.xlsx", model_out)
+    scrub_model_nopat(model_out)
     shutil.copy2(OUT, deck_out)
     fix_meta(model_out)
     fix_meta(deck_out)
