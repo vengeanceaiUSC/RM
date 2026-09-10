@@ -30,6 +30,8 @@ python3 scripts/restore_unaltered_numbers.py   # restore exact unaltered hardcod
 python3 scripts/audit_valuation_numbers.py     # verify 0 diffs vs unaltered
 python3 scripts/remove_comment_artifacts.py    # red triangles + tall rows only
 python3 scripts/fix_notes_commentary.py        # Notes match model values (8–15 words)
+python3 scripts/fix_truncated_notes.py         # complete vs. minus. as. endings
+python3 scripts/clear_formula_sources.py       # blank Source on internal formula rows
 python3 scripts/humanize_workbook_authentic.py # metadata/colors/numfmt — NO value rounding
 python3 scripts/scrub_hover_comments.py        # shorten AI hover comment boilerplate
 python3 scripts/add_analyst_touch.py           # Scratch tab, yellow highlights (optional)
