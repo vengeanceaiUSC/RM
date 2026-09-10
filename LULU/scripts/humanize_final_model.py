@@ -30,8 +30,81 @@ AI_PHRASES = [
     r"valuation anchor",
     r"revisit drivers or Scenarios",
     r"high-conviction analyst overlay",
+    r"black formula",
+    r"live formula",
+    r"driver-based nwc",
+    r"steps 1-4",
+    r"col g\) links",
+    r"not a peer pick",
+    r"not the exit",
+    r"not a peer average",
 ]
 AI_SCRUB = re.compile("|".join(AI_PHRASES), re.I)
+CONVERSATIONAL = re.compile(
+    r"(?i)^/\s|^\s*note:\s|should be 0|guardrail|pipeline \(base",
+)
+
+
+def _clear_row_label(ws, row: int, col: int = 1) -> bool:
+    cell = ws.cell(row, col)
+    if cell.value is not None:
+        cell.value = None
+        return True
+    return False
+
+
+def _strip_conversational_notes(wb) -> int:
+    """Remove AI tutorial rows and replace robotic DCF check column."""
+    n = 0
+    dcf = wb["DCF"]
+    if dcf.max_column >= 8:
+        dcf.delete_cols(8)
+        n += 1
+
+    clears = [
+        ("DCF", "A34"),
+        ("DCF", "A52"),
+        ("DCF", "A63"),
+        ("Scenarios", "A135"),
+        ("NOPAT Bridge", "A51"),
+        ("NOPAT Bridge", "A52"),
+        ("Comps", "A17"),
+        ("Comps", "A41"),
+        ("Comps", "A63"),
+    ]
+    for r in range(48, 54):
+        clears.append(("Comps", f"A{r}"))
+
+    for sheet, coord in clears:
+        cell = wb[sheet][coord]
+        if cell.value is not None:
+            _clear_cell(cell)
+            n += 1
+
+    nb = wb["NOPAT Bridge"]
+    if nb["A37"].value and "Check vs" in str(nb["A37"].value):
+        nb["A37"].value = "EBIT variance vs Scenarios ($000)"
+        n += 1
+
+    comps = wb["Comps"]
+    if comps["A16"].value and "PITCHBOOK PUBCOMPS" in str(comps["A16"].value):
+        comps["A16"].value = "Peer EV/EBITDA (PitchBook, Sep-2026)"
+        n += 1
+    if comps["A47"].value and "Rationale for selected exit" in str(comps["A47"].value):
+        comps["A47"].value = "Selected exit multiple (Gordon growth)"
+        n += 1
+
+    dcf_renames = {
+        "A19": "Working capital",
+        "A40": "Scenarios tie-out",
+        "A53": "Enterprise value bridge",
+    }
+    for coord, text in dcf_renames.items():
+        if dcf[coord].value != text:
+            dcf[coord].value = text
+            n += 1
+
+    return n
 
 
 def _scrub_ai_phrasing(wb) -> int:
@@ -42,7 +115,13 @@ def _scrub_ai_phrasing(wb) -> int:
             for cell in row:
                 if not isinstance(cell.value, str) or cell.value.startswith("="):
                     continue
-                if AI_SCRUB.search(cell.value):
+                val = cell.value
+                if (
+                    AI_SCRUB.search(val)
+                    or CONVERSATIONAL.search(val)
+                    or val.strip().startswith("/")
+                    or val.lower().startswith("note:")
+                ):
                     cell.value = None
                     n += 1
     return n
@@ -88,20 +167,9 @@ def humanize(path: Path = TARGET) -> Path:
 
     # --- DCF ---
     dcf = wb["DCF"]
-    _set_or_clear(dcf["H2"], "Check")
-    for coord in ("A3", "B3", "E3", "H3", "A4"):
+    for coord in ("A3", "B3", "E3", "A4"):
         _clear_cell(dcf[coord])
         changed += 1
-    renames = {
-        "A19": "Working capital schedule",
-        "A40": "Scenarios linkage",
-        "A53": "UFCF pre-interest; ASC 842 lease debt in EV bridge.",
-    }
-    for coord, text in renames.items():
-        if dcf[coord].value != text:
-            dcf[coord].value = text
-            changed += 1
-    _clear_cell(dcf["A63"])
 
     for row in dcf.iter_rows():
         for cell in row:
@@ -125,7 +193,9 @@ def humanize(path: Path = TARGET) -> Path:
                 cell.hyperlink = None
                 changed += 1
     _clear_cell(comps["A32"])
-    _set_or_clear(comps["A41"], "Peer multiples illustrative; terminal value from DCF exit multiple.")
+
+    changed += _strip_conversational_notes(wb)
+    changed += _scrub_ai_phrasing(wb)
 
     # --- Share price refresh (market hardcodes only) ---
     price_rows = [
@@ -141,12 +211,10 @@ def humanize(path: Path = TARGET) -> Path:
             cell.value = SHARE_PRICE
             changed += 1
 
-    # Repurchase schedule starting price — same market print
     if wb["DCF"]["B72"].value == 100:
         wb["DCF"]["B72"].value = SHARE_PRICE
         changed += 1
 
-    changed += _scrub_ai_phrasing(wb)
     remove_outline_groups(wb)
 
     wb.save(tmp)
@@ -163,9 +231,11 @@ def verify(path: Path = TARGET) -> None:
         ("Cover", "B17", None),
         ("Revenue Drivers", "A2", None),
         ("NOPAT Bridge", "A1", "NOPAT RECONCILIATION (BASE CASE)"),
-        ("DCF", "H2", "Check"),
         ("DCF", "A3", None),
         ("DCF", "A4", None),
+        ("Scenarios", "A135", None),
+        ("Comps", "A17", None),
+        ("Comps", "A63", None),
         ("WACC", "B8", SHARE_PRICE),
     ]
     for sheet, coord, expected in checks:
@@ -177,15 +247,25 @@ def verify(path: Path = TARGET) -> None:
         for row in ws.iter_rows():
             for cell in row:
                 v = cell.value
-                if isinstance(v, str) and not v.startswith("="):
+                if isinstance(v, str) and v.startswith("="):
+                    if "IF(MAX(ABS" in v.upper():
+                        bad.append(f"{ws.title}!{cell.coordinate}: robotic check formula")
+                elif isinstance(v, str):
                     if URLISH.search(v) or "(blue)" in v.lower() or "(red)" in v.lower():
                         bad.append(f"{ws.title}!{cell.coordinate}: {v[:60]!r}")
+                    if v.strip().startswith("/"):
+                        bad.append(f"{ws.title}!{cell.coordinate}: slash-note remains")
+                    if CONVERSATIONAL.search(v):
+                        bad.append(f"{ws.title}!{cell.coordinate}: conversational note")
                     if "pipeline" in v.lower() and "NOPAT" in v:
                         bad.append(f"{ws.title}!{cell.coordinate}: pipeline header remains")
                     if "LULU_Assumptions_Memo" in v:
                         bad.append(f"{ws.title}!{cell.coordinate}: memo filename in cell")
                     if AI_SCRUB.search(v):
                         bad.append(f"{ws.title}!{cell.coordinate}: AI phrasing remains")
+
+    if wb["DCF"].max_column >= 8:
+        bad.append("DCF: check column H still present")
 
     n_comments = sum(1 for ws in wb.worksheets for row in ws.iter_rows() for c in row if c.comment)
     if n_comments < 50:
