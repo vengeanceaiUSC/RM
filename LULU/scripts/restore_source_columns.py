@@ -461,6 +461,14 @@ def restore_workbook(
 
     wb.save(tmp)
     tmp.replace(target)
+
+    # Fix base-case assumption locks that landed on empty Scenarios col H.
+    from repair_scenarios_refs import repair_workbook as _repair_scenarios_refs  # noqa: E402
+
+    repaired, _ = _repair_scenarios_refs(target)
+    if repaired:
+        print(f"  Repaired {repaired} Scenarios!$H$→$F$ assumption refs")
+
     print(f"Restored {target.name}: {notes} notes, {sources} source links")
     return target
 
@@ -478,6 +486,12 @@ def verify(path: Path = TARGET) -> None:
     dcf = wb["DCF"]
     if "Scenarios!D" in str(dcf["E5"].value or ""):
         issues.append("DCF still references Scenarios!D (should be F)")
+    if "Scenarios!$H$" in str(dcf["E15"].value or ""):
+        issues.append("DCF E15 still references empty Scenarios col H (should be $F$12)")
+    if str(dcf["E15"].value or "") != "=Scenarios!$F$12":
+        issues.append(f"DCF E15 D&A % link wrong: {dcf['E15'].value}")
+    if str(dcf["E17"].value or "") != "=Scenarios!$F$13":
+        issues.append(f"DCF E17 Capex % link wrong: {dcf['E17'].value}")
 
     scn = wb["Scenarios"]
     if not str(scn["F9"].value or "").startswith("=WACC!D"):
