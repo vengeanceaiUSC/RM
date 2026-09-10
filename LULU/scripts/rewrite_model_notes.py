@@ -61,7 +61,7 @@ NOTES_MAP: dict[str, dict[str, str]] = {
         "Terminal growth": "FRED GDPC1 anchor (~2.1%).",
         "Cash tax rate": "FY26 mgmt guidance (~30%).",
         "D&A % of revenue": "FY25 D&A run-rate vs sales.",
-    ("FY26 guide fade to 5.5%.", "5.5% model rate; FY26 7% capex guide fades down."),
+        "Capex % of revenue": "5.5% model rate; FY26 7% capex guide fades down.",
         "Gross margin %": "Held flat vs FY25 actuals.",
         "DSO (days) — flat vs FY25": "Flat vs FY25 actuals.",
         "FY25 DIO anchor (days)": "FY25 anchor minus 1 day/yr.",

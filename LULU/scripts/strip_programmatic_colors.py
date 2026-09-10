@@ -18,7 +18,7 @@ SCRIPTS = Path(__file__).resolve().parent
 import sys
 
 sys.path.insert(0, str(SCRIPTS))
-from styles import BLACK, FONT_NAME  # noqa: E402
+from styles import BLACK, BLUE, FONT_NAME  # noqa: E402
 
 ROOT = SCRIPTS.parent
 TARGET = ROOT / "unbeiesgbar_final.xlsx"
@@ -33,6 +33,16 @@ MODEL_SHEETS = (
     "Comps",
     "Scratch",
 )
+
+# Source columns — preserve blue italic underline links (not stripped to black)
+SOURCE_COLS: dict[str, tuple[int, ...]] = {
+    "WACC": (3,),
+    "Scenarios": (3,),
+    "NOPAT Bridge": (3,),
+    "Comps": (3,),
+    "DCF": (3,),
+    "Revenue Drivers": (10,),
+}
 
 
 def _default_font(existing: Font | None) -> Font:
@@ -50,6 +60,21 @@ def _default_font(existing: Font | None) -> Font:
     )
 
 
+def _link_font(existing: Font | None) -> Font:
+    return Font(
+        name=FONT_NAME,
+        color=BLUE,
+        bold=existing.bold if existing else False,
+        italic=True,
+        size=existing.size if existing and existing.size else 9,
+        underline="single",
+    )
+
+
+def _is_source_col(sheet_name: str, col_idx: int) -> bool:
+    return col_idx in SOURCE_COLS.get(sheet_name, ())
+
+
 def strip_colors(path: Path = TARGET) -> dict[str, int]:
     tmp = path.with_suffix(".strip_colors.xlsx")
     shutil.copy2(path, tmp)
@@ -64,6 +89,12 @@ def strip_colors(path: Path = TARGET) -> dict[str, int]:
         for row in ws.iter_rows():
             for cell in row:
                 if cell.font is None:
+                    continue
+                if _is_source_col(name, cell.column) and cell.hyperlink:
+                    cell.font = _link_font(cell.font)
+                    stats["cells_reset"] += 1
+                    continue
+                if _is_source_col(name, cell.column):
                     continue
                 rgb = cell.font.color.rgb if cell.font.color else None
                 if rgb and str(rgb).upper() not in ("000000", "00000000", "FF000000"):

@@ -154,8 +154,9 @@ python3 scripts/repair_scenarios_refs.py    # fix D&A/Capex/WACC col refs
 python3 scripts/restore_unaltered_numbers.py  # exact unaltered hardcodes — run if DCF ≠ $133.64
 python3 scripts/remove_comment_artifacts.py  # red triangles + inflated row heights
 python3 scripts/fix_notes_commentary.py        # Notes match model values (8–15 words)
-python3 scripts/humanize_workbook_authentic.py  # NO rounding; NO programmatic colors
-python3 scripts/strip_programmatic_colors.py   # reset any blue/green hex to black
+python3 scripts/restore_source_hyperlinks.py  # clickable Source URLs from unaltered
+python3 scripts/strip_programmatic_colors.py   # black value cols; preserve blue Source links
+python3 scripts/humanize_workbook_authentic.py  # NO rounding; NO value-column colors
 python3 scripts/add_revenue_driver_sources.py  # Source on RD FY25 hardcode rows
 python3 scripts/scrub_hover_comments.py        # shorten AI hover comment boilerplate
 python3 scripts/add_analyst_touch.py           # messy Scratch tab (no model links)

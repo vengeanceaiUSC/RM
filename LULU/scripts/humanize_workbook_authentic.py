@@ -277,7 +277,7 @@ def _fill_wacc_sources(wb) -> int:
     for r in range(1, ws.max_row + 1):
         label = str(ws.cell(r, 1).value or "").strip().lower()
         src = ws.cell(r, 3)
-        if src.value or src.hyperlink:
+        if src.hyperlink or src.value:
             continue
         for key, text in WACC_DERIVED_SOURCES.items():
             if key in label:
