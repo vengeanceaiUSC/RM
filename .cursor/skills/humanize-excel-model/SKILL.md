@@ -36,6 +36,7 @@ python3 scripts/fix_dcf_tv_reconciliation.py   # DCF Gordon vs Exit recon column
 python3 scripts/fix_nopat_label_formulas.py     # NOPAT labels (fixes Excel repair error)
 python3 scripts/remove_spot_check.py           # clear Scenarios col I artifact
 python3 scripts/fix_formula_references.py      # link FY25 rev in formulas (same values)
+python3 scripts/fix_ib_formatting.py           # gridlines off, NOPAT phase labels
 python3 scripts/humanize_workbook_authentic.py # metadata/colors/numfmt — NO value rounding
 python3 scripts/scrub_hover_comments.py        # shorten AI hover comment boilerplate
 python3 scripts/add_analyst_touch.py           # Scratch tab, yellow highlights (optional)
@@ -119,6 +120,7 @@ Reviewers who **click into cells** see full float precision in the formula bar (
 - Source column hyperlinks
 - Cross-sheet formulas
 - DCF valuation output chain (rows 42–56)
+- **Scenarios row 50 NOPAT:** Base links to `NOPAT Bridge`; Bear/Bull use local tax math — matches unaltered model (not an AI bug)
 
 ---
 
