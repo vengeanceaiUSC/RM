@@ -149,20 +149,13 @@ font-convention essays. Keep the four live source links (EDGAR, 10-K, earnings, 
 
 ```bash
 cd LULU
-python3 scripts/restore_source_columns.py   # if Notes/Source cols missing
-python3 scripts/repair_scenarios_refs.py    # fix D&A/Capex/WACC col refs
-python3 scripts/restore_unaltered_numbers.py  # exact unaltered hardcodes — run if DCF ≠ $133.64
-python3 scripts/remove_comment_artifacts.py  # red triangles + inflated row heights
-python3 scripts/fix_notes_commentary.py        # Notes match model values (8–15 words)
-python3 scripts/restore_source_hyperlinks.py  # clickable Source URLs from unaltered
-python3 scripts/strip_programmatic_colors.py   # black value cols; preserve blue Source links
-python3 scripts/humanize_workbook_authentic.py  # NO rounding; NO value-column colors
-python3 scripts/add_revenue_driver_sources.py  # Source on RD FY25 hardcode rows
-python3 scripts/scrub_hover_comments.py        # shorten AI hover comment boilerplate
-python3 scripts/add_analyst_touch.py           # messy Scratch tab (no model links)
-python3 scripts/strip_arrows.py
-python3 scripts/audit_ai_tells.py           # read-only report — fix flagged items by hand
+python3 scripts/scrub_ai_footprints.py          # full AI-footprint scrub (recommended)
+python3 scripts/backfill_source_comments.py     # Analyst comments from unaltered
+python3 scripts/fix_decimal_display.py          # 0.0 / 0.0% grid (values unchanged)
+python3 scripts/rebuild_dcf_local_formulas.py   # local P&L roll on DCF
+python3 scripts/trim_model_labels.py            # finance shorthand labels
+python3 scripts/fix_file_metadata.py              # strip openpyxl creator stamp
+python3 scripts/audit_valuation_numbers.py      # must show 0 diffs
 ```
 
-Do **not** run `strip_model_manual.py` or `humanize_final_model.py` on the finished file unless
-you confirm they will not strip col C links.
+One-time structural step (already applied): `move_sources_to_comments.py` deletes Notes/Source cols B-C.
