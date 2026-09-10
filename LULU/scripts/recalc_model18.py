@@ -62,7 +62,16 @@ def read_dcf_outputs(wb: openpyxl.Workbook) -> dict:
 
     out["base"]["revenue_m"] = [round(v / 1000) for v in row5(25)]
     out["base"]["ni_m"] = [round(v / 1000) for v in row5(143)]
-    out["base"]["eps"] = [round(float(scn.cell(188 + i, 3).value or 0), 2) for i in range(5)]
+    # Prefer DCF repurchase schedule (deck cites row 78); fall back to Scenarios bridge.
+    dcf = wb["DCF"]
+    eps_cols = ["F", "G", "H", "I", "J"]
+    dcf_eps = [
+        round(float(dcf[f"{col}78"].value or 0), 2) for col in eps_cols
+    ]
+    scn_eps = [
+        round(float(scn.cell(188 + i, 3).value or 0), 2) for i in range(5)
+    ]
+    out["base"]["eps"] = dcf_eps if any(dcf_eps) else scn_eps
     out["base"]["cfo_m"] = [round(v / 1000) for v in row5(148)]
     out["base"]["fcf_m"] = [round(v / 1000) for v in row5(153)]
     out["base"]["ebit_m"] = [round(v / 1000) for v in row5(45)]

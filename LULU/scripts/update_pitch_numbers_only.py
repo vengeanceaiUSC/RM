@@ -35,6 +35,39 @@ def _fmt_m(v: int) -> str:
     return f"{v:,}"
 
 
+def _patch_eps_narratives(text: str, eps: list[float]) -> str:
+    """Patch EPS callouts and FY26–FY30 ranges without touching other numbers."""
+    text = re.sub(
+        r"(compounding EPS to )\$[\d.]+",
+        rf"\g<1>${eps[4]:.2f}",
+        text,
+        count=1,
+    )
+    text = re.sub(
+        r"(buybacks compound EPS to )\$[\d.]+",
+        rf"\g<1>${eps[1]:.2f}",
+        text,
+        count=1,
+    )
+    text = re.sub(
+        r"(Diluted EPS: FY26 )\$[\d.]+( to FY30 )\$[\d.]+",
+        rf"\g<1>${eps[0]:.2f}\g<2>${eps[4]:.2f}",
+        text,
+        count=1,
+    )
+    return text
+
+
+def _patch_bear_bull_line(text: str, bear_px: str, bull_px: str) -> str:
+    text = re.sub(r"202\.17\.17+", f"{bull_px}", text)
+    text = re.sub(
+        r"Bear \$[\d.]+ / bull \$[\d.]+",
+        f"Bear ${bear_px} / bull ${bull_px}",
+        text,
+    )
+    return text
+
+
 def main() -> None:
     wb = recalc_workbook(ROOT / "model18_wsp_formulas.xlsx")
     data = read_dcf_outputs(wb)
@@ -69,13 +102,16 @@ def main() -> None:
         ("Bear $54 / bull $208", f"Bear ${bear_px} / bull ${bull_px}"),
         ("Bear $56 / bull $202", f"Bear ${bear_px} / bull ${bull_px}"),
         ("bull $208", f"bull ${bull_px}"),
-        ("bull $202", f"bull ${bull_px}"),
         ("$208", f"${bull_px}"),
-        # EPS
+        # legacy EPS (stale deck copies)
         ("$14.57", f"${eps[4]:.2f}"),
         ("14.57", f"{eps[4]:.2f}"),
+        ("$14.87", f"${eps[4]:.2f}"),
+        ("14.87", f"{eps[4]:.2f}"),
         ("$10.09", f"${eps[1]:.2f}"),
         ("10.09", f"{eps[1]:.2f}"),
+        ("$10.11", f"${eps[1]:.2f}"),
+        ("10.11", f"{eps[1]:.2f}"),
         # EV bridge
         ("3,944", _fmt_m(bridge["pv_fcf_m"])),
         ("14,876", _fmt_m(bridge["ev_m"])),
@@ -86,7 +122,6 @@ def main() -> None:
         ("1,056", _fmt_m(b["fcf_m"][3])),
     ]
 
-    # Update in place when deck exists; otherwise seed from GIS fallback copy.
     if not OUT.exists() and FALLBACK.exists():
         shutil.copy2(FALLBACK, OUT)
     prs = Presentation(str(OUT))
@@ -98,6 +133,8 @@ def main() -> None:
                     for run in para.runs:
                         if run.text:
                             run.text = _replace_text(run.text, mapping)
+                            run.text = _patch_eps_narratives(run.text, eps)
+                            run.text = _patch_bear_bull_line(run.text, bear_px, bull_px)
             if shape.has_table:
                 for row in shape.table.rows:
                     for cell in row.cells:
