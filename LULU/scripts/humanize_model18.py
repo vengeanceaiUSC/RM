@@ -184,6 +184,7 @@ def humanize_text(text: str) -> str:
     out = re.sub(r"\s+\.", ".", out)
     # Final pass: strip any remaining Ctrl+F mentions in labels or prose.
     out = re.sub(r"Ctrl\+F", "Source", out, flags=re.I)
+    out = re.sub(r"\.\.+", ".", out)
     return out.strip()
 
 
