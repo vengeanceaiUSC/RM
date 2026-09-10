@@ -15,7 +15,7 @@ import openpyxl
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "unbeiesgbar_final.xlsx"
-REV_ANCHOR = "DCF!$D$5"
+REV_ANCHOR = "DCF!$B$6"
 
 # Exact full-formula replacements (run first)
 EXACT: list[tuple[str, str]] = [

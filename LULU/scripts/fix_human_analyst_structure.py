@@ -163,7 +163,7 @@ def fix_dcf_structure(wb) -> dict[str, int]:
     r_gm = _row(dcf, "gross margin")
     r_cogs = _row(dcf, "cogs", "cost of goods sold")
     r_da = _row(dcf, "plus: d&a", exclude=("fy25", "d&a %"))
-    r_cx = _row(dcf, "less: capex", "capex")
+    r_cx = _row(dcf, "less: capex", exclude=("capex %",))
 
     # --- 2. Draggable EBIT margin ramp ---
     r_em = _row(dcf, "ebit margin")
@@ -201,6 +201,9 @@ def fix_dcf_structure(wb) -> dict[str, int]:
     if r_da and r_dap:
         for col in FCOLS:
             dcf[f"{col}{r_da}"] = f"={col}{r_rev}*{SCN}!$D$12"
+    if r_cxp:
+        for col in FCOLS:
+            dcf[f"{col}{r_cxp}"] = f"={SCN}!$D$13"
     if r_cx and r_cxp:
         for col in FCOLS:
             dcf[f"{col}{r_cx}"] = f"=-{col}{r_rev}*{SCN}!$D$13"

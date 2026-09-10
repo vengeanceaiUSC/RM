@@ -39,6 +39,7 @@ VAL = {
     "implied_price": ("B57", "=B55/B56"),
     "upside": ("B59", "=B57/B58-1"),
     "tv_weight": ("B60", "=B49/B50"),
+    "exit_multiple_input": ("B82", "=B47"),
     "exit_tv_gordon": ("B83", "=B47"),
     "exit_tv_multiple": ("B84", "=B45*B82"),
     "exit_pv_tv": ("B85", f"=B83/(1+{SCN_BASE}9)^G37"),
