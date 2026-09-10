@@ -1,0 +1,1196 @@
+"""Builds LULU_DCF_Valuation_Model.xlsx from scratch (no third-party template).
+
+Unlevered discounted-cash-flow valuation of lululemon athletica inc.
+FY2025 (ended Feb 1, 2026) reported figures anchor the model (BLUE); the
+five-year forecast is live formulas (BLACK) driven by analyst assumptions
+(RED). Includes a WACC build, Gordon-growth and exit-multiple terminal value,
+an EV -> equity bridge, a WACC x terminal-growth sensitivity grid, bull/base/
+bear scenarios, and a comps-based football field.
+Units: US$ thousands unless noted.
+"""
+import os
+from openpyxl import Workbook
+import styles as S
+from styles import write, write_link, write_reported, write_assumption_docs, write_internal_link, write_ctrl_f, write_source_with_ctrl_f, write_ff_dual_docs, append_assumption_docs, group_columns, NUM, PCT, MONEY, MULT, EPSFMT
+import data as D
+
+try:
+    from ingest_kpis import main as _ingest_kpis
+    _ingest_kpis()
+except Exception:
+    pass  # use committed ingested_kpis.json
+
+OUT = os.path.join(os.path.dirname(__file__), "..", "LULU_DCF_Valuation_Model.xlsx")
+MEMO_PDF = os.path.join(os.path.dirname(__file__), "..", "LULU_Assumptions_Memo.pdf")
+wb = Workbook()
+
+# Documentation columns B/C/D are always visible (no horizontal scroll needed)
+DJ, DS, DC = "B", "C", "D"
+FY = ["FY2026E", "FY2027E", "FY2028E", "FY2029E", "FY2030E"]
+FCOLS = ["F", "G", "H", "I", "J"]     # forecast columns (after FY25 col E)
+FCOL = dict(zip(FY, FCOLS))
+FY25_COL = "E"
+CHK_COL = "K"
+SCEN_COLS = ["F", "G", "H"]           # Bear / Base / Bull on Scenarios tab
+SCEN_BASE = "G"
+BASE_REV = D.IS['revenue']['FY2025']  # 11,102,600 (blue)
+
+# ------------------------------------------------------------------ COVER
+cov = wb.active
+cov.title = "Cover"
+cov.sheet_view.showGridLines = False
+S.set_col_widths(cov, {'A': 3, 'B': 100})
+write(cov, 'B2', "GLOBAL INVESTMENT SOCIETY  |  INVESTMENT RESEARCH DIVISION", S.WHITE, bold=True, size=13, fillc=S.DARK)
+cov['B2'].alignment = S.Alignment(horizontal='left', vertical='center', indent=1)
+cov.row_dimensions[2].height = 26
+write(cov, 'B4', "lululemon athletica inc. (NASDAQ: LULU)", S.DARK, bold=True, size=20)
+write(cov, 'B5', "Discounted Cash Flow Valuation \u2014 Unlevered Free Cash Flow", S.ACCENT, bold=True, size=13)
+write(cov, 'B7', "Recommendation:  LONG / OVERWEIGHT", S.GREEN, bold=True, size=14)
+write(cov, 'B9', "FONT / COLOR CONVENTION", S.DARK, bold=True, size=12)
+write(cov, 'B10', "Blue font  =  figures reported by the company (click value or source link)", S.BLUE, bold=True, size=11)
+write(cov, 'B11', "Black font  =  calculations / formulas", S.BLACK, bold=True, size=11)
+write(cov, 'B12', "Red font  =  analyst assumptions — cols B/C/D on every tab: Justification | Source | Ctrl+F", S.RED, bold=True, size=11)
+write(cov, 'B14', "TABS", S.DARK, bold=True, size=12)
+write(cov, 'B15', "WACC  \u2022  Revenue Drivers  \u2022  NOPAT Bridge  \u2022  Scenarios  \u2022  DCF  \u2022  Comps / Football Field", S.BLACK, size=10)
+write(cov, 'B16', "ASSUMPTIONS GUIDE (PDF — every tab)", S.DARK, bold=True, size=12)
+write_link(cov, 'B17', "LULU_Assumptions_Memo.pdf — full guide: every red assumption on WACC, Scenarios, Revenue Drivers, NOPAT Bridge, DCF, Comps & 3-Statement",
+           "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=10,
+           hint="Open for justification, clickable source links, and Ctrl+F proof for every assumption.")
+write(cov, 'B19', "SOURCES", S.DARK, bold=True, size=12)
+write_link(cov, 'B20', "SEC EDGAR filings, CIK 0001397187 (Form 10-K, FY2025)", D.SOURCES["edgar_xbrl"],
+           color=S.BLUE, size=10, hint=D.COVER_HINTS["edgar_xbrl"])
+write_link(cov, 'B21', "FY2025 Form 10-K (ended Feb 1, 2026)", D.filing_url("FY2025"),
+           color=S.BLUE, size=10, hint=D.COVER_HINTS["filing_fy2025"])
+write_link(cov, 'B22', "Market data & Q2 FY2026 results (Sep 3, 2026 earnings release)", D.SOURCES["earnings_sep2026"],
+           color=S.BLUE, size=10, hint=D.COVER_HINTS["earnings_sep2026"])
+write_link(cov, 'B23', "Current share price (NASDAQ: LULU)", D.SOURCES["nasdaq_quote"],
+           color=S.BLUE, size=10, hint=D.COVER_HINTS["nasdaq_quote"])
+write(cov, 'B25', "Built from scratch for the GIS IR selection assignment.", S.BLACK, italic=True, size=9)
+
+# ------------------------------------------------------------------ WACC
+wacc = wb.create_sheet("WACC")
+wacc.sheet_view.showGridLines = False
+S.set_col_widths(wacc, {'A': 46, 'B': 28, 'C': 18, 'D': 40, 'E': 12})
+write(wacc, 'A1', "WEIGHTED AVERAGE COST OF CAPITAL", S.WHITE, bold=True, size=12, fillc=S.DARK)
+for c in ['B', 'C', 'D', 'E']:
+    wacc[f'{c}1'].fill = S.fill(S.DARK)
+wacc.row_dimensions[1].height = 16
+write(wacc, f'{DJ}2', "Justification (~20 words)  [cols B\u2013D: click + to expand]", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(wacc, f'{DS}2', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(wacc, f'{DC}2', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+wacc.freeze_panes = 'E3'
+WR = {}
+r = [3]
+def w_row(key, label, value, color, fmt=PCT, bold=False, top=False, doc_key=None):
+    WR[key] = r[0]
+    bdr = S.top_border if top else None
+    write(wacc, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
+    if isinstance(value, str):
+        write(wacc, f'E{r[0]}', value, S.BLACK, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+    else:
+        write(wacc, f'E{r[0]}', value, color, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+    if doc_key:
+        write_assumption_docs(wacc, r[0], DJ, DS, DC, doc_key, D.JUST, D.ASSUMPTION_SRC,
+                              hints=D.SOURCE_HINT)
+    r[0] += 1
+
+write(wacc, 'A2', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)
+w_row('rf', "Risk-free rate (10-yr UST)", 0.048, S.RED, doc_key='wacc_rf')
+w_row('erp', "Equity risk premium", 0.060, S.RED, doc_key='wacc_erp')
+w_row('tax', "Tax rate", 0.300, S.RED, doc_key='wacc_tax')
+r[0] += 1
+write(wacc, f'A{r[0]}', "Capital structure (market values)", S.ACCENT, bold=True, size=10)
+r[0] += 1
+w_row('mkt_px', "Share price ($)", D.MKT['price'], S.BLUE, fmt=MONEY, doc_key='wacc_mkt_px')
+w_row('mkt_sh', "Shares outstanding (000)", D.MKT['shares_out'], S.BLUE, fmt=NUM, doc_key='wacc_mkt_shares')
+w_row('mkt_eq', "Market value of equity",
+      f"=E{WR['mkt_px']}*E{WR['mkt_sh']}", None, fmt=NUM, bold=True, top=True, doc_key='wacc_mkt_eq')
+w_row('lease_d', "Operating lease liabilities (ASC 842 debt equiv.)", D.MKT['debt'], S.BLUE, fmt=NUM, doc_key='wacc_lease_d')
+write(wacc, f'A{r[0]}',
+      f"  memo: current ${D.MKT['lease_cur']:,}k + non-current ${D.MKT['lease_noncur']:,}k = ${D.MKT['debt']:,}k (FY25 10-K)",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+r[0] += 1
+w_row('fund_d', "Funded debt (term loans / bonds)", D.MKT['debt_funded'], S.BLUE, fmt=NUM, doc_key='wacc_fund_d')
+w_row('debt_tot', "Total debt equivalents", f"=E{WR['lease_d']}+E{WR['fund_d']}", None, bold=True, top=True, fmt=NUM)
+r[0] += 1
+write(wacc, f'A{r[0]}', "Beta (unlever \u2192 relever)", S.ACCENT, bold=True, size=10)
+r[0] += 1
+w_row('beta_obs', "Observed Beta (5Y Monthly) \u2014 levered \u03b2L", D.MKT['beta'], S.BLUE, fmt='0.00', doc_key='wacc_beta_obs')
+w_row('yahoo_debt', "Yahoo Total Debt (mrq)", D.MKT['yahoo_debt_mrq'], S.BLUE, fmt=NUM, doc_key='wacc_beta_yahoo_debt')
+w_row('yahoo_mcap', "Yahoo Market Cap (same page as \u03b2L)", D.MKT['yahoo_mkt_cap'], S.BLUE, fmt=NUM, doc_key='wacc_beta_yahoo_mktcap')
+w_row('de_unlever', "D/E for unlever (Yahoo debt mrq \u00f7 Yahoo market cap)",
+      f"=E{WR['yahoo_debt']}/E{WR['yahoo_mcap']}",
+      None, fmt='0.00', doc_key='wacc_beta_de_unlever')
+w_row('de_book_ref', "Yahoo book D/E (mrq) \u2014 reference only", D.MKT['de_ratio_yahoo_book'], S.BLUE, fmt='0.00', doc_key='wacc_beta_de_book_ref')
+w_row('beta_unlev', "Unlevered \u03b2u",
+      f"=E{WR['beta_obs']}/(1+(1-E{WR['tax']})*E{WR['de_unlever']})",
+      None, fmt='0.00', doc_key='wacc_beta_unlev')
+w_row('de_relever', "D/E for relever (WACC: FY25 lease debt / market equity)",
+      f"=E{WR['debt_tot']}/E{WR['mkt_eq']}",
+      None, fmt='0.00', doc_key='wacc_beta_de_relever')
+w_row('beta_ind', "Sector \u03b2u benchmark (Damodaran Special Lines) \u2014 not used", 0.95, S.BLUE, fmt='0.00', doc_key='wacc_beta_ind')
+w_row('beta', "Beta used (relevered for WACC capital structure)",
+      f"=E{WR['beta_unlev']}*(1+(1-E{WR['tax']})*E{WR['de_relever']})",
+      None, fmt='0.00', bold=True, top=True, doc_key='wacc_beta')
+write_ctrl_f(wacc, f'{DC}{WR["beta"]}', D.BETA_CTRL_F)
+for i, line in enumerate([
+    "  \u03b2 walkthrough (Hamada; Yahoo Key Statistics source):",
+    "  (0) Yahoo \u03b2L = 0.86 (Beta 5Y Monthly). No vendor publishes D/E inside the regression.",
+    "  (1) Unlever at Yahoo market D/E = $2.14B debt (mrq) \u00f7 $11.14B mkt cap \u2248 0.19 \u2192 \u03b2u \u2248 0.76.",
+    "  (2) Relever at WACC D/E = FY25 10-K leases \u00f7 our market cap \u2248 0.16 \u2192 \u03b2 used \u2248 0.84.",
+    "  Book D/E 44.69% on Yahoo page is reference only (not used in formula).",
+]):
+    write(wacc, f'A{r[0]}', line, S.BLACK, italic=True, size=8, align=S.left_indent)
+    r[0] += 1
+write(wacc, f'A{r[0]}', "Cost of equity (CAPM)", S.ACCENT, bold=True, size=10)
+r[0] += 1
+w_row('coe', "Cost of equity = rf + \u03b2 \u00d7 ERP", f"=E{WR['rf']}+E{WR['beta']}*E{WR['erp']}", None, bold=True, top=True)
+r[0] += 1
+write(wacc, f'A{r[0]}', "Cost of debt (lease-equivalent)", S.ACCENT, bold=True, size=10)
+r[0] += 1
+w_row('kd', "Pre-tax cost of debt (lease-equivalent)", 0.050, S.RED, doc_key='wacc_kd')
+w_row('kdat', "After-tax cost of debt", f"=E{WR['kd']}*(1-E{WR['tax']})", None, top=True)
+r[0] += 1
+write(wacc, f'A{r[0]}', "WACC weights", S.ACCENT, bold=True, size=10)
+r[0] += 1
+w_row('we', "Equity weight", f"=E{WR['mkt_eq']}/(E{WR['mkt_eq']}+E{WR['debt_tot']})", None, doc_key='wacc_we')
+w_row('wd', "Debt weight (leases + funded)", f"=E{WR['debt_tot']}/(E{WR['mkt_eq']}+E{WR['debt_tot']})", None, doc_key='wacc_wd')
+w_row('wacc', "WACC", f"=E{WR['we']}*E{WR['coe']}+E{WR['wd']}*E{WR['kdat']}", None, bold=True, top=True)
+wacc[f"E{WR['wacc']}"].font = S.font(color=S.GREEN, bold=True, size=12)
+wacc[f"E{WR['wacc']}"].fill = S.fill(S.GREY)
+group_columns(wacc, DJ, DC)
+
+def wref(key):
+    return f"WACC!E{WR[key]}"
+
+# ------------------------------------------------------------------ SCENARIOS (built before DCF so base-case drivers can link here)
+scn = wb.create_sheet("Scenarios")
+scn.sheet_view.showGridLines = False
+S.set_col_widths(scn, {'A': 38, 'B': 26, 'C': 16, 'D': 38, 'F': 11, 'G': 11, 'H': 11})
+write(scn, 'A1', "SCENARIO ANALYSIS", S.WHITE, bold=True, size=12, fillc=S.DARK)
+for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
+    scn[f'{c}1'].fill = S.fill(S.DARK)
+scn.row_dimensions[1].height = 16
+write(scn, 'F2', "Bear", S.WHITE, bold=True, size=11, align=S.center, fillc=S.ACCENT)
+write(scn, 'G2', "Base", S.WHITE, bold=True, size=11, align=S.center, fillc=S.GREEN)
+write(scn, 'H2', "Bull", S.WHITE, bold=True, size=11, align=S.center, fillc=S.DARK)
+scn.freeze_panes = 'F3'
+
+SC = {}
+rr = [4]
+def s_assum(key, label, bear, base, bull, fmt=PCT, doc_key=None, extra_doc_key=None, internal_location=None):
+    SC[key] = rr[0]
+    write(scn, f'A{rr[0]}', label, S.BLACK, size=10, align=S.left_indent)
+    for col, v in zip(SCEN_COLS, [bear, base, bull]):
+        write(scn, f'{col}{rr[0]}', v, S.RED, size=10, numfmt=fmt, align=S.right)
+    if doc_key:
+        write_assumption_docs(scn, rr[0], DJ, DS, DC, doc_key, D.JUST, D.ASSUMPTION_SRC,
+                              internal_location=internal_location, hints=D.SOURCE_HINT)
+        if extra_doc_key:
+            append_assumption_docs(scn, rr[0], DJ, DS, DC, extra_doc_key, D.JUST, D.ASSUMPTION_SRC,
+                                   hints=D.SOURCE_HINT, prefix="Also")
+        if doc_key in ("sc_capex_pct", "3s_capex_pct") or extra_doc_key == "sc_capex_sales":
+            write_ctrl_f(scn, f'{DC}{rr[0]}', D.CAPEX_CTRL_F)
+    rr[0] += 1
+
+write(scn, 'A3', "Key assumptions (5-yr forecast)", S.ACCENT, bold=True, size=10)
+write(scn, f'{DJ}3', "Justification (~20 words)  [cols B\u2013D: click + to expand]", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(scn, f'{DS}3', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(scn, f'{DC}3', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+s_assum('g1', "FY2026E revenue growth", -0.090, -0.061, -0.040, doc_key='sc_g1')
+s_assum('gterm', "FY2027\u2013FY2030E revenue growth (avg)", -0.010, 0.023, 0.060, doc_key='sc_gterm')
+s_assum('m1', "Run-rate EBIT margin (clean, ex-refunds)", 0.120, 0.132, 0.145, doc_key='sc_m1')
+s_assum('tariff', "FY26 IEEPA tariff refunds ($k, already in guide)",
+        D.GUIDANCE['tariff_refund'], D.GUIDANCE['tariff_refund'], D.GUIDANCE['tariff_refund'],
+        fmt=NUM, doc_key='sc_tariff')
+s_assum('mterm', "Terminal (FY2030E) EBIT margin", 0.120, 0.155, 0.190, doc_key='sc_mterm')
+s_assum('wacc', "WACC", 0.110, 0.105, 0.095, doc_key='sc_wacc',
+        internal_location=f"'WACC'!E{WR['wacc']}")
+write(scn, f'{SCEN_BASE}{SC["wacc"]}', f"={wref('wacc')}", S.BLACK, size=10, numfmt=PCT, align=S.right)
+s_assum('g', "Terminal growth", 0.015, 0.0225, 0.030, doc_key='sc_g')
+s_assum('tax', "Cash tax rate", 0.320, 0.300, 0.280, doc_key='sc_tax')
+s_assum('da_pct', "D&A % of revenue", 0.045, 0.045, 0.045, doc_key='sc_da_pct')
+s_assum('capex_pct', "Capex % of revenue", 0.070, 0.055, 0.045, doc_key='sc_capex_pct',
+        extra_doc_key='sc_capex_sales')
+_NWC = D.NWC_FY25
+s_assum('gm_pct', "Gross margin %", 0.560, round(_NWC['gm_pct'], 4), 0.575, doc_key='sc_gm')
+s_assum('dso', "DSO (days) — flat vs FY25", _NWC['dso'], _NWC['dso'], _NWC['dso'],
+        fmt='0.00', doc_key='sc_dso')
+s_assum('dio_fy25', "FY25 DIO anchor (days)", _NWC['dio'], _NWC['dio'], _NWC['dio'],
+        fmt='0.00', doc_key='sc_dio')
+s_assum('dio_decline', "DIO decline (days / forecast yr)", 1, 1, 1, fmt='0', doc_key='sc_dio_decline')
+s_assum('dpo', "DPO (days) — flat vs FY25", _NWC['dpo'], _NWC['dpo'], _NWC['dpo'],
+        fmt='0.00', doc_key='sc_dpo')
+s_assum('prepaid_pct', "Prepaid expenses (% of revenue)", _NWC['prepaid_pct'], _NWC['prepaid_pct'],
+        _NWC['prepaid_pct'], doc_key='sc_prepaid')
+s_assum('accrued_pct', "Accrued liabilities (% of revenue)", _NWC['accrued_pct'], _NWC['accrued_pct'],
+        _NWC['accrued_pct'], doc_key='sc_accrued')
+s_assum('bb_fixed', "Pitch CFF: fixed buyback ($k/yr) bear/base", 750000, 750000, 0, fmt=NUM)
+s_assum('bb_pct', "Pitch CFF: % of FCF to buybacks (bull)", 0, 0, 0.75, fmt=PCT)
+
+rr[0] += 1
+write(scn, f'A{rr[0]}', "5-year forecast paths (by scenario)", S.ACCENT, bold=True, size=10)
+rr[0] += 1
+
+def put(row, lab):
+    write(scn, f'A{row}', lab, S.BLACK, size=9, align=S.left_indent)
+
+cur = rr[0]
+BASE_NWC = D.NWC_FY25['nwc']
+rev_rows, gm_rows, cogs_rows, mar_rows, ebit_rows, nopat_rows, da_rows, capex_rows = {}, {}, {}, {}, {}, {}, {}, {}
+dso_rows, dio_rows, dpo_rows = {}, {}, {}
+ar_rows, inv_rows, ap_rows, prepaid_rows, accrued_rows = {}, {}, {}, {}, {}
+coa_rows, col_rows, nwc_rows, dnwc_rows, fcf_rows = {}, {}, {}, {}, {}
+for t in range(1, 6):
+    rev_rows[t] = cur
+    put(cur, f"  Revenue \u2013 year {t}")
+    for col in SCEN_COLS:
+        if t == 1:
+            f = f"={BASE_REV}*(1+{col}{SC['g1']})"
+        else:
+            f = f"={col}{rev_rows[t-1]}*(1+{col}{SC['gterm']})"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    gm_rows[t] = cur
+    put(cur, f"  Gross margin % \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{SC['gm_pct']}", S.BLACK, size=9, numfmt=PCT, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    cogs_rows[t] = cur
+    put(cur, f"  Cost of goods sold (COGS) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{rev_rows[t]}*(1-{col}{gm_rows[t]})",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    mar_rows[t] = cur
+    put(cur, f"  Clean EBIT margin \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={col}{SC['m1']}+({col}{SC['mterm']}-{col}{SC['m1']})*{(t-1)}/4"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=PCT, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    ebit_rows[t] = cur
+    put(cur, f"  EBIT \u2013 year {t}")
+    for col in SCEN_COLS:
+        # FY26 only: add the already-recognized $134.5M refund on top of the clean margin.
+        # Later years interpolate 13.2% → 15.5% with no refund leakage.
+        extra = f"+{col}{SC['tariff']}" if t == 1 else ""
+        f = f"={col}{rev_rows[t]}*{col}{mar_rows[t]}{extra}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    nopat_rows[t] = cur
+    put(cur, f"  NOPAT \u2013 year {t}")
+    cur += 1
+for t in range(1, 6):
+    da_rows[t] = cur
+    put(cur, f"  D&A \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={col}{rev_rows[t]}*{col}{SC['da_pct']}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    capex_rows[t] = cur
+    put(cur, f"  Capex \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={col}{rev_rows[t]}*{col}{SC['capex_pct']}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    dso_rows[t] = cur
+    put(cur, f"  DSO (days) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{SC['dso']}", S.BLACK, size=9, numfmt='0.00', align=S.right)
+    cur += 1
+for t in range(1, 6):
+    ar_rows[t] = cur
+    put(cur, f"  Accounts receivable \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}',
+              f"=({col}{dso_rows[t]}/365)*{col}{rev_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    dio_rows[t] = cur
+    put(cur, f"  DIO (days) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}',
+              f"={col}{SC['dio_fy25']}-{col}{SC['dio_decline']}*{t}",
+              S.BLACK, size=9, numfmt='0.00', align=S.right)
+    cur += 1
+for t in range(1, 6):
+    inv_rows[t] = cur
+    put(cur, f"  Inventories \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}',
+              f"=({col}{dio_rows[t]}/365)*{col}{cogs_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    dpo_rows[t] = cur
+    put(cur, f"  DPO (days) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{SC['dpo']}", S.BLACK, size=9, numfmt='0.00', align=S.right)
+    cur += 1
+for t in range(1, 6):
+    ap_rows[t] = cur
+    put(cur, f"  Accounts payable \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}',
+              f"=({col}{dpo_rows[t]}/365)*{col}{cogs_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    prepaid_rows[t] = cur
+    put(cur, f"  Prepaid expenses (other current assets) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{rev_rows[t]}*{col}{SC['prepaid_pct']}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    accrued_rows[t] = cur
+    put(cur, f"  Accrued liabilities \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{rev_rows[t]}*{col}{SC['accrued_pct']}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    coa_rows[t] = cur
+    put(cur, f"  Current operating assets (AR + inv + prepaids) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}',
+              f"={col}{ar_rows[t]}+{col}{inv_rows[t]}+{col}{prepaid_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    col_rows[t] = cur
+    put(cur, f"  Current operating liabilities (AP + accruals) \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{ap_rows[t]}+{col}{accrued_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    nwc_rows[t] = cur
+    put(cur, f"  Net working capital \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', f"={col}{coa_rows[t]}-{col}{col_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    dnwc_rows[t] = cur
+    put(cur, f"  \u0394NWC (prior yr \u2212 current yr) \u2013 year {t}")
+    for col in SCEN_COLS:
+        prev_nwc = str(BASE_NWC) if t == 1 else f"{col}{nwc_rows[t-1]}"
+        write(scn, f'{col}{cur}', f"={prev_nwc}-{col}{nwc_rows[t]}",
+              S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    fcf_rows[t] = cur
+    put(cur, f"  Unlevered FCF \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = (f"={col}{nopat_rows[t]}+{col}{da_rows[t]}"
+             f"-{col}{capex_rows[t]}+{col}{dnwc_rows[t]}")
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+
+cur += 1
+write(scn, f'A{cur}', "Enterprise value (DCF)", S.DARK, bold=True, size=10, align=S.left_indent)
+ev_row = cur
+for col in SCEN_COLS:
+    fcf_cells = ",".join(f"{col}{fcf_rows[t]}" for t in range(1, 6))
+    lastf = f"{col}{fcf_rows[5]}"
+    f = (f"=NPV({col}{SC['wacc']},{fcf_cells})"
+         f"+({lastf}*(1+{col}{SC['g']})/({col}{SC['wacc']}-{col}{SC['g']}))/(1+{col}{SC['wacc']})^5")
+    write(scn, f'{col}{cur}', f, S.BLACK, bold=True, size=10, numfmt=NUM, align=S.right, bdr=S.top_border)
+cur += 1
+write(scn, f'A{cur}', "Implied share price", S.DARK, bold=True, size=11, align=S.left_indent)
+pt_row = cur
+for col in SCEN_COLS:
+    f = f"=({col}{ev_row}+{D.MKT['cash']}-{D.MKT['debt']})/{D.MKT['shares_out']}"
+    color = S.GREEN if col == SCEN_BASE else S.BLACK
+    write(scn, f'{col}{cur}', f, color, bold=True, size=12, numfmt=MONEY, align=S.right, bdr=S.top_double, fillc=S.GREY)
+cur += 1
+write(scn, f'A{cur}', "Upside / (downside) vs current", S.DARK, bold=True, size=10, align=S.left_indent)
+for col in SCEN_COLS:
+    write(scn, f'{col}{cur}', f"={col}{pt_row}/{D.MKT['price']}-1", S.BLACK, bold=True, size=10, numfmt=PCT, align=S.right)
+cur += 2
+write(scn, f'A{cur}', "Current price $%.2f; cash $%s k; lease debt $%s k; funded debt $0; net cash $%s k." % (
+      D.MKT['price'], f"{D.MKT['cash']:,}", f"{D.MKT['debt']:,}", f"{D.MKT['cash'] - D.MKT['debt']:,}"),
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+cur += 2
+write(scn, f'A{cur}', "Pitch deck bridge (IS / CFS / BS)", S.ACCENT, bold=True, size=10)
+cur += 1
+FY25_REV = D.IS['revenue']['FY2025']
+FY25_TA = D.BS['total_assets']['FY2025']
+FY25_TL = D.BS['total_liab']['FY2025']
+FY25_TE = D.BS['total_equity']['FY2025']
+PITCH_OTHER_INC = [45000, 40000, 35000, 30000, 25000]
+other_rows, ni_rows, cfo_rows, fcf_cfs_rows, buy_rows, cash_bs_rows = {}, {}, {}, {}, {}, {}
+ta_rows, tl_rows, te_rows, sh_rows, eps_rows = {}, {}, {}, {}, {}
+PITCH_REP_PRICES = [100, 108, 115, 122, 130]
+PITCH_SH_START = D.IS['diluted_shares']['FY2025']
+for t in range(1, 6):
+    other_rows[t] = cur
+    put(cur, f"  Other income \u2013 year {t}")
+    for col in SCEN_COLS:
+        write(scn, f'{col}{cur}', PITCH_OTHER_INC[t - 1], S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    ni_rows[t] = cur
+    put(cur, f"  Net income \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"=({col}{ebit_rows[t]}+{col}{other_rows[t]})*(1-{col}{SC['tax']})"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    cfo_rows[t] = cur
+    put(cur, f"  Cash from operations \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={col}{ni_rows[t]}+{col}{da_rows[t]}+{col}{dnwc_rows[t]}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    fcf_cfs_rows[t] = cur
+    put(cur, f"  Free cash flow (CFS) \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={col}{cfo_rows[t]}-{col}{capex_rows[t]}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    buy_rows[t] = cur
+    put(cur, f"  Share repurchases \u2013 year {t}")
+    for col in SCEN_COLS:
+        if col == "H":
+            f = f"=-ROUND({col}{SC['bb_pct']}*{col}{fcf_cfs_rows[t]},0)"
+        else:
+            f = f"=-{col}{SC['bb_fixed']}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    cash_bs_rows[t] = cur
+    put(cur, f"  Cash & equivalents \u2013 year {t}")
+    for col in SCEN_COLS:
+        if t == 1:
+            f = f"={D.MKT['cash']}+{col}{fcf_cfs_rows[t]}+{col}{buy_rows[t]}"
+        else:
+            f = f"={col}{cash_bs_rows[t-1]}+{col}{fcf_cfs_rows[t]}+{col}{buy_rows[t]}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    ta_rows[t] = cur
+    put(cur, f"  Total assets \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={FY25_TA}*{col}{rev_rows[t]}/{FY25_REV}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    tl_rows[t] = cur
+    put(cur, f"  Total liabilities \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={FY25_TL}*{col}{rev_rows[t]}/{FY25_REV}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    te_rows[t] = cur
+    put(cur, f"  Total equity \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={FY25_TE}*{col}{rev_rows[t]}/{FY25_REV}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    sh_rows[t] = cur
+    put(cur, f"  Diluted shares (000) \u2013 year {t}")
+    for col in SCEN_COLS:
+        if t == 1:
+            prev = PITCH_SH_START
+        else:
+            prev = f"{col}{sh_rows[t - 1]}"
+        price = PITCH_REP_PRICES[t - 1]
+        if col == "H":
+            buy_expr = f"ROUND({col}{SC['bb_pct']}*{col}{fcf_cfs_rows[t]},0)"
+        else:
+            buy_expr = f"{col}{SC['bb_fixed']}"
+        f = f"={prev}-{buy_expr}/{price}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+    cur += 1
+for t in range(1, 6):
+    eps_rows[t] = cur
+    put(cur, f"  Diluted EPS ($) \u2013 year {t}")
+    for col in SCEN_COLS:
+        f = f"={col}{ni_rows[t]}/{col}{sh_rows[t]}"
+        write(scn, f'{col}{cur}', f, S.BLACK, size=9, numfmt=EPSFMT, align=S.right)
+    cur += 1
+write(scn, f'A{cur}',
+      "  memo: pitch deck pulls cols G (base) & H (bull) from this block via pitch_values.py",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+group_columns(scn, DJ, DC)
+
+# ------------------------------------------------------------------ REVENUE DRIVERS (bottom-up schedule)
+from revenue_drivers import build_revenue_drivers
+rev_row_map = {fy: rev_rows[t] for t, fy in enumerate(FY, start=1)}
+rev_row_map["FY2025"] = None
+drv_ws, DRV = build_revenue_drivers(wb, SCEN_BASE, rev_row_map)
+
+from nopat_bridge import build_nopat_bridge
+_, NP_R = build_nopat_bridge(
+    wb, SCEN_BASE, rev_rows, ebit_rows, DRV,
+    f"Scenarios!{SCEN_BASE}{SC['tariff']}",
+    f"Scenarios!{SCEN_BASE}{SC['tax']}",
+)
+for t in range(1, 6):
+    row = nopat_rows[t]
+    bc = FCOLS[t - 1]
+    for col in SCEN_COLS:
+        if col == SCEN_BASE:
+            f = f"='NOPAT Bridge'!{bc}{NP_R['nopat']}"
+        else:
+            f = (f"={col}{ebit_rows[t]}*(1-'NOPAT Bridge'!{bc}${NP_R['t_oper']})")
+        write(scn, f'{col}{row}', f, S.BLACK, size=9, numfmt=NUM, align=S.right)
+
+def bref(key):
+    return f"Scenarios!${SCEN_BASE}${SC[key]}"
+
+YEAR_MAP = {"F": 1, "G": 2, "H": 3, "I": 4, "J": 5}
+
+# ------------------------------------------------------------------ DCF (base — linked to Scenarios → Base column G)
+dcf = wb.create_sheet("DCF")
+dcf.sheet_view.showGridLines = False
+S.set_col_widths(dcf, {'A': 48, 'B': 26, 'C': 16, 'D': 36, 'E': 12, 'F': 11, 'G': 11, 'H': 11, 'I': 11, 'J': 11, 'K': 8, 'L': 16, 'M': 36})
+write(dcf, 'A1', "DISCOUNTED CASH FLOW \u2014 BASE CASE  (US$ thousands)", S.WHITE, bold=True, size=12, fillc=S.DARK)
+for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']:
+    dcf[f'{c}1'].fill = S.fill(S.DARK)
+write(dcf, f'{FY25_COL}2', "FY2025A", S.BLUE, bold=True, size=10, align=S.center)
+write_link(dcf, f'{FY25_COL}3', "10-K", D.filing_url("FY2025"), color=S.BLUE, size=8, align=S.center, italic=True)
+write_ctrl_f(dcf, f'{DS}3', D.COVER_HINTS["filing_fy2025"])
+for y in FY:
+    write(dcf, f'{FCOL[y]}2', y, S.WHITE, bold=True, size=10, align=S.center, fillc=S.ACCENT)
+write(dcf, 'A3', "Forecast drivers linked to Scenarios tab \u2192 Base case (column G)", S.GREY, italic=True, size=9, align=S.left_indent)
+write_link(dcf, 'A4', "Full Assumptions Guide (PDF)", "LULU_Assumptions_Memo.pdf", color=S.BLUE, size=9, italic=True,
+           hint="Every red assumption on every tab — justification, source link, Ctrl+F proof.")
+write_internal_link(dcf, 'C4', 'NOPAT Bridge tab', "'NOPAT Bridge'!A1",
+                    hint="5-phase EBIT normalization → normalized NOPAT (base case).")
+write_internal_link(dcf, 'D4', 'Revenue Drivers tab', "'Revenue Drivers'!A1",
+                    hint="Bottom-up store / DTC / category schedule (FY26–30).")
+write(dcf, f'{CHK_COL}2', "\u0394 vs Scenarios", S.ACCENT, bold=True, size=8, align=S.center)
+write(dcf, f'{DJ}2', "Justification (~20 words)  [cols B\u2013D: click + to expand]", S.ACCENT, bold=True, size=8, align=S.left_indent)
+write(dcf, f'{DS}2', "Source (click)", S.ACCENT, bold=True, size=8, align=S.left_indent)
+write(dcf, f'{DC}2', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=8, align=S.left_indent)
+write(dcf, 'L2', "Alt. source  [cols L\u2013M: click + to expand]", S.ACCENT, bold=True, size=8, align=S.left_indent)
+write(dcf, 'M2', "Alt. Ctrl+F", S.ACCENT, bold=True, size=8, align=S.left_indent)
+write(dcf, f'{CHK_COL}3', "(should be 0)", S.GREY, italic=True, size=7, align=S.center)
+dcf.freeze_panes = f'{FY25_COL}3'
+dcf.row_dimensions[1].height = 16
+
+DR = {}
+r = [5]
+
+def _sc_status(row_num, sc_rows, fmt=NUM):
+    tol = "0.0001" if fmt == PCT else "0.5"
+    parts = [f"ABS({c}{row_num}-Scenarios!${SCEN_BASE}${sc_rows[YEAR_MAP[c]]})" for c in FCOLS]
+    return f'=IF(MAX({",".join(parts)})<{tol},"OK","CHECK")'
+
+def d_row(key, label, cval, proj_fn, color_c=S.BLUE, color_p=S.BLACK, fmt=NUM, bold=False,
+          top=False, dbl=False, red=False, sc_rows=None, sc_sign=1, justify_key="", extra_doc_key="",
+          internal_location=None):
+    DR[key] = r[0]
+    row_num = r[0]
+    bdr = S.top_double if dbl else (S.top_border if top else None)
+    write(dcf, f'A{row_num}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
+    if cval is not None:
+        write_reported(dcf, f'{FY25_COL}{row_num}', cval, D.filing_url("FY2025"), bold=bold, size=10, numfmt=fmt, bdr=bdr)
+    for y in FY:
+        c = FCOL[y]
+        col = S.RED if red else color_p
+        write(dcf, f'{c}{row_num}', proj_fn(c), col, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+    if sc_rows:
+        if sc_sign == -1:
+            tol = "0.5"
+            parts = [f"ABS({c}{row_num}+Scenarios!${SCEN_BASE}${sc_rows[YEAR_MAP[c]]})" for c in FCOLS]
+            status = f'=IF(MAX({",".join(parts)})<{tol},"OK","CHECK")'
+        else:
+            status = _sc_status(row_num, sc_rows, fmt)
+        write(dcf, f'{CHK_COL}{row_num}', status, S.BLACK, bold=bold, size=8, align=S.center)
+    if justify_key:
+        write_assumption_docs(dcf, row_num, DJ, DS, DC, justify_key, D.JUST, D.ASSUMPTION_SRC,
+                              internal_location=internal_location, hints=D.SOURCE_HINT)
+        if extra_doc_key:
+            append_assumption_docs(dcf, row_num, DJ, DS, DC, extra_doc_key, D.JUST, D.ASSUMPTION_SRC,
+                                   hints=D.SOURCE_HINT, prefix="Also")
+        if justify_key in ("sc_capex_pct", "3s_capex_pct") or extra_doc_key == "sc_capex_sales":
+            write_ctrl_f(dcf, f'{DC}{row_num}', D.CAPEX_CTRL_F)
+    elif extra_doc_key:
+        src = D.ASSUMPTION_SRC.get(extra_doc_key)
+        if src and src[1]:
+            write_link(dcf, f'L{row_num}', src[0], src[1], color=S.BLUE, size=8, italic=True)
+            write_ctrl_f(dcf, f'M{row_num}', D.SOURCE_HINT.get(extra_doc_key))
+    r[0] += 1
+
+PREVF = {"F": FY25_COL, "G": "F", "H": "G", "I": "H", "J": "I"}
+
+# Forecast rows — each line links to Scenarios base (column G)
+d_row('rev', "Net revenue", BASE_REV,
+      lambda c: f"=Scenarios!{SCEN_BASE}{rev_rows[YEAR_MAP[c]]}", sc_rows=rev_rows)
+d_row('growth', "Revenue growth %", None,
+      lambda c: f"={c}{DR['rev']}/{PREVF[c]}{DR['rev']}-1", fmt=PCT,
+      justify_key="sc_g1", extra_doc_key="sc_gterm")
+d_row('gm_pct', "Gross margin %", D.NWC_FY25['gm_pct'],
+      lambda c: f"={bref('gm_pct')}", fmt=PCT, red=True, justify_key="sc_gm")
+d_row('cogs', "Cost of goods sold (COGS)", D.NWC_FY25['cogs'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{cogs_rows[YEAR_MAP[c]]}", sc_rows=cogs_rows)
+d_row('margin', "Clean / run-rate EBIT margin %", None,
+      lambda c: f"=Scenarios!{SCEN_BASE}{mar_rows[YEAR_MAP[c]]}", fmt=PCT, sc_rows=mar_rows,
+      justify_key="sc_m1", extra_doc_key="sc_mterm")
+d_row('tariff', "Plus: FY26 IEEPA tariff refunds (one-time)", 0,
+      lambda c: f"={bref('tariff')}" if YEAR_MAP[c] == 1 else 0,
+      fmt=NUM, red=True, justify_key="sc_tariff")
+d_row('ebit', "EBIT (incl. FY26 refund)", D.IS['operating_income']['FY2025'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{ebit_rows[YEAR_MAP[c]]}", color_c=S.BLUE, bold=True, top=True,
+      sc_rows=ebit_rows)
+d_row('rep_margin', "Reported EBIT margin % (incl. FY26 refund)",
+      D.IS['operating_income']['FY2025'] / BASE_REV,
+      lambda c: f"={c}{DR['ebit']}/{c}{DR['rev']}", fmt=PCT, color_c=S.BLUE)
+d_row('taxes', "Less: unlevered tax (t_operating from NOPAT Bridge)", None,
+      lambda c: f"=-'NOPAT Bridge'!{c}{NP_R['tax_exp']}")
+d_row('nopat', "NOPAT", None,
+      lambda c: f"=Scenarios!{SCEN_BASE}{nopat_rows[YEAR_MAP[c]]}", bold=True, top=True, sc_rows=nopat_rows)
+d_row('da_pct', "  D&A % of revenue", None, lambda c: f"={bref('da_pct')}", fmt=PCT, red=True,
+      justify_key="sc_da_pct")
+d_row('da', "Plus: depreciation & amortization", None,
+      lambda c: f"=Scenarios!{SCEN_BASE}{da_rows[YEAR_MAP[c]]}", sc_rows=da_rows)
+d_row('capex_pct', "  Capex % of revenue", None, lambda c: f"={bref('capex_pct')}", fmt=PCT, red=True,
+      justify_key="sc_capex_pct", extra_doc_key="sc_capex_sales")
+d_row('capex', "Less: capital expenditures", None,
+      lambda c: f"=-Scenarios!{SCEN_BASE}{capex_rows[YEAR_MAP[c]]}", sc_rows=capex_rows, sc_sign=-1)
+write(dcf, f'A{r[0]}', "Working capital schedule (driver-based)  [click \u2212 to collapse detail]", S.ACCENT, bold=True, size=10, align=S.left_indent)
+r[0] += 1
+wc_detail_start = r[0]
+d_row('dso', "  DSO (days) — flat vs FY25", D.NWC_FY25['dso'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{dso_rows[YEAR_MAP[c]]}", fmt='0.00', sc_rows=dso_rows,
+      justify_key="sc_dso")
+d_row('ar', "  Accounts receivable, net", D.NWC_FY25['ar'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{ar_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=ar_rows,
+      justify_key="sc_ar")
+d_row('dio', "  DIO (days) — FY25 anchor, −1 day/yr", D.NWC_FY25['dio'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{dio_rows[YEAR_MAP[c]]}", fmt='0.00', sc_rows=dio_rows,
+      justify_key="sc_dio", extra_doc_key="sc_dio_decline")
+d_row('inventory', "  Inventories", D.NWC_FY25['inventory'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{inv_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=inv_rows,
+      justify_key="sc_inventory")
+d_row('dpo', "  DPO (days) — flat vs FY25", D.NWC_FY25['dpo'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{dpo_rows[YEAR_MAP[c]]}", fmt='0.00', sc_rows=dpo_rows,
+      justify_key="sc_dpo")
+d_row('ap', "  Accounts payable", D.NWC_FY25['ap'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{ap_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=ap_rows,
+      justify_key="sc_ap")
+d_row('prepaid_pct', "  Prepaid expenses (% of revenue)", D.NWC_FY25['prepaid_pct'],
+      lambda c: f"={bref('prepaid_pct')}", fmt=PCT, red=True, justify_key="sc_prepaid")
+d_row('prepaid', "  Prepaid expenses (other current assets)", D.NWC_FY25['prepaid'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{prepaid_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=prepaid_rows,
+      justify_key="sc_prepaid")
+d_row('accrued_pct', "  Accrued liabilities (% of revenue)", D.NWC_FY25['accrued_pct'],
+      lambda c: f"={bref('accrued_pct')}", fmt=PCT, red=True, justify_key="sc_accrued")
+d_row('accrued', "  Accrued liabilities and other", D.NWC_FY25['accrued'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{accrued_rows[YEAR_MAP[c]]}", color_c=S.BLUE, sc_rows=accrued_rows,
+      justify_key="sc_accrued")
+d_row('coa', "Current operating assets (AR + inv + prepaids)", None,
+      lambda c: f"=Scenarios!{SCEN_BASE}{coa_rows[YEAR_MAP[c]]}", sc_rows=coa_rows,
+      justify_key="sc_coa", internal_location=f"'Scenarios'!A{coa_rows[1]}")
+d_row('col', "Current operating liabilities (AP + accruals)", None,
+      lambda c: f"=Scenarios!{SCEN_BASE}{col_rows[YEAR_MAP[c]]}", sc_rows=col_rows,
+      justify_key="sc_col", internal_location=f"'Scenarios'!A{col_rows[1]}")
+d_row('nwc', "Net working capital", D.NWC_FY25['nwc'],
+      lambda c: f"=Scenarios!{SCEN_BASE}{nwc_rows[YEAR_MAP[c]]}", bold=True, top=True, sc_rows=nwc_rows,
+      justify_key="sc_nwc")
+wc_detail_end = r[0] - 1
+d_row('dnwc', "\u0394NWC (prior yr \u2212 current yr)", None,
+      lambda c: f"=Scenarios!{SCEN_BASE}{dnwc_rows[YEAR_MAP[c]]}", sc_rows=dnwc_rows,
+      bold=True, top=True, justify_key="sc_dnwc",
+      internal_location=f"'Scenarios'!A{dnwc_rows[1]}")
+S.group_rows(dcf, wc_detail_start, wc_detail_end, hidden=True)
+write(dcf, f'A{r[0]}',
+      "  memo: driver-based NWC. ΔNWC = prior-year NWC \u2212 current-year NWC; added to UFCF (NWC build = cash outflow).",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+r[0] += 1
+d_row('ufcf', "Unlevered free cash flow", None,
+      lambda c: f"=Scenarios!{SCEN_BASE}{fcf_rows[YEAR_MAP[c]]}", bold=True, top=True, dbl=True, sc_rows=fcf_rows)
+d_row('period', "Discount period (years)", None, lambda c: {"F": 1, "G": 2, "H": 3, "I": 4, "J": 5}[c], fmt='0')
+d_row('df', "Discount factor @ WACC", None, lambda c: f"=1/(1+{bref('wacc')})^{c}{DR['period']}", fmt='0.000')
+d_row('pv', "PV of unlevered FCF", None, lambda c: f"={c}{DR['ufcf']}*{c}{DR['df']}", bold=True, top=True)
+
+r[0] += 1
+write(dcf, f'A{r[0]}', f"Scenarios linkage summary (column {CHK_COL} should all read OK)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+chk_start, chk_end = DR['rev'], DR['ufcf']
+write(dcf, f'{CHK_COL}{r[0]}',
+      f'=IF(COUNTIF({CHK_COL}{chk_start}:{CHK_COL}{chk_end},"CHECK")=0,"ALL OK","REVIEW")',
+      S.GREEN, bold=True, size=9, align=S.center)
+r[0] += 1
+# Valuation block
+VR = {}
+def v_row(key, label, formula, fmt=NUM, color=S.BLACK, bold=False, top=False, dbl=False, red=False,
+          source_url=None, source_label="", source_hint=None, doc_key=None, internal_location=None):
+    VR[key] = r[0]
+    bdr = S.top_double if dbl else (S.top_border if top else None)
+    write(dcf, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
+    col = S.RED if red else color
+    if isinstance(formula, (int, float)):
+        if source_url and color == S.BLUE:
+            write_reported(dcf, f'{FY25_COL}{r[0]}', formula, source_url, bold=bold, size=10, numfmt=fmt, bdr=bdr)
+        else:
+            write(dcf, f'{FY25_COL}{r[0]}', formula, col, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+    else:
+        write(dcf, f'{FY25_COL}{r[0]}', formula, col, bold=bold, size=10, numfmt=fmt, align=S.right, bdr=bdr)
+    if source_url and source_label:
+        write_link(dcf, f'{DS}{r[0]}', source_label, source_url, color=S.BLUE, size=8, italic=True)
+        write_ctrl_f(dcf, f'{DC}{r[0]}', source_hint)
+    elif source_label:
+        write(dcf, f'{DS}{r[0]}', source_label, S.BLACK, italic=True, size=8, align=S.left_indent)
+    if doc_key:
+        write_assumption_docs(dcf, r[0], DJ, DS, DC, doc_key, D.JUST, D.ASSUMPTION_SRC,
+                              internal_location=internal_location, hints=D.SOURCE_HINT)
+    r[0] += 1
+
+write(dcf, f'A{r[0]}', "VALUATION \u2014 GORDON GROWTH (PERPETUITY) METHOD", S.WHITE, bold=True, size=10, fillc=S.DARK)
+for c in ['B', 'C']:
+    dcf[f'{c}{r[0]}'].fill = S.fill(S.DARK)
+r[0] += 1
+v_row('sumpv', "Sum of PV of explicit FCF (FY26\u2013FY30)", f"=SUM(F{DR['pv']}:J{DR['pv']})", bold=True)
+v_row('g', "Terminal growth rate (g)", f"={bref('g')}", fmt=PCT, doc_key='sc_g')
+v_row('ebitda', "Terminal EBITDA (FY2030E EBIT + D&A)", f"=J{DR['ebit']}+J{DR['da']}", bold=True, top=True)
+v_row('tv', "Terminal value = FCF\u2085\u00d7(1+g)/(WACC\u2212g)",
+      f"=J{DR['ufcf']}*(1+{bref('g')})/({bref('wacc')}-{bref('g')})")
+v_row('implied_exit', "  Implied exit EV/EBITDA = Gordon TV / FY30 EBITDA",
+      f"=E{VR['tv']}/E{VR['ebitda']}", fmt=MULT)
+v_row('exit_id', "  memo: (UFCF\u2083\u2080 / EBITDA\u2083\u2080) \u00d7 (1+g) / (WACC\u2212g)",
+      f"=J{DR['ufcf']}/E{VR['ebitda']}*(1+{bref('g')})/({bref('wacc')}-{bref('g')})", fmt=MULT)
+v_row('pvtv', "PV of terminal value", f"=E{VR['tv']}/(1+{bref('wacc')})^J{DR['period']}", bold=True)
+v_row('ev', "Enterprise value", f"=E{VR['sumpv']}+E{VR['pvtv']}", bold=True, top=True)
+v_row('cash', "Plus: cash & equivalents (FY2025)", D.MKT['cash'], color=S.BLUE,
+      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_bs"])
+v_row('debt', "Less: total debt & operating leases", -D.MKT['debt'], color=S.BLUE,
+      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_debt"],
+      doc_key='dcf_debt_bridge')
+write(dcf, f'A{r[0]}',
+      f"  memo: funded term debt $0. Operating leases ${D.MKT['lease_cur']:,}k current + "
+      f"${D.MKT['lease_noncur']:,}k non-current = ${D.MKT['debt']:,}k (ASC 842 debt equivalent).",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+r[0] += 1
+write(dcf, f'A{r[0]}',
+      "  memo: UFCF is pre-interest; rent stays in opex. We subtract lease liabilities in the bridge "
+      "but do not add back implied lease interest to EBIT (simplified treatment).",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+r[0] += 1
+v_row('eqv', "Equity value", f"=E{VR['ev']}+E{VR['cash']}+E{VR['debt']}", bold=True, top=True)
+v_row('sh', "Shares outstanding (000)", D.MKT['shares_out'], color=S.BLUE,
+      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_shares_out"])
+v_row('pt', "Implied value per share", f"=E{VR['eqv']}/E{VR['sh']}", fmt=MONEY, bold=True, top=True, dbl=True)
+dcf[f"E{VR['pt']}"].font = S.font(color=S.GREEN, bold=True, size=13)
+dcf[f"E{VR['pt']}"].fill = S.fill(S.GREY)
+write(dcf, f'{CHK_COL}{VR["pt"]}', f'=IF(ABS(E{VR["pt"]}-Scenarios!${SCEN_BASE}${pt_row})<0.05,"OK","CHECK")',
+      S.BLACK, bold=True, size=8, align=S.center)
+v_row('px', "Current share price", D.MKT['price'], fmt=MONEY, color=S.BLUE,
+      source_url=D.SOURCES["nasdaq_quote"], source_label="NASDAQ", source_hint=D.REPORTED_HINTS["nasdaq"])
+v_row('upside', "Implied upside / (downside)", f"=E{VR['pt']}/E{VR['px']}-1", fmt=PCT, bold=True)
+dcf[f"E{VR['upside']}"].font = S.font(color=S.GREEN, bold=True, size=11)
+v_row('tvpct', "  memo: % of EV from terminal value", f"=E{VR['pvtv']}/E{VR['ev']}", fmt=PCT)
+
+from repurchase_schedule import build_repurchase_schedule
+RR = build_repurchase_schedule(dcf, r, DR, NP_R, VR)
+
+r[0] += 1
+write(dcf, f'A{r[0]}', "CROSS-CHECK \u2014 EXIT MULTIPLE METHOD", S.WHITE, bold=True, size=10, fillc=S.DARK)
+for c in ['B', 'C']:
+    dcf[f'{c}{r[0]}'].fill = S.fill(S.DARK)
+r[0] += 1
+write(dcf, f'A{r[0]}', "Exit multiple is the Gordon identity \u2014 not a peer pick or an average", S.ACCENT, bold=True, size=9, align=S.left_indent)
+r[0] += 1
+v_row('exitm', "Selected exit EV/EBITDA (Gordon implied)",
+      f"=E{VR['implied_exit']}", fmt=MULT, doc_key='dcf_exitm',
+      internal_location=f"'DCF'!E{VR['implied_exit']}")
+v_row('tv2', "Terminal value = Terminal EBITDA \u00d7 exit multiple", f"=E{VR['ebitda']}*E{VR['exitm']}")
+v_row('pvtv2', "PV of terminal value", f"=E{VR['tv2']}/(1+{bref('wacc')})^J{DR['period']}")
+v_row('ev2', "Enterprise value (exit method)", f"=E{VR['sumpv']}+E{VR['pvtv2']}", bold=True, top=True)
+v_row('pt2', "Implied value per share (exit method)",
+      f"=(E{VR['ev2']}+E{VR['cash']}+E{VR['debt']})/E{VR['sh']}", fmt=MONEY, bold=True)
+dcf[f"E{VR['pt2']}"].font = S.font(color=S.GREEN, bold=True, size=11)
+
+r[0] += 1
+write(dcf, f'A{r[0]}', "TERMINAL VALUE RECONCILIATION (GORDON vs EXIT MULTIPLE)", S.WHITE, bold=True, size=10, fillc=S.DARK)
+for c in ['B', 'C', 'D']:
+    dcf[f'{c}{r[0]}'].fill = S.fill(S.DARK)
+r[0] += 1
+write(dcf, f'A{r[0]}', "", S.BLACK, size=9)
+write(dcf, f'B{r[0]}', "Gordon Growth", S.WHITE, bold=True, size=9, align=S.center, fillc=S.NAVY)
+write(dcf, f'C{r[0]}', "Exit Multiple", S.WHITE, bold=True, size=9, align=S.center, fillc=S.NAVY)
+write(dcf, f'D{r[0]}', "Variance", S.WHITE, bold=True, size=9, align=S.center, fillc=S.NAVY)
+r[0] += 1
+
+def recon_row(label, gordon, exit_, variance, fmt=NUM, bold=False):
+    write(dcf, f'A{r[0]}', label, S.DARK if bold else S.BLACK, bold=bold, size=10, align=S.left_indent)
+    write(dcf, f'B{r[0]}', gordon, S.BLACK, bold=bold, size=10, numfmt=fmt, align=S.right)
+    write(dcf, f'C{r[0]}', exit_, S.BLACK, bold=bold, size=10, numfmt=fmt, align=S.right)
+    write(dcf, f'D{r[0]}', variance, S.BLACK, bold=bold, size=10, numfmt=fmt, align=S.right)
+    r[0] += 1
+
+recon_row("Terminal value ($)",
+          f"=E{VR['tv']}", f"=E{VR['tv2']}", f"=B{r[0]}-C{r[0]}", bold=True)
+tv_var_row = r[0] - 1
+recon_row("Exit EV/EBITDA (implied vs selected)",
+          f"=E{VR['implied_exit']}", f"=E{VR['exitm']}", f"=B{r[0]}-C{r[0]}", fmt=MULT, bold=True)
+mult_var_row = r[0] - 1
+recon_row("Terminal value variance (%)",
+          "", "", f"=(B{tv_var_row}-C{tv_var_row})/B{tv_var_row}", fmt=PCT)
+recon_row("Implied share price",
+          f"=E{VR['pt']}", f"=E{VR['pt2']}", f"=B{r[0]}-C{r[0]}", fmt=MONEY, bold=True)
+# sanity check flag: multiples within 1.5 turns
+write(dcf, f'A{r[0]}', "Sanity check: multiples within \u00b11.5 turns?", S.BLACK, bold=True, size=10, align=S.left_indent)
+write(dcf, f'B{r[0]}', f'=IF(ABS(D{mult_var_row})<=1.5,"PASS","REVIEW")', S.GREEN, bold=True, size=11, align=S.center)
+write(dcf, f'C{r[0]}', f'=TEXT(D{mult_var_row},"0.0")&"x spread vs Gordon-implied exit"', S.BLACK, italic=True, size=9, align=S.left_indent)
+write(dcf, f'D{r[0]}', "Selected exit is the Gordon identity, so spread should be 0", S.BLACK, italic=True, size=8, align=S.left_indent)
+r[0] += 1
+
+# ------------------------------------------------------------------ SENSITIVITY (WACC x g)
+r[0] += 2
+write(dcf, f'A{r[0]}', "SENSITIVITY \u2014 IMPLIED SHARE PRICE (WACC vs terminal growth)", S.WHITE, bold=True, size=10, fillc=S.DARK)
+for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
+    dcf[f'{c}{r[0]}'].fill = S.fill(S.DARK)
+r[0] += 1
+sens_top = r[0]
+waccs = [0.095, 0.100, 0.105, 0.110, 0.115]
+gs = [0.015, 0.020, 0.0225, 0.025, 0.030]
+write(dcf, f'A{sens_top}', "WACC \\ g", S.DARK, bold=True, size=9, align=S.center, fillc=S.LIGHT)
+gcols = FCOLS
+for j, g in enumerate(gs):
+    write(dcf, f'{gcols[j]}{sens_top}', g, S.RED, bold=True, size=9, numfmt=PCT, align=S.center, fillc=S.LIGHT)
+write_assumption_docs(dcf, sens_top, DJ, DS, DC, 'sens_g', D.JUST, D.ASSUMPTION_SRC,
+                      hints=D.SOURCE_HINT)
+write_internal_link(dcf, f'L{sens_top}', 'Scenarios: terminal g', f"'Scenarios'!{SCEN_BASE}{SC['g']}")
+fcf_rng = f"F{DR['ufcf']}:J{DR['ufcf']}"
+lastfcf = f"J{DR['ufcf']}"
+for i, wv in enumerate(waccs):
+    rr = sens_top + 1 + i
+    write(dcf, f'A{rr}', wv, S.RED, bold=True, size=9, numfmt=PCT, align=S.center, fillc=S.LIGHT)
+    write_internal_link(dcf, f'L{rr}', 'WACC tab', f"'WACC'!E{WR['wacc']}")
+    if i == 0:
+        src = D.ASSUMPTION_SRC['sens_wacc']
+        write_link(dcf, f'{DS}{rr}', src[0], src[1], color=S.BLUE, size=8, italic=True)
+    write_ctrl_f(dcf, f'{DC}{rr}', D.SOURCE_HINT['sens_wacc'])
+    for j, g in enumerate(gs):
+        f = (f"=(NPV({wv},{fcf_rng})"
+             f"+({lastfcf}*(1+{g})/({wv}-{g}))/(1+{wv})^5"
+             f"+E{VR['cash']}+E{VR['debt']})/E{VR['sh']}")
+        col = S.GREEN if (abs(wv-0.105) < 1e-9 and abs(g-0.0225) < 1e-9) else S.BLACK
+        write(dcf, f'{gcols[j]}{rr}', f, col, size=9, numfmt=MONEY, align=S.center)
+r[0] = sens_top + 1 + len(waccs)
+write_assumption_docs(dcf, r[0], DJ, DS, DC, 'sens_axes', D.JUST, D.ASSUMPTION_SRC,
+                      internal_location=f"'Scenarios'!{SCEN_BASE}{SC['wacc']}",
+                      extra_source_col='L', extra_ctrl_f_col='M',
+                      extra_label='FRED: Real GDP (GDPC1)',
+                      extra_url=D.SOURCES['fred_gdpc1'], extra_hint=D.SOURCE_HINT['sens_g'],
+                      hints=D.SOURCE_HINT)
+r[0] += 1
+
+# ------------------------------------------------------------------ COMPS / FOOTBALL FIELD
+comps = wb.create_sheet("Comps")
+comps.sheet_view.showGridLines = False
+S.set_col_widths(comps, {'A': 48, 'B': 28, 'C': 18, 'D': 44, 'E': 14, 'F': 14, 'G': 12, 'H': 12, 'I': 16, 'J': 16})
+write(comps, 'A1', "RELATIVE VALUATION \u2014 IMPLIED PRICE RANGES (FOOTBALL FIELD)", S.WHITE, bold=True, size=12, fillc=S.DARK)
+for c in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
+    comps[f'{c}1'].fill = S.fill(S.DARK)
+comps.row_dimensions[1].height = 16
+write(comps, f'{DJ}2', "Justification (~20 words)  [cols B\u2013D: click + to expand]", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(comps, f'{DS}2', "Source (click)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+write(comps, f'{DC}2', "Ctrl+F (prove number)", S.ACCENT, bold=True, size=9, align=S.left_indent)
+comps.freeze_panes = 'E3'
+write(comps, 'A3', "LULU operating metrics (FY2025A / FY2026E)", S.ACCENT, bold=True, size=10)
+CM = {}
+rr = [4]
+def c_row(key, label, val, color=S.BLUE, fmt=NUM, source_url=None, source_label="", source_hint=None):
+    CM[key] = rr[0]
+    write(comps, f'A{rr[0]}', label, S.BLACK, size=10, align=S.left_indent)
+    if source_url and color == S.BLUE and isinstance(val, (int, float)):
+        write_reported(comps, f'E{rr[0]}', val, source_url, size=10, numfmt=fmt)
+    else:
+        write(comps, f'E{rr[0]}', val, color, size=10, numfmt=fmt, align=S.right)
+    if source_url and source_label:
+        write_source_with_ctrl_f(comps, f'{DS}{rr[0]}', f'{DC}{rr[0]}', source_label, source_url, source_hint)
+    rr[0] += 1
+
+c_row('rev', "FY2025A revenue", D.IS['revenue']['FY2025'],
+      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_is"])
+c_row('ebitda', "FY2025A EBITDA (EBIT + D&A)",
+      D.IS['operating_income']['FY2025'] + D.CF['d_and_a']['FY2025'])
+comps[f"E{CM['ebitda']}"].value = f"={D.IS['operating_income']['FY2025']}+{D.CF['d_and_a']['FY2025']}"
+comps[f"E{CM['ebitda']}"].font = S.font(color=S.BLACK)
+CM['ebitda30'] = rr[0]
+write(comps, f'A{rr[0]}', "FY2030E terminal EBITDA (DCF EBIT + D&A)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', f"=DCF!E{VR['ebitda']}", S.BLACK, size=10, numfmt=NUM, align=S.right)
+write_internal_link(comps, f'{DS}{rr[0]}', "↳ DCF base case", f"'DCF'!E{VR['ebitda']}")
+rr[0] += 1
+c_row('eps26', "FY2026E diluted EPS (guidance midpoint)", 9.61, color=S.BLUE, fmt=EPSFMT,
+      source_url=D.SOURCES["earnings_sep2026"], source_label="Release",
+      source_hint=D.REPORTED_HINTS["earnings_eps"])
+c_row('cash', "Cash & equivalents", D.MKT['cash'],
+      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_bs"])
+c_row('sh', "Shares outstanding (000)", D.MKT['shares_out'],
+      source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_shares_out"])
+c_row('px', "Current share price", D.MKT['price'], fmt=MONEY,
+      source_url=D.SOURCES["nasdaq_quote"], source_label="NASDAQ",
+      source_hint=D.REPORTED_HINTS["nasdaq"])
+# current multiples (black formulas)
+CM['ceved'] = rr[0]
+write(comps, f'A{rr[0]}', "  memo: current EV / EBITDA", S.BLACK, italic=True, size=9, align=S.left_indent)
+write(comps, f'E{rr[0]}', f"=(E{CM['px']}*E{CM['sh']}-E{CM['cash']})/E{CM['ebitda']}", S.BLACK, italic=True, size=9, numfmt=MULT, align=S.right)
+rr[0] += 1
+write(comps, f'A{rr[0]}', "  memo: current P / E (FY2026E)", S.BLACK, italic=True, size=9, align=S.left_indent)
+write(comps, f'E{rr[0]}', f"=E{CM['px']}/E{CM['eps26']}", S.BLACK, italic=True, size=9, numfmt=MULT, align=S.right)
+rr[0] += 2
+
+# ---- Exit multiple build (selected exit = Gordon implied, not a peer pick) ----
+write(comps, f'A{rr[0]}', "EXIT MULTIPLE BUILD \u2014 FY2030E TERMINAL YEAR", S.ACCENT, bold=True, size=10)
+rr[0] += 1
+write(comps, f'A{rr[0]}', "Peer / reference EV/EBITDA (forward / illustrative)", S.BLACK, italic=True, size=9, align=S.left_indent)
+rr[0] += 1
+write(comps, f'A{rr[0]}', "PITCHBOOK PUBCOMPS \u2014 daily EV / TTM EBITDA as of 04-Sep-2026 ($000)",
+      S.ACCENT, bold=True, size=10)
+rr[0] += 1
+write(comps, f'A{rr[0]}',
+      "EV/EBITDA is a black formula (I/J). UAA is shown but excluded from averages (negative TTM EBITDA).",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+rr[0] += 1
+write(comps, f'A{rr[0]}', "Company", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'{DJ}{rr[0]}', "Justification", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'{DS}{rr[0]}', "Source", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'{DC}{rr[0]}', "Ctrl+F / proof", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'E{rr[0]}', "EV/EBITDA", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
+write(comps, f'I{rr[0]}', "EV ($000)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
+write(comps, f'J{rr[0]}', "EBITDA ($000)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
+rr[0] += 1
+
+# PitchBook extract (user screen, 04-Sep-2026). Amounts in thousands.
+# UAA EBITDA is negative — keep the row, drop from AVERAGE.
+pb_rows = [
+    ("lululemon (LULU)", 11890440, 2548084, True),
+    ("Under Armour (UAA)", 3208397, -23230, False),
+    ("adidas (ADS)", 35661944, 3857684, True),
+    ("Nike (NKE)", 58972350, 4647000, True),
+    ("Deckers (DECK)", 10555510, 1329439, True),
+    ("Williams-Sonoma (WSM)", 27284350, 1768400, True),
+    ("Crocs (CROX)", 7153911, 922278, True),
+    ("Movado (MOV)", 616045, 62010, True),
+    ("Levi Strauss (LEVI)", 9422753, 976700, True),
+    ("La-Z-Boy (LZB)", 1598873, 235723, True),
+    ("Kontoor (KTB)", 5236269, 407521, True),
+]
+EM = {}
+core_keys = []
+pos_keys = []
+for name, ev, ebitda, in_core in pb_rows:
+    EM[name] = rr[0]
+    write(comps, f'A{rr[0]}', name, S.BLACK, size=10, align=S.left_indent)
+    write(comps, f'I{rr[0]}', ev, S.BLACK, size=9, numfmt=NUM, align=S.center)
+    write(comps, f'J{rr[0]}', ebitda, S.BLACK, size=9, numfmt=NUM, align=S.center)
+    write(comps, f'E{rr[0]}',
+          f'=IF(J{rr[0]}<=0,"n.m.",I{rr[0]}/J{rr[0]})',
+          S.BLACK, size=10, numfmt=MULT, align=S.center)
+    write_assumption_docs(comps, rr[0], DJ, DS, DC, "comps_pb", D.JUST, D.ASSUMPTION_SRC,
+                          hints=D.SOURCE_HINT)
+    if ebitda > 0:
+        pos_keys.append(rr[0])
+        if in_core and name != "Williams-Sonoma (WSM)" and name not in (
+                "Movado (MOV)", "La-Z-Boy (LZB)"):
+            core_keys.append(rr[0])
+    rr[0] += 1
+
+# Core athletic/apparel: LULU, ADS, NKE, DECK, CROX, LEVI, KTB (not WSM/MOV/LZB, not UAA)
+nke_r = EM["Nike (NKE)"]
+deck_r = EM["Deckers (DECK)"]
+ads_r = EM["adidas (ADS)"]
+lulu_r = EM["lululemon (LULU)"]
+crox_r = EM["Crocs (CROX)"]
+levi_r = EM["Levi Strauss (LEVI)"]
+ktb_r = EM["Kontoor (KTB)"]
+wsm_r = EM["Williams-Sonoma (WSM)"]
+mov_r = EM["Movado (MOV)"]
+lzb_r = EM["La-Z-Boy (LZB)"]
+
+# Alo has no published EV/EBITDA. Prove the ask and parent sales, then show EV/Sales only.
+rr[0] += 1
+write(comps, f'A{rr[0]}',
+      "ALO YOGA BUILD \u2014 no source prints EV/EBITDA (Reuters + Forbes)",
+      S.ACCENT, bold=True, size=10)
+rr[0] += 1
+write(comps, f'A{rr[0]}',
+      "Column E on the next two rows is $bn, not EV/EBITDA. The black formula is implied EV/Sales on an unclosed ask.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+rr[0] += 1
+EM['alo_ask'] = rr[0]
+write(comps, f'A{rr[0]}', "Alo / Color Image 2023 Moelis ask ($bn)", S.BLACK, size=10, align=S.left_indent)
+write_reported(comps, f'E{rr[0]}', 10, D.SOURCES["alo_reuters_2023"], size=10,
+               numfmt='#,##0.0', align=S.center)
+write_assumption_docs(comps, rr[0], DJ, DS, DC, "comps_alo_ask", D.JUST, D.ASSUMPTION_SRC,
+                      hints=D.SOURCE_HINT)
+append_assumption_docs(comps, rr[0], DJ, DS, DC, "comps_alo_closed", D.JUST, D.ASSUMPTION_SRC,
+                       hints=D.SOURCE_HINT)
+rr[0] += 1
+EM['alo_sales'] = rr[0]
+write(comps, f'A{rr[0]}', "Color Image parent sales, Forbes est. ($bn)", S.BLACK, size=10, align=S.left_indent)
+write_reported(comps, f'E{rr[0]}', 2.0, D.SOURCES["alo_forbes"], size=10,
+               numfmt='#,##0.0', align=S.center)
+write_assumption_docs(comps, rr[0], DJ, DS, DC, "comps_alo_sales", D.JUST, D.ASSUMPTION_SRC,
+                      hints=D.SOURCE_HINT)
+rr[0] += 1
+EM['alo_evs'] = rr[0]
+write(comps, f'A{rr[0]}', "Alo implied EV/Sales (ask / parent sales)", S.BLACK, bold=True, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', f"=E{EM['alo_ask']}/E{EM['alo_sales']}", S.BLACK, bold=True, size=10,
+      numfmt=MULT, align=S.center)
+write(comps, f'{DJ}{rr[0]}', D.JUST["comps_alo_impl"], S.BLACK, italic=True, size=8, align=S.left_indent)
+write_internal_link(comps, f'{DS}{rr[0]}', "Comps: Alo ask / parent sales",
+                    f"'Comps'!E{EM['alo_ask']}")
+write_ctrl_f(comps, f'{DC}{rr[0]}',
+             "No Ctrl+F for EV/EBITDA \u2014 none found on Reuters or Forbes. "
+             f"This cell is E{EM['alo_ask']} / E{EM['alo_sales']} (ask \u00f7 parent sales). Not the TV.")
+rr[0] += 1
+EM['alo_evebitda'] = rr[0]
+write(comps, f'A{rr[0]}', "Alo EV/EBITDA", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', "n.a.", S.BLACK, italic=True, size=10, align=S.center)
+write(comps, f'{DJ}{rr[0]}',
+      "No page prints Alo or Color Image EBITDA. PitchBook Alo column is blank. Cannot imply EV/EBITDA.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DS}{rr[0]}', "None \u2014 no EBITDA source", S.BLACK, italic=True, size=8, align=S.left_indent)
+write_ctrl_f(comps, f'{DC}{rr[0]}',
+             "No Ctrl+F. Reuters, Forbes, and PitchBook do not print Alo EV/EBITDA.")
+rr[0] += 1
+
+rr[0] += 1
+write(comps, f'A{rr[0]}', "Averages (live Excel AVERAGE \u2014 shown so TV is not a blended print)", S.ACCENT, bold=True, size=10)
+rr[0] += 1
+EM['pub_mean'] = rr[0]
+write(comps, f'A{rr[0]}', "Core athletic / apparel mean (LULU / NKE / ADS / DECK / CROX / LEVI / KTB)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}',
+      f"=AVERAGE({','.join(f'E{k}' for k in (lulu_r, nke_r, ads_r, deck_r, crox_r, levi_r, ktb_r))})",
+      S.BLACK, size=10, numfmt=MULT, align=S.center)
+write(comps, f'{DJ}{rr[0]}',
+      "PitchBook core set, UAA out. Current tape \u2014 not a 2.25% g FY30 exit.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of the seven core prints", S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DC}{rr[0]}', "Each E cell is I/J from the PitchBook extract. Do not use as FY30 exit.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+rr[0] += 1
+EM['mature_mean'] = rr[0]
+write(comps, f'A{rr[0]}', "All positive-EBITDA mean (ex-UAA; includes WSM / MOV / LZB)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}',
+      f"=AVERAGE({','.join(f'E{k}' for k in pos_keys)})",
+      S.BLACK, size=10, numfmt=MULT, align=S.center)
+write(comps, f'{DJ}{rr[0]}',
+      "Wider PitchBook tape. WSM/MOV/LZB are adjacent retail, not athletic. Not the TV.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DS}{rr[0]}', "Derived: Excel AVERAGE of every positive-EBITDA row", S.BLACK, italic=True, size=8, align=S.left_indent)
+write(comps, f'{DC}{rr[0]}', "UAA omitted because TTM EBITDA is negative. Not the selected FY30 exit.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+rr[0] += 1
+write(comps, f'A{rr[0]}',
+      "We do not average peers for terminal value, and we do not use Alo 5.0x EV/Sales as EV/EBITDA.",
+      S.BLACK, italic=True, size=9, align=S.left_indent)
+rr[0] += 2
+write(comps, f'A{rr[0]}', "Terminal multiple selection (DCF exit method)", S.ACCENT, bold=True, size=10)
+rr[0] += 1
+EM['gordon'] = rr[0]
+write(comps, f'A{rr[0]}', "Gordon Growth implied exit EV/EBITDA", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', f"=DCF!E{VR['implied_exit']}", S.BLACK, size=10, numfmt=MULT, align=S.right)
+rr[0] += 1
+EM['selected'] = rr[0]
+write(comps, f'A{rr[0]}', "Selected exit multiple (base case)", S.BLACK, bold=True, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', f"=DCF!E{VR['exitm']}", S.BLACK, bold=True, size=10, numfmt=MULT, align=S.right)
+rr[0] += 1
+write(comps, f'A{rr[0]}', "Spread (selected \u2212 Gordon implied)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', f"=E{EM['selected']}-E{EM['gordon']}", S.BLACK, size=10, numfmt=MULT, align=S.right)
+rr[0] += 1
+write(comps, f'A{rr[0]}', "Rationale for selected exit (Gordon identity, not a peer pick)", S.BLACK, bold=True, size=10, align=S.left_indent)
+rr[0] += 1
+for bullet in [
+    "\u2022  Selected exit = Gordon TV / FY30 EBITDA. Identity: (UFCF/EBITDA)\u00d7(1+g)/(WACC\u2212g). Live formula, not a typed 8.0x",
+    "\u2022  At base WACC ~9.0% and g 2.25% that identity is ~7.4x FY30 EBITDA \u2014 not a peer average",
+    "\u2022  PitchBook pubcomps (04-Sep-2026) are the current tape: each multiple is daily EV / TTM EBITDA",
+    "\u2022  That tape is a check, not the exit. A 2.25% g / 15.5% OM year is not today\u2019s NKE/WSM multiple",
+    "\u2022  Alo has no EV/EBITDA print. Implied 5.0x is EV/Sales (unclosed $10bn ask / ~$2bn parent sales) \u2014 not the FY30 exit",
+    "\u2022  PitchBook LULU is ~4.7x TTM. Gordon ~7.4x is a partial recovery, not a re-rate to WSM ~15x",
+]:
+    write(comps, f'A{rr[0]}', bullet, S.BLACK, size=9, align=S.left_indent)
+    rr[0] += 1
+rr[0] += 1
+
+write(comps, f'A{rr[0]}', "Methodology / multiple ranges (FY2030E terminal EBITDA \u2014 football field)", S.ACCENT, bold=True, size=10)
+rr[0] += 1
+write(comps, f'A{rr[0]}', "Method", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'{DJ}{rr[0]}', "Justification", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'{DS}{rr[0]}', "Source", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'{DC}{rr[0]}', "Ctrl+F", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.left_indent)
+write(comps, f'E{rr[0]}', "Low mult.", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
+write(comps, f'F{rr[0]}', "High mult.", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
+write(comps, f'G{rr[0]}', "Implied px (low)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
+write(comps, f'H{rr[0]}', "Implied px (high)", S.WHITE, bold=True, size=10, fillc=S.DARK, align=S.center)
+rr[0] += 1
+
+def ff_ev_ebitda(label, lo, hi, ebitda_key='ebitda30'):
+    write(comps, f'A{rr[0]}', label, S.BLACK, size=10, align=S.left_indent)
+    write(comps, f'E{rr[0]}', lo, S.RED, size=10, numfmt=MULT, align=S.center)
+    write(comps, f'F{rr[0]}', hi, S.RED, size=10, numfmt=MULT, align=S.center)
+    for outcol, mcol in [('G', 'E'), ('H', 'F')]:
+        f = f"=(E{CM[ebitda_key]}*{mcol}{rr[0]}+E{CM['cash']})/E{CM['sh']}"
+        write(comps, f'{outcol}{rr[0]}', f, S.BLACK, size=10, numfmt=MONEY, align=S.center)
+    write_ff_dual_docs(comps, rr[0], 'comps_ff_ev_lo', 'comps_ff_ev_hi', DJ, DS, DC,
+                       D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
+    rr[0] += 1
+
+def ff_pe(label, lo, hi):
+    write(comps, f'A{rr[0]}', label, S.BLACK, size=10, align=S.left_indent)
+    write(comps, f'E{rr[0]}', lo, S.RED, size=10, numfmt=MULT, align=S.center)
+    write(comps, f'F{rr[0]}', hi, S.RED, size=10, numfmt=MULT, align=S.center)
+    for outcol, mcol in [('G', 'E'), ('H', 'F')]:
+        f = f"=E{CM['eps26']}*{mcol}{rr[0]}"
+        write(comps, f'{outcol}{rr[0]}', f, S.BLACK, size=10, numfmt=MONEY, align=S.center)
+    write_ff_dual_docs(comps, rr[0], 'comps_ff_pe_lo', 'comps_ff_pe_hi', DJ, DS, DC,
+                       D.JUST, D.ASSUMPTION_SRC, hints=D.SOURCE_HINT)
+    rr[0] += 1
+
+ff_ev_ebitda("EV / EBITDA (FY2030E terminal)", 5.0, 8.0)
+# DCF exit-method row (Gordon-implied multiple on same terminal EBITDA base)
+exit_ff_row = rr[0]
+write(comps, f'A{exit_ff_row}', "DCF exit method (Gordon-implied on FY2030E EBITDA)", S.BLACK, bold=True, size=10, align=S.left_indent)
+write(comps, f'E{exit_ff_row}', f"=DCF!E{VR['exitm']}", S.BLACK, bold=True, size=10, numfmt=MULT, align=S.center)
+write(comps, f'G{exit_ff_row}', f"=(E{CM['ebitda30']}*E{exit_ff_row}+E{CM['cash']})/E{CM['sh']}", S.BLACK, bold=True, size=10, numfmt=MONEY, align=S.center)
+write_assumption_docs(comps, exit_ff_row, DJ, DS, DC, 'dcf_exitm', D.JUST, D.ASSUMPTION_SRC,
+                      internal_location=f"'DCF'!E{VR['exitm']}", hints=D.SOURCE_HINT)
+rr[0] += 1
+ff_pe("P / E (FY2026E EPS)", 10.0, 18.0)
+# DCF range row references DCF sheet outputs
+write(comps, f'A{rr[0]}', "DCF (bear \u2013 bull)", S.BLACK, size=10, align=S.left_indent)
+write(comps, f'E{rr[0]}', "\u2014", S.BLACK, size=10, align=S.center)
+write(comps, f'F{rr[0]}', "\u2014", S.BLACK, size=10, align=S.center)
+write(comps, f'G{rr[0]}', f"=Scenarios!F{pt_row}", S.BLACK, size=10, numfmt=MONEY, align=S.center)
+write(comps, f'H{rr[0]}', f"=Scenarios!H{pt_row}", S.BLACK, size=10, numfmt=MONEY, align=S.center)
+rr[0] += 2
+write(comps, f'A{rr[0]}', "Current price", S.BLACK, bold=True, size=11, align=S.left_indent)
+write_reported(comps, f'E{rr[0]}', D.MKT['price'], D.SOURCES["nasdaq_quote"], bold=True, size=11, numfmt=MONEY)
+write_source_with_ctrl_f(comps, f'{DS}{rr[0]}', f'{DC}{rr[0]}', "NASDAQ", D.SOURCES["nasdaq_quote"],
+                         D.REPORTED_HINTS["nasdaq"])
+rr[0] += 1
+write(comps, f'A{rr[0]}',
+      "Note: pubcomps are PitchBook 04-Sep-2026 (EV/EBITDA = daily EV / TTM EBITDA). UAA excluded from the mean. Selected TV is Gordon implied, not the PitchBook average. Alo EV/EBITDA is n.a.",
+      S.BLACK, italic=True, size=8, align=S.left_indent)
+group_columns(comps, DJ, DC)
+
+# Link DCF exit multiple to Comps peer build + peer table
+write_internal_link(dcf, f'M{VR["exitm"]}', 'Comps: Exit Multiple Build', f"'Comps'!A{EM['selected']}")
+group_columns(dcf, DJ, DC)
+group_columns(dcf, 'L', 'M')
+
+wb.calculation.fullCalcOnLoad = True
+wb.save(OUT)
+print("Saved", os.path.abspath(OUT))
+
+from build_assumptions_memo import build as _build_memo
+_build_memo()
