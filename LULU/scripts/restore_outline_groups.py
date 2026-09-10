@@ -3,10 +3,8 @@ from __future__ import annotations
 
 from openpyxl.utils import column_index_from_string, get_column_letter
 
-# Contiguous column groups (start_col, end_col)
-SHEET_COL_GROUPS: dict[str, list[tuple[str, str]]] = {
-    "Revenue Drivers": [("J", "K")],
-}
+# Contiguous column groups (start_col, end_col) — RD sources stay visible
+SHEET_COL_GROUPS: dict[str, list[tuple[str, str]]] = {}
 
 # Row groups: (start_row, end_row, summary_below)
 SHEET_ROW_GROUPS: dict[str, list[tuple[int, int, bool]]] = {
