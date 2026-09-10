@@ -504,7 +504,7 @@ JUST = {
     "drv_f_geo_scale": "FY26 geo rev = FY25 geo rev × (FY26 total rev ÷ FY25 total rev). Total = store + e-comm + other.",
     "drv_f_total_rev": "Bottom-up total = store channel + e-comm + other. That's your driver-built revenue before you check Scenarios.",
     "drv_f_scen_rev": "Pulls the Scenarios base-case revenue path; that's still the number the DCF actually uses, not the driver total.",
-    "drv_f_variance": "Driver-built revenue minus Scenarios revenue. Shows you how far off the bottom-up path is from what you're valuing on.",
+    "drv_f_variance": "Driver-built revenue minus Scenarios base-case revenue ($000).",
     "drv_f_var_pct": "Variance as a percent of Scenarios revenue. Easy read on whether the driver schedule is close or way out of line.",
     "drv_ecomm_sessions": "485M FY25 sessions implied from reported e-comm revenue / conv / AOV. FY26 −3% on Americas softness.",
     "drv_ecomm_conv": "3.3% FY26 digital conversion vs 3.5% pressure cited in 10-K Americas; gradual recovery to 3.6%.",

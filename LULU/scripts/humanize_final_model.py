@@ -17,8 +17,31 @@ import openpyxl
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "unbeiesgbar_final.xlsx"
 SHARE_PRICE = 100.61  # NASDAQ last sale per model source notes (Sep-2026)
-
 URLISH = re.compile(r"https?\s*:\s*/", re.I)
+AI_PHRASES = [
+    r"hangs together",
+    r"bottom-up path",
+    r"stays viable",
+    r"valuation anchor",
+    r"revisit drivers or Scenarios",
+    r"high-conviction analyst overlay",
+]
+AI_SCRUB = re.compile("|".join(AI_PHRASES), re.I)
+
+
+def _scrub_ai_phrasing(wb) -> int:
+    """Remove known AI boilerplate from any visible text cell."""
+    n = 0
+    for ws in wb.worksheets:
+        for row in ws.iter_rows():
+            for cell in row:
+                if not isinstance(cell.value, str) or cell.value.startswith("="):
+                    continue
+                if AI_SCRUB.search(cell.value):
+                    cell.value = None
+                    n += 1
+    return n
+
 
 
 def _clear_cell(cell) -> None:
@@ -49,7 +72,7 @@ def humanize(path: Path = TARGET) -> Path:
     # --- Revenue Drivers ---
     rd = wb["Revenue Drivers"]
     _set_or_clear(rd["A2"], None)
-    _clear_cell(rd["A59"])
+    _clear_cell(rd["A59"])  # variance block is self-explanatory; no footnote needed
     changed += 2
 
     # --- NOPAT Bridge ---
@@ -118,6 +141,8 @@ def humanize(path: Path = TARGET) -> Path:
         wb["DCF"]["B72"].value = SHARE_PRICE
         changed += 1
 
+    changed += _scrub_ai_phrasing(wb)
+
     wb.save(tmp)
     tmp.replace(path)
     print(f"Humanized {path.name} ({changed} edits)")
@@ -153,6 +178,8 @@ def verify(path: Path = TARGET) -> None:
                         bad.append(f"{ws.title}!{cell.coordinate}: pipeline header remains")
                     if "LULU_Assumptions_Memo" in v:
                         bad.append(f"{ws.title}!{cell.coordinate}: memo filename in cell")
+                    if AI_SCRUB.search(v):
+                        bad.append(f"{ws.title}!{cell.coordinate}: AI phrasing remains")
 
     n_comments = sum(1 for ws in wb.worksheets for row in ws.iter_rows() for c in row if c.comment)
     if n_comments < 50:
