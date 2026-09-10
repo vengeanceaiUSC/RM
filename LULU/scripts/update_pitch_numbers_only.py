@@ -31,7 +31,7 @@ def _sensitivity_grid() -> dict[tuple[str, str], int]:
 
     wb = load_workbook(ROOT / "model18_wsp_formulas.xlsx", data_only=False)
     scn, dcf = wb["Scenarios"], wb["DCF"]
-    inp = _col_inputs(scn, dcf, "G")
+    inp = _col_inputs(scn, dcf, "C")
     base_w = evaluate(ROOT / "model18_wsp_formulas.xlsx")["wacc"]
     grid = {}
     for w in (0.095, 0.10, 0.105, 0.11):
