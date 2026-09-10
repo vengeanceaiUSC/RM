@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 from pptx import Presentation
+from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.util import Inches
 
 SCRIPTS = Path(__file__).resolve().parent
@@ -58,6 +59,15 @@ def _is_sensitivity_table(shape) -> bool:
         return False
     h0 = shape.table.rows[0].cells[0].text.strip().replace("\\", " vs ")
     return h0 in ("WACC vs g", "WACC  vs g")
+
+
+def _center_sensitivity_grid(table) -> None:
+    """Center g-rate headers and price cells for a balanced grid."""
+    for ri in range(len(table.rows)):
+        for ci, cell in enumerate(table.rows[ri].cells):
+            for p in cell.text_frame.paragraphs:
+                p.alignment = PP_ALIGN.LEFT if ci == 0 else PP_ALIGN.CENTER
+            cell.vertical_anchor = MSO_ANCHOR.MIDDLE
 
 
 def _ensure_base_case_callout(slide, px: str, wacc: str = "9.0", g: str = "2.25") -> None:
@@ -106,6 +116,10 @@ def sync(path: Path = DECK, model: Path = MODEL) -> dict:
         font_size=9,
         header_font_size=9,
     )
+    for sh in slide.shapes:
+        if _is_sensitivity_table(sh):
+            _center_sensitivity_grid(sh.table)
+            break
     _ensure_base_case_callout(slide, px)
     prs.save(str(path))
 

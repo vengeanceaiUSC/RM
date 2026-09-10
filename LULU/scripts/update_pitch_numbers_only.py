@@ -247,6 +247,11 @@ def main() -> None:
 
     fix_gis_layout()
     sync_sensitivity(OUT)
+    from fix_pitch_gis_compliance import _fix_slide20
+
+    prs_align = Presentation(str(OUT))
+    _fix_slide20(prs_align)
+    prs_align.save(str(OUT))
     fix_table_headers(OUT)
     fix_meta(OUT)
     repair_and_repackage(OUT)
