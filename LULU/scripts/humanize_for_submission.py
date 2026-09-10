@@ -284,9 +284,14 @@ def humanize(path: Path = TARGET) -> dict:
     from fix_dcf_tv_reconciliation import fix as fix_tv_recon
 
     stats["tv_recon"] = fix_tv_recon(path=tmp)
+    from align_model_to_pitch import align as align_pitch
+
+    stats["pitch_align"] = align_pitch(path=tmp)
     from fix_financial_number_formats import fix as fix_numfmt
 
     stats["numfmt"] = fix_numfmt(path=tmp)
+    # Re-apply pitch-specific formats after broad numfmt pass
+    stats["pitch_fmt"] = align_pitch(path=tmp)
     stats["metadata"] = fix_meta(path=tmp)
 
     tmp.replace(path)

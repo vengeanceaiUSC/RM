@@ -90,6 +90,9 @@ def _format_for_label(label: str) -> str | None:
             "mix %",
             "mix",
             "erp",
+            "premium",
+            "cost of equity",
+            "cost of debt",
             "beta",
             "gross margin",
             "prepaid",
@@ -198,23 +201,25 @@ def fix(path: Path = TARGET) -> dict[str, int]:
                     cell.number_format = bfmt
                     stats["propagate"] += 1
 
-        # Final sweep: any remaining General on numeric/formula cells in value cols
-        for r in range(1, ws.max_row + 1):
-            label = str(ws.cell(r, 1).value or "").lower()
-            for c in cols:
-                cell = ws.cell(r, c)
-                if str(cell.number_format or "General") != "General":
+    # Final sweep: any remaining General on numeric/formula cells in value cols
+    for r in range(1, ws.max_row + 1):
+        label = str(ws.cell(r, 1).value or "").lower()
+        fmt_from_label = _format_for_label(str(ws.cell(r, 1).value or ""))
+        for c in cols:
+            cell = ws.cell(r, c)
+            if str(cell.number_format or "General") != "General":
+                continue
+            v = cell.value
+            if v is None:
+                continue
+            if isinstance(v, str) and not _is_formula(v):
+                continue
+            if isinstance(v, (int, float)) and abs(v) < 1000 and fmt_from_label != PCT:
+                if not any(k in label for k in ("price", "share", "shares", "000")):
                     continue
-                v = cell.value
-                if v is None:
-                    continue
-                if isinstance(v, str) and not _is_formula(v):
-                    continue
-                if isinstance(v, (int, float)) and abs(v) < 1000 and "%" not in label:
-                    continue
-                fmt = _format_for_label(str(ws.cell(r, 1).value or "")) or NUM
-                cell.number_format = fmt
-                stats["general_sweep"] += 1
+            fmt = fmt_from_label or NUM
+            cell.number_format = fmt
+            stats["general_sweep"] += 1
 
     wb.save(tmp)
     tmp.replace(path)

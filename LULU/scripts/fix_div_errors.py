@@ -76,38 +76,39 @@ def _restore_dcf_scenarios_links(dcf) -> int:
 
 
 def _fix_repurchase(dcf) -> int:
+    """Keep repurchase block linked to Scenarios pitch bridge (matches slides)."""
     n = 0
-    # Budget + cost of equity anchors (link to col B inputs)
+    base = "D"
     for col in FCOLS:
-        dcf[f"{col}66"] = "=B66"
-        dcf[f"{col}67"] = "=B67"
+        dcf[f"{col}66"] = f"=Scenarios!${base}$21"
+        dcf[f"{col}70"] = f"=Scenarios!${base}$21"
+        dcf[f"{col}69"] = f"={col}36"
+        dcf[f"{col}71"] = f"={col}70/{col}69"
+        dcf[f"{col}74"] = f"={col}70/{col}73"
+        n += 7
+
+    # Price path: assumption cells Scenarios B198:B202
+    dcf["C73"] = "=Scenarios!$B$198"
+    prev = "C"
+    for i, col in enumerate(FCOLS[1:], start=1):
+        dcf[f"{col}73"] = f"=Scenarios!$B${198 + i}"
+        prev = col
+        n += 1
+
+    dcf["C75"] = f"=Scenarios!${base}$197"
+    for i, col in enumerate(FCOLS):
+        sh_row = 183 + i
+        dcf[f"{col}76"] = f"=Scenarios!${base}${sh_row}"
+        if i > 0:
+            dcf[f"{col}75"] = f"={FCOLS[i-1]}76"
         n += 2
 
-    # UFCF from row 36; repurchase budget from row 66
-    for col in FCOLS:
-        dcf[f"{col}69"] = f"={col}36"
-        dcf[f"{col}70"] = f"={col}66"
-        dcf[f"{col}71"] = f"={col}70/{col}69"
-        n += 3
-
-    # Share price path
-    dcf["C73"] = "=B73*(1+B67)"
-    prev = "B"
-    for col in FCOLS[1:]:
-        dcf[f"{col}73"] = f"={prev}73*(1+B67)"
-        prev = col
-    n += len(FCOLS)
-
-    for col in FCOLS:
-        dcf[f"{col}74"] = f"={col}70/{col}73"
-        dcf[f"{col}75"] = "=B75" if col == "C" else f"={FCOLS[FCOLS.index(col)-1]}76"
-        dcf[f"{col}76"] = f"={col}75-{col}74"
-        dcf[f"{col}78"] = (
-            f"=('NOPAT Bridge'!{col}36-'NOPAT Bridge'!{col}23)"
-            f"*(1-'NOPAT Bridge'!{col}$39)"
-        )
-        dcf[f"{col}79"] = f"={col}78/{col}76"
-        n += 5
+    for i, col in enumerate(FCOLS):
+        ni_row = 143 + i
+        eps_row = 188 + i
+        dcf[f"{col}78"] = f"=Scenarios!${base}${ni_row}"
+        dcf[f"{col}79"] = f"=Scenarios!${base}${eps_row}"
+        n += 2
 
     return n
 
