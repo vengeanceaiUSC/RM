@@ -101,6 +101,25 @@ def fix_ooxml(path: Path, *, title: str, application: str, description: str = ""
     }
 
 
+def fix_pptx_metadata(path: Path) -> dict[str, str]:
+    """Set PPTX metadata via python-pptx API — never zip-patch .pptx (breaks PowerPoint)."""
+    from pptx import Presentation
+
+    prs = Presentation(str(path))
+    cp = prs.core_properties
+    cp.author = AUTHOR
+    cp.last_modified_by = AUTHOR
+    cp.title = PPT_TITLE
+    cp.comments = ""
+    tmp = path.with_suffix(".meta.pptx")
+    prs.save(str(tmp))
+    tmp.replace(path)
+    with zipfile.ZipFile(path) as zf:
+        core = zf.read("docProps/core.xml").decode("utf-8")
+    bad = [n for n in ("openpyxl", "python-pptx", "Steve Canny") if n.lower() in core.lower()]
+    return {"file": path.name, "author": AUTHOR, "clean": str(not bad), "residual": ", ".join(bad)}
+
+
 def fix(path: Path | None = None) -> list[dict[str, str]]:
     results = []
     files = [path] if path else TARGETS
@@ -110,7 +129,7 @@ def fix(path: Path | None = None) -> list[dict[str, str]]:
         if f.suffix == ".xlsx":
             results.append(fix_ooxml(f, title=EXCEL_TITLE, application="Microsoft Excel"))
         elif f.suffix == ".pptx":
-            results.append(fix_ooxml(f, title=PPT_TITLE, application="Microsoft PowerPoint"))
+            results.append(fix_pptx_metadata(f))
     return results
 
 

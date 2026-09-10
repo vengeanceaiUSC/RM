@@ -19,8 +19,6 @@ SCRIPTS = Path(__file__).resolve().parent
 ROOT = SCRIPTS.parent
 sys.path.insert(0, str(SCRIPTS))
 
-from copy import deepcopy
-
 from recalc_model18 import read_dcf_outputs, recalc_workbook
 
 MODEL = "LULU_DCF_Valuation_Model.xlsx"
@@ -108,15 +106,14 @@ def _standardize_sources(text: str) -> str:
 
 
 def _update_sensitivity_table(table, sens: list[dict]) -> None:
-    """Slide 20 WACC × g grid — sync all five rows from recalced DCF."""
-    need_rows = 1 + len(sens)
-    while len(table.rows) < need_rows:
-        table._tbl.append(deepcopy(table._tbl.tr_lst[-1]))
-    while len(table.rows) > need_rows:
-        table._tbl.remove(table._tbl.tr_lst[-1])
+    """Slide 20 WACC × g grid — update cells only (never deepcopy rows; breaks PowerPoint)."""
     for ri, row in enumerate(sens, start=1):
+        if ri >= len(table.rows):
+            break
         table.cell(ri, 0).text = row["wacc"]
         for ci, px in enumerate(row["prices"], start=1):
+            if ci >= len(table.columns):
+                break
             table.cell(ri, ci).text = f"${px}"
 
 
@@ -259,8 +256,10 @@ def main() -> None:
 
     from fix_file_metadata import fix as fix_meta
     from fix_pitch_gis_compliance import main as fix_gis_layout
+    from repair_pitch_deck import repair as repair_deck
 
     fix_gis_layout()
+    repair_deck(OUT)
     fix_meta(OUT)
     fix_meta(ROOT / "model18_wsp_formulas.xlsx")
 
