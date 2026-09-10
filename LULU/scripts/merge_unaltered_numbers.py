@@ -30,10 +30,24 @@ OUTPUT = ROOT / "model18_final.xlsx"
 
 CTRLF_COL_SHEETS = ("WACC", "Scenarios", "NOPAT Bridge", "Comps")
 
+# Value columns that must never be cleared by doc cleanup (unaltered layout).
+VALUE_COLS: dict[str, set[int]] = {
+    "WACC": {5},  # col E — WACC inputs & outputs
+    "Scenarios": {5, 6, 7},  # E/F/G bear/base/bull
+    "NOPAT Bridge": {5},
+    "DCF": {5, 10},  # E + J forecast cols
+    "Comps": {5},
+}
+
 
 def _clear_ctrlf_col(ws, col: str = "D") -> int:
-    """Clear text in Ctrl+F column; leave formulas untouched."""
+    """Clear text in Ctrl+F column only; never touch value columns."""
     idx = column_index_from_string(col)
+    protected = VALUE_COLS.get(ws.title, set())
+    if idx in protected:
+        raise ValueError(
+            f"{ws.title}: refusing to clear col {col} — it is a value column, not Ctrl+F"
+        )
     cleared = 0
     for r in range(1, ws.max_row + 1):
         cell = ws.cell(r, idx)
@@ -42,6 +56,50 @@ def _clear_ctrlf_col(ws, col: str = "D") -> int:
                 cell.value = None
                 cleared += 1
     return cleared
+
+
+def _eval_sheet_col(ws, col: int) -> dict[int, float]:
+    """Evaluate intra-sheet formulas in one column (topological)."""
+    vals: dict[int, float] = {}
+
+    def get(row: int) -> float:
+        if row in vals:
+            return vals[row]
+        cell = ws.cell(row, col)
+        raw = cell.value
+        if raw is None:
+            raise ValueError(f"{ws.title} row {row} col {col}: missing value")
+        if isinstance(raw, (int, float)):
+            vals[row] = float(raw)
+            return vals[row]
+        if isinstance(raw, str) and raw.startswith("="):
+            expr = raw[1:]
+            expr = re.sub(
+                r"([A-Z]{1,3})(\d+)",
+                lambda m: str(get(int(m.group(2))))
+                if column_index_from_string(m.group(1)) == col
+                else m.group(0),
+                expr,
+            )
+            result = float(eval(expr))  # noqa: S307 — trusted model formulas
+            vals[row] = result
+            return result
+        raise ValueError(f"{ws.title} row {row}: cannot evaluate {raw!r}")
+
+    for r in range(1, ws.max_row + 1):
+        raw = ws.cell(r, col).value
+        if raw is not None:
+            get(r)
+    return vals
+
+
+def _bake_wacc_values(wb) -> None:
+    """Replace WACC col E formulas with computed numbers so Excel shows values without recalc."""
+    ws = wb["WACC"]
+    col = column_index_from_string("E")
+    computed = _eval_sheet_col(ws, col)
+    for row, num in computed.items():
+        ws.cell(row, col).value = num
 
 
 def _clear_dcf_doc_cols(dcf) -> None:
@@ -159,6 +217,12 @@ def merge_workbook(source: Path = SOURCE, output: Path = OUTPUT) -> Path:
     # Scrub source columns (col C) on narrative tabs; Notes col B already rewritten above.
     _global_scrub(wb, scrub_cols={name: {3} for name in SHEETS if name != "DCF"})
 
+    _bake_wacc_values(wb)
+
+    wacc_e41 = wb["WACC"]["E41"].value
+    if not isinstance(wacc_e41, (int, float)) or not (0.085 <= wacc_e41 <= 0.115):
+        raise ValueError(f"WACC E41 out of range after bake: {wacc_e41!r}")
+
     wb.save(output)
     print(f"Merged {source.name} → {output.name} ({notes_count} Notes cells rewritten)")
     return output
@@ -180,6 +244,7 @@ def verify_numbers(source: Path = SOURCE, output: Path = OUTPUT) -> None:
 
     notes_cols = {2}  # col B on all sheets may differ (Notes text)
     ctrl_f_cols = {4}  # col D cleared on narrative tabs
+    wacc_baked = _eval_sheet_col(src_wb["WACC"], 5)  # col E baked to numbers in output
 
     for sheet_name in src_wb.sheetnames:
         src_ws = src_wb[sheet_name]
@@ -192,6 +257,15 @@ def verify_numbers(source: Path = SOURCE, output: Path = OUTPUT) -> None:
                 if sheet_name in SHEETS and c in notes_cols:
                     continue
                 if sheet_name in CTRLF_COL_SHEETS and c in ctrl_f_cols:
+                    continue
+                if sheet_name == "WACC" and c == 5:
+                    sv = wacc_baked.get(r)
+                    ov = out_ws.cell(r, c).value if r <= out_ws.max_row else None
+                    if not _cell_values_equal(sv, ov):
+                        diffs.append(
+                            f"{sheet_name}!{openpyxl.utils.get_column_letter(c)}{r}: "
+                            f"src={sv!r} out={ov!r}"
+                        )
                     continue
                 if sheet_name == "Revenue Drivers" and c == 12:
                     continue
@@ -232,7 +306,12 @@ def spot_checks(source: Path = SOURCE, output: Path = OUTPUT) -> list[tuple[str,
         checks.append((f"Scenarios base F{r}", scn_s.cell(r, 6).value, scn_o.cell(r, 6).value))
 
     checks.append(("DCF E5", src["DCF"]["E5"].value, out["DCF"]["E5"].value))
-    checks.append(("WACC E41", src["WACC"]["E41"].value, out["WACC"]["E41"].value))
+    wacc_baked = _eval_sheet_col(src["WACC"], 5)
+    checks.append(("WACC E41", wacc_baked[41], out["WACC"]["E41"].value))
+    checks.append(("WACC rf E3", wacc_baked[3], out["WACC"]["E3"].value))
+    checks.append(("WACC ERP E4", wacc_baked[4], out["WACC"]["E4"].value))
+    checks.append(("WACC beta E25", wacc_baked[25], out["WACC"]["E25"].value))
+    checks.append(("WACC CoE E32", wacc_baked[32], out["WACC"]["E32"].value))
     checks.append(("Buyback F21", scn_s["F21"].value, scn_o["F21"].value))
 
     rd_s, rd_o = src["Revenue Drivers"], out["Revenue Drivers"]
