@@ -920,9 +920,9 @@ write(comps, f'A{rr[0]}', "FY2030E terminal EBITDA (DCF EBIT + D&A)", S.BLACK, s
 write(comps, f'E{rr[0]}', f"=DCF!E{VR['ebitda']}", S.BLACK, size=10, numfmt=NUM, align=S.right)
 write_internal_link(comps, f'{DS}{rr[0]}', "↳ DCF base case", f"'DCF'!E{VR['ebitda']}")
 rr[0] += 1
-c_row('eps26', "FY2026E diluted EPS (guidance midpoint)", 9.61, color=S.BLUE, fmt=EPSFMT,
-      source_url=D.SOURCES["earnings_sep2026"], source_label="Release",
-      source_hint=D.REPORTED_HINTS["earnings_eps"])
+c_row('eps26', "FY2026E diluted EPS (model base case)", 9.76, color=S.BLACK, fmt=EPSFMT,
+      source_label="DCF base case",
+      source_hint="DCF Income Statement FY26E diluted EPS (base case)")
 c_row('cash', "Cash & equivalents", D.MKT['cash'],
       source_url=D.filing_url("FY2025"), source_label="10-K", source_hint=D.REPORTED_HINTS["10k_bs"])
 c_row('sh', "Shares outstanding (000)", D.MKT['shares_out'],

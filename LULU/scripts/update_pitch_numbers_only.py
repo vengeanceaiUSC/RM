@@ -261,6 +261,10 @@ def main() -> None:
     fix_meta(OUT)
     fix_meta(ROOT / "model18_wsp_formulas.xlsx")
 
+    from apply_garamond_excel import apply as apply_garamond
+
+    apply_garamond(ROOT / "model18_wsp_formulas.xlsx")
+
     print(f"Updated numbers + sources → {OUT}")
     print(f"  Base ${px} (+{upside}%) | Bear ${bear_px} | Bull ${bull_px}")
     print(f"  EPS FY26-FY30: {eps}")
