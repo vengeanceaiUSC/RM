@@ -19,7 +19,7 @@ DEFAULT_PATH = ROOT / "model18_wsp_formulas.xlsx"
 
 OTHER_INCOME_K = [45_000, 40_000, 35_000, 30_000, 25_000]
 REPURCHASE_PRICES = [100, 108, 115, 122, 130]
-COL_MAP = {"F": "bear", "G": "base", "H": "bull"}
+COL_MAP = {"B": "bear", "C": "base", "D": "bull"}
 PROJ_YEARS = D.PROJ_YEARS
 
 
