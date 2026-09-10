@@ -23,7 +23,7 @@ from polish_model18_altered import (  # noqa: E402
     _rewrite_all_formulas,
     _rewrite_sheet_internal_formulas,
 )
-from restore_outline_groups import restore_outline_groups  # noqa: E402
+from restore_outline_groups import remove_outline_groups  # noqa: E402
 
 try:
     from sanitize_model_symbols import sanitize_workbook as _sanitize_symbols
@@ -287,7 +287,7 @@ def strip_workbook(src: Path = INPUT, dst: Path = OUTPUT) -> Path:
             _delete_col_range(wb, sheet_name, start, end)
 
     _rebind_formulas(wb)
-    restore_outline_groups(wb, col_hidden=False)
+    remove_outline_groups(wb)
     _fix_freeze_panes(wb)
 
     wb.save(tmp)

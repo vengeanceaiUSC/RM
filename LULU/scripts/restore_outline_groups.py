@@ -60,6 +60,29 @@ def group_rows(
     ws.sheet_properties.outlinePr.applyStyles = True
 
 
+def remove_outline_groups(wb) -> int:
+    """Strip all Excel row/column outline levels and hide +/- controls."""
+    cleared = 0
+    for ws in wb.worksheets:
+        touched = False
+        for col, dim in ws.column_dimensions.items():
+            if dim.outline_level or dim.hidden:
+                dim.outline_level = 0
+                dim.hidden = False
+                touched = True
+        for row, dim in ws.row_dimensions.items():
+            if dim.outline_level or dim.hidden:
+                dim.outline_level = 0
+                dim.hidden = False
+                touched = True
+        ws.sheet_view.showOutlineSymbols = False
+        if ws.sheet_properties.outlinePr is not None:
+            ws.sheet_properties.outlinePr.showOutlineSymbols = False
+        if touched:
+            cleared += 1
+    return cleared
+
+
 def restore_outline_groups(wb, *, col_hidden: bool = True) -> int:
     """Re-apply outline metadata and show +/- controls on every grouped sheet."""
     restored = 0

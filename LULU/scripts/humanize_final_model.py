@@ -10,11 +10,16 @@ from __future__ import annotations
 
 import re
 import shutil
+import sys
 from pathlib import Path
 
 import openpyxl
 
-ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPTS))
+from restore_outline_groups import remove_outline_groups  # noqa: E402
+
+ROOT = SCRIPTS.parent
 TARGET = ROOT / "unbeiesgbar_final.xlsx"
 SHARE_PRICE = 100.61  # NASDAQ last sale per model source notes (Sep-2026)
 URLISH = re.compile(r"https?\s*:\s*/", re.I)
@@ -142,6 +147,7 @@ def humanize(path: Path = TARGET) -> Path:
         changed += 1
 
     changed += _scrub_ai_phrasing(wb)
+    remove_outline_groups(wb)
 
     wb.save(tmp)
     tmp.replace(path)
