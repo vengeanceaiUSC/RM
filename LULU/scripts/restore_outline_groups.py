@@ -1,9 +1,9 @@
-"""Restore Excel outline (+/-) controls for collapsible row/column groups."""
+"""Restore Excel outline (+/-) controls for collapsible column/row groups."""
 from __future__ import annotations
 
 from openpyxl.utils import column_index_from_string, get_column_letter
 
-# Post-humanization: only contiguous groups. Source col C stays visible; B/D are empty.
+# Contiguous column groups (start_col, end_col)
 SHEET_COL_GROUPS: dict[str, list[tuple[str, str]]] = {
     "Revenue Drivers": [("J", "K")],
 }
@@ -24,9 +24,11 @@ def clear_sheet_outlines(ws) -> None:
     for dim in ws.column_dimensions.values():
         dim.outline_level = 0
         dim.hidden = False
+        dim.collapsed = False
     for dim in ws.row_dimensions.values():
         dim.outline_level = 0
         dim.hidden = False
+        dim.collapsed = False
 
 
 def group_columns(
@@ -36,18 +38,18 @@ def group_columns(
     *,
     hidden: bool = True,
     outline_level: int = 1,
+    summary_right: bool = True,
 ) -> None:
-    start = column_index_from_string(start_col)
-    end = column_index_from_string(end_col)
-    if end < start:
-        return
-    for i in range(start, end + 1):
-        col = get_column_letter(i)
-        dim = ws.column_dimensions[col]
-        dim.outline_level = outline_level
-        dim.hidden = hidden
-    ws.sheet_properties.outlinePr.summaryRight = True
+    ws.column_dimensions.group(start_col, end_col, outline_level=outline_level, hidden=hidden)
+    ws.sheet_properties.outlinePr.summaryRight = summary_right
     ws.sheet_properties.outlinePr.applyStyles = True
+
+    end_idx = column_index_from_string(end_col)
+    if summary_right:
+        summary_col = get_column_letter(end_idx + 1)
+    else:
+        summary_col = get_column_letter(column_index_from_string(start_col) - 1)
+    ws.column_dimensions[summary_col].collapsed = True
 
 
 def group_rows(
@@ -59,11 +61,13 @@ def group_rows(
     outline_level: int = 1,
     summary_below: bool = True,
 ) -> None:
-    if end_row < start_row:
-        return
     ws.row_dimensions.group(start_row, end_row, outline_level=outline_level, hidden=hidden)
     ws.sheet_properties.outlinePr.summaryBelow = summary_below
     ws.sheet_properties.outlinePr.applyStyles = True
+
+    summary_row = end_row + 1 if summary_below else start_row - 1
+    if summary_row >= 1:
+        ws.row_dimensions[summary_row].collapsed = True
 
 
 def remove_outline_groups(wb) -> int:
@@ -72,14 +76,16 @@ def remove_outline_groups(wb) -> int:
     for ws in wb.worksheets:
         touched = False
         for col, dim in ws.column_dimensions.items():
-            if dim.outline_level or dim.hidden:
+            if dim.outline_level or dim.hidden or dim.collapsed:
                 dim.outline_level = 0
                 dim.hidden = False
+                dim.collapsed = False
                 touched = True
         for row, dim in ws.row_dimensions.items():
-            if dim.outline_level or dim.hidden:
+            if dim.outline_level or dim.hidden or dim.collapsed:
                 dim.outline_level = 0
                 dim.hidden = False
+                dim.collapsed = False
                 touched = True
         ws.sheet_view.showOutlineSymbols = False
         if ws.sheet_properties.outlinePr is not None:
