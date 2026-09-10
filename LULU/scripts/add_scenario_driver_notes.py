@@ -25,7 +25,7 @@ NOTES: dict[int, str] = {
     10: "Perpetuity growth rate: flat across all years.",
     11: "Flat tax percentage applied every forecast year.",
     12: "Depreciation scales as fixed percent of revenue.",
-    13: "Investment scales as fixed percent of revenue.",
+    13: "Five-year blended average: fades 7.0% toward 6.1% revenue.",
     14: "Merchandise margin held flat every forecast year.",
     15: "Collection days held flat near six yearly.",
     16: "Starting inventory days before annual decline begins.",
